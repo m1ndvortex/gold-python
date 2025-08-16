@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # Test Backend - uses main database
+  test-backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: goldshop_test_backend
+    environment:
+      DATABASE_URL: postgresql://goldshop_user:goldshop_password@db:5432/goldshop
+      JWT_SECRET: test-jwt-secret
+      SMS_API_KEY: test-sms-key
+      ENVIRONMENT: test
+    volumes:
+      - ./backend:/app
+      - uploads_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - goldshop_network
+    command: pytest -v
+
+  # Test Frontend - uses main backend
+  test-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: goldshop_test_frontend
+    environment:
+      REACT_APP_API_URL: http://backend:8000
+      REACT_APP_ENVIRONMENT: test
+      CI: true
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - goldshop_network
+    command: npm test
+
+  # Use main database service
+  db:
+    image: postgres:15
+    container_name: goldshop_db
+    environment:
+      POSTGRES_DB: goldshop
+      POSTGRES_USER: goldshop_user
+      POSTGRES_PASSWORD: goldshop_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - goldshop_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U goldshop_user -d goldshop"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Use main backend service
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: goldshop_backend
+    environment:
+      DATABASE_URL: postgresql://goldshop_user:goldshop_password@db:5432/goldshop
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      SMS_API_KEY: your-sms-api-key
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - uploads_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - goldshop_network
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads_data:
+    driver: local
+  frontend_node_modules:
+    driver: local
+
+networks:
+  goldshop_network:
+    driver: bridge
