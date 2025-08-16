@@ -85,6 +85,7 @@ class Customer(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     invoices = relationship("Invoice", back_populates="customer")
+    payments = relationship("Payment", back_populates="customer")
     
     __table_args__ = (
         Index('idx_customers_debt', 'current_debt'),
@@ -110,6 +111,7 @@ class Invoice(Base):
     
     customer = relationship("Customer", back_populates="invoices")
     invoice_items = relationship("InvoiceItem", back_populates="invoice")
+    payments = relationship("Payment", back_populates="invoice")
     
     __table_args__ = (
         Index('idx_invoices_customer', 'customer_id'),
@@ -148,6 +150,27 @@ class AccountingEntry(Base):
     __table_args__ = (
         Index('idx_accounting_entries_type_date', 'entry_type', 'transaction_date'),
         Index('idx_accounting_entries_reference', 'reference_id', 'reference_type'),
+    )
+
+class Payment(Base):
+    __tablename__ = "payments"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    customer_id = Column(UUID(as_uuid=True), ForeignKey("customers.id"), nullable=False)
+    invoice_id = Column(UUID(as_uuid=True), ForeignKey("invoices.id"))  # Optional, can be general payment
+    amount = Column(DECIMAL(12, 2), nullable=False)
+    payment_method = Column(String(20), default='cash')  # 'cash', 'bank', 'card'
+    description = Column(Text)
+    payment_date = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    customer = relationship("Customer", back_populates="payments")
+    invoice = relationship("Invoice", back_populates="payments")
+    
+    __table_args__ = (
+        Index('idx_payments_customer', 'customer_id'),
+        Index('idx_payments_date', 'payment_date'),
+        Index('idx_payments_invoice', 'invoice_id'),
     )
 
 class CompanySettings(Base):
