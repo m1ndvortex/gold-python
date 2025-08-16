@@ -1,7 +1,6 @@
-from sqlalchemy import Column, String, Integer, Boolean, DateTime, Text, DECIMAL, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, Text, DECIMAL, ForeignKey, Index
+from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.sql import func
 import uuid
 
@@ -27,7 +26,7 @@ class Role(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(50), unique=True, nullable=False)
     description = Column(Text)
-    permissions = Column(Text)  # JSON string for permissions
+    permissions = Column(JSONB)  # JSON for permissions
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     users = relationship("User", back_populates="role")
@@ -41,7 +40,8 @@ class Category(Base):
     description = Column(Text)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
-    parent = relationship("Category", remote_side=[id])
+    parent = relationship("Category", remote_side=[id], back_populates="children")
+    children = relationship("Category", back_populates="parent")
     inventory_items = relationship("InventoryItem", back_populates="category")
 
 class InventoryItem(Base):
@@ -62,6 +62,13 @@ class InventoryItem(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     category = relationship("Category", back_populates="inventory_items")
+    invoice_items = relationship("InvoiceItem", back_populates="inventory_item")
+    
+    __table_args__ = (
+        Index('idx_inventory_items_category', 'category_id'),
+        Index('idx_inventory_items_active', 'is_active'),
+        Index('idx_inventory_items_stock', 'stock_quantity'),
+    )
 
 class Customer(Base):
     __tablename__ = "customers"
@@ -76,6 +83,13 @@ class Customer(Base):
     last_purchase_date = Column(DateTime(timezone=True))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    invoices = relationship("Invoice", back_populates="customer")
+    
+    __table_args__ = (
+        Index('idx_customers_debt', 'current_debt'),
+        Index('idx_customers_phone', 'phone'),
+    )
 
 class Invoice(Base):
     __tablename__ = "invoices"
@@ -93,6 +107,15 @@ class Invoice(Base):
     status = Column(String(20), default='pending')
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    customer = relationship("Customer", back_populates="invoices")
+    invoice_items = relationship("InvoiceItem", back_populates="invoice")
+    
+    __table_args__ = (
+        Index('idx_invoices_customer', 'customer_id'),
+        Index('idx_invoices_date', 'created_at'),
+        Index('idx_invoices_status', 'status'),
+    )
 
 class InvoiceItem(Base):
     __tablename__ = "invoice_items"
@@ -104,6 +127,9 @@ class InvoiceItem(Base):
     unit_price = Column(DECIMAL(12, 2), nullable=False)
     total_price = Column(DECIMAL(12, 2), nullable=False)
     weight_grams = Column(DECIMAL(10, 3), nullable=False)
+    
+    invoice = relationship("Invoice", back_populates="invoice_items")
+    inventory_item = relationship("InventoryItem", back_populates="invoice_items")
 
 class AccountingEntry(Base):
     __tablename__ = "accounting_entries"
@@ -118,6 +144,11 @@ class AccountingEntry(Base):
     reference_type = Column(String(50))
     transaction_date = Column(DateTime(timezone=True), server_default=func.now())
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_accounting_entries_type_date', 'entry_type', 'transaction_date'),
+        Index('idx_accounting_entries_reference', 'reference_id', 'reference_type'),
+    )
 
 class CompanySettings(Base):
     __tablename__ = "company_settings"
@@ -130,5 +161,5 @@ class CompanySettings(Base):
     default_labor_percentage = Column(DECIMAL(5, 2))
     default_profit_percentage = Column(DECIMAL(5, 2))
     default_vat_percentage = Column(DECIMAL(5, 2))
-    invoice_template = Column(Text)  # JSON string for template
+    invoice_template = Column(JSONB)  # JSON for template
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

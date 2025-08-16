@@ -1,47 +1,43 @@
+"""
+Test configuration for running tests in Docker environment with real PostgreSQL.
+"""
+
 import pytest
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from fastapi.testclient import TestClient
-from main import app
-from database import get_db, Base
-import models
+from models import Base
 
-# Use the main database for testing as requested
-TEST_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://goldshop_user:goldshop_password@db:5432/goldshop")
 
-@pytest.fixture(scope="session")
-def test_engine():
-    """Create test database engine"""
-    engine = create_engine(TEST_DATABASE_URL)
-    return engine
+@pytest.fixture(scope="session", autouse=True)
+def setup_test_database():
+    """Set up test database schema before running tests"""
+    database_url = os.getenv("DATABASE_URL", "postgresql://goldshop_user:goldshop_password@db:5432/goldshop")
+    engine = create_engine(database_url)
+    
+    # Ensure all tables exist (they should from migrations, but just in case)
+    Base.metadata.create_all(bind=engine)
+    
+    yield
+    
+    # Cleanup is handled by individual test fixtures
+    pass
 
-@pytest.fixture(scope="session")
-def test_db_session(test_engine):
-    """Create test database session"""
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-    
-    # Create all tables
-    Base.metadata.create_all(bind=test_engine)
-    
-    session = TestingSessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()
 
-@pytest.fixture
-def client(test_db_session):
-    """Create test client with database dependency override"""
-    def override_get_db():
-        try:
-            yield test_db_session
-        finally:
-            pass
-    
-    app.dependency_overrides[get_db] = override_get_db
-    
-    with TestClient(app) as test_client:
-        yield test_client
-    
-    app.dependency_overrides.clear()
+def pytest_configure(config):
+    """Configure pytest for Docker environment"""
+    # Add custom markers
+    config.addinivalue_line(
+        "markers", "integration: mark test as integration test"
+    )
+    config.addinivalue_line(
+        "markers", "database: mark test as database test"
+    )
+
+
+def pytest_collection_modifyitems(config, items):
+    """Modify test collection to add markers automatically"""
+    for item in items:
+        # Mark all tests in test_models.py as database tests
+        if "test_models" in item.nodeid:
+            item.add_marker(pytest.mark.database)
