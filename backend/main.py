@@ -3,10 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database import engine, get_db
 import models
-from routers import auth, roles, inventory, customers
+from routers import auth, roles, inventory, customers, invoices
 
-# Create database tables
-models.Base.metadata.create_all(bind=engine)
+# Create database tables safely
+try:
+    models.Base.metadata.create_all(bind=engine)
+    print("Database tables created/verified successfully")
+except Exception as e:
+    print(f"Warning: Could not create tables: {e}")
 
 # Seed database with initial data
 try:
@@ -35,6 +39,7 @@ app.include_router(auth.router)
 app.include_router(roles.router)
 app.include_router(inventory.router)
 app.include_router(customers.router)
+app.include_router(invoices.router)
 
 @app.get("/")
 async def root():

@@ -13,8 +13,10 @@ services:
       SMS_API_KEY: test-sms-key
       ENVIRONMENT: test
     volumes:
-      - ./backend:/app
-      - uploads_data:/app/uploads
+      - ./backend:/app:rw
+      - uploads_data:/app/uploads:rw
+      - backend_cache:/app/__pycache__:rw
+      - backend_pytest_cache:/app/.pytest_cache:rw
     depends_on:
       db:
         condition: service_healthy
@@ -76,8 +78,9 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
-      - uploads_data:/app/uploads
+      - ./backend:/app:rw
+      - uploads_data:/app/uploads:rw
+      - backend_cache:/app/__pycache__:rw
     depends_on:
       db:
         condition: service_healthy
@@ -91,6 +94,10 @@ volumes:
   uploads_data:
     driver: local
   frontend_node_modules:
+    driver: local
+  backend_cache:
+    driver: local
+  backend_pytest_cache:
     driver: local
 
 networks:
