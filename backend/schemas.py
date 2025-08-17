@@ -318,6 +318,219 @@ class AccountingEntry(AccountingEntryBase):
     class Config:
         from_attributes = True
 
+# Report Schemas
+class SalesTrendSummary(BaseModel):
+    total_sales: float
+    total_paid: float
+    total_outstanding: float
+    total_items_sold: int
+    average_daily_sales: float
+
+class SalesTrendPeriod(BaseModel):
+    period: str
+    total_amount: float
+    paid_amount: float
+    items_sold: int
+    categories: Dict[str, float]
+
+class SalesTrendsResponse(BaseModel):
+    period: str
+    start_date: str
+    end_date: str
+    summary: SalesTrendSummary
+    trends: List[SalesTrendPeriod]
+
+class TopProductItem(BaseModel):
+    item_id: str
+    item_name: str
+    category_name: str
+    total_quantity: int
+    total_revenue: float
+    transaction_count: int
+    average_price: float
+
+class TopProductsResponse(BaseModel):
+    period: Dict[str, str]
+    top_by_quantity: List[TopProductItem]
+    top_by_revenue: List[TopProductItem]
+
+class InventoryValuationSummary(BaseModel):
+    total_purchase_value: float
+    total_sell_value: float
+    total_potential_profit: float
+    overall_profit_margin: float
+    total_weight_grams: float
+    total_items: int
+    unique_products: int
+
+class CategoryBreakdown(BaseModel):
+    category_name: str
+    purchase_value: float
+    sell_value: float
+    potential_profit: float
+    profit_margin: float
+    weight_grams: float
+    item_count: int
+
+class ItemValuation(BaseModel):
+    item_id: str
+    item_name: str
+    category_name: str
+    stock_quantity: int
+    unit_purchase_price: float
+    unit_sell_price: float
+    unit_weight_grams: float
+    total_purchase_value: float
+    total_sell_value: float
+    total_weight_grams: float
+    potential_profit: float
+    profit_margin: float
+    is_active: bool
+
+class InventoryValuationResponse(BaseModel):
+    summary: InventoryValuationSummary
+    category_breakdown: List[CategoryBreakdown]
+    items: List[ItemValuation]
+
+class LowStockItem(BaseModel):
+    item_id: str
+    item_name: str
+    category_name: str
+    current_stock: int
+    min_stock_level: int
+    shortage: int
+    unit_price: float
+    unit_weight_grams: float
+    potential_lost_sales: float
+    status: str
+    urgency_score: float
+
+class LowStockSummary(BaseModel):
+    total_low_stock_items: int
+    critical_items: int
+    warning_items: int
+    total_potential_lost_sales: float
+    threshold_multiplier: float
+
+class LowStockResponse(BaseModel):
+    summary: LowStockSummary
+    items: List[LowStockItem]
+
+class CustomerAnalysisItem(BaseModel):
+    customer_id: str
+    customer_name: str
+    phone: Optional[str]
+    current_debt: float
+    total_lifetime_purchases: float
+    period_purchases: float
+    period_payments: float
+    invoice_count: int
+    average_invoice: float
+    last_purchase_date: Optional[str]
+    last_invoice_date: Optional[str]
+    segment: str
+    payment_ratio: float
+
+class CustomerAnalysisSummary(BaseModel):
+    total_active_customers: int
+    total_revenue: float
+    average_revenue_per_customer: float
+    high_value_customers: int
+    customers_with_debt: int
+    debt_percentage: float
+
+class CustomerAnalysisResponse(BaseModel):
+    period: Dict[str, str]
+    summary: CustomerAnalysisSummary
+    customers: List[CustomerAnalysisItem]
+
+class DebtReportItem(BaseModel):
+    customer_id: str
+    customer_name: str
+    phone: Optional[str]
+    email: Optional[str]
+    current_debt: float
+    total_lifetime_purchases: float
+    total_payments: float
+    payment_count: int
+    last_payment_date: Optional[str]
+    days_since_last_payment: Optional[int]
+    unpaid_invoice_count: int
+    debt_to_purchases_ratio: float
+    payment_history_score: float
+
+class DebtAging(BaseModel):
+    current: float
+    thirty_days: float = 0  # Changed from 30_days to thirty_days
+    sixty_days: float = 0   # Changed from 60_days to sixty_days
+    ninety_days_plus: float = 0  # Changed from 90_days_plus to ninety_days_plus
+
+class DebtReportSummary(BaseModel):
+    total_customers_with_debt: int
+    total_outstanding_debt: float
+    average_debt_per_customer: float
+    min_debt_filter: float
+
+class DebtReportResponse(BaseModel):
+    summary: DebtReportSummary
+    debt_aging: DebtAging
+    customers: List[DebtReportItem]
+
+class DailySalesData(BaseModel):
+    date: str
+    total_sales: float
+    total_paid: float
+    invoice_count: int
+
+class CategorySalesData(BaseModel):
+    category: str
+    total_sales: float
+    total_quantity: int
+    percentage: float
+
+class SalesOverviewResponse(BaseModel):
+    period: Dict[str, Any]
+    daily_sales: List[DailySalesData]
+    category_sales: List[CategorySalesData]
+
+class CategoryInventoryData(BaseModel):
+    category: str
+    item_count: int
+    total_stock: int
+    total_value: float
+    low_stock_items: int
+
+class StockStatusData(BaseModel):
+    out_of_stock: int
+    low_stock: int
+    in_stock: int
+
+class InventoryOverviewResponse(BaseModel):
+    category_breakdown: List[CategoryInventoryData]
+    stock_status: StockStatusData
+
+class CustomerActivityData(BaseModel):
+    date: str
+    active_customers: int
+    total_sales: float
+
+class TopCustomerData(BaseModel):
+    customer_name: str
+    recent_purchases: float
+    recent_invoices: int
+
+class CustomerDebtDistribution(BaseModel):
+    no_debt: int
+    low_debt: int
+    medium_debt: int
+    high_debt: int
+
+class CustomerOverviewResponse(BaseModel):
+    period: Dict[str, Any]
+    debt_distribution: CustomerDebtDistribution
+    recent_activity: List[CustomerActivityData]
+    top_customers: List[TopCustomerData]
+
 # Update forward references
 CategoryWithChildren.model_rebuild()
 UserWithRole.model_rebuild()

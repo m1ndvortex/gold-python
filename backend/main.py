@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database import engine, get_db
 import models
-from routers import auth, roles, inventory, customers, invoices
+from routers import auth, roles, inventory, customers, invoices, accounting, reports
 
 # Create database tables safely
 try:
@@ -40,6 +40,8 @@ app.include_router(roles.router)
 app.include_router(inventory.router)
 app.include_router(customers.router)
 app.include_router(invoices.router)
+app.include_router(accounting.router)
+app.include_router(reports.router)
 
 @app.get("/")
 async def root():
