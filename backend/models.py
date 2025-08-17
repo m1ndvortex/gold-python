@@ -186,3 +186,69 @@ class CompanySettings(Base):
     default_vat_percentage = Column(DECIMAL(5, 2))
     invoice_template = Column(JSONB)  # JSON for template
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+class SMSTemplate(Base):
+    __tablename__ = "sms_templates"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(100), nullable=False)
+    template_type = Column(String(20), nullable=False)  # 'promotional', 'debt_reminder'
+    message_template = Column(Text, nullable=False)  # Template with placeholders like {customer_name}, {debt_amount}
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    sms_campaigns = relationship("SMSCampaign", back_populates="template")
+
+class SMSCampaign(Base):
+    __tablename__ = "sms_campaigns"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(200), nullable=False)
+    template_id = Column(UUID(as_uuid=True), ForeignKey("sms_templates.id"))
+    message_content = Column(Text, nullable=False)  # Final message after template processing
+    total_recipients = Column(Integer, default=0)
+    sent_count = Column(Integer, default=0)
+    failed_count = Column(Integer, default=0)
+    status = Column(String(20), default='pending')  # 'pending', 'sending', 'completed', 'failed'
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    template = relationship("SMSTemplate", back_populates="sms_campaigns")
+    creator = relationship("User")
+    sms_messages = relationship("SMSMessage", back_populates="campaign")
+    
+    __table_args__ = (
+        Index('idx_sms_campaigns_status', 'status'),
+        Index('idx_sms_campaigns_created_by', 'created_by'),
+    )
+
+class SMSMessage(Base):
+    __tablename__ = "sms_messages"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    campaign_id = Column(UUID(as_uuid=True), ForeignKey("sms_campaigns.id"))
+    customer_id = Column(UUID(as_uuid=True), ForeignKey("customers.id"))
+    phone_number = Column(String(20), nullable=False)
+    message_content = Column(Text, nullable=False)
+    status = Column(String(20), default='pending')  # 'pending', 'sent', 'failed', 'delivered'
+    delivery_status = Column(String(20))  # 'delivered', 'failed', 'unknown'
+    gateway_message_id = Column(String(100))  # SMS gateway's message ID
+    error_message = Column(Text)
+    retry_count = Column(Integer, default=0)
+    max_retries = Column(Integer, default=3)
+    sent_at = Column(DateTime(timezone=True))
+    delivered_at = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    campaign = relationship("SMSCampaign", back_populates="sms_messages")
+    customer = relationship("Customer")
+    
+    __table_args__ = (
+        Index('idx_sms_messages_campaign', 'campaign_id'),
+        Index('idx_sms_messages_customer', 'customer_id'),
+        Index('idx_sms_messages_status', 'status'),
+        Index('idx_sms_messages_phone', 'phone_number'),
+    )

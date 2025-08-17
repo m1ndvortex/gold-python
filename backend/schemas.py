@@ -531,6 +531,303 @@ class CustomerOverviewResponse(BaseModel):
     recent_activity: List[CustomerActivityData]
     top_customers: List[TopCustomerData]
 
+# Company Settings Schemas
+class CompanySettingsBase(BaseModel):
+    company_name: Optional[str] = None
+    company_logo_url: Optional[str] = None
+    company_address: Optional[str] = None
+    default_gold_price: Optional[float] = None
+    default_labor_percentage: Optional[float] = None
+    default_profit_percentage: Optional[float] = None
+    default_vat_percentage: Optional[float] = None
+    invoice_template: Optional[Dict[str, Any]] = None
+
+class CompanySettingsCreate(CompanySettingsBase):
+    pass
+
+class CompanySettingsUpdate(CompanySettingsBase):
+    pass
+
+class CompanySettings(CompanySettingsBase):
+    id: UUID
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+# Gold Price Configuration Schemas
+class GoldPriceConfig(BaseModel):
+    current_price: float
+    auto_update_enabled: bool = False
+    api_source: Optional[str] = None
+    last_updated: Optional[datetime] = None
+    update_frequency_hours: int = 24
+
+class GoldPriceUpdate(BaseModel):
+    price: float
+    source: str = "manual"
+
+# Invoice Template Schemas
+class InvoiceTemplateField(BaseModel):
+    name: str
+    label: str
+    type: str  # 'text', 'number', 'date', 'boolean'
+    required: bool = False
+    position: Dict[str, float]  # x, y coordinates
+    style: Dict[str, Any]  # font, size, color, etc.
+
+class InvoiceTemplateSection(BaseModel):
+    name: str
+    fields: List[InvoiceTemplateField]
+    position: Dict[str, float]
+    style: Dict[str, Any]
+
+class InvoiceTemplate(BaseModel):
+    name: str
+    layout: str  # 'portrait', 'landscape'
+    page_size: str  # 'A4', 'Letter', etc.
+    margins: Dict[str, float]  # top, right, bottom, left
+    header: InvoiceTemplateSection
+    body: InvoiceTemplateSection
+    footer: InvoiceTemplateSection
+    styles: Dict[str, Any]  # Global styles
+
+class InvoiceTemplateCreate(BaseModel):
+    template: InvoiceTemplate
+
+class InvoiceTemplateUpdate(BaseModel):
+    template: InvoiceTemplate
+
+# User Management Schemas (extending existing)
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
+    role_id: Optional[UUID] = None
+    is_active: Optional[bool] = None
+
+class UserPasswordUpdate(BaseModel):
+    current_password: str
+    new_password: str
+
+class UserManagement(User):
+    role: Optional[Role] = None
+
+class UserListResponse(BaseModel):
+    users: List[UserManagement]
+    total: int
+    page: int
+    per_page: int
+
+# Role Management Schemas (extending existing)
+class RoleUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    permissions: Optional[Dict[str, Any]] = None
+
+class PermissionCategory(BaseModel):
+    name: str
+    label: str
+    permissions: List[Dict[str, str]]  # [{"key": "view_inventory", "label": "View Inventory"}]
+
+class PermissionStructure(BaseModel):
+    categories: List[PermissionCategory]
+
+class RoleWithUsers(Role):
+    users: List[User] = []
+
+class RoleAssignment(BaseModel):
+    user_id: UUID
+    role_id: UUID
+
+# Settings Response Schemas
+class SystemSettings(BaseModel):
+    company: CompanySettings
+    gold_price: GoldPriceConfig
+    invoice_template: InvoiceTemplate
+    permissions: PermissionStructure
+
+class SettingsUpdateResponse(BaseModel):
+    success: bool
+    message: str
+    updated_fields: List[str]
+
+# SMS Template Schemas
+class SMSTemplateBase(BaseModel):
+    name: str
+    template_type: str  # 'promotional', 'debt_reminder'
+    message_template: str
+    is_active: bool = True
+
+class SMSTemplateCreate(SMSTemplateBase):
+    pass
+
+class SMSTemplateUpdate(BaseModel):
+    name: Optional[str] = None
+    template_type: Optional[str] = None
+    message_template: Optional[str] = None
+    is_active: Optional[bool] = None
+
+class SMSTemplate(SMSTemplateBase):
+    id: UUID
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+# SMS Campaign Schemas
+class SMSCampaignBase(BaseModel):
+    name: str
+    template_id: Optional[UUID] = None
+    message_content: str
+
+class SMSCampaignCreate(SMSCampaignBase):
+    customer_ids: List[UUID]  # List of customer IDs to send to
+
+class SMSCampaignUpdate(BaseModel):
+    name: Optional[str] = None
+    status: Optional[str] = None
+
+class SMSCampaign(SMSCampaignBase):
+    id: UUID
+    total_recipients: int
+    sent_count: int
+    failed_count: int
+    status: str
+    created_by: UUID
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class SMSCampaignWithDetails(SMSCampaign):
+    template: Optional[SMSTemplate] = None
+    creator: Optional[User] = None
+
+# SMS Message Schemas
+class SMSMessageBase(BaseModel):
+    campaign_id: UUID
+    customer_id: UUID
+    phone_number: str
+    message_content: str
+
+class SMSMessageCreate(SMSMessageBase):
+    pass
+
+class SMSMessageUpdate(BaseModel):
+    status: Optional[str] = None
+    delivery_status: Optional[str] = None
+    gateway_message_id: Optional[str] = None
+    error_message: Optional[str] = None
+    retry_count: Optional[int] = None
+    sent_at: Optional[datetime] = None
+    delivered_at: Optional[datetime] = None
+
+class SMSMessage(SMSMessageBase):
+    id: UUID
+    status: str
+    delivery_status: Optional[str] = None
+    gateway_message_id: Optional[str] = None
+    error_message: Optional[str] = None
+    retry_count: int
+    max_retries: int
+    sent_at: Optional[datetime] = None
+    delivered_at: Optional[datetime] = None
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class SMSMessageWithDetails(SMSMessage):
+    customer: Optional[Customer] = None
+    campaign: Optional[SMSCampaign] = None
+
+# SMS Batch Sending Schemas
+class SMSBatchRequest(BaseModel):
+    template_id: Optional[UUID] = None
+    message_content: str
+    customer_ids: List[UUID]
+    campaign_name: str
+
+class SMSBatchResponse(BaseModel):
+    campaign_id: UUID
+    total_recipients: int
+    status: str
+    message: str
+
+# SMS Template Processing Schemas
+class SMSTemplateVariables(BaseModel):
+    customer_name: Optional[str] = None
+    debt_amount: Optional[float] = None
+    company_name: Optional[str] = None
+    phone: Optional[str] = None
+    last_purchase_date: Optional[str] = None
+
+class SMSTemplatePreview(BaseModel):
+    template_id: UUID
+    customer_id: UUID
+    preview_message: str
+
+# SMS Statistics Schemas
+class SMSCampaignStats(BaseModel):
+    campaign_id: UUID
+    campaign_name: str
+    total_recipients: int
+    sent_count: int
+    failed_count: int
+    delivered_count: int
+    pending_count: int
+    success_rate: float
+    delivery_rate: float
+    created_at: datetime
+    status: str
+
+class SMSOverallStats(BaseModel):
+    total_campaigns: int
+    total_messages_sent: int
+    total_messages_delivered: int
+    overall_success_rate: float
+    overall_delivery_rate: float
+    recent_campaigns: List[SMSCampaignStats]
+
+# SMS Delivery Status Schemas
+class SMSDeliveryStatusUpdate(BaseModel):
+    gateway_message_id: str
+    delivery_status: str  # 'delivered', 'failed', 'unknown'
+    delivered_at: Optional[datetime] = None
+    error_message: Optional[str] = None
+
+class SMSRetryRequest(BaseModel):
+    message_ids: List[UUID]
+    max_retries: Optional[int] = 3
+
+class SMSRetryResponse(BaseModel):
+    total_messages: int
+    retried_messages: int
+    skipped_messages: int
+    message: str
+
+# SMS History and Filtering Schemas
+class SMSHistoryFilters(BaseModel):
+    campaign_id: Optional[UUID] = None
+    customer_id: Optional[UUID] = None
+    status: Optional[str] = None
+    delivery_status: Optional[str] = None
+    phone_number: Optional[str] = None
+    created_after: Optional[datetime] = None
+    created_before: Optional[datetime] = None
+    sent_after: Optional[datetime] = None
+    sent_before: Optional[datetime] = None
+
+class SMSHistoryResponse(BaseModel):
+    messages: List[SMSMessageWithDetails]
+    total: int
+    page: int
+    per_page: int
+    total_pages: int
+
 # Update forward references
 CategoryWithChildren.model_rebuild()
 UserWithRole.model_rebuild()
@@ -538,3 +835,7 @@ CustomerWithPayments.model_rebuild()
 PaymentWithCustomer.model_rebuild()
 InvoiceItemWithInventory.model_rebuild()
 InvoiceWithDetails.model_rebuild()
+UserManagement.model_rebuild()
+RoleWithUsers.model_rebuild()
+SMSCampaignWithDetails.model_rebuild()
+SMSMessageWithDetails.model_rebuild()

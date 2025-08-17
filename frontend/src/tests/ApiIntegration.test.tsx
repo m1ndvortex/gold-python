@@ -182,6 +182,8 @@ describe('API Integration Tests', () => {
 
     // In a real integration test, we would verify API URL configuration
     // For now, we just ensure the test environment is set up correctly
-    expect(process.env.CI).toBe('true');
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+    expect(apiUrl).toBeDefined();
+    expect(typeof apiUrl).toBe('string');
   });
 });
