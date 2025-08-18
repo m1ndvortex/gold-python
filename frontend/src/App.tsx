@@ -2,9 +2,17 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageContext, useLanguageProvider } from './hooks/useLanguage';
-import { useAuth } from './hooks/useAuth';
 import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
+import { Inventory } from './pages/Inventory';
+import { Customers } from './pages/Customers';
+import { Invoices } from './pages/Invoices';
+import { Accounting } from './pages/Accounting';
+import Reports from './pages/Reports';
+import { Settings } from './pages/Settings';
+import { SMS } from './pages/SMS';
+import { AuthGuard } from './components/auth/AuthGuard';
+import { MainLayout } from './components/layout/MainLayout';
 import './App.css';
 
 // Create a client
@@ -16,25 +24,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-// Protected Route Component
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isLoadingUser } = useAuth();
-
-  if (isLoadingUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <>{children}</>;
-};
 
 // Main App Content
 const AppContent: React.FC = () => {
@@ -54,17 +43,91 @@ const AppContent: React.FC = () => {
           <Route
             path="/"
             element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
+              <AuthGuard>
+                <MainLayout>
+                  <Dashboard />
+                </MainLayout>
+              </AuthGuard>
             }
           />
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
+              <AuthGuard>
+                <MainLayout>
+                  <Dashboard />
+                </MainLayout>
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/inventory"
+            element={
+              <AuthGuard>
+                <MainLayout>
+                  <Inventory />
+                </MainLayout>
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/customers"
+            element={
+              <AuthGuard>
+                <MainLayout>
+                  <Customers />
+                </MainLayout>
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/invoices"
+            element={
+              <AuthGuard>
+                <MainLayout>
+                  <Invoices />
+                </MainLayout>
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/accounting"
+            element={
+              <AuthGuard>
+                <MainLayout>
+                  <Accounting />
+                </MainLayout>
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/reports"
+            element={
+              <AuthGuard>
+                <MainLayout>
+                  <Reports />
+                </MainLayout>
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <AuthGuard>
+                <MainLayout>
+                  <Settings />
+                </MainLayout>
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/sms"
+            element={
+              <AuthGuard>
+                <MainLayout>
+                  <SMS />
+                </MainLayout>
+              </AuthGuard>
             }
           />
           {/* Redirect any unknown routes to dashboard */}

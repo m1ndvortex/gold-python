@@ -63,7 +63,7 @@ const TestDashboard: React.FC = () => {
 jest.mock('../hooks/useAuth', () => ({
   useAuth: () => ({
     isAuthenticated: true,
-    isLoadingUser: false,
+    isLoading: false,
     user: {
       id: '1',
       username: 'testuser',
