@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Calendar, Filter, X } from 'lucide-react';
 import { useCategories } from '../../hooks/useInventory';
+import DatePicker from '../ui/date-picker';
+import { JalaliUtils } from '../../utils/jalali';
+import { useLanguage } from '../../hooks/useLanguage';
 
 interface ReportFiltersProps {
   filters: {
@@ -17,18 +19,39 @@ interface ReportFiltersProps {
 
 const ReportFilters: React.FC<ReportFiltersProps> = ({ filters, onFiltersChange }) => {
   const [localFilters, setLocalFilters] = useState(filters);
+  const [startDate, setStartDate] = useState<Date | null>(
+    filters.start_date ? new Date(filters.start_date) : null
+  );
+  const [endDate, setEndDate] = useState<Date | null>(
+    filters.end_date ? new Date(filters.end_date) : null
+  );
   const { data: categories } = useCategories();
+  const { language } = useLanguage();
 
   // Get categories data
   const categoriesData = categories || [];
 
   useEffect(() => {
     setLocalFilters(filters);
+    setStartDate(filters.start_date ? new Date(filters.start_date) : null);
+    setEndDate(filters.end_date ? new Date(filters.end_date) : null);
   }, [filters]);
 
   const handleFilterChange = (key: string, value: string) => {
     const newFilters = { ...localFilters, [key]: value };
     setLocalFilters(newFilters);
+  };
+
+  const handleStartDateChange = (date: Date | null) => {
+    setStartDate(date);
+    const dateString = date ? date.toISOString().split('T')[0] : '';
+    handleFilterChange('start_date', dateString);
+  };
+
+  const handleEndDateChange = (date: Date | null) => {
+    setEndDate(date);
+    const dateString = date ? date.toISOString().split('T')[0] : '';
+    handleFilterChange('end_date', dateString);
   };
 
   const applyFilters = () => {
@@ -46,16 +69,27 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({ filters, onFiltersChange 
   };
 
   const setQuickDateRange = (days: number) => {
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - days);
+    const endDateObj = new Date();
+    const startDateObj = new Date();
+    startDateObj.setDate(endDateObj.getDate() - days);
+
+    setStartDate(startDateObj);
+    setEndDate(endDateObj);
 
     const newFilters = {
       ...localFilters,
-      start_date: startDate.toISOString().split('T')[0],
-      end_date: endDate.toISOString().split('T')[0],
+      start_date: startDateObj.toISOString().split('T')[0],
+      end_date: endDateObj.toISOString().split('T')[0],
     };
     setLocalFilters(newFilters);
+  };
+
+  const formatDateForDisplay = (dateString: string) => {
+    if (!dateString) return '';
+    if (language === 'fa') {
+      return JalaliUtils.formatJalaliDate(new Date(dateString), 'jYYYY/jMM/jDD');
+    }
+    return dateString;
   };
 
   return (
@@ -65,13 +99,13 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({ filters, onFiltersChange 
         <div className="space-y-2">
           <Label htmlFor="start_date" className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            تاریخ شروع
+            {language === 'fa' ? 'تاریخ شروع' : 'Start Date'}
           </Label>
-          <Input
+          <DatePicker
             id="start_date"
-            type="date"
-            value={localFilters.start_date}
-            onChange={(e) => handleFilterChange('start_date', e.target.value)}
+            value={startDate}
+            onChange={handleStartDateChange}
+            placeholder={language === 'fa' ? 'انتخاب تاریخ شروع' : 'Select start date'}
             className="w-full"
           />
         </div>
@@ -79,14 +113,15 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({ filters, onFiltersChange 
         <div className="space-y-2">
           <Label htmlFor="end_date" className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            تاریخ پایان
+            {language === 'fa' ? 'تاریخ پایان' : 'End Date'}
           </Label>
-          <Input
+          <DatePicker
             id="end_date"
-            type="date"
-            value={localFilters.end_date}
-            onChange={(e) => handleFilterChange('end_date', e.target.value)}
+            value={endDate}
+            onChange={handleEndDateChange}
+            placeholder={language === 'fa' ? 'انتخاب تاریخ پایان' : 'Select end date'}
             className="w-full"
+            minDate={startDate || undefined}
           />
         </div>
 
@@ -168,12 +203,12 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({ filters, onFiltersChange 
           <span className="text-sm font-medium text-blue-800">فیلترهای فعال:</span>
           {localFilters.start_date && (
             <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-              از: {localFilters.start_date}
+              {language === 'fa' ? 'از: ' : 'From: '}{formatDateForDisplay(localFilters.start_date)}
             </span>
           )}
           {localFilters.end_date && (
             <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-              تا: {localFilters.end_date}
+              {language === 'fa' ? 'تا: ' : 'To: '}{formatDateForDisplay(localFilters.end_date)}
             </span>
           )}
           {localFilters.category_id && (

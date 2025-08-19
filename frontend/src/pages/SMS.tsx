@@ -1,14 +1,33 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { MessageSquare, BookTemplate, Send, History, BarChart3 } from 'lucide-react';
+import { 
+  MessageSquare, 
+  BookTemplate, 
+  Send, 
+  History, 
+  BarChart3,
+  Smartphone,
+  Users,
+  TrendingUp,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  Zap,
+  Bell,
+  Target,
+  Activity
+} from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
+import { Button } from '../components/ui/button';
+import { Separator } from '../components/ui/separator';
 import { SMSTemplateManager } from '../components/sms/SMSTemplateManager';
 import { SMSCampaignManager } from '../components/sms/SMSCampaignManager';
 import { SMSHistoryTracker } from '../components/sms/SMSHistoryTracker';
 import { useSMSDashboardData } from '../hooks/useSMS';
+import { cn } from '../lib/utils';
 
 const SMSOverview: React.FC = () => {
   const { overallStats, recentCampaigns, recentHistory, isLoading } = useSMSDashboardData();
@@ -196,57 +215,198 @@ export const SMS: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">SMS Management</h1>
-          <p className="text-muted-foreground">
-            Send promotional messages and debt reminders to customers
-          </p>
+    <div className="container mx-auto p-6 space-y-8">
+      {/* Enhanced Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center shadow-lg">
+              <Smartphone className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">SMS Management</h1>
+              <p className="text-muted-foreground text-lg">
+                Send promotional messages and debt reminders to customers with ease
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <MessageSquare className="h-8 w-8 text-primary" />
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 gap-1">
+            <Bell className="h-3 w-3" />
+            SMS Ready
+          </Badge>
+          <Button variant="default" size="sm" className="gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700">
+            <Send className="h-4 w-4" />
+            Quick Send
+          </Button>
         </div>
       </div>
 
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview" className="flex items-center space-x-2">
-            <BarChart3 className="h-4 w-4" />
-            <span>Overview</span>
-          </TabsTrigger>
-          <TabsTrigger value="templates" className="flex items-center space-x-2">
-            <BookTemplate className="h-4 w-4" />
-            <span>Templates</span>
-          </TabsTrigger>
-          <TabsTrigger value="campaigns" className="flex items-center space-x-2">
-            <Send className="h-4 w-4" />
-            <span>Campaigns</span>
-          </TabsTrigger>
-          <TabsTrigger value="history" className="flex items-center space-x-2">
-            <History className="h-4 w-4" />
-            <span>History</span>
-          </TabsTrigger>
-        </TabsList>
+      {/* Enhanced SMS Tabs */}
+      <Card className="border-0 shadow-xl overflow-hidden">
+        <CardContent className="p-0">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            {/* Modern Tab Navigation */}
+            <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 border-b-2 border-emerald-200">
+              <TabsList className="grid w-full grid-cols-4 bg-transparent h-auto p-1 gap-1">
+                <TabsTrigger 
+                  value="overview" 
+                  className={cn(
+                    "flex items-center gap-3 p-4 rounded-lg transition-all duration-300",
+                    "hover:bg-white hover:shadow-sm",
+                    "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-emerald-300"
+                  )}
+                >
+                  <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <BarChart3 className="h-4 w-4 text-emerald-600" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium text-sm">Overview</div>
+                    <div className="text-xs text-muted-foreground">Analytics & Stats</div>
+                  </div>
+                </TabsTrigger>
+                
+                <TabsTrigger 
+                  value="templates" 
+                  className={cn(
+                    "flex items-center gap-3 p-4 rounded-lg transition-all duration-300",
+                    "hover:bg-white hover:shadow-sm",
+                    "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-teal-300"
+                  )}
+                >
+                  <div className="h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center">
+                    <BookTemplate className="h-4 w-4 text-teal-600" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium text-sm">Templates</div>
+                    <div className="text-xs text-muted-foreground">Message Library</div>
+                  </div>
+                </TabsTrigger>
+                
+                <TabsTrigger 
+                  value="campaigns" 
+                  className={cn(
+                    "flex items-center gap-3 p-4 rounded-lg transition-all duration-300",
+                    "hover:bg-white hover:shadow-sm",
+                    "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-cyan-300"
+                  )}
+                >
+                  <div className="h-8 w-8 rounded-full bg-cyan-100 flex items-center justify-center">
+                    <Send className="h-4 w-4 text-cyan-600" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium text-sm">Campaigns</div>
+                    <div className="text-xs text-muted-foreground">Bulk Messaging</div>
+                  </div>
+                </TabsTrigger>
+                
+                <TabsTrigger 
+                  value="history" 
+                  className={cn(
+                    "flex items-center gap-3 p-4 rounded-lg transition-all duration-300",
+                    "hover:bg-white hover:shadow-sm",
+                    "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-indigo-300"
+                  )}
+                >
+                  <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <History className="h-4 w-4 text-indigo-600" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium text-sm">History</div>
+                    <div className="text-xs text-muted-foreground">Message Logs</div>
+                  </div>
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
-        <TabsContent value="overview" className="space-y-6">
-          <SMSOverview />
-        </TabsContent>
+            {/* Enhanced Tab Content */}
+            <TabsContent value="overview" className="p-0">
+              <div className="p-6 space-y-6 bg-gradient-to-br from-emerald-50/30 to-white">
+                <div className="flex items-center justify-between pb-4 border-b border-emerald-200">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+                      <BarChart3 className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">SMS Analytics</h3>
+                      <p className="text-sm text-muted-foreground">Monitor SMS campaign performance and delivery metrics</p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                    <Activity className="h-3 w-3 mr-1" />
+                    Real-time
+                  </Badge>
+                </div>
+                <SMSOverview />
+              </div>
+            </TabsContent>
 
-        <TabsContent value="templates" className="space-y-6">
-          <SMSTemplateManager />
-        </TabsContent>
+            <TabsContent value="templates" className="p-0">
+              <div className="p-6 space-y-6 bg-gradient-to-br from-teal-50/30 to-white">
+                <div className="flex items-center justify-between pb-4 border-b border-teal-200">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
+                      <BookTemplate className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">Message Templates</h3>
+                      <p className="text-sm text-muted-foreground">Create and manage reusable SMS templates</p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200">
+                    <Target className="h-3 w-3 mr-1" />
+                    Optimized
+                  </Badge>
+                </div>
+                <SMSTemplateManager />
+              </div>
+            </TabsContent>
 
-        <TabsContent value="campaigns" className="space-y-6">
-          <SMSCampaignManager />
-        </TabsContent>
+            <TabsContent value="campaigns" className="p-0">
+              <div className="p-6 space-y-6 bg-gradient-to-br from-cyan-50/30 to-white">
+                <div className="flex items-center justify-between pb-4 border-b border-cyan-200">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center">
+                      <Send className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">SMS Campaigns</h3>
+                      <p className="text-sm text-muted-foreground">Launch and manage bulk SMS marketing campaigns</p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="bg-cyan-50 text-cyan-700 border-cyan-200">
+                    <Zap className="h-3 w-3 mr-1" />
+                    Automated
+                  </Badge>
+                </div>
+                <SMSCampaignManager />
+              </div>
+            </TabsContent>
 
-        <TabsContent value="history" className="space-y-6">
-          <SMSHistoryTracker />
-        </TabsContent>
-      </Tabs>
+            <TabsContent value="history" className="p-0">
+              <div className="p-6 space-y-6 bg-gradient-to-br from-indigo-50/30 to-white">
+                <div className="flex items-center justify-between pb-4 border-b border-indigo-200">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center">
+                      <History className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">Message History</h3>
+                      <p className="text-sm text-muted-foreground">View sent messages and delivery status</p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                    Tracked
+                  </Badge>
+                </div>
+                <SMSHistoryTracker />
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 };

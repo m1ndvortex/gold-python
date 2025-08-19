@@ -120,41 +120,72 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <div className="mx-auto h-12 w-12 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-lg flex items-center justify-center mb-4">
-            <span className="text-white font-bold text-xl">طلا</span>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-amber-50 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Design Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary-200/30 to-primary-300/20 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-amber-200/30 to-amber-300/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary-100/20 to-amber-100/20 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="max-w-md w-full space-y-8 relative z-10">
+        {/* Enhanced Header */}
+        <div className="text-center space-y-6">
+          <div className="flex items-center justify-center">
+            <div className="relative">
+              <div className="h-16 w-16 bg-gradient-to-br from-primary-500 via-primary-600 to-amber-600 rounded-2xl flex items-center justify-center shadow-xl shadow-primary-500/25 mb-6">
+                <span className="text-white font-bold text-2xl">طلا</span>
+              </div>
+              {/* Floating ring animation */}
+              <div className="absolute inset-0 h-16 w-16 rounded-2xl bg-gradient-to-br from-primary-400 to-amber-500 opacity-20 animate-ping"></div>
+            </div>
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            {t('app.title')}
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {language === 'en' ? 'Sign in to your account' : 'وارد حساب کاربری خود شوید'}
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={toggleLanguage}
-            className="mt-4"
-          >
-            {language === 'en' ? 'فارسی' : 'English'}
-          </Button>
+          
+          <div className="space-y-2">
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-primary-600 via-primary-700 to-amber-600 bg-clip-text text-transparent">
+              {t('app.title')}
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              {language === 'en' ? 'Welcome back to your gold shop management system' : 'به سیستم مدیریت طلافروشی خود خوش آمدید'}
+            </p>
+          </div>
+          
+          <div className="flex items-center justify-center">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleLanguage}
+              className="bg-white/50 backdrop-blur-sm border-primary-200 hover:bg-white/80 transition-all duration-300"
+            >
+              <span className="mr-2">{language === 'en' ? '🇮🇷' : '🇺🇸'}</span>
+              {language === 'en' ? 'فارسی' : 'English'}
+            </Button>
+          </div>
         </div>
 
-        {/* Login Form */}
-        <Card className="shadow-lg">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">{t('auth.login')}</CardTitle>
-            <CardDescription className="text-center">
-              {language === 'en' 
-                ? 'Enter your credentials to access the system' 
-                : 'اطلاعات ورود خود را وارد کنید'
-              }
-            </CardDescription>
+        {/* Enhanced Login Form */}
+        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
+          <CardHeader className="space-y-4 pb-6">
+            <div className="text-center space-y-2">
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-amber-600 bg-clip-text text-transparent">
+                {t('auth.login')}
+              </CardTitle>
+              <CardDescription className="text-base text-muted-foreground">
+                {language === 'en' 
+                  ? 'Enter your credentials to access the management system' 
+                  : 'اطلاعات ورود خود را برای دسترسی به سیستم وارد کنید'
+                }
+              </CardDescription>
+            </div>
+            {/* Security Badge */}
+            <div className="flex items-center justify-center">
+              <div className="flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span>{language === 'en' ? 'Secure Connection' : 'اتصال امن'}</span>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* Username Field */}
               <div className="space-y-2">
@@ -272,40 +303,74 @@ export const Login: React.FC = () => {
                 </Alert>
               )}
 
-              {/* Submit Button */}
+              {/* Enhanced Submit Button */}
               <Button
                 type="submit"
                 disabled={isLoggingIn || !isValid}
-                className="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-medium py-2 px-4 rounded-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-12 bg-gradient-to-r from-primary-500 via-primary-600 to-amber-600 hover:from-primary-600 hover:via-primary-700 hover:to-amber-700 text-white font-semibold text-lg rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:shadow-primary-500/25 transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isLoggingIn ? (
                   <div className="flex items-center justify-center space-x-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
                     <span>{language === 'en' ? 'Signing in...' : 'در حال ورود...'}</span>
                   </div>
                 ) : (
-                  t('auth.login')
+                  <div className="flex items-center justify-center gap-2">
+                    <span>{t('auth.login')}</span>
+                    <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  </div>
                 )}
               </Button>
             </form>
 
-            {/* Demo Credentials */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-md">
-              <p className="text-xs text-gray-600 text-center mb-2">
-                {language === 'en' ? 'Demo Credentials:' : 'اطلاعات نمونه:'}
-              </p>
-              <div className="text-xs text-gray-500 space-y-1">
-                <div className="flex justify-between">
-                  <span>{language === 'en' ? 'Owner:' : 'مالک:'}</span>
-                  <span>admin / admin123</span>
+            {/* Enhanced Demo Credentials */}
+            <div className="mt-8 p-6 bg-gradient-to-r from-slate-50 to-primary-50/30 rounded-2xl border border-primary-100">
+              <div className="text-center mb-4">
+                <h4 className="text-sm font-semibold text-primary-700 mb-1">
+                  {language === 'en' ? '🎯 Demo Access' : '🎯 دسترسی نمونه'}
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  {language === 'en' ? 'Use these credentials to explore the system' : 'از این اطلاعات برای کاوش سیستم استفاده کنید'}
+                </p>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-primary-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span className="text-blue-600 text-xs font-bold">👑</span>
+                    </div>
+                    <span className="text-sm font-medium text-blue-700">
+                      {language === 'en' ? 'Owner' : 'مالک'}
+                    </span>
+                  </div>
+                  <span className="text-sm font-mono bg-blue-50 px-2 py-1 rounded text-blue-800">admin / admin123</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>{language === 'en' ? 'Manager:' : 'مدیر:'}</span>
-                  <span>manager / manager123</span>
+                
+                <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-primary-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                      <span className="text-green-600 text-xs font-bold">⚡</span>
+                    </div>
+                    <span className="text-sm font-medium text-green-700">
+                      {language === 'en' ? 'Manager' : 'مدیر'}
+                    </span>
+                  </div>
+                  <span className="text-sm font-mono bg-green-50 px-2 py-1 rounded text-green-800">manager / manager123</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>{language === 'en' ? 'Cashier:' : 'صندوقدار:'}</span>
-                  <span>cashier / cashier123</span>
+                
+                <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-primary-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
+                      <span className="text-amber-600 text-xs font-bold">💰</span>
+                    </div>
+                    <span className="text-sm font-medium text-amber-700">
+                      {language === 'en' ? 'Cashier' : 'صندوقدار'}
+                    </span>
+                  </div>
+                  <span className="text-sm font-mono bg-amber-50 px-2 py-1 rounded text-amber-800">cashier / cashier123</span>
                 </div>
               </div>
             </div>

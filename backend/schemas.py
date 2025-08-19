@@ -895,6 +895,112 @@ class SMSHistoryResponse(BaseModel):
     per_page: int
     total_pages: int
 
+# Analytics Schemas
+class AnalyticsDataBase(BaseModel):
+    data_type: str
+    entity_type: Optional[str] = None
+    entity_id: Optional[UUID] = None
+    metric_name: str
+    metric_value: float
+    additional_data: Optional[Dict[str, Any]] = None
+    calculation_date: datetime
+
+class AnalyticsDataCreate(AnalyticsDataBase):
+    pass
+
+class AnalyticsData(AnalyticsDataBase):
+    id: UUID
+    calculated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+# KPI Target Schemas
+class KPITargetBase(BaseModel):
+    kpi_type: str
+    kpi_name: str
+    target_period: str
+    target_value: float
+    period_start: datetime
+    period_end: datetime
+    is_active: bool = True
+
+class KPITargetCreate(KPITargetBase):
+    pass
+
+class KPITargetUpdate(BaseModel):
+    target_value: Optional[float] = None
+    current_value: Optional[float] = None
+    achievement_rate: Optional[float] = None
+    trend_direction: Optional[str] = None
+    is_active: Optional[bool] = None
+
+class KPITarget(KPITargetBase):
+    id: UUID
+    current_value: float
+    achievement_rate: float
+    trend_direction: Optional[str] = None
+    created_by: UUID
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class KPITargetWithCreator(KPITarget):
+    creator: Optional[User] = None
+
+# Advanced Analytics Schemas
+class TimeBasedAnalytics(BaseModel):
+    daily_patterns: Dict[str, Any]
+    weekly_patterns: Dict[str, Any] 
+    monthly_trends: Dict[str, Any]
+    year_over_year: Dict[str, Any]
+
+class SalesAnalytics(BaseModel):
+    total_sales: float
+    sales_by_period: Dict[str, float]
+    top_selling_items: List[Dict[str, Any]]
+    sales_by_category: Dict[str, float]
+    growth_rate: float
+    trend_direction: str
+
+class InventoryAnalytics(BaseModel):
+    total_value: float
+    turnover_rate: float
+    fast_moving_items: List[Dict[str, Any]]
+    slow_moving_items: List[Dict[str, Any]]
+    dead_stock_count: int
+    stock_optimization_suggestions: List[Dict[str, Any]]
+
+class CustomerAnalytics(BaseModel):
+    total_customers: int
+    new_customers: int
+    retention_rate: float
+    average_order_value: float
+    customer_lifetime_value: float
+    top_customers: List[Dict[str, Any]]
+
+class DashboardAnalytics(BaseModel):
+    time_based: TimeBasedAnalytics
+    sales: SalesAnalytics
+    inventory: InventoryAnalytics
+    customers: CustomerAnalytics
+    last_updated: datetime
+
+# Analytics Request Schemas
+class AnalyticsRequest(BaseModel):
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    data_types: Optional[List[str]] = None
+    entity_types: Optional[List[str]] = None
+    entity_ids: Optional[List[UUID]] = None
+
+class AnalyticsResponse(BaseModel):
+    data: List[AnalyticsData]
+    summary: Dict[str, Any]
+    total_records: int
+
 # Update forward references
 CategoryWithChildren.model_rebuild()
 UserWithRole.model_rebuild()
@@ -906,3 +1012,4 @@ UserManagement.model_rebuild()
 RoleWithUsers.model_rebuild()
 SMSCampaignWithDetails.model_rebuild()
 SMSMessageWithDetails.model_rebuild()
+KPITargetWithCreator.model_rebuild()

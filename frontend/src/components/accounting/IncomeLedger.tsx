@@ -7,15 +7,19 @@ import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Badge } from '../ui/badge';
-import { CalendarIcon, FilterIcon, RefreshCwIcon } from 'lucide-react';
+import { FilterIcon, RefreshCwIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { LedgerFilters } from '../../types';
+import DatePicker from '../ui/date-picker';
+import { JalaliUtils } from '../../utils/jalali';
 
 export const IncomeLedger: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { useIncomeLedger } = useAccounting();
   const [filters, setFilters] = useState<LedgerFilters>({});
   const [showFilters, setShowFilters] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const { data: incomeEntries, isLoading, error, refetch } = useIncomeLedger(filters);
 
@@ -26,8 +30,22 @@ export const IncomeLedger: React.FC = () => {
     }));
   };
 
+  const handleStartDateChange = (date: Date | null) => {
+    setStartDate(date);
+    const dateString = date ? date.toISOString().split('T')[0] : '';
+    handleFilterChange('start_date', dateString);
+  };
+
+  const handleEndDateChange = (date: Date | null) => {
+    setEndDate(date);
+    const dateString = date ? date.toISOString().split('T')[0] : '';
+    handleFilterChange('end_date', dateString);
+  };
+
   const clearFilters = () => {
     setFilters({});
+    setStartDate(null);
+    setEndDate(null);
   };
 
   const getPaymentStatusBadge = (status: string) => {
@@ -153,19 +171,24 @@ export const IncomeLedger: React.FC = () => {
           <CardContent className="border-b">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label className="text-sm font-medium mb-2 block">Start Date</label>
-                <Input
-                  type="date"
-                  value={filters.start_date || ''}
-                  onChange={(e) => handleFilterChange('start_date', e.target.value)}
+                <label className="text-sm font-medium mb-2 block">
+                  {language === 'fa' ? 'تاریخ شروع' : 'Start Date'}
+                </label>
+                <DatePicker
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                  placeholder={language === 'fa' ? 'انتخاب تاریخ شروع' : 'Select start date'}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">End Date</label>
-                <Input
-                  type="date"
-                  value={filters.end_date || ''}
-                  onChange={(e) => handleFilterChange('end_date', e.target.value)}
+                <label className="text-sm font-medium mb-2 block">
+                  {language === 'fa' ? 'تاریخ پایان' : 'End Date'}
+                </label>
+                <DatePicker
+                  value={endDate}
+                  onChange={handleEndDateChange}
+                  placeholder={language === 'fa' ? 'انتخاب تاریخ پایان' : 'Select end date'}
+                  minDate={startDate || undefined}
                 />
               </div>
               <div>

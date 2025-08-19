@@ -279,3 +279,48 @@ class SMSMessage(Base):
         Index('idx_sms_messages_status', 'status'),
         Index('idx_sms_messages_phone', 'phone_number'),
     )
+
+# Analytics and KPI Models
+class AnalyticsData(Base):
+    __tablename__ = "analytics_data"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    data_type = Column(String(50), nullable=False)  # 'sales_trend', 'inventory_turnover', 'customer_behavior'
+    entity_type = Column(String(50))  # 'product', 'category', 'customer', 'global'
+    entity_id = Column(UUID(as_uuid=True))
+    metric_name = Column(String(100), nullable=False)
+    metric_value = Column(DECIMAL(15, 4), nullable=False)
+    additional_data = Column(JSONB)
+    calculation_date = Column(DateTime(timezone=True), nullable=False)
+    calculated_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_analytics_data_type_date', 'data_type', 'calculation_date'),
+        Index('idx_analytics_data_entity', 'entity_type', 'entity_id'),
+        Index('idx_analytics_data_metric', 'metric_name', 'calculation_date'),
+    )
+
+class KPITarget(Base):
+    __tablename__ = "kpi_targets"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    kpi_type = Column(String(50), nullable=False)  # 'financial', 'operational', 'customer'
+    kpi_name = Column(String(100), nullable=False)  # 'daily_sales', 'inventory_turnover', 'customer_acquisition'
+    target_period = Column(String(20), nullable=False)  # 'daily', 'weekly', 'monthly', 'yearly'
+    target_value = Column(DECIMAL(15, 2), nullable=False)
+    current_value = Column(DECIMAL(15, 2), default=0)
+    achievement_rate = Column(DECIMAL(5, 2), default=0)  # Percentage
+    trend_direction = Column(String(10))  # 'up', 'down', 'stable'
+    period_start = Column(DateTime(timezone=True), nullable=False)
+    period_end = Column(DateTime(timezone=True), nullable=False)
+    is_active = Column(Boolean, default=True)
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    creator = relationship("User")
+    
+    __table_args__ = (
+        Index('idx_kpi_targets_type_period', 'kpi_type', 'target_period'),
+        Index('idx_kpi_targets_active', 'is_active', 'period_start', 'period_end'),
+    )
