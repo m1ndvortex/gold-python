@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List, Dict, Any
-from datetime import datetime
+from datetime import datetime, date
 from uuid import UUID
 
 # Authentication Schemas
@@ -1209,6 +1209,234 @@ class ProfitabilityAnalysisResponse(BaseModel):
     margin_trends: List[MarginAnalysis]
     recommendations: List[Dict[str, Any]]
     cost_breakdown: Dict[str, float]
+
+# ========== Inventory Intelligence Schemas ==========
+
+# Inventory Turnover Analysis Schemas
+class InventoryTurnoverAnalysisBase(BaseModel):
+    item_id: str
+    analysis_period_start: datetime
+    analysis_period_end: datetime
+    units_sold: int = 0
+    average_stock: float = 0
+    turnover_ratio: float = 0
+    velocity_score: float = 0
+    movement_classification: str = "unknown"
+    days_to_stockout: Optional[int] = None
+    seasonal_factor: float = 1.0
+    trend_direction: str = "stable"
+    last_sale_date: Optional[datetime] = None
+
+class InventoryTurnoverAnalysisCreate(InventoryTurnoverAnalysisBase):
+    pass
+
+class InventoryTurnoverAnalysis(InventoryTurnoverAnalysisBase):
+    id: str
+    calculated_at: datetime
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# Stock Optimization Schemas
+class StockOptimizationRecommendationBase(BaseModel):
+    item_id: str
+    recommendation_type: str
+    current_stock: int
+    recommended_stock: Optional[int] = None
+    reorder_point: Optional[int] = None
+    reorder_quantity: Optional[int] = None
+    safety_stock: Optional[int] = None
+    max_stock_level: Optional[int] = None
+    economic_order_quantity: Optional[int] = None
+    lead_time_days: int = 7
+    holding_cost_per_unit: float = 0
+    ordering_cost: float = 0
+    stockout_cost: float = 0
+    confidence_score: float = 0
+    reasoning: Optional[str] = None
+    priority_level: str = "medium"
+    estimated_savings: float = 0
+    implementation_date: Optional[date] = None
+    status: str = "pending"
+    expires_at: Optional[datetime] = None
+
+class StockOptimizationRecommendationCreate(StockOptimizationRecommendationBase):
+    pass
+
+class StockOptimizationRecommendationUpdate(BaseModel):
+    status: Optional[str] = None
+    implementation_date: Optional[date] = None
+
+class StockOptimizationRecommendation(StockOptimizationRecommendationBase):
+    id: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# Demand Forecasting Schemas
+class DemandForecastingBase(BaseModel):
+    item_id: str
+    forecast_period_start: date
+    forecast_period_end: date
+    forecast_type: str
+    historical_data: Optional[Dict[str, Any]] = None
+    predicted_demand: float
+    confidence_interval_lower: Optional[float] = None
+    confidence_interval_upper: Optional[float] = None
+    forecast_accuracy: Optional[float] = None
+    seasonal_patterns: Optional[Dict[str, Any]] = None
+    trend_component: float = 0
+    forecast_method: Optional[str] = None
+    external_factors: Optional[Dict[str, Any]] = None
+
+class DemandForecastingCreate(DemandForecastingBase):
+    pass
+
+class DemandForecasting(DemandForecastingBase):
+    id: str
+    generated_at: datetime
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# Seasonal Analysis Schemas
+class SeasonalAnalysisBase(BaseModel):
+    item_id: Optional[str] = None
+    category_id: Optional[str] = None
+    analysis_type: str
+    season: str
+    year: int
+    baseline_sales: float = 0
+    seasonal_sales: float = 0
+    seasonal_factor: float = 1.0
+    peak_month: Optional[int] = None
+    low_month: Optional[int] = None
+    seasonal_variance: float = 0
+    correlation_strength: float = 0
+    recommendations: Optional[Dict[str, Any]] = None
+
+class SeasonalAnalysisCreate(SeasonalAnalysisBase):
+    pass
+
+class SeasonalAnalysis(SeasonalAnalysisBase):
+    id: str
+    analyzed_at: datetime
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# Inventory Performance Metrics Schemas
+class InventoryPerformanceMetricsBase(BaseModel):
+    metric_date: date
+    total_inventory_value: float = 0
+    total_items_count: int = 0
+    fast_moving_items_count: int = 0
+    slow_moving_items_count: int = 0
+    dead_stock_items_count: int = 0
+    average_turnover_ratio: float = 0
+    inventory_to_sales_ratio: float = 0
+    carrying_cost_percentage: float = 0
+    stockout_incidents: int = 0
+    overstock_incidents: int = 0
+    optimization_score: float = 0
+    total_holding_cost: float = 0
+    total_ordering_cost: float = 0
+    total_stockout_cost: float = 0
+    efficiency_rating: str = "average"
+
+class InventoryPerformanceMetricsCreate(InventoryPerformanceMetricsBase):
+    pass
+
+class InventoryPerformanceMetrics(InventoryPerformanceMetricsBase):
+    id: str
+    calculated_at: datetime
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# High-level Inventory Intelligence Dashboard Schemas
+class TurnoverAnalysisReport(BaseModel):
+    item_id: str
+    item_name: str
+    category_name: str
+    current_stock: int
+    turnover_ratio: float
+    velocity_score: float
+    movement_classification: str
+    trend_direction: str
+    days_to_stockout: Optional[int]
+    last_sale_date: Optional[datetime]
+
+class StockOptimizationReport(BaseModel):
+    item_id: str
+    item_name: str
+    recommendation_type: str
+    current_stock: int
+    recommended_stock: Optional[int]
+    estimated_savings: float
+    priority_level: str
+    reasoning: str
+
+class DemandForecastReport(BaseModel):
+    item_id: str
+    item_name: str
+    current_stock: int
+    predicted_demand_7_days: float
+    predicted_demand_30_days: float
+    recommended_action: str
+    confidence_score: float
+
+class SeasonalInsightsReport(BaseModel):
+    season: str
+    year: int
+    items_affected: int
+    total_impact: float
+    peak_month: str
+    seasonal_recommendations: List[str]
+
+class InventoryIntelligenceDashboard(BaseModel):
+    overview_metrics: InventoryPerformanceMetrics
+    turnover_analysis: List[TurnoverAnalysisReport]
+    stock_optimization: List[StockOptimizationReport] 
+    demand_forecasts: List[DemandForecastReport]
+    seasonal_insights: List[SeasonalInsightsReport]
+    fast_moving_items: List[TurnoverAnalysisReport]
+    slow_moving_items: List[TurnoverAnalysisReport]
+    dead_stock_items: List[TurnoverAnalysisReport]
+    optimization_opportunities: Dict[str, Any]
+    alerts_and_warnings: List[Dict[str, Any]]
+    last_updated: datetime
+
+# Request/Response Schemas for Inventory Intelligence
+class InventoryIntelligenceRequest(BaseModel):
+    date_range_start: Optional[date] = None
+    date_range_end: Optional[date] = None
+    item_ids: Optional[List[str]] = None
+    category_ids: Optional[List[str]] = None
+    include_forecasting: bool = True
+    include_seasonal_analysis: bool = True
+    include_optimization: bool = True
+
+class InventoryIntelligenceResponse(BaseModel):
+    dashboard_data: InventoryIntelligenceDashboard
+    request_metadata: Dict[str, Any]
+
+# Customer Intelligence Response Schemas (for existing system)
+class CustomerIntelligenceRequest(BaseModel):
+    date_range_start: Optional[date] = None
+    date_range_end: Optional[date] = None
+    customer_ids: Optional[List[str]] = None
+    include_behavior_analysis: bool = True
+    include_segmentation: bool = True
+
+class CustomerIntelligenceResponse(BaseModel):
+    dashboard_data: CustomerIntelligenceDashboard
+    request_metadata: Dict[str, Any]
 
 # Update forward references
 CategoryWithChildren.model_rebuild()

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Boolean, DateTime, Text, DECIMAL, ForeignKey, Index
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, Date, Text, DECIMAL, ForeignKey, Index
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.sql import func
@@ -444,4 +444,155 @@ class CustomerBehaviorAnalysis(Base):
         Index('idx_customer_behavior_period', 'analysis_period_start', 'analysis_period_end'),
         Index('idx_customer_behavior_ltv', 'customer_lifetime_value'),
         Index('idx_customer_behavior_churn', 'churn_probability'),
+    )
+
+# Inventory Intelligence Models
+class InventoryTurnoverAnalysis(Base):
+    __tablename__ = "inventory_turnover_analysis"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
+    analysis_period_start = Column(DateTime(timezone=True), nullable=False)
+    analysis_period_end = Column(DateTime(timezone=True), nullable=False)
+    units_sold = Column(Integer, default=0)
+    average_stock = Column(DECIMAL(10, 2), default=0)
+    turnover_ratio = Column(DECIMAL(8, 4), default=0)
+    velocity_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
+    movement_classification = Column(String(20), default='unknown')  # fast, normal, slow, dead
+    days_to_stockout = Column(Integer)
+    seasonal_factor = Column(DECIMAL(4, 2), default=1.0)
+    trend_direction = Column(String(15), default='stable')  # increasing, decreasing, stable
+    last_sale_date = Column(DateTime(timezone=True))
+    calculated_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    item = relationship("InventoryItem")
+
+    __table_args__ = (
+        Index('idx_inventory_turnover_item_period', 'item_id', 'analysis_period_start', 'analysis_period_end'),
+        Index('idx_inventory_turnover_classification', 'movement_classification'),
+        Index('idx_inventory_turnover_velocity', 'velocity_score'),
+    )
+
+class StockOptimizationRecommendation(Base):
+    __tablename__ = "stock_optimization_recommendations"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
+    recommendation_type = Column(String(30), nullable=False)  # reorder, reduce, increase, discontinue
+    current_stock = Column(Integer, nullable=False)
+    recommended_stock = Column(Integer)
+    reorder_point = Column(Integer)
+    reorder_quantity = Column(Integer)
+    safety_stock = Column(Integer)
+    max_stock_level = Column(Integer)
+    economic_order_quantity = Column(Integer)
+    lead_time_days = Column(Integer, default=7)
+    holding_cost_per_unit = Column(DECIMAL(10, 4), default=0)
+    ordering_cost = Column(DECIMAL(10, 2), default=0)
+    stockout_cost = Column(DECIMAL(10, 2), default=0)
+    confidence_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
+    reasoning = Column(Text)
+    priority_level = Column(String(10), default='medium')  # high, medium, low
+    estimated_savings = Column(DECIMAL(12, 2), default=0)
+    implementation_date = Column(Date)
+    status = Column(String(20), default='pending')  # pending, approved, implemented, rejected
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    expires_at = Column(DateTime(timezone=True))
+
+    # Relationships
+    item = relationship("InventoryItem")
+
+    __table_args__ = (
+        Index('idx_stock_optimization_item', 'item_id'),
+        Index('idx_stock_optimization_type', 'recommendation_type'),
+        Index('idx_stock_optimization_priority', 'priority_level'),
+        Index('idx_stock_optimization_status', 'status'),
+    )
+
+class DemandForecasting(Base):
+    __tablename__ = "demand_forecasting"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
+    forecast_period_start = Column(Date, nullable=False)
+    forecast_period_end = Column(Date, nullable=False)
+    forecast_type = Column(String(20), nullable=False)  # daily, weekly, monthly, seasonal
+    historical_data = Column(JSONB)  # Historical sales data used for forecast
+    predicted_demand = Column(DECIMAL(10, 2), nullable=False)
+    confidence_interval_lower = Column(DECIMAL(10, 2))
+    confidence_interval_upper = Column(DECIMAL(10, 2))
+    forecast_accuracy = Column(DECIMAL(5, 2))  # Accuracy of previous forecasts
+    seasonal_patterns = Column(JSONB)  # Seasonal adjustment factors
+    trend_component = Column(DECIMAL(8, 4), default=0)
+    forecast_method = Column(String(30))  # moving_average, exponential_smoothing, linear_regression
+    external_factors = Column(JSONB)  # Events, promotions that might affect demand
+    generated_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    item = relationship("InventoryItem")
+
+    __table_args__ = (
+        Index('idx_demand_forecasting_item_period', 'item_id', 'forecast_period_start', 'forecast_period_end'),
+        Index('idx_demand_forecasting_type', 'forecast_type'),
+    )
+
+class SeasonalAnalysis(Base):
+    __tablename__ = "seasonal_analysis"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"))
+    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.id", ondelete="SET NULL"))
+    analysis_type = Column(String(20), nullable=False)  # item, category, global
+    season = Column(String(20), nullable=False)  # spring, summer, fall, winter, holiday, ramadan
+    year = Column(Integer, nullable=False)
+    baseline_sales = Column(DECIMAL(12, 2), default=0)
+    seasonal_sales = Column(DECIMAL(12, 2), default=0)
+    seasonal_factor = Column(DECIMAL(4, 2), default=1.0)  # multiplier for seasonal adjustment
+    peak_month = Column(Integer)  # 1-12
+    low_month = Column(Integer)  # 1-12
+    seasonal_variance = Column(DECIMAL(8, 4), default=0)
+    correlation_strength = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
+    recommendations = Column(JSONB)  # Seasonal stocking recommendations
+    analyzed_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    item = relationship("InventoryItem")
+    category = relationship("Category")
+
+    __table_args__ = (
+        Index('idx_seasonal_analysis_item', 'item_id'),
+        Index('idx_seasonal_analysis_category', 'category_id'),
+        Index('idx_seasonal_analysis_season', 'season', 'year'),
+    )
+
+class InventoryPerformanceMetrics(Base):
+    __tablename__ = "inventory_performance_metrics"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    metric_date = Column(Date, nullable=False)
+    total_inventory_value = Column(DECIMAL(15, 2), default=0)
+    total_items_count = Column(Integer, default=0)
+    fast_moving_items_count = Column(Integer, default=0)
+    slow_moving_items_count = Column(Integer, default=0)
+    dead_stock_items_count = Column(Integer, default=0)
+    average_turnover_ratio = Column(DECIMAL(8, 4), default=0)
+    inventory_to_sales_ratio = Column(DECIMAL(6, 4), default=0)
+    carrying_cost_percentage = Column(DECIMAL(5, 2), default=0)
+    stockout_incidents = Column(Integer, default=0)
+    overstock_incidents = Column(Integer, default=0)
+    optimization_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
+    total_holding_cost = Column(DECIMAL(12, 2), default=0)
+    total_ordering_cost = Column(DECIMAL(12, 2), default=0)
+    total_stockout_cost = Column(DECIMAL(12, 2), default=0)
+    efficiency_rating = Column(String(15), default='average')  # excellent, good, average, poor
+    calculated_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_inventory_performance_date', 'metric_date'),
+        Index('idx_inventory_performance_score', 'optimization_score'),
     )

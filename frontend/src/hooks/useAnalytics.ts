@@ -144,7 +144,7 @@ export const useAnalyticsCache = () => {
   };
 
   const invalidateAnalyticsData = () => {
-    queryClient.invalidateQueries({ queryKey: analyticsKeys.analyticsData });
+    queryClient.invalidateQueries({ queryKey: ['analytics', 'analytics-data'] });
   };
 
   const clearCache = () => {
@@ -173,13 +173,13 @@ export const useAnalyticsCache = () => {
 export const useAnalyticsPerformance = () => {
   const queryClient = useQueryClient();
 
-  const getQueryState = (queryKey: any[]) => {
-    const query = queryClient.getQueryState(queryKey);
+  const getQueryState = (queryKey: readonly unknown[]) => {
+    const query = queryClient.getQueryState([...queryKey]);
     return {
       isLoading: query?.status === 'loading',
       isError: query?.status === 'error',
       isSuccess: query?.status === 'success',
-      isFetching: query?.isFetching,
+      isFetching: query?.fetchStatus === 'fetching',
       lastUpdated: query?.dataUpdatedAt,
       errorCount: query?.errorUpdateCount
     };

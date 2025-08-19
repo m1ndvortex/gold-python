@@ -28,7 +28,7 @@ export const getDashboardAnalytics = async (
 
 // KPI Targets API
 export const createKPITarget = async (kpiTarget: KPITargetCreate): Promise<KPITarget> => {
-  return apiPost<KPITarget, KPITargetCreate>(`${API_BASE}/kpi-targets`, kpiTarget);
+  return apiPost<KPITarget>(`${API_BASE}/kpi-targets`, kpiTarget);
 };
 
 export const getKPITargets = async (
@@ -51,7 +51,7 @@ export const updateKPITarget = async (
   kpiTargetId: string,
   updates: KPITargetUpdate
 ): Promise<KPITarget> => {
-  return apiPut<KPITarget, KPITargetUpdate>(`${API_BASE}/kpi-targets/${kpiTargetId}`, updates);
+  return apiPut<KPITarget>(`${API_BASE}/kpi-targets/${kpiTargetId}`, updates);
 };
 
 // Analytics Data API

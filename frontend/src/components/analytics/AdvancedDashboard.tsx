@@ -1,287 +1,226 @@
 import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  CalendarIcon, 
-  TrendingUpIcon, 
-  TrendingDownIcon, 
-  BarChart3Icon,
-  PieChartIcon,
-  LineChartIcon,
-  RefreshCwIcon,
-  DownloadIcon,
-  FilterIcon,
-  ZoomInIcon
-} from 'lucide-react';
-import { formatCurrency, formatDate } from '@/lib/utils';
+// import { Skeleton } from '@/components/ui/skeleton';
+import { Download, RefreshCw, TrendingUp } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useDashboardAnalytics, useAnalyticsCache } from '@/hooks/useAnalytics';
-import { getDateRange, formatDateForAPI } from '@/services/analyticsApi';
+import { useDashboardAnalytics } from '@/hooks/useAnalytics';
+import { formatCurrency, formatDate, formatNumber, formatPercentage } from '@/lib/utils';
+
+// Import chart components
 import { TimeBasedChart } from './charts/TimeBasedChart';
 import { SalesAnalyticsChart } from './charts/SalesAnalyticsChart';
 import { InventoryAnalyticsChart } from './charts/InventoryAnalyticsChart';
 import { CustomerAnalyticsChart } from './charts/CustomerAnalyticsChart';
 import { AnalyticsCard } from './AnalyticsCard';
-import { DateRangePicker } from './DateRangePicker';
-import { AnalyticsFilters } from './AnalyticsFilters';
 import { ExportDialog } from './ExportDialog';
-import type { DashboardAnalytics, DateRangePreset, AnalyticsFilters as FilterType } from '@/types/analytics';
 
 interface AdvancedDashboardProps {
   className?: string;
 }
 
-export const AdvancedDashboard: React.FC<AdvancedDashboardProps> = ({ className }) => {
+export const AdvancedDashboard: React.FC<AdvancedDashboardProps> = ({
+  className
+}) => {
   const { t } = useLanguage();
-  const { invalidateDashboard } = useAnalyticsCache();
-
-  // State management
-  const [selectedPeriod, setSelectedPeriod] = useState<string>('month');
-  const [customDateRange, setCustomDateRange] = useState<{ start: Date; end: Date } | null>(null);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [showFilters, setShowFilters] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState<string>('7d');
   const [showExportDialog, setShowExportDialog] = useState(false);
-  const [filters, setFilters] = useState<FilterType>({
-    dateRange: getDateRange('month'),
-    period: 'monthly'
-  });
 
-  // Get date range based on selected period
+  // Calculate date range based on selected period
   const dateRange = useMemo(() => {
-    if (customDateRange) {
-      return customDateRange;
+    const end = new Date();
+    const start = new Date();
+
+    switch (selectedPeriod) {
+      case '1d':
+        start.setDate(start.getDate() - 1);
+        break;
+      case '7d':
+        start.setDate(start.getDate() - 7);
+        break;
+      case '30d':
+        start.setDate(start.getDate() - 30);
+        break;
+      case '90d':
+        start.setDate(start.getDate() - 90);
+        break;
+      case '1y':
+        start.setFullYear(start.getFullYear() - 1);
+        break;
+      default:
+        start.setDate(start.getDate() - 7);
     }
-    return getDateRange(selectedPeriod as any);
-  }, [selectedPeriod, customDateRange]);
+
+    return {
+      start: start.toISOString().split('T')[0],
+      end: end.toISOString().split('T')[0]
+    };
+  }, [selectedPeriod]);
 
   // Fetch analytics data
-  const {
-    data: analytics,
-    isLoading,
-    isError,
+  const { 
+    data: analytics, 
+    isLoading, 
     error,
-    refetch,
-    dataUpdatedAt
-  } = useDashboardAnalytics(
-    formatDateForAPI(dateRange.start),
-    formatDateForAPI(dateRange.end)
-  );
+    dataUpdatedAt 
+  } = useDashboardAnalytics(dateRange.start, dateRange.end);
 
-  // Date range presets
-  const datePresets: DateRangePreset[] = [
-    {
-      label: t('analytics.today'),
-      value: 'today',
-      ...getDateRange('today')
-    },
-    {
-      label: t('analytics.this_week'),
-      value: 'week',
-      ...getDateRange('week')
-    },
-    {
-      label: t('analytics.this_month'),
-      value: 'month',
-      ...getDateRange('month')
-    },
-    {
-      label: t('analytics.this_quarter'),
-      value: 'quarter',
-      ...getDateRange('quarter')
-    },
-    {
-      label: t('analytics.this_year'),
-      value: 'year',
-      ...getDateRange('year')
-    }
+  // Define preset time periods
+  const timePresets = [
+    { label: 'Last 24 Hours', value: '1d' },
+    { label: 'Last 7 Days', value: '7d' },
+    { label: 'Last 30 Days', value: '30d' },
+    { label: 'Last 90 Days', value: '90d' },
+    { label: 'Last Year', value: '1y' }
   ];
 
-  // Handle refresh
-  const handleRefresh = async () => {
-    await refetch();
-    invalidateDashboard();
+  // Handle export
+  const handleExport = (options: any) => {
+    console.log('Exporting with options:', options);
   };
 
-  // Handle period change
-  const handlePeriodChange = (period: string) => {
-    setSelectedPeriod(period);
-    setCustomDateRange(null);
-  };
-
-  // Handle custom date range
-  const handleCustomDateRange = (start: Date, end: Date) => {
-    setCustomDateRange({ start, end });
-    setSelectedPeriod('custom');
-  };
-
-  // Generate analytics cards
+  // Generate analytics cards data
   const analyticsCards = useMemo(() => {
     if (!analytics) return [];
 
     return [
       {
-        title: t('analytics.total_sales'),
-        value: formatCurrency(analytics.sales.total_sales),
-        change: {
-          value: analytics.sales.growth_rate,
-          type: analytics.sales.growth_rate > 0 ? 'increase' as const : 'decrease' as const,
-          period: t('analytics.vs_previous_period')
+        title: 'Total Revenue',
+        value: analytics.sales.total_sales,
+        trend: {
+          value: analytics.sales.growth_rate * 100,
+          direction: (analytics.sales.growth_rate > 0 ? 'up' : analytics.sales.growth_rate < 0 ? 'down' : 'stable') as 'up' | 'down' | 'stable',
+          period: 'vs last period'
         },
-        icon: 'trending-up',
-        color: 'gold' as const,
-        description: t('analytics.sales_description')
+        format: 'currency' as const
       },
       {
-        title: t('analytics.inventory_value'),
-        value: formatCurrency(analytics.inventory.total_value),
-        change: {
-          value: analytics.inventory.turnover_rate * 100,
-          type: 'stable' as const,
-          period: t('analytics.turnover_rate')
-        },
-        icon: 'package',
-        color: 'blue' as const,
-        description: t('analytics.inventory_description')
+        title: 'Total Customers',
+        value: analytics.customers.total_customers,
+        subtitle: `${analytics.customers.new_customers} new`,
+        format: 'number' as const
       },
       {
-        title: t('analytics.total_customers'),
-        value: analytics.customers.total_customers.toString(),
-        change: {
-          value: analytics.customers.new_customers,
-          type: 'increase' as const,
-          period: t('analytics.new_this_period')
-        },
-        icon: 'users',
-        color: 'green' as const,
-        description: t('analytics.customers_description')
+        title: 'Inventory Value',
+        value: analytics.inventory.total_value,
+        subtitle: `${analytics.inventory.turnover_rate} turnover rate`,
+        format: 'currency' as const
       },
       {
-        title: t('analytics.retention_rate'),
-        value: `${analytics.customers.retention_rate.toFixed(1)}%`,
-        change: {
-          value: analytics.customers.retention_rate,
-          type: analytics.customers.retention_rate > 50 ? 'increase' as const : 'decrease' as const,
-          period: t('analytics.customer_loyalty')
-        },
-        icon: 'heart',
-        color: 'purple' as const,
-        description: t('analytics.retention_description')
+        title: 'Average Order Value',
+        value: analytics.customers.average_order_value,
+        format: 'currency' as const
       }
     ];
-  }, [analytics, t]);
+  }, [analytics]);
 
-  if (isError) {
+  if (error) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            {t('analytics.error_loading')}
-          </h3>
-          <p className="text-gray-600 mb-4">
-            {error?.message || t('analytics.generic_error')}
-          </p>
-          <Button onClick={handleRefresh} variant="outline">
-            <RefreshCwIcon className="w-4 h-4 mr-2" />
-            {t('common.try_again')}
-          </Button>
-        </div>
-      </div>
+      <Card className={className}>
+        <CardContent className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <p className="text-destructive mb-2">Error loading analytics</p>
+            <p className="text-sm text-muted-foreground">{error.message}</p>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
-  return (
-    <div className={`space-y-6 ${className}`}>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {t('analytics.dashboard_title')}
-          </h1>
-          <p className="text-muted-foreground">
-            {t('analytics.dashboard_description')}
-          </p>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <FilterIcon className="w-4 h-4 mr-2" />
-            {t('analytics.filters')}
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowExportDialog(true)}
-          >
-            <DownloadIcon className="w-4 h-4 mr-2" />
-            {t('analytics.export')}
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={isLoading}
-          >
-            <RefreshCwIcon className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            {t('common.refresh')}
-          </Button>
-        </div>
-      </div>
+  // Transform data for charts
+  const timeBasedData = analytics ? {
+    daily_patterns: analytics.time_based.daily_patterns?.hourly_sales || {},
+    monthly_trends: analytics.time_based.monthly_trends?.monthly_sales || {}
+  } : {};
 
-      {/* Date Range Picker */}
+  const salesData = analytics ? {
+    ...analytics.sales,
+    top_selling_items: analytics.sales.top_selling_items?.map(item => ({
+      name: item.name,
+      sales: item.revenue
+    }))
+  } : undefined;
+
+  const inventoryData = analytics ? {
+    ...analytics.inventory,
+    fast_moving_items: analytics.inventory.fast_moving_items?.map(item => ({
+      name: item.name,
+      sales_velocity: item.total_sold
+    })),
+    slow_moving_items: analytics.inventory.slow_moving_items?.map(item => ({
+      name: item.name,
+      sales_velocity: item.total_sold
+    })),
+    stock_optimization_suggestions: analytics.inventory.stock_optimization_suggestions?.map(suggestion => ({
+      item: suggestion.item_name,
+      suggestion: suggestion.recommended_action
+    }))
+  } : undefined;
+
+  const customerData = analytics ? {
+    ...analytics.customers,
+    top_customers: analytics.customers.top_customers?.map(customer => ({
+      name: customer.name,
+      total_purchases: customer.total_revenue
+    }))
+  } : undefined;
+
+  return (
+    <div className={cn("space-y-6", className)}>
+      {/* Header Controls */}
       <Card>
-        <CardContent className="py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <CalendarIcon className="w-5 h-5 text-muted-foreground" />
-              <div className="flex items-center space-x-2">
-                {datePresets.map((preset) => (
+        <CardContent className="pt-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-bold">Advanced Analytics Dashboard</h2>
+              <p className="text-muted-foreground">Comprehensive business intelligence and insights</p>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowExportDialog(true)}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.location.reload()}
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+            </div>
+          </div>
+          
+          <div className="mt-6">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-sm font-medium">Time Period:</span>
+              <div className="flex gap-1">
+                {timePresets.map((preset) => (
                   <Button
                     key={preset.value}
                     variant={selectedPeriod === preset.value ? "default" : "outline"}
                     size="sm"
-                    onClick={() => handlePeriodChange(preset.value)}
+                    onClick={() => setSelectedPeriod(preset.value)}
                   >
                     {preset.label}
                   </Button>
                 ))}
-                <DateRangePicker
-                  value={customDateRange}
-                  onChange={handleCustomDateRange}
-                  trigger={
-                    <Button
-                      variant={selectedPeriod === 'custom' ? "default" : "outline"}
-                      size="sm"
-                    >
-                      {t('analytics.custom_range')}
-                    </Button>
-                  }
-                />
               </div>
             </div>
             
             <div className="text-sm text-muted-foreground">
-              {t('analytics.last_updated')}: {formatDate(new Date(dataUpdatedAt || Date.now()))}
+              Last updated: {formatDate(new Date(dataUpdatedAt || Date.now()))}
             </div>
           </div>
         </CardContent>
       </Card>
-
-      {/* Filters Panel */}
-      {showFilters && (
-        <AnalyticsFilters
-          filters={filters}
-          onChange={setFilters}
-          onClose={() => setShowFilters(false)}
-        />
-      )}
 
       {/* Analytics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -289,133 +228,90 @@ export const AdvancedDashboard: React.FC<AdvancedDashboardProps> = ({ className 
           <AnalyticsCard
             key={index}
             {...card}
-            isLoading={isLoading}
           />
         ))}
       </div>
 
-      {/* Analytics Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview" className="flex items-center space-x-2">
-            <BarChart3Icon className="w-4 h-4" />
-            <span>{t('analytics.overview')}</span>
-          </TabsTrigger>
-          <TabsTrigger value="sales" className="flex items-center space-x-2">
-            <TrendingUpIcon className="w-4 h-4" />
-            <span>{t('analytics.sales')}</span>
-          </TabsTrigger>
-          <TabsTrigger value="inventory" className="flex items-center space-x-2">
-            <PieChartIcon className="w-4 h-4" />
-            <span>{t('analytics.inventory')}</span>
-          </TabsTrigger>
-          <TabsTrigger value="customers" className="flex items-center space-x-2">
-            <LineChartIcon className="w-4 h-4" />
-            <span>{t('analytics.customers')}</span>
-          </TabsTrigger>
-        </TabsList>
+      {/* Charts Section */}
+      {analytics && !isLoading && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TimeBasedChart
+            data={timeBasedData}
+            title="Time-Based Analytics"
+          />
 
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {analytics && (
-              <>
-                <TimeBasedChart
-                  data={analytics.time_based}
-                  title={t('analytics.time_trends')}
-                  isLoading={isLoading}
-                />
-                <SalesAnalyticsChart
-                  data={analytics.sales}
-                  title={t('analytics.sales_overview')}
-                  isLoading={isLoading}
-                />
-              </>
-            )}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="sales" className="space-y-6">
-          {analytics && (
+          {salesData && (
             <SalesAnalyticsChart
-              data={analytics.sales}
-              title={t('analytics.detailed_sales')}
-              isLoading={isLoading}
-              detailed={true}
+              data={salesData}
+              title="Sales Analytics"
             />
           )}
-        </TabsContent>
 
-        <TabsContent value="inventory" className="space-y-6">
-          {analytics && (
+          {inventoryData && (
             <InventoryAnalyticsChart
-              data={analytics.inventory}
-              title={t('analytics.inventory_analysis')}
-              isLoading={isLoading}
+              data={inventoryData}
+              title="Inventory Analytics"
             />
           )}
-        </TabsContent>
 
-        <TabsContent value="customers" className="space-y-6">
-          {analytics && (
+          {customerData && (
             <CustomerAnalyticsChart
-              data={analytics.customers}
-              title={t('analytics.customer_insights')}
-              isLoading={isLoading}
+              data={customerData}
+              title="Customer Analytics"
             />
           )}
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
 
-      {/* Year-over-Year Comparison Card */}
-      {analytics && (
+      {/* Loading State */}
+      {isLoading && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i}>
+              <CardHeader>
+                <div className="h-6 w-48 bg-muted animate-pulse rounded" />
+              </CardHeader>
+              <CardContent>
+                <div className="h-64 w-full bg-muted animate-pulse rounded" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Quick Insights */}
+      {analytics && !isLoading && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <TrendingUpIcon className="w-5 h-5" />
-              <span>{t('analytics.yoy_comparison')}</span>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Quick Insights
             </CardTitle>
-            <CardDescription>
-              {analytics.time_based.year_over_year.comparison_period}
-            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
-                  {formatCurrency(analytics.time_based.year_over_year.current_period_sales)}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {t('analytics.current_period')}
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-400">
+                <h4 className="font-medium text-green-800">Top Performing</h4>
+                <p className="text-sm text-green-600 mt-1">
+                  {analytics.sales.top_selling_items?.[0]?.name || 'N/A'} - 
+                  {formatCurrency(analytics.sales.top_selling_items?.[0]?.revenue || 0)}
+                </p>
               </div>
               
-              <div className="text-center">
-                <div className="text-2xl font-bold text-gray-600">
-                  {formatCurrency(analytics.time_based.year_over_year.last_year_sales)}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {t('analytics.same_period_last_year')}
-                </div>
+              <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                <h4 className="font-medium text-blue-800">Customer Retention</h4>
+                <p className="text-sm text-blue-600 mt-1">
+                  {formatPercentage(analytics.customers.retention_rate * 100)} - 
+                  {analytics.customers.retention_rate > 0.7 ? 'Excellent' : 'Needs Improvement'}
+                </p>
               </div>
               
-              <div className="text-center">
-                <div className={`text-2xl font-bold flex items-center justify-center space-x-1 ${
-                  analytics.time_based.year_over_year.growth_percentage > 0 
-                    ? 'text-green-600' 
-                    : 'text-red-600'
-                }`}>
-                  {analytics.time_based.year_over_year.growth_percentage > 0 ? (
-                    <TrendingUpIcon className="w-5 h-5" />
-                  ) : (
-                    <TrendingDownIcon className="w-5 h-5" />
-                  )}
-                  <span>
-                    {Math.abs(analytics.time_based.year_over_year.growth_percentage).toFixed(1)}%
-                  </span>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {t('analytics.growth_rate')}
-                </div>
+              <div className="p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+                <h4 className="font-medium text-yellow-800">Inventory Turnover</h4>
+                <p className="text-sm text-yellow-600 mt-1">
+                  {formatNumber(analytics.inventory.turnover_rate, { minimumFractionDigits: 1 })} - 
+                  {analytics.inventory.turnover_rate > 4 ? 'Good' : 'Low'}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -423,14 +319,12 @@ export const AdvancedDashboard: React.FC<AdvancedDashboardProps> = ({ className 
       )}
 
       {/* Export Dialog */}
-      {showExportDialog && analytics && (
-        <ExportDialog
-          isOpen={showExportDialog}
-          onClose={() => setShowExportDialog(false)}
-          analytics={analytics}
-          filters={filters}
-        />
-      )}
+      <ExportDialog
+        isOpen={showExportDialog}
+        onClose={() => setShowExportDialog(false)}
+        onExport={handleExport}
+        title="Export Analytics"
+      />
     </div>
   );
 };
