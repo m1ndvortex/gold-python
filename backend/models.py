@@ -324,3 +324,124 @@ class KPITarget(Base):
         Index('idx_kpi_targets_type_period', 'kpi_type', 'target_period'),
         Index('idx_kpi_targets_active', 'is_active', 'period_start', 'period_end'),
     )
+
+# Profitability Analysis Models
+class ProfitabilityAnalysis(Base):
+    __tablename__ = "profitability_analysis"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    entity_type = Column(String(50), nullable=False)  # 'item', 'category', 'customer', 'global'
+    entity_id = Column(UUID(as_uuid=True))
+    analysis_period_start = Column(DateTime(timezone=True), nullable=False)
+    analysis_period_end = Column(DateTime(timezone=True), nullable=False)
+    total_revenue = Column(DECIMAL(15, 2), nullable=False, default=0)
+    total_cost = Column(DECIMAL(15, 2), nullable=False, default=0)
+    gross_profit = Column(DECIMAL(15, 2), nullable=False, default=0)
+    profit_margin = Column(DECIMAL(5, 2), nullable=False, default=0)
+    markup_percentage = Column(DECIMAL(5, 2), nullable=False, default=0)
+    units_sold = Column(Integer, default=0)
+    average_selling_price = Column(DECIMAL(12, 2), default=0)
+    average_cost_price = Column(DECIMAL(12, 2), default=0)
+    profit_per_unit = Column(DECIMAL(12, 2), default=0)
+    additional_metrics = Column(JSONB)
+    calculated_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_profitability_analysis_entity', 'entity_type', 'entity_id'),
+        Index('idx_profitability_analysis_period', 'analysis_period_start', 'analysis_period_end'),
+        Index('idx_profitability_analysis_margin', 'profit_margin'),
+    )
+
+class MarginAnalysis(Base):
+    __tablename__ = "margin_analysis"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    entity_type = Column(String(50), nullable=False)  # 'item', 'category', 'global'
+    entity_id = Column(UUID(as_uuid=True))
+    analysis_date = Column(DateTime(timezone=True).with_variant(DateTime(), "postgresql"), nullable=False)
+    target_margin = Column(DECIMAL(5, 2), default=0)
+    actual_margin = Column(DECIMAL(5, 2), default=0)
+    margin_variance = Column(DECIMAL(5, 2), default=0)
+    revenue_impact = Column(DECIMAL(12, 2), default=0)
+    cost_factors = Column(JSONB)  # Breakdown of cost components
+    margin_trend = Column(String(20), default='stable')  # 'increasing', 'decreasing', 'stable'
+    recommendations = Column(JSONB)  # Margin improvement recommendations
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_margin_analysis_entity_date', 'entity_type', 'entity_id', 'analysis_date'),
+        Index('idx_margin_analysis_variance', 'margin_variance'),
+    )
+
+# Customer Intelligence Models
+class CustomerSegment(Base):
+    __tablename__ = "customer_segments"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    segment_name = Column(String(100), nullable=False, unique=True)
+    segment_description = Column(Text)
+    segment_criteria = Column(JSONB, nullable=False)
+    segment_color = Column(String(7), default='#3B82F6')
+    is_active = Column(Boolean, default=True)
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    creator = relationship("User")
+    segment_assignments = relationship("CustomerSegmentAssignment", back_populates="segment")
+    
+    __table_args__ = (
+        Index('idx_customer_segments_active', 'is_active'),
+    )
+
+class CustomerSegmentAssignment(Base):
+    __tablename__ = "customer_segment_assignments"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    customer_id = Column(UUID(as_uuid=True), ForeignKey("customers.id", ondelete="CASCADE"), nullable=False)
+    segment_id = Column(UUID(as_uuid=True), ForeignKey("customer_segments.id", ondelete="CASCADE"), nullable=False)
+    assigned_at = Column(DateTime(timezone=True), server_default=func.now())
+    assignment_score = Column(DECIMAL(5, 2))  # How well customer fits segment (0-100)
+    is_primary = Column(Boolean, default=False)  # Is this the customer's primary segment
+    
+    customer = relationship("Customer")
+    segment = relationship("CustomerSegment", back_populates="segment_assignments")
+    
+    __table_args__ = (
+        Index('idx_customer_segment_assignments_customer', 'customer_id'),
+        Index('idx_customer_segment_assignments_segment', 'segment_id'),
+        # Unique constraint on customer_id and segment_id combination
+    )
+
+class CustomerBehaviorAnalysis(Base):
+    __tablename__ = "customer_behavior_analysis"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    customer_id = Column(UUID(as_uuid=True), ForeignKey("customers.id", ondelete="CASCADE"), nullable=False)
+    analysis_period_start = Column(DateTime(timezone=True), nullable=False)
+    analysis_period_end = Column(DateTime(timezone=True), nullable=False)
+    purchase_frequency = Column(DECIMAL(5, 2), default=0)  # Purchases per month
+    average_order_value = Column(DECIMAL(12, 2), default=0)
+    total_spent = Column(DECIMAL(15, 2), default=0)
+    customer_lifetime_value = Column(DECIMAL(15, 2), default=0)
+    last_purchase_date = Column(DateTime(timezone=True))
+    days_since_last_purchase = Column(Integer)
+    preferred_categories = Column(JSONB)  # Top 3 categories by spending
+    preferred_payment_method = Column(String(50))
+    risk_score = Column(DECIMAL(3, 2), default=0)  # Credit risk (0-1)
+    loyalty_score = Column(DECIMAL(3, 2), default=0)  # Loyalty score (0-1)
+    engagement_score = Column(DECIMAL(3, 2), default=0)  # Engagement score (0-1)
+    churn_probability = Column(DECIMAL(3, 2), default=0)  # Probability of churn (0-1)
+    predicted_next_purchase = Column(DateTime(timezone=True).with_variant(DateTime(), "postgresql"))
+    seasonal_patterns = Column(JSONB)
+    calculated_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    customer = relationship("Customer")
+    
+    __table_args__ = (
+        Index('idx_customer_behavior_customer', 'customer_id'),
+        Index('idx_customer_behavior_period', 'analysis_period_start', 'analysis_period_end'),
+        Index('idx_customer_behavior_ltv', 'customer_lifetime_value'),
+        Index('idx_customer_behavior_churn', 'churn_probability'),
+    )

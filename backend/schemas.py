@@ -1001,6 +1001,215 @@ class AnalyticsResponse(BaseModel):
     summary: Dict[str, Any]
     total_records: int
 
+# Profitability Analysis Schemas
+class ProfitabilityAnalysisBase(BaseModel):
+    entity_type: str
+    entity_id: Optional[UUID] = None
+    analysis_period_start: datetime
+    analysis_period_end: datetime
+    total_revenue: float
+    total_cost: float
+    gross_profit: float
+    profit_margin: float
+    markup_percentage: float
+    units_sold: int = 0
+    average_selling_price: float = 0
+    average_cost_price: float = 0
+    profit_per_unit: float = 0
+    additional_metrics: Optional[Dict[str, Any]] = None
+
+class ProfitabilityAnalysisCreate(ProfitabilityAnalysisBase):
+    pass
+
+class ProfitabilityAnalysis(ProfitabilityAnalysisBase):
+    id: UUID
+    calculated_at: datetime
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class MarginAnalysisBase(BaseModel):
+    entity_type: str
+    entity_id: Optional[UUID] = None
+    analysis_date: datetime
+    target_margin: float = 0
+    actual_margin: float = 0
+    margin_variance: float = 0
+    revenue_impact: float = 0
+    cost_factors: Optional[Dict[str, Any]] = None
+    margin_trend: str = 'stable'
+    recommendations: Optional[Dict[str, Any]] = None
+
+class MarginAnalysisCreate(MarginAnalysisBase):
+    pass
+
+class MarginAnalysis(MarginAnalysisBase):
+    id: UUID
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+# Customer Intelligence Schemas
+class CustomerSegmentBase(BaseModel):
+    segment_name: str
+    segment_description: Optional[str] = None
+    segment_criteria: Dict[str, Any]
+    segment_color: str = '#3B82F6'
+    is_active: bool = True
+
+class CustomerSegmentCreate(CustomerSegmentBase):
+    pass
+
+class CustomerSegmentUpdate(BaseModel):
+    segment_name: Optional[str] = None
+    segment_description: Optional[str] = None
+    segment_criteria: Optional[Dict[str, Any]] = None
+    segment_color: Optional[str] = None
+    is_active: Optional[bool] = None
+
+class CustomerSegment(CustomerSegmentBase):
+    id: UUID
+    created_by: Optional[UUID] = None
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class CustomerSegmentWithCreator(CustomerSegment):
+    creator: Optional[User] = None
+
+class CustomerSegmentAssignmentBase(BaseModel):
+    customer_id: UUID
+    segment_id: UUID
+    assignment_score: Optional[float] = None
+    is_primary: bool = False
+
+class CustomerSegmentAssignmentCreate(CustomerSegmentAssignmentBase):
+    pass
+
+class CustomerSegmentAssignment(CustomerSegmentAssignmentBase):
+    id: UUID
+    assigned_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class CustomerSegmentAssignmentWithDetails(CustomerSegmentAssignment):
+    customer: Optional[Customer] = None
+    segment: Optional[CustomerSegment] = None
+
+class CustomerBehaviorAnalysisBase(BaseModel):
+    customer_id: UUID
+    analysis_period_start: datetime
+    analysis_period_end: datetime
+    purchase_frequency: float = 0
+    average_order_value: float = 0
+    total_spent: float = 0
+    customer_lifetime_value: float = 0
+    last_purchase_date: Optional[datetime] = None
+    days_since_last_purchase: Optional[int] = None
+    preferred_categories: Optional[Dict[str, Any]] = None
+    preferred_payment_method: Optional[str] = None
+    risk_score: float = 0
+    loyalty_score: float = 0
+    engagement_score: float = 0
+    churn_probability: float = 0
+    predicted_next_purchase: Optional[datetime] = None
+    seasonal_patterns: Optional[Dict[str, Any]] = None
+
+class CustomerBehaviorAnalysisCreate(CustomerBehaviorAnalysisBase):
+    pass
+
+class CustomerBehaviorAnalysis(CustomerBehaviorAnalysisBase):
+    id: UUID
+    calculated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class CustomerBehaviorAnalysisWithCustomer(CustomerBehaviorAnalysis):
+    customer: Optional[Customer] = None
+
+# Advanced Analytics Schemas
+class ItemProfitabilityReport(BaseModel):
+    item_id: UUID
+    item_name: str
+    category_name: str
+    total_revenue: float
+    total_cost: float
+    gross_profit: float
+    profit_margin: float
+    units_sold: int
+    profit_per_unit: float
+    markup_percentage: float
+    profitability_rank: int
+    profitability_trend: str
+
+class CategoryProfitabilityReport(BaseModel):
+    category_id: UUID
+    category_name: str
+    total_revenue: float
+    total_cost: float
+    gross_profit: float
+    profit_margin: float
+    units_sold: int
+    average_profit_per_unit: float
+    item_count: int
+    top_performing_items: List[ItemProfitabilityReport]
+
+class ProfitabilityDashboard(BaseModel):
+    overall_metrics: Dict[str, float]
+    top_performing_items: List[ItemProfitabilityReport]
+    category_breakdown: List[CategoryProfitabilityReport]
+    margin_trends: List[MarginAnalysis]
+    profitability_alerts: List[Dict[str, Any]]
+    cost_breakdown: Dict[str, float]
+    revenue_breakdown: Dict[str, float]
+    last_updated: datetime
+
+class CustomerIntelligenceDashboard(BaseModel):
+    total_customers: int
+    active_segments: List[CustomerSegment]
+    high_value_customers: List[Dict[str, Any]]
+    at_risk_customers: List[Dict[str, Any]]
+    customer_distribution: Dict[str, int]
+    lifetime_value_analytics: Dict[str, float]
+    churn_analysis: Dict[str, Any]
+    loyalty_metrics: Dict[str, float]
+    segment_performance: List[Dict[str, Any]]
+    last_updated: datetime
+
+class CustomerSegmentationRequest(BaseModel):
+    criteria: Dict[str, Any]
+    segment_name: str
+    auto_assign: bool = True
+    include_historical: bool = True
+
+class CustomerSegmentationResponse(BaseModel):
+    segment: CustomerSegment
+    assigned_customers: List[UUID]
+    segment_statistics: Dict[str, Any]
+    assignment_summary: Dict[str, int]
+
+class ProfitabilityAnalysisRequest(BaseModel):
+    entity_type: str
+    entity_ids: Optional[List[UUID]] = None
+    start_date: datetime
+    end_date: datetime
+    include_cost_breakdown: bool = True
+    include_margin_trends: bool = True
+    include_recommendations: bool = True
+
+class ProfitabilityAnalysisResponse(BaseModel):
+    analysis_results: List[ProfitabilityAnalysis]
+    summary_metrics: Dict[str, float]
+    margin_trends: List[MarginAnalysis]
+    recommendations: List[Dict[str, Any]]
+    cost_breakdown: Dict[str, float]
+
 # Update forward references
 CategoryWithChildren.model_rebuild()
 UserWithRole.model_rebuild()
