@@ -54,7 +54,8 @@ export interface InventoryItem {
   stock_quantity: number;
   min_stock_level: number;
   description?: string;
-  image_url?: string;
+  // Backend can return null for image_url, so allow null explicitly
+  image_url?: string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;

@@ -19,14 +19,16 @@ export const useDashboard = () => {
   } = useQuery<DashboardSummary>({
     queryKey: ['dashboard', 'summary'],
     queryFn: async () => {
-      // Since we don't have a dedicated summary endpoint, we'll aggregate data
+      // Get real sales data and other metrics
       const [
+        dailySalesSummary,
         inventoryValuation,
         debtSummary,
         goldPrice,
         lowStock,
         unpaidInvoices
       ] = await Promise.all([
+        dashboardApi.getDailySalesSummary(),
         dashboardApi.getInventoryValuation(),
         dashboardApi.getCustomerDebtSummary(),
         dashboardApi.getCurrentGoldPrice(),
@@ -34,16 +36,10 @@ export const useDashboard = () => {
         dashboardApi.getUnpaidInvoices(5)
       ]);
 
-      // Calculate today's sales (mock for now)
-      const today = new Date();
-      const todaySales = Math.random() * 5000 + 1000; // Mock data
-      const weekSales = todaySales * 7;
-      const monthSales = todaySales * 30;
-
       return {
-        total_sales_today: todaySales,
-        total_sales_week: weekSales,
-        total_sales_month: monthSales,
+        total_sales_today: dailySalesSummary.today.total_sales,
+        total_sales_week: dailySalesSummary.week.total_sales,
+        total_sales_month: dailySalesSummary.month.total_sales,
         total_inventory_value: (inventoryValuation as any)?.summary?.total_sell_value || 0,
         total_customer_debt: (debtSummary as any)?.summary?.total_outstanding_debt || 0,
         current_gold_price: goldPrice.price_per_gram,

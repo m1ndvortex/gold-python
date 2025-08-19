@@ -195,12 +195,12 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
             </div>
 
             {/* Status Filter */}
-            <Select value={statusFilter} onValueChange={handleStatusFilter}>
+            <Select value={statusFilter || "all"} onValueChange={(value) => handleStatusFilter(value === "all" ? "" : value)}>
               <SelectTrigger>
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Statuses</SelectItem>
+                <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="partially_paid">Partially Paid</SelectItem>
                 <SelectItem value="paid">Paid</SelectItem>
@@ -209,12 +209,12 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
             </Select>
 
             {/* Customer Filter */}
-            <Select value={customerFilter} onValueChange={handleCustomerFilter}>
+            <Select value={customerFilter || "all"} onValueChange={(value) => handleCustomerFilter(value === "all" ? "" : value)}>
               <SelectTrigger>
                 <SelectValue placeholder="All Customers" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Customers</SelectItem>
+                <SelectItem value="all">All Customers</SelectItem>
                 {customers.map((customer) => (
                   <SelectItem key={customer.id} value={customer.id}>
                     {customer.name}

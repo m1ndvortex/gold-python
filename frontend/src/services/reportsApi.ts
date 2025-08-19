@@ -2,9 +2,20 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
+// Utility function to clean up parameters (remove empty strings and undefined values)
+const cleanParams = (params: Record<string, any>): Record<string, any> => {
+  const cleaned: Record<string, any> = {};
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== '' && value !== null && value !== undefined) {
+      cleaned[key] = value;
+    }
+  }
+  return cleaned;
+};
+
 // Create axios instance with auth token
 const createAuthenticatedAxios = () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('access_token');
   return axios.create({
     baseURL: API_BASE_URL,
     headers: {
@@ -205,7 +216,8 @@ export const getSalesTrends = async (params: {
   category_id?: string;
 }): Promise<SalesTrendData> => {
   const api = createAuthenticatedAxios();
-  const response = await api.get('/reports/sales/trends', { params });
+  const cleanedParams = cleanParams(params);
+  const response = await api.get('/reports/sales/trends', { params: cleanedParams });
   return response.data as SalesTrendData;
 };
 
@@ -215,7 +227,8 @@ export const getTopProducts = async (params: {
   limit?: number;
 }): Promise<TopProductsData> => {
   const api = createAuthenticatedAxios();
-  const response = await api.get('/reports/sales/top-products', { params });
+  const cleanedParams = cleanParams(params);
+  const response = await api.get('/reports/sales/top-products', { params: cleanedParams });
   return response.data as TopProductsData;
 };
 
@@ -225,7 +238,8 @@ export const getInventoryValuation = async (params: {
   include_inactive?: boolean;
 }): Promise<InventoryValuationData> => {
   const api = createAuthenticatedAxios();
-  const response = await api.get('/reports/inventory/valuation', { params });
+  const cleanedParams = cleanParams(params);
+  const response = await api.get('/reports/inventory/valuation', { params: cleanedParams });
   return response.data as InventoryValuationData;
 };
 
@@ -234,7 +248,8 @@ export const getLowStockReport = async (params: {
   threshold_multiplier?: number;
 }): Promise<LowStockData> => {
   const api = createAuthenticatedAxios();
-  const response = await api.get('/reports/inventory/low-stock', { params });
+  const cleanedParams = cleanParams(params);
+  const response = await api.get('/reports/inventory/low-stock', { params: cleanedParams });
   return response.data as LowStockData;
 };
 
@@ -245,7 +260,8 @@ export const getCustomerAnalysis = async (params: {
   min_purchases?: number;
 }): Promise<CustomerAnalysisData> => {
   const api = createAuthenticatedAxios();
-  const response = await api.get('/reports/customers/analysis', { params });
+  const cleanedParams = cleanParams(params);
+  const response = await api.get('/reports/customers/analysis', { params: cleanedParams });
   return response.data as CustomerAnalysisData;
 };
 
@@ -254,7 +270,8 @@ export const getDebtReport = async (params: {
   sort_by?: 'debt_desc' | 'debt_asc' | 'name' | 'last_payment';
 }): Promise<DebtReportData> => {
   const api = createAuthenticatedAxios();
-  const response = await api.get('/reports/customers/debt-report', { params });
+  const cleanedParams = cleanParams(params);
+  const response = await api.get('/reports/customers/debt-report', { params: cleanedParams });
   return response.data as DebtReportData;
 };
 
@@ -263,7 +280,8 @@ export const getSalesOverviewChart = async (params: {
   days?: number;
 }): Promise<SalesOverviewChartData> => {
   const api = createAuthenticatedAxios();
-  const response = await api.get('/reports/charts/sales-overview', { params });
+  const cleanedParams = cleanParams(params);
+  const response = await api.get('/reports/charts/sales-overview', { params: cleanedParams });
   return response.data as SalesOverviewChartData;
 };
 

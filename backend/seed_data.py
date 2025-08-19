@@ -71,7 +71,7 @@ def seed_database():
                     "view_accounting": True,
                     "view_reports": True,
                     "send_sms": True,
-                    "manage_settings": False,
+                    "edit_settings": True,
                     "manage_roles": False,
                     "manage_users": False
                 }

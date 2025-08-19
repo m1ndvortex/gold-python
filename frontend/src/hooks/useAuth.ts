@@ -8,12 +8,14 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const queryClient = useQueryClient();
 
   // Check if user is authenticated on mount
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     setIsAuthenticated(!!token);
+    setIsInitialized(true);
   }, []);
 
   // Get current user data
@@ -23,7 +25,7 @@ export const useAuth = () => {
       const response = await api.get('/auth/me');
       return response.data as User & { role?: Role };
     },
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && isInitialized,
     retry: false,
   });
 
@@ -105,7 +107,7 @@ export const useAuth = () => {
     // State
     isAuthenticated,
     user,
-    isLoading: userLoading,
+    isLoading: !isInitialized || (isAuthenticated && userLoading),
     error: userError,
 
     // Actions

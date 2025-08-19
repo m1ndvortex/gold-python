@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -18,8 +18,9 @@ interface LoginFormData extends LoginCredentials {
 
 export const Login: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
-  const { login, isLoggingIn, loginError, isAuthenticated } = useAuth();
+  const { login, isLoggingIn, loginError, isAuthenticated, isLoading } = useAuth();
   const { t, language, setLanguage, direction } = useLanguage();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -51,9 +52,30 @@ export const Login: React.FC = () => {
     }
   }, [loginError, clearErrors]);
 
-  // Redirect if already authenticated
+  // Handle navigation when authenticated
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isLoading, isAuthenticated, navigate]);
+
+  // Show loading while auth state is being determined
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center space-y-4">
+          <div className="h-8 w-8 animate-spin mx-auto border-4 border-amber-600 border-t-transparent rounded-full" />
+          <p className="text-gray-600">
+            {language === 'en' ? 'Loading...' : 'در حال بارگذاری...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render login form while redirecting
   if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return null;
   }
 
   const onSubmit = (data: LoginFormData) => {

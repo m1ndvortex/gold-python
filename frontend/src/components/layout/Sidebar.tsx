@@ -77,7 +77,7 @@ const navigationItems: NavigationItem[] = [
     key: 'nav.settings',
     icon: Settings,
     href: '/settings',
-    permission: 'manage_settings',
+    permission: 'edit_settings',
     roles: ['Owner', 'Manager'],
   },
 ];

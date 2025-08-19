@@ -928,3 +928,140 @@ async def get_customer_overview_chart_data(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating customer overview chart data: {str(e)}")
+
+@router.get("/charts/category-sales")
+async def get_category_sales_chart(
+    days: int = Query(30, description="Number of days to analyze"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get category sales breakdown for charts"""
+    try:
+        # Calculate date range
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=days)
+        
+        # Query category sales data
+        category_sales = db.query(
+            models.Category.name.label('category_name'),
+            func.sum(models.Invoice.total_amount).label('total_sales'),
+            func.sum(models.InvoiceItem.quantity).label('total_quantity')
+        ).join(
+            models.InvoiceItem, models.Invoice.id == models.InvoiceItem.invoice_id
+        ).join(
+            models.InventoryItem, models.InvoiceItem.inventory_item_id == models.InventoryItem.id
+        ).join(
+            models.Category, models.InventoryItem.category_id == models.Category.id
+        ).filter(
+            models.Invoice.created_at >= start_date,
+            models.Invoice.created_at <= end_date,
+            models.Invoice.status.in_(['paid', 'partially_paid'])
+        ).group_by(
+            models.Category.id, models.Category.name
+        ).all()
+        
+        # Calculate total sales for percentage calculation
+        total_sales = sum(float(item.total_sales or 0) for item in category_sales)
+        
+        # Format response data
+        formatted_data = []
+        for item in category_sales:
+            sales_amount = float(item.total_sales or 0)
+            percentage = (sales_amount / total_sales * 100) if total_sales > 0 else 0
+            
+            formatted_data.append({
+                "category_name": item.category_name,
+                "total_sales": sales_amount,
+                "total_quantity": int(item.total_quantity or 0),
+                "percentage": round(percentage, 2)
+            })
+        
+        # Sort by total sales descending
+        formatted_data.sort(key=lambda x: x['total_sales'], reverse=True)
+        
+        return formatted_data
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating category sales chart data: {str(e)}")
+
+@router.get("/summary/daily")
+async def get_daily_sales_summary(
+    target_date: Optional[date] = Query(None, description="Target date (defaults to today)"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get sales summary for a specific day"""
+    try:
+        if not target_date:
+            target_date = date.today()
+        
+        # Get start and end of the target date
+        start_datetime = datetime.combine(target_date, datetime.min.time())
+        end_datetime = datetime.combine(target_date, datetime.max.time())
+        
+        # Get today's sales data
+        today_sales = db.query(
+            func.sum(models.Invoice.total_amount).label('total_sales'),
+            func.sum(models.Invoice.paid_amount).label('total_paid'),
+            func.count(models.Invoice.id).label('invoice_count')
+        ).filter(
+            and_(
+                models.Invoice.created_at >= start_datetime,
+                models.Invoice.created_at <= end_datetime,
+                models.Invoice.status != 'cancelled'
+            )
+        ).first()
+        
+        # Get week's sales (last 7 days including today)
+        week_start = target_date - timedelta(days=6)
+        week_start_datetime = datetime.combine(week_start, datetime.min.time())
+        
+        week_sales = db.query(
+            func.sum(models.Invoice.total_amount).label('total_sales'),
+            func.sum(models.Invoice.paid_amount).label('total_paid'),
+            func.count(models.Invoice.id).label('invoice_count')
+        ).filter(
+            and_(
+                models.Invoice.created_at >= week_start_datetime,
+                models.Invoice.created_at <= end_datetime,
+                models.Invoice.status != 'cancelled'
+            )
+        ).first()
+        
+        # Get month's sales (last 30 days including today)
+        month_start = target_date - timedelta(days=29)
+        month_start_datetime = datetime.combine(month_start, datetime.min.time())
+        
+        month_sales = db.query(
+            func.sum(models.Invoice.total_amount).label('total_sales'),
+            func.sum(models.Invoice.paid_amount).label('total_paid'),
+            func.count(models.Invoice.id).label('invoice_count')
+        ).filter(
+            and_(
+                models.Invoice.created_at >= month_start_datetime,
+                models.Invoice.created_at <= end_datetime,
+                models.Invoice.status != 'cancelled'
+            )
+        ).first()
+        
+        return {
+            "date": target_date.isoformat(),
+            "today": {
+                "total_sales": float(today_sales.total_sales or 0),
+                "total_paid": float(today_sales.total_paid or 0),
+                "invoice_count": int(today_sales.invoice_count or 0)
+            },
+            "week": {
+                "total_sales": float(week_sales.total_sales or 0),
+                "total_paid": float(week_sales.total_paid or 0),
+                "invoice_count": int(week_sales.invoice_count or 0)
+            },
+            "month": {
+                "total_sales": float(month_sales.total_sales or 0),
+                "total_paid": float(month_sales.total_paid or 0),
+                "invoice_count": int(month_sales.invoice_count or 0)
+            }
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating daily sales summary: {str(e)}")

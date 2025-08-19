@@ -37,7 +37,32 @@ export const dashboardApi = {
   // Get sales chart data
   getSalesChartData: async (days: number = 30): Promise<SalesChartData> => {
     const response = await api.get(`/reports/charts/sales-overview?days=${days}`);
-    return response.data as SalesChartData;
+    const rawData = response.data as {
+      period: { start_date: string; end_date: string; days: number };
+      daily_sales: Array<{ date: string; total_sales: number; total_paid: number; invoice_count: number }>;
+      category_sales: Array<{ category: string; total_sales: number; total_quantity: number; percentage: number }>;
+    };
+    
+    // Transform raw API data to Chart.js format
+    const labels = rawData.daily_sales?.map((item) => {
+      const date = new Date(item.date);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }) || [];
+    
+    const salesData = rawData.daily_sales?.map((item) => item.total_sales || 0) || [];
+    
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'Daily Sales',
+          data: salesData,
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          borderColor: 'rgb(59, 130, 246)',
+          borderWidth: 2
+        }
+      ]
+    };
   },
 
   // Get category sales data
@@ -92,6 +117,18 @@ export const dashboardApi = {
       price_per_gram: 65.40,
       change_percentage: 2.5,
       last_updated: new Date().toISOString()
+    };
+  },
+
+  // Get daily sales summary (today, week, month)
+  getDailySalesSummary: async (targetDate?: string) => {
+    const queryParam = targetDate ? `?target_date=${targetDate}` : '';
+    const response = await api.get(`/reports/summary/daily${queryParam}`);
+    return response.data as {
+      date: string;
+      today: { total_sales: number; total_paid: number; invoice_count: number };
+      week: { total_sales: number; total_paid: number; invoice_count: number };
+      month: { total_sales: number; total_paid: number; invoice_count: number };
     };
   }
 };

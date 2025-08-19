@@ -292,16 +292,16 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
             <div className="space-y-2">
               <Label htmlFor="parent-category">Parent Category</Label>
               <Select
-                value={formData.parent_id}
+                value={formData.parent_id || "none"}
                 onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, parent_id: value }))
+                  setFormData(prev => ({ ...prev, parent_id: value === "none" ? "" : value }))
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select parent category (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No parent (root category)</SelectItem>
+                  <SelectItem value="none">No parent (root category)</SelectItem>
                   {categories
                     .filter(cat => cat.id !== editingCategory?.id) // Don't allow self as parent
                     .map((category) => (

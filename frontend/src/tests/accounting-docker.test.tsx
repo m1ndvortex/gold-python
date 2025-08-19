@@ -13,11 +13,19 @@ import { DebtTracking } from '../components/accounting/DebtTracking';
 // Mock the auth hook
 jest.mock('../hooks/useAuth', () => ({
   useAuth: () => ({
-    user: { id: '1', username: 'admin', role: 'Owner' },
-    token: 'mock-token',
+    user: { id: '1', username: 'admin', email: 'admin@test.com', role_id: '1', is_active: true, created_at: '2024-01-01T00:00:00Z', role: { id: '1', name: 'Owner', description: 'Owner role', permissions: { accounting_view: true }, created_at: '2024-01-01T00:00:00Z' } },
     isAuthenticated: true,
+    isLoading: false,
+    error: null,
+    login: jest.fn(),
+    logout: jest.fn(),
+    isLoggingIn: false,
+    loginError: null,
     hasPermission: () => true,
     hasAnyRole: () => true,
+    hasRole: () => true,
+    getPermissions: () => ({ accounting_view: true }),
+    isTokenExpired: () => false,
   }),
 }));
 

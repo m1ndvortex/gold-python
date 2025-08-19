@@ -164,11 +164,11 @@ export const BulkOperations: React.FC<BulkOperationsProps> = ({
               <div className="space-y-2">
                 <Label>Change Category</Label>
                 <Select
-                  value={bulkForm.category_id || ''}
+                  value={bulkForm.category_id || 'no-change'}
                   onValueChange={(value) => 
                     setBulkForm(prev => ({ 
                       ...prev, 
-                      category_id: value || undefined 
+                      category_id: value === 'no-change' ? undefined : value 
                     }))
                   }
                 >
@@ -176,7 +176,7 @@ export const BulkOperations: React.FC<BulkOperationsProps> = ({
                     <SelectValue placeholder="Select new category (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No change</SelectItem>
+                    <SelectItem value="no-change">No change</SelectItem>
                     {categories.map((category) => (
                       <SelectItem key={category.id} value={category.id}>
                         {category.name}
@@ -207,11 +207,11 @@ export const BulkOperations: React.FC<BulkOperationsProps> = ({
               <div className="space-y-2">
                 <Label>Item Status</Label>
                 <Select
-                  value={bulkForm.is_active !== undefined ? bulkForm.is_active.toString() : ''}
+                  value={bulkForm.is_active !== undefined ? bulkForm.is_active.toString() : 'no-change'}
                   onValueChange={(value) => 
                     setBulkForm(prev => ({ 
                       ...prev, 
-                      is_active: value ? value === 'true' : undefined 
+                      is_active: value === 'no-change' ? undefined : value === 'true'
                     }))
                   }
                 >
@@ -219,7 +219,7 @@ export const BulkOperations: React.FC<BulkOperationsProps> = ({
                     <SelectValue placeholder="Select status (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No change</SelectItem>
+                    <SelectItem value="no-change">No change</SelectItem>
                     <SelectItem value="true">Active</SelectItem>
                     <SelectItem value="false">Inactive</SelectItem>
                   </SelectContent>

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../hooks/useLanguage';
 import { Alert, AlertDescription } from '../ui/alert';
@@ -23,6 +23,14 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   const { isAuthenticated, isLoading, hasPermission, hasAnyRole } = useAuth();
   const { language } = useLanguage();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Handle navigation when not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate(fallbackPath, { state: { from: location }, replace: true });
+    }
+  }, [isLoading, isAuthenticated, navigate, fallbackPath, location]);
 
   // Show loading spinner while checking authentication
   if (isLoading) {
@@ -38,9 +46,9 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
     );
   }
 
-  // Redirect to login if not authenticated
+  // Don't render anything while redirecting
   if (!isAuthenticated) {
-    return <Navigate to={fallbackPath} state={{ from: location }} replace />;
+    return null;
   }
 
   // Check role requirements
@@ -62,7 +70,9 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
         </div>
       );
     }
-    return <Navigate to="/" replace />;
+    // Redirect to dashboard if role requirements are not met but no error should be shown
+    navigate('/', { replace: true });
+    return null;
   }
 
   // Check permission requirements
@@ -87,7 +97,9 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
           </div>
         );
       }
-      return <Navigate to="/" replace />;
+      // Redirect to dashboard if permission requirements are not met but no error should be shown
+      navigate('/', { replace: true });
+      return null;
     }
   }
 

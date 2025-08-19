@@ -210,7 +210,7 @@ export const GoldWeightLedger: React.FC = () => {
                     <SelectValue placeholder="All types" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All types</SelectItem>
+                    <SelectItem value="all">All types</SelectItem>
                     <SelectItem value="purchase">Purchase</SelectItem>
                     <SelectItem value="sale">Sale</SelectItem>
                     <SelectItem value="adjustment">Adjustment</SelectItem>

@@ -77,13 +77,21 @@ describe('Settings Interface - Docker Integration Tests', () => {
         role_id: '1',
         is_active: true,
         created_at: '2024-01-01T00:00:00Z',
+        // role object optional, provide minimal shape
+        role: { id: '1', name: 'Owner', description: 'Owner role', permissions: {}, created_at: '2024-01-01T00:00:00Z' }
       },
-      token: 'mock-token',
       isAuthenticated: true,
+      isLoading: false,
+      error: null,
       login: jest.fn(),
       logout: jest.fn(),
+      isLoggingIn: false,
+      loginError: null,
       hasPermission: jest.fn().mockReturnValue(true),
       hasAnyRole: jest.fn().mockReturnValue(true),
+      hasRole: jest.fn().mockReturnValue(true),
+      getPermissions: jest.fn().mockReturnValue({}),
+      isTokenExpired: jest.fn().mockReturnValue(false)
     });
 
     // Mock API responses
@@ -125,7 +133,6 @@ describe('Settings Interface - Docker Integration Tests', () => {
           role_id: '1',
           is_active: true,
           created_at: '2024-01-01T00:00:00Z',
-          updated_at: '2024-01-01T00:00:00Z',
           role: {
             id: '1',
             name: 'Admin',
@@ -202,13 +209,19 @@ describe('Settings Interface - Docker Integration Tests', () => {
 
     test('shows access denied when user lacks permissions', () => {
       mockUseAuth.mockReturnValue({
-        user: null,
-        token: null,
+        user: undefined,
         isAuthenticated: false,
+        isLoading: false,
+        error: null,
         login: jest.fn(),
         logout: jest.fn(),
+        isLoggingIn: false,
+        loginError: null,
         hasPermission: jest.fn().mockReturnValue(false),
         hasAnyRole: jest.fn().mockReturnValue(false),
+        hasRole: jest.fn().mockReturnValue(false),
+        getPermissions: jest.fn().mockReturnValue({}),
+        isTokenExpired: jest.fn().mockReturnValue(true)
       });
 
       render(
@@ -390,8 +403,7 @@ describe('Settings Interface - Docker Integration Tests', () => {
         email: 'newuser@test.com',
         role_id: '1',
         is_active: true,
-        created_at: '2024-01-01T00:00:00Z',
-        updated_at: '2024-01-01T00:00:00Z',
+          created_at: '2024-01-01T00:00:00Z',
         role: {
           id: '1',
           name: 'Admin',
@@ -552,13 +564,20 @@ describe('Settings Interface - Docker Integration Tests', () => {
           role_id: '2',
           is_active: true,
           created_at: '2024-01-01T00:00:00Z',
+          role: { id: '2', name: 'User', description: 'User role', permissions: { view_settings: true }, created_at: '2024-01-01T00:00:00Z' }
         },
-        token: 'mock-token',
         isAuthenticated: true,
+        isLoading: false,
+        error: null,
         login: jest.fn(),
         logout: jest.fn(),
+        isLoggingIn: false,
+        loginError: null,
         hasPermission: (permission: string) => permission === 'view_settings',
         hasAnyRole: jest.fn().mockReturnValue(false),
+        hasRole: jest.fn().mockReturnValue(false),
+        getPermissions: jest.fn().mockReturnValue({ view_settings: true }),
+        isTokenExpired: jest.fn().mockReturnValue(false)
       });
 
       render(

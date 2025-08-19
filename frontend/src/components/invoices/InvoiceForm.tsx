@@ -177,7 +177,7 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                   {customersLoading ? (
-                    <SelectItem value="" disabled>Loading customers...</SelectItem>
+                    <SelectItem value="loading" disabled>Loading customers...</SelectItem>
                   ) : (
                     customers.map((customer: Customer) => (
                       <SelectItem key={customer.id} value={customer.id}>
@@ -309,7 +309,7 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                     </SelectTrigger>
                     <SelectContent>
                       {inventoryLoading ? (
-                        <SelectItem value="" disabled>Loading items...</SelectItem>
+                        <SelectItem value="loading" disabled>Loading items...</SelectItem>
                       ) : (
                         inventoryItems
                           .filter((item: InventoryItem) => item.is_active && item.stock_quantity > 0)

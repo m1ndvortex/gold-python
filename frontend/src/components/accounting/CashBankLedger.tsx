@@ -198,14 +198,14 @@ export const CashBankLedger: React.FC = () => {
               <div>
                 <label className="text-sm font-medium mb-2 block">Transaction Type</label>
                 <Select
-                  value={filters.transaction_type || ''}
-                  onValueChange={(value) => handleFilterChange('transaction_type', value)}
+                  value={filters.transaction_type || 'all'}
+                  onValueChange={(value) => handleFilterChange('transaction_type', value === 'all' ? '' : value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="All types" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All types</SelectItem>
+                    <SelectItem value="all">All types</SelectItem>
                     <SelectItem value="cash_in">Cash In</SelectItem>
                     <SelectItem value="cash_out">Cash Out</SelectItem>
                     <SelectItem value="bank_deposit">Bank Deposit</SelectItem>
@@ -216,14 +216,14 @@ export const CashBankLedger: React.FC = () => {
               <div>
                 <label className="text-sm font-medium mb-2 block">Payment Method</label>
                 <Select
-                  value={filters.payment_method || ''}
-                  onValueChange={(value) => handleFilterChange('payment_method', value)}
+                  value={filters.payment_method || 'all'}
+                  onValueChange={(value) => handleFilterChange('payment_method', value === 'all' ? '' : value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="All methods" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All methods</SelectItem>
+                    <SelectItem value="all">All methods</SelectItem>
                     <SelectItem value="cash">Cash</SelectItem>
                     <SelectItem value="bank">Bank</SelectItem>
                     <SelectItem value="card">Card</SelectItem>

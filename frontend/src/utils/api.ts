@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { ApiResponse } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
@@ -28,7 +28,7 @@ api.interceptors.request.use(
 
 // Response interceptor for error handling
 api.interceptors.response.use(
-  (response: AxiosResponse) => {
+  (response) => {
     return response;
   },
   (error) => {
@@ -42,22 +42,30 @@ api.interceptors.response.use(
 );
 
 // Generic API functions
+// Helper to unwrap backend responses (supports both wrapped {data: T} and raw T)
+function unwrap<T>(payload: any): T {
+  if (payload && typeof payload === 'object' && 'data' in payload && payload.data !== undefined) {
+    return payload.data as T;
+  }
+  return payload as T;
+}
+
 export const apiGet = async <T>(url: string): Promise<T> => {
-  const response = await api.get<ApiResponse<T>>(url);
-  return response.data.data;
+  const response = await api.get(url);
+  return unwrap<T>(response.data);
 };
 
 export const apiPost = async <T, D = any>(url: string, data?: D): Promise<T> => {
-  const response = await api.post<ApiResponse<T>>(url, data);
-  return response.data.data;
+  const response = await api.post(url, data);
+  return unwrap<T>(response.data);
 };
 
 export const apiPut = async <T, D = any>(url: string, data?: D): Promise<T> => {
-  const response = await api.put<ApiResponse<T>>(url, data);
-  return response.data.data;
+  const response = await api.put(url, data);
+  return unwrap<T>(response.data);
 };
 
 export const apiDelete = async <T>(url: string): Promise<T> => {
-  const response = await api.delete<ApiResponse<T>>(url);
-  return response.data.data;
+  const response = await api.delete(url);
+  return unwrap<T>(response.data);
 };

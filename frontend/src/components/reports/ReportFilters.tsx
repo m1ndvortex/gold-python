@@ -103,7 +103,7 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({ filters, onFiltersChange 
               <SelectValue placeholder="انتخاب دسته‌بندی" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">همه دسته‌بندی‌ها</SelectItem>
+              <SelectItem value="all">همه دسته‌بندی‌ها</SelectItem>
               {categoriesData.map((category: any) => (
                 <SelectItem key={category.id} value={category.id}>
                   {category.name}
