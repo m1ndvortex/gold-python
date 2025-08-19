@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAccounting } from '../../hooks/useAccounting';
+import { useLanguage } from '../../hooks/useLanguage';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -14,6 +15,7 @@ import { LedgerFilters, ExpenseEntryCreate } from '../../types';
 import { useToast } from '../ui/use-toast';
 
 export const ExpenseLedger: React.FC = () => {
+  const { t } = useLanguage();
   const { useExpenseLedger, useCreateExpenseEntry } = useAccounting();
   const { toast } = useToast();
   const [filters, setFilters] = useState<LedgerFilters>({});
@@ -127,7 +129,7 @@ export const ExpenseLedger: React.FC = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Expenses
+              {t('accounting.total_expenses')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -140,7 +142,7 @@ export const ExpenseLedger: React.FC = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Entries
+{t('accounting.total_entries')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -153,7 +155,7 @@ export const ExpenseLedger: React.FC = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Categories
+{t('accounting.categories')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -168,13 +170,13 @@ export const ExpenseLedger: React.FC = () => {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Expense Ledger</CardTitle>
+            <CardTitle>{t('accounting.expense_ledger')}</CardTitle>
             <div className="flex items-center gap-2">
               <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                 <DialogTrigger asChild>
                   <Button size="sm">
                     <PlusIcon className="h-4 w-4 mr-2" />
-                    Add Expense
+{t('accounting.add_expense')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -249,7 +251,7 @@ export const ExpenseLedger: React.FC = () => {
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <FilterIcon className="h-4 w-4 mr-2" />
-                Filters
+{t('accounting.filters')}
               </Button>
               <Button
                 variant="outline"
@@ -258,7 +260,7 @@ export const ExpenseLedger: React.FC = () => {
                 disabled={isLoading}
               >
                 <RefreshCwIcon className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-                Refresh
+{t('accounting.refresh')}
               </Button>
             </div>
           </div>
@@ -323,11 +325,11 @@ export const ExpenseLedger: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Reference</TableHead>
+                    <TableHead>{t('accounting.category')}</TableHead>
+                    <TableHead>{t('accounting.amount')}</TableHead>
+                    <TableHead>{t('accounting.description')}</TableHead>
+                    <TableHead>{t('accounting.date')}</TableHead>
+                    <TableHead>{t('accounting.reference')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

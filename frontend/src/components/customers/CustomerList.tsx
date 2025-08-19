@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Plus, Phone, Mail, AlertTriangle, DollarSign, Filter, Users, Eye, Edit, Trash2 } from 'lucide-react';
+import { useLanguage } from '../../hooks/useLanguage';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
@@ -16,6 +17,7 @@ interface CustomerListProps {
 }
 
 export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) => {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<CustomerSearchFilters>({
     sort_by: 'created_at',
@@ -74,7 +76,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
   const columns: DataTableColumn<Customer>[] = [
     {
       id: 'name',
-      header: 'Customer',
+      header: t('customers.customer'),
       accessorKey: 'name',
       sortable: true,
       filterable: true,
@@ -95,7 +97,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
     },
     {
       id: 'contact',
-      header: 'Contact Information',
+      header: t('customers.contact_information'),
       cell: ({ row }) => (
         <div className="space-y-1">
           {row.phone && (
@@ -118,7 +120,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
     },
     {
       id: 'total_purchases',
-      header: 'Total Purchases',
+      header: t('customers.total_purchases'),
       accessorKey: 'total_purchases',
       sortable: true,
       filterable: true,
@@ -135,7 +137,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
     },
     {
       id: 'current_debt',
-      header: 'Current Debt',
+      header: t('customers.current_debt'),
       accessorKey: 'current_debt',
       sortable: true,
       filterable: true,
@@ -155,27 +157,27 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
     },
     {
       id: 'last_purchase_date',
-      header: 'Last Purchase',
+      header: t('customers.last_purchase'),
       accessorKey: 'last_purchase_date',
       sortable: true,
       cell: ({ row }) => (
         <div className="text-sm">
           {row.last_purchase_date 
             ? formatDate(row.last_purchase_date)
-            : <span className="text-muted-foreground">Never</span>
+            : <span className="text-muted-foreground">{t('customers.never')}</span>
           }
         </div>
       )
     },
     {
       id: 'status',
-      header: 'Status',
+      header: t('customers.status'),
       cell: ({ row }) => (
         <Badge 
           variant={row.current_debt > 0 ? 'destructive' : 'default'}
           className="font-medium"
         >
-          {row.current_debt > 0 ? 'Has Debt' : 'Clear'}
+          {row.current_debt > 0 ? t('customers.with_debt') : t('customers.clear')}
         </Badge>
       ),
       filterable: true,
@@ -192,7 +194,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
   const actions: DataTableAction<Customer>[] = [
     {
       id: 'view',
-      label: 'View Profile',
+      label: t('customers.view_profile'),
       icon: <Eye className="h-4 w-4" />,
       onClick: (customer) => {
         setSelectedCustomer(customer);
@@ -202,7 +204,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
     },
     {
       id: 'edit',
-      label: 'Edit Customer',
+      label: t('customers.edit'),
       icon: <Edit className="h-4 w-4" />,
       onClick: (customer) => {
         setSelectedCustomer(customer);
@@ -218,10 +220,10 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Customer Management
+            {t('customers.title')}
           </h1>
           <p className="text-muted-foreground">
-            Manage customer relationships and track purchase history with professional tools
+            {t('customers.description')}
           </p>
         </div>
         <div className="flex items-center space-x-3">
@@ -235,7 +237,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
             className="bg-primary-600 hover:bg-primary-700 text-white shadow-sm"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Customer
+            {t('customers.add_customer')}
           </Button>
         </div>
       </div>
@@ -246,7 +248,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Customers</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('customers.total_customers')}</p>
                 <p className="text-2xl font-bold text-foreground">
                   {displayCustomers?.length || 0}
                 </p>
@@ -260,7 +262,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Clear Status</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('customers.clear_status')}</p>
                 <p className="text-2xl font-bold text-success-700">
                   {displayCustomers?.filter(c => c.current_debt === 0).length || 0}
                 </p>
@@ -274,7 +276,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">With Debt</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('customers.with_debt')}</p>
                 <p className="text-2xl font-bold text-warning-700">
                   {displayCustomers?.filter(c => c.current_debt > 0).length || 0}
                 </p>
@@ -288,7 +290,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Purchases</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('customers.total_purchases')}</p>
                 <p className="text-2xl font-bold text-info-700">
                   {formatCurrency(displayCustomers?.reduce((sum, c) => sum + c.total_purchases, 0) || 0)}
                 </p>
@@ -305,7 +307,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
           <div className="flex items-center justify-between">
             <CardTitle className="text-xl font-semibold flex items-center space-x-2">
               <Users className="h-5 w-5 text-primary-600" />
-              <span>Customer Directory</span>
+              <span>{t('customers.directory')}</span>
             </CardTitle>
             {selectedRows.length > 0 && (
               <div className="flex items-center space-x-2">

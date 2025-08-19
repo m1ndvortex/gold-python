@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAccounting } from '../../hooks/useAccounting';
+import { useLanguage } from '../../hooks/useLanguage';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -11,6 +12,7 @@ import { format } from 'date-fns';
 import { LedgerFilters } from '../../types';
 
 export const IncomeLedger: React.FC = () => {
+  const { t } = useLanguage();
   const { useIncomeLedger } = useAccounting();
   const [filters, setFilters] = useState<LedgerFilters>({});
   const [showFilters, setShowFilters] = useState(false);
@@ -36,9 +38,9 @@ export const IncomeLedger: React.FC = () => {
     } as const;
 
     const labels = {
-      paid: 'Paid',
-      partial: 'Partial',
-      unpaid: 'Unpaid'
+      paid: t('accounting.paid'),
+      partial: t('accounting.partial'),
+      unpaid: t('accounting.unpaid')
     };
 
     return (
@@ -82,7 +84,7 @@ export const IncomeLedger: React.FC = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Revenue
+              {t('accounting.total_revenue')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -95,7 +97,7 @@ export const IncomeLedger: React.FC = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Outstanding Amount
+              {t('accounting.outstanding_amount')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -108,7 +110,7 @@ export const IncomeLedger: React.FC = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Invoices
+              {t('accounting.total_invoices')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -123,7 +125,7 @@ export const IncomeLedger: React.FC = () => {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Income Ledger</CardTitle>
+            <CardTitle>{t('accounting.income_ledger')}</CardTitle>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -131,7 +133,7 @@ export const IncomeLedger: React.FC = () => {
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <FilterIcon className="h-4 w-4 mr-2" />
-                Filters
+{t('accounting.filters')}
               </Button>
               <Button
                 variant="outline"
@@ -140,7 +142,7 @@ export const IncomeLedger: React.FC = () => {
                 disabled={isLoading}
               >
                 <RefreshCwIcon className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-                Refresh
+{t('accounting.refresh')}
               </Button>
             </div>
           </div>
@@ -196,27 +198,27 @@ export const IncomeLedger: React.FC = () => {
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <RefreshCwIcon className="h-6 w-6 animate-spin mr-2" />
-              Loading income ledger...
+{t('accounting.loading_income')}
             </div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Invoice #</TableHead>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Total Amount</TableHead>
-                    <TableHead>Paid Amount</TableHead>
-                    <TableHead>Remaining</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead>{t('accounting.invoice_number')}</TableHead>
+                    <TableHead>{t('accounting.customer')}</TableHead>
+                    <TableHead>{t('accounting.total_amount')}</TableHead>
+                    <TableHead>{t('accounting.paid_amount')}</TableHead>
+                    <TableHead>{t('accounting.remaining')}</TableHead>
+                    <TableHead>{t('accounting.status')}</TableHead>
+                    <TableHead>{t('accounting.date')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {incomeEntries?.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                        No income entries found
+{t('accounting.no_income_entries')}
                       </TableCell>
                     </TableRow>
                   ) : (

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useLanguage } from '../hooks/useLanguage';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
@@ -23,6 +24,7 @@ import { DebtTracking } from '../components/accounting/DebtTracking';
 import { useAccounting } from '../hooks/useAccounting';
 
 export const Accounting: React.FC = () => {
+  const { t } = useLanguage();
   const { useLedgerSummary } = useAccounting();
   const [activeTab, setActiveTab] = useState('income');
 
@@ -37,49 +39,49 @@ export const Accounting: React.FC = () => {
     }).format(amount);
   };
 
-  const formatWeight = (grams: number) => {
+    const formatWeight = (grams: number) => {
     return `${grams.toFixed(3)} g`;
   };
 
   const tabs = [
     {
       id: 'income',
-      label: 'Income Ledger',
+      label: t('accounting.income'),
       icon: TrendingUpIcon,
       component: IncomeLedger,
-      description: 'Track all revenue from invoices and payments'
+      description: t('accounting.income_desc')
     },
     {
       id: 'expense',
-      label: 'Expense Ledger',
+      label: t('accounting.expense'),
       icon: TrendingDownIcon,
       component: ExpenseLedger,
       description: 'Manage business expenses and categorization'
     },
     {
       id: 'cash-bank',
-      label: 'Cash & Bank',
+      label: t('accounting.cash_bank'),
       icon: CreditCardIcon,
       component: CashBankLedger,
       description: 'Monitor cash flow and bank transactions'
     },
     {
       id: 'gold-weight',
-      label: 'Gold Weight',
+      label: t('accounting.gold_weight'),
       icon: ScaleIcon,
       component: GoldWeightLedger,
       description: 'Track gold inventory valuation and weight'
     },
     {
       id: 'profit-loss',
-      label: 'Profit & Loss',
+      label: t('accounting.profit_loss'),
       icon: BarChart3Icon,
       component: ProfitLossAnalysis,
       description: 'Comprehensive profit and loss analysis'
     },
     {
       id: 'debt-tracking',
-      label: 'Debt Tracking',
+      label: t('accounting.debt_tracking'),
       icon: AlertTriangleIcon,
       component: DebtTracking,
       description: 'Monitor customer debt and payment history'
@@ -93,10 +95,10 @@ export const Accounting: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <CalculatorIcon className="h-8 w-8" />
-            Accounting System
+            {t('accounting.title')}
           </h1>
           <p className="text-muted-foreground mt-2">
-            Comprehensive financial management and ledger tracking
+            {t('accounting.description')}
           </p>
         </div>
       </div>
@@ -108,7 +110,7 @@ export const Accounting: React.FC = () => {
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <TrendingUpIcon className="h-4 w-4 text-green-600" />
-                Total Income
+{t('accounting.total_income')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -122,7 +124,7 @@ export const Accounting: React.FC = () => {
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <TrendingDownIcon className="h-4 w-4 text-red-600" />
-                Total Expenses
+{t('accounting.total_expenses')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -136,7 +138,7 @@ export const Accounting: React.FC = () => {
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <CreditCardIcon className="h-4 w-4 text-blue-600" />
-                Cash Flow
+{t('accounting.cash_flow')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -152,7 +154,7 @@ export const Accounting: React.FC = () => {
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <ScaleIcon className="h-4 w-4 text-yellow-600" />
-                Gold Weight
+{t('accounting.gold_weight')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -166,7 +168,7 @@ export const Accounting: React.FC = () => {
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <AlertTriangleIcon className="h-4 w-4 text-orange-600" />
-                Customer Debt
+{t('accounting.customer_debt')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -180,7 +182,7 @@ export const Accounting: React.FC = () => {
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <BarChart3Icon className="h-4 w-4 text-purple-600" />
-                Net Profit
+{t('accounting.net_profit')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -253,18 +255,21 @@ const AccountingIncomeRoute: React.FC = () => (
   </div>
 );
 
-const AccountingExpenseRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    <div className="flex items-center gap-3 mb-6">
-      <TrendingDownIcon className="h-8 w-8 text-red-600" />
-      <div>
-        <h1 className="text-3xl font-bold">Expense Ledger</h1>
-        <p className="text-muted-foreground">Manage business expenses and categorization</p>
+const AccountingExpenseRoute: React.FC = () => {
+  const { t } = useLanguage();
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center gap-3 mb-6">
+        <TrendingDownIcon className="h-8 w-8 text-red-600" />
+        <div>
+          <h1 className="text-3xl font-bold">{t('accounting.expense_ledger')}</h1>
+          <p className="text-muted-foreground">{t('accounting.expense_desc')}</p>
+        </div>
       </div>
+      <ExpenseLedger />
     </div>
-    <ExpenseLedger />
-  </div>
-);
+  );
+};
 
 const AccountingCashBankRoute: React.FC = () => (
   <div className="container mx-auto p-6 space-y-6">
