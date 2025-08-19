@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Plus, Phone, Mail, AlertTriangle, DollarSign } from 'lucide-react';
+import { Search, Plus, Phone, Mail, AlertTriangle, DollarSign, Filter, Users, Eye, Edit, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { DataTable, DataTableColumn, DataTableAction } from '../ui/data-table';
+import { SearchableSelect } from '../ui/searchable-select';
 import { useCustomers, useCustomerSearch } from '../../hooks/useCustomers';
 import { CustomerForm } from './CustomerForm';
 import { CustomerProfile } from './CustomerProfile';
@@ -24,6 +24,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [showProfile, setShowProfile] = useState(false);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   // Use search when query is provided, otherwise use filtered list
   const { data: searchResults, isLoading: isSearching } = useCustomerSearch(
@@ -69,184 +70,295 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
     return 'outline';
   };
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">Customers</h2>
-          <p className="text-muted-foreground">
-            Manage customer information and track purchase history
-          </p>
-        </div>
-        <Button onClick={() => setShowCreateForm(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Customer
-        </Button>
-      </div>
-
-      {/* Search and Filters */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  placeholder="Search customers by name, phone, or email..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            
-            {searchQuery.length === 0 && (
-              <>
-                <Select
-                  value={filters.has_debt?.toString() || 'all'}
-                  onValueChange={(value) => 
-                    setFilters(prev => ({
-                      ...prev,
-                      has_debt: value === 'all' ? undefined : value === 'true'
-                    }))
-                  }
-                >
-                  <SelectTrigger className="w-40">
-                    <SelectValue placeholder="Debt Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Customers</SelectItem>
-                    <SelectItem value="true">With Debt</SelectItem>
-                    <SelectItem value="false">No Debt</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select
-                  value={`${filters.sort_by}-${filters.sort_order}`}
-                  onValueChange={(value) => {
-                    const [sort_by, sort_order] = value.split('-');
-                    setFilters(prev => ({ ...prev, sort_by, sort_order: sort_order as 'asc' | 'desc' }));
-                  }}
-                >
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Sort By" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="created_at-desc">Newest First</SelectItem>
-                    <SelectItem value="created_at-asc">Oldest First</SelectItem>
-                    <SelectItem value="name-asc">Name A-Z</SelectItem>
-                    <SelectItem value="name-desc">Name Z-A</SelectItem>
-                    <SelectItem value="current_debt-desc">Highest Debt</SelectItem>
-                    <SelectItem value="total_purchases-desc">Highest Purchases</SelectItem>
-                  </SelectContent>
-                </Select>
-              </>
-            )}
+  // Define table columns with modern styling
+  const columns: DataTableColumn<Customer>[] = [
+    {
+      id: 'name',
+      header: 'Customer',
+      accessorKey: 'name',
+      sortable: true,
+      filterable: true,
+      filterType: 'text',
+      cell: ({ row }) => (
+        <div className="flex items-center space-x-3">
+          <div className="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+            <Users className="h-5 w-5 text-primary-600" />
           </div>
-        </CardContent>
-      </Card>     
- {/* Customer Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {displayCustomers ? `${displayCustomers.length} Customers` : 'Customers'}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div>
+            <div className="font-semibold text-foreground">{row.name}</div>
+            <div className="text-sm text-muted-foreground">
+              ID: {row.id.slice(0, 8)}...
             </div>
-          ) : !displayCustomers || displayCustomers.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">
-                {searchQuery ? 'No customers found matching your search.' : 'No customers found.'}
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Total Purchases</TableHead>
-                    <TableHead>Current Debt</TableHead>
-                    <TableHead>Last Purchase</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {displayCustomers.map((customer) => (
-                    <TableRow
-                      key={customer.id}
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => handleCustomerClick(customer)}
-                    >
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">{customer.name}</div>
-                          <div className="text-sm text-muted-foreground">
-                            ID: {customer.id.slice(0, 8)}...
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          {customer.phone && (
-                            <div className="flex items-center text-sm">
-                              <Phone className="h-3 w-3 mr-1" />
-                              {customer.phone}
-                            </div>
-                          )}
-                          {customer.email && (
-                            <div className="flex items-center text-sm">
-                              <Mail className="h-3 w-3 mr-1" />
-                              {customer.email}
-                            </div>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <DollarSign className="h-4 w-4 mr-1 text-green-600" />
-                          {formatCurrency(customer.total_purchases)}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getDebtBadgeVariant(customer.current_debt)}>
-                          {customer.current_debt > 0 && (
-                            <AlertTriangle className="h-3 w-3 mr-1" />
-                          )}
-                          {formatCurrency(customer.current_debt)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {customer.last_purchase_date 
-                          ? formatDate(customer.last_purchase_date)
-                          : 'Never'
-                        }
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={customer.current_debt > 0 ? 'destructive' : 'secondary'}>
-                          {customer.current_debt > 0 ? 'Has Debt' : 'Clear'}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'contact',
+      header: 'Contact Information',
+      cell: ({ row }) => (
+        <div className="space-y-1">
+          {row.phone && (
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Phone className="h-3 w-3 mr-2 text-primary-500" />
+              <span className="font-medium">{row.phone}</span>
             </div>
           )}
+          {row.email && (
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Mail className="h-3 w-3 mr-2 text-primary-500" />
+              <span className="font-medium">{row.email}</span>
+            </div>
+          )}
+          {!row.phone && !row.email && (
+            <span className="text-sm text-muted-foreground">No contact info</span>
+          )}
+        </div>
+      )
+    },
+    {
+      id: 'total_purchases',
+      header: 'Total Purchases',
+      accessorKey: 'total_purchases',
+      sortable: true,
+      filterable: true,
+      filterType: 'number',
+      align: 'right',
+      cell: ({ row }) => (
+        <div className="flex items-center justify-end space-x-2">
+          <DollarSign className="h-4 w-4 text-success-600" />
+          <span className="font-semibold text-success-700">
+            {formatCurrency(row.total_purchases)}
+          </span>
+        </div>
+      )
+    },
+    {
+      id: 'current_debt',
+      header: 'Current Debt',
+      accessorKey: 'current_debt',
+      sortable: true,
+      filterable: true,
+      filterType: 'number',
+      align: 'right',
+      cell: ({ row }) => (
+        <Badge 
+          variant={getDebtBadgeVariant(row.current_debt)}
+          className="justify-center min-w-[100px]"
+        >
+          {row.current_debt > 0 && (
+            <AlertTriangle className="h-3 w-3 mr-1" />
+          )}
+          {formatCurrency(row.current_debt)}
+        </Badge>
+      )
+    },
+    {
+      id: 'last_purchase_date',
+      header: 'Last Purchase',
+      accessorKey: 'last_purchase_date',
+      sortable: true,
+      cell: ({ row }) => (
+        <div className="text-sm">
+          {row.last_purchase_date 
+            ? formatDate(row.last_purchase_date)
+            : <span className="text-muted-foreground">Never</span>
+          }
+        </div>
+      )
+    },
+    {
+      id: 'status',
+      header: 'Status',
+      cell: ({ row }) => (
+        <Badge 
+          variant={row.current_debt > 0 ? 'destructive' : 'default'}
+          className="font-medium"
+        >
+          {row.current_debt > 0 ? 'Has Debt' : 'Clear'}
+        </Badge>
+      ),
+      filterable: true,
+      filterType: 'select',
+      filterOptions: [
+        { label: 'All Customers', value: '' },
+        { label: 'Has Debt', value: 'debt' },
+        { label: 'Clear', value: 'clear' }
+      ]
+    }
+  ];
+
+  // Define table actions
+  const actions: DataTableAction<Customer>[] = [
+    {
+      id: 'view',
+      label: 'View Profile',
+      icon: <Eye className="h-4 w-4" />,
+      onClick: (customer) => {
+        setSelectedCustomer(customer);
+        setShowProfile(true);
+      },
+      variant: 'ghost'
+    },
+    {
+      id: 'edit',
+      label: 'Edit Customer',
+      icon: <Edit className="h-4 w-4" />,
+      onClick: (customer) => {
+        setSelectedCustomer(customer);
+        setShowCreateForm(true);
+      },
+      variant: 'ghost'
+    }
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Modern Header with Professional Styling */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            Customer Management
+          </h1>
+          <p className="text-muted-foreground">
+            Manage customer relationships and track purchase history with professional tools
+          </p>
+        </div>
+        <div className="flex items-center space-x-3">
+          {selectedRows.length > 0 && (
+            <Badge variant="secondary" className="px-3 py-1">
+              {selectedRows.length} selected
+            </Badge>
+          )}
+          <Button 
+            onClick={() => setShowCreateForm(true)}
+            className="bg-primary-600 hover:bg-primary-700 text-white shadow-sm"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Customer
+          </Button>
+        </div>
+      </div>
+
+      {/* Professional Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="border-l-4 border-l-primary-500">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Customers</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {displayCustomers?.length || 0}
+                </p>
+              </div>
+              <Users className="h-8 w-8 text-primary-500" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="border-l-4 border-l-success-500">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Clear Status</p>
+                <p className="text-2xl font-bold text-success-700">
+                  {displayCustomers?.filter(c => c.current_debt === 0).length || 0}
+                </p>
+              </div>
+              <DollarSign className="h-8 w-8 text-success-500" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="border-l-4 border-l-warning-500">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">With Debt</p>
+                <p className="text-2xl font-bold text-warning-700">
+                  {displayCustomers?.filter(c => c.current_debt > 0).length || 0}
+                </p>
+              </div>
+              <AlertTriangle className="h-8 w-8 text-warning-500" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="border-l-4 border-l-info-500">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Purchases</p>
+                <p className="text-2xl font-bold text-info-700">
+                  {formatCurrency(displayCustomers?.reduce((sum, c) => sum + c.total_purchases, 0) || 0)}
+                </p>
+              </div>
+              <DollarSign className="h-8 w-8 text-info-500" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Modern Data Table */}
+      <Card className="shadow-sm">
+        <CardHeader className="border-b border-border/50">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xl font-semibold flex items-center space-x-2">
+              <Users className="h-5 w-5 text-primary-600" />
+              <span>Customer Directory</span>
+            </CardTitle>
+            {selectedRows.length > 0 && (
+              <div className="flex items-center space-x-2">
+                <Button variant="outline" size="sm">
+                  <Mail className="h-4 w-4 mr-2" />
+                  Send Email
+                </Button>
+                <Button variant="outline" size="sm">
+                  Export Selected
+                </Button>
+              </div>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <DataTable
+            data={displayCustomers || []}
+            columns={columns}
+            actions={actions}
+            loading={isLoading}
+            emptyMessage={searchQuery ? 'No customers found matching your search criteria.' : 'No customers found. Add your first customer to get started.'}
+            globalFilter={searchQuery}
+            onGlobalFilterChange={setSearchQuery}
+            selection={{
+              selectedRows,
+              onSelectionChange: setSelectedRows
+            }}
+            onRowClick={(customer) => {
+              if (onCustomerSelect) {
+                onCustomerSelect(customer);
+              } else {
+                setSelectedCustomer(customer);
+                setShowProfile(true);
+              }
+            }}
+            striped
+            className="border-0"
+          />
         </CardContent>
       </Card>
 
-      {/* Create Customer Form Dialog */}
+      {/* Create/Edit Customer Form Dialog */}
       {showCreateForm && (
         <CustomerForm
-          onClose={() => setShowCreateForm(false)}
-          onSuccess={() => setShowCreateForm(false)}
+          customer={selectedCustomer || undefined}
+          onClose={() => {
+            setShowCreateForm(false);
+            setSelectedCustomer(null);
+          }}
+          onSuccess={() => {
+            setShowCreateForm(false);
+            setSelectedCustomer(null);
+          }}
         />
       )}
 

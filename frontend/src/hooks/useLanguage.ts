@@ -1,20 +1,44 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { Language, Direction, LanguageContextType } from '../types';
 
-// Simple translation object - in a real app, this would come from translation files
+// Comprehensive translation object with all missing translations
 const translations = {
   en: {
+    // App and Navigation
     'app.title': 'Gold Shop Management System',
     'nav.dashboard': 'Dashboard',
     'nav.inventory': 'Inventory',
+    'nav.inventory.products': 'Products',
+    'nav.inventory.categories': 'Categories',
+    'nav.inventory.bulk': 'Bulk Operations',
     'nav.customers': 'Customers',
     'nav.invoices': 'Invoices',
     'nav.accounting': 'Accounting',
+    'nav.accounting.cash': 'Cash & Bank',
+    'nav.accounting.income': 'Income Ledger',
+    'nav.accounting.expense': 'Expense Ledger',
+    'nav.accounting.gold': 'Gold Weight',
+    'nav.accounting.debt': 'Debt Tracking',
     'nav.reports': 'Reports',
-    'nav.settings': 'Settings',
+    'nav.reports.sales': 'Sales Reports',
+    'nav.reports.inventory': 'Inventory Reports',
+    'nav.reports.customers': 'Customer Reports',
     'nav.sms': 'SMS',
+    'nav.sms.campaigns': 'SMS Campaigns',
+    'nav.sms.templates': 'SMS Templates',
+    'nav.sms.history': 'SMS History',
+    'nav.settings': 'Settings',
+    'nav.settings.company': 'Company Settings',
+    'nav.settings.users': 'User Management',
+    'nav.settings.roles': 'Roles & Permissions',
+    'nav.settings.gold-price': 'Gold Price',
+    'nav.settings.invoice-templates': 'Invoice Templates',
+    
+    // Authentication
     'auth.login': 'Login',
     'auth.logout': 'Logout',
+    
+    // Common terms
     'common.save': 'Save',
     'common.cancel': 'Cancel',
     'common.delete': 'Delete',
@@ -24,18 +48,99 @@ const translations = {
     'common.search': 'Search',
     'common.language': 'Language',
     'common.profile': 'Profile',
+    'common.refresh': 'Refresh',
+    'common.filters': 'Filters',
+    'common.loading': 'Loading',
+    'common.actions': 'Actions',
+    'common.status': 'Status',
+    'common.total': 'Total',
+    'common.new': 'New',
+    'common.quick_access': 'Quick Access',
+    'common.notifications': 'Notifications',
+    'common.system_online': 'System Online',
+    'common.try_again': 'Try Again',
+    
+    // Dashboard
+    'dashboard.title': 'Dashboard',
+    'dashboard.total_sales_today': 'Total Sales Today',
+    'dashboard.week': 'Week',
+    'dashboard.month': 'Month',
+    'dashboard.vs_last_week': 'vs last week',
+    'dashboard.inventory_value': 'Inventory Value',
+    'dashboard.stock_levels_healthy': 'Stock levels healthy',
+    'dashboard.customer_debt': 'Customer Debt',
+    'dashboard.all_invoices_current': 'All invoices current',
+    'dashboard.gold_price_per_gram': 'Gold Price (per gram)',
+    'dashboard.market_rate': 'Market rate',
+    'dashboard.from_last_week': 'from last week',
+    'dashboard.sales_trends': 'Sales Trends',
+    'dashboard.sales_trends_desc': 'Daily sales performance over the last 30 days',
+    'dashboard.sales_by_category': 'Sales by Category',
+    'dashboard.sales_by_category_desc': 'Revenue distribution across product categories',
+    'dashboard.top_products': 'Top Products',
+    'dashboard.top_products_desc': 'Best performing products by revenue',
+    'dashboard.alerts_notifications': 'Alerts & Notifications',
+    'dashboard.alerts_count': '{count} alerts • {unread} unread',
+    'dashboard.show_dismissed': 'Show Dismissed',
+    'dashboard.all_clear': 'All Clear!',
+    'dashboard.no_alerts': 'No alerts to display.',
+    'dashboard.tab_all': 'All ({count})',
+    'dashboard.tab_critical': 'Critical ({count})',
+    'dashboard.tab_unread': 'Unread ({count})',
+    'dashboard.refresh_chart': 'Refresh chart data',
+    'dashboard.export_chart': 'Export chart as image',
+    'dashboard.fullscreen': 'Enter fullscreen',
+    'dashboard.exit_fullscreen': 'Exit fullscreen',
+    'dashboard.error_loading': 'Failed to load dashboard data',
+    'dashboard.no_data_available': 'No dashboard data available',
+    'dashboard.items_low_stock': 'items low stock',
+    'dashboard.low_stock': 'Low Stock',
+    'dashboard.unpaid_invoices': 'unpaid invoices',
+    'dashboard.overdue': 'Overdue',
+    'dashboard.critical': 'critical',
+    'dashboard.hide_dismissed': 'Hide Dismissed',
+    'dashboard.alerts': 'alerts',
+    'dashboard.unread': 'unread',
+    
+    // Accounting
     'accounting.income': 'Income Ledger',
+    'accounting.income_title': 'Income Ledger',
+    'accounting.income_desc': 'Track all revenue from invoices and payments',
     'accounting.expense': 'Expense Ledger',
     'accounting.cash_bank': 'Cash & Bank',
     'accounting.gold_weight': 'Gold Weight',
     'accounting.profit_loss': 'Profit & Loss',
     'accounting.debt_tracking': 'Debt Tracking',
+    'accounting.total_revenue': 'Total Revenue',
+    'accounting.outstanding_amount': 'Outstanding Amount',
+    'accounting.total_invoices': 'Total Invoices',
+    'accounting.loading_income': 'Loading income ledger...',
+    
+    // Customers
+    'customers.title': 'Customer Management',
+    'customers.desc': 'Manage customer relationships and track purchase history with professional tools',
+    'customers.add_customer': 'Add Customer',
+    'customers.total_customers': 'Total Customers',
+    'customers.clear_status': 'Clear Status',
+    'customers.with_debt': 'With Debt',
+    'customers.total_purchases': 'Total Purchases',
+    'customers.directory': 'Customer Directory',
+    'customers.search_placeholder': 'Search...',
+    'customers.contact_info': 'Contact Information',
+    'customers.current_debt': 'Current Debt',
+    'customers.last_purchase': 'Last Purchase',
+    
+    // Reports
     'reports.sales': 'Sales Reports',
     'reports.inventory': 'Inventory Reports',
     'reports.customers': 'Customer Reports',
+    
+    // SMS
     'sms.campaign': 'SMS Campaign',
     'sms.templates': 'SMS Templates',
     'sms.history': 'SMS History',
+    
+    // Settings
     'settings.company': 'Company Settings',
     'settings.gold_price': 'Gold Price',
     'settings.invoice_template': 'Invoice Template',
@@ -43,17 +148,41 @@ const translations = {
     'settings.users': 'User Management',
   },
   fa: {
+    // App and Navigation
     'app.title': 'سیستم مدیریت طلافروشی',
     'nav.dashboard': 'داشبورد',
     'nav.inventory': 'موجودی',
+    'nav.inventory.products': 'محصولات',
+    'nav.inventory.categories': 'دسته‌بندی‌ها',
+    'nav.inventory.bulk': 'عملیات گروهی',
     'nav.customers': 'مشتریان',
     'nav.invoices': 'فاکتورها',
     'nav.accounting': 'حسابداری',
+    'nav.accounting.cash': 'نقد و بانک',
+    'nav.accounting.income': 'دفتر درآمد',
+    'nav.accounting.expense': 'دفتر هزینه',
+    'nav.accounting.gold': 'وزن طلا',
+    'nav.accounting.debt': 'پیگیری بدهی',
     'nav.reports': 'گزارشات',
+    'nav.reports.sales': 'گزارش فروش',
+    'nav.reports.inventory': 'گزارش موجودی',
+    'nav.reports.customers': 'گزارش مشتریان',
     'nav.settings': 'تنظیمات',
+    'nav.settings.company': 'تنظیمات شرکت',
+    'nav.settings.users': 'مدیریت کاربران',
+    'nav.settings.roles': 'نقش‌ها و مجوزها',
+    'nav.settings.gold-price': 'قیمت طلا',
+    'nav.settings.invoice-templates': 'قالب فاکتور',
     'nav.sms': 'پیامک',
+    'nav.sms.campaigns': 'کمپین پیامک',
+    'nav.sms.templates': 'قالب پیامک',
+    'nav.sms.history': 'تاریخچه پیامک',
+    
+    // Authentication
     'auth.login': 'ورود',
     'auth.logout': 'خروج',
+    
+    // Common terms
     'common.save': 'ذخیره',
     'common.cancel': 'لغو',
     'common.delete': 'حذف',
@@ -63,23 +192,236 @@ const translations = {
     'common.search': 'جستجو',
     'common.language': 'زبان',
     'common.profile': 'پروفایل',
+    'common.refresh': 'تازه‌سازی',
+    'common.filters': 'فیلترها',
+    'common.loading': 'در حال بارگیری',
+    'common.actions': 'عملیات',
+    'common.status': 'وضعیت',
+    'common.total': 'کل',
+    'common.new': 'جدید',
+    'common.quick_access': 'دسترسی سریع',
+    'common.notifications': 'اعلان‌ها',
+    'common.system_online': 'سیستم آنلاین',
+    'common.try_again': 'تلاش مجدد',
+    
+    // Dashboard
+    'dashboard.title': 'داشبورد',
+    'dashboard.total_sales_today': 'کل فروش امروز',
+    'dashboard.week': 'هفته',
+    'dashboard.month': 'ماه',
+    'dashboard.vs_last_week': 'نسبت به هفته گذشته',
+    'dashboard.inventory_value': 'ارزش موجودی',
+    'dashboard.stock_levels_healthy': 'سطح موجودی سالم',
+    'dashboard.customer_debt': 'بدهی مشتریان',
+    'dashboard.all_invoices_current': 'همه فاکتورها جاری',
+    'dashboard.gold_price_per_gram': 'قیمت طلا (هر گرم)',
+    'dashboard.market_rate': 'نرخ بازار',
+    'dashboard.from_last_week': 'از هفته گذشته',
+    'dashboard.sales_trends': 'روند فروش',
+    'dashboard.sales_trends_desc': 'عملکرد فروش روزانه در ۳۰ روز گذشته',
+    'dashboard.sales_by_category': 'فروش بر اساس دسته‌بندی',
+    'dashboard.sales_by_category_desc': 'توزیع درآمد در دسته‌بندی‌های محصولات',
+    'dashboard.top_products': 'محصولات برتر',
+    'dashboard.top_products_desc': 'بهترین محصولات از نظر درآمد',
+    'dashboard.alerts_notifications': 'هشدارها و اعلان‌ها',
+    'dashboard.alerts_count': '{count} هشدار • {unread} خوانده نشده',
+    'dashboard.show_dismissed': 'نمایش رد شده‌ها',
+    'dashboard.all_clear': 'همه چیز روبراه!',
+    'dashboard.no_alerts': 'هیچ هشداری برای نمایش وجود ندارد.',
+    'dashboard.tab_all': 'همه ({count})',
+    'dashboard.tab_critical': 'حیاتی ({count})',
+    'dashboard.tab_unread': 'خوانده نشده ({count})',
+    'dashboard.refresh_chart': 'تازه‌سازی نمودار',
+    'dashboard.export_chart': 'خروجی نمودار به تصویر',
+    'dashboard.fullscreen': 'نمایش تمام‌صفحه',
+    'dashboard.exit_fullscreen': 'خروج از حالت تمام‌صفحه',
+    'dashboard.error_loading': 'بارگیری اطلاعات داشبورد ناموفق بود',
+    'dashboard.no_data_available': 'هیچ اطلاعاتی برای داشبورد در دسترس نیست',
+    'dashboard.items_low_stock': 'کالا موجودی کم',
+    'dashboard.low_stock': 'موجودی کم',
+    'dashboard.unpaid_invoices': 'فاکتور پرداخت نشده',
+    'dashboard.overdue': 'سررسید گذشته',
+    'dashboard.critical': 'حیاتی',
+    'dashboard.hide_dismissed': 'مخفی کردن رد شده‌ها',
+    'dashboard.alerts': 'هشدار',
+    'dashboard.unread': 'خوانده نشده',
+    
+    // Accounting
     'accounting.income': 'دفتر درآمد',
+    'accounting.income_title': 'دفتر درآمد',
+    'accounting.income_desc': 'پیگیری تمام درآمدها از فاکتورها و پرداخت‌ها',
     'accounting.expense': 'دفتر هزینه',
     'accounting.cash_bank': 'نقد و بانک',
     'accounting.gold_weight': 'وزن طلا',
     'accounting.profit_loss': 'سود و زیان',
     'accounting.debt_tracking': 'پیگیری بدهی',
+    'accounting.total_revenue': 'کل درآمد',
+    'accounting.outstanding_amount': 'مبلغ معوق',
+    'accounting.total_invoices': 'کل فاکتورها',
+    'accounting.loading_income': 'در حال بارگیری دفتر درآمد...',
+    
+    // Customers
+    'customers.title': 'مدیریت مشتریان',
+    'customers.desc': 'مدیریت روابط مشتریان و پیگیری تاریخچه خرید با ابزارهای حرفه‌ای',
+    'customers.add_customer': 'افزودن مشتری',
+    'customers.total_customers': 'کل مشتریان',
+    'customers.clear_status': 'وضعیت تسویه',
+    'customers.with_debt': 'دارای بدهی',
+    'customers.total_purchases': 'کل خریدها',
+    'customers.directory': 'فهرست مشتریان',
+    'customers.search_placeholder': 'جستجو...',
+    'customers.contact_info': 'اطلاعات تماس',
+    'customers.current_debt': 'بدهی جاری',
+    'customers.last_purchase': 'آخرین خرید',
+    
+    // Reports
     'reports.sales': 'گزارش فروش',
     'reports.inventory': 'گزارش موجودی',
     'reports.customers': 'گزارش مشتریان',
+    
+    // SMS
     'sms.campaign': 'کمپین پیامک',
     'sms.templates': 'قالب پیامک',
     'sms.history': 'تاریخچه پیامک',
+    
+    // Settings
     'settings.company': 'تنظیمات شرکت',
     'settings.gold_price': 'قیمت طلا',
     'settings.invoice_template': 'قالب فاکتور',
     'settings.roles': 'نقش‌ها و مجوزها',
     'settings.users': 'مدیریت کاربران',
+  },
+  ar: {
+    // App and Navigation
+    'app.title': 'نظام إدارة محل الذهب',
+    'nav.dashboard': 'لوحة التحكم',
+    'nav.inventory': 'المخزون',
+    'nav.inventory.products': 'المنتجات',
+    'nav.inventory.categories': 'الفئات',
+    'nav.inventory.bulk': 'العمليات المجمعة',
+    'nav.customers': 'العملاء',
+    'nav.invoices': 'الفواتير',
+    'nav.accounting': 'المحاسبة',
+    'nav.accounting.cash': 'النقد والبنك',
+    'nav.accounting.income': 'دفتر الإيرادات',
+    'nav.accounting.expense': 'دفتر المصروفات',
+    'nav.accounting.gold': 'وزن الذهب',
+    'nav.accounting.debt': 'تتبع الديون',
+    'nav.reports': 'التقارير',
+    'nav.reports.sales': 'تقارير المبيعات',
+    'nav.reports.inventory': 'تقارير المخزون',
+    'nav.reports.customers': 'تقارير العملاء',
+    'nav.settings': 'الإعدادات',
+    'nav.settings.company': 'إعدادات الشركة',
+    'nav.settings.users': 'إدارة المستخدمين',
+    'nav.settings.roles': 'الأدوار والصلاحيات',
+    'nav.settings.gold-price': 'سعر الذهب',
+    'nav.settings.invoice-templates': 'قوالب الفواتير',
+    'nav.sms': 'الرسائل النصية',
+    'nav.sms.campaigns': 'حملات الرسائل النصية',
+    'nav.sms.templates': 'قوالب الرسائل النصية',
+    'nav.sms.history': 'تاريخ الرسائل النصية',
+    
+    // Authentication
+    'auth.login': 'تسجيل الدخول',
+    'auth.logout': 'تسجيل الخروج',
+    
+    // Common terms
+    'common.save': 'حفظ',
+    'common.cancel': 'إلغاء',
+    'common.delete': 'حذف',
+    'common.edit': 'تعديل',
+    'common.add': 'إضافة',
+    'common.create': 'إنشاء',
+    'common.search': 'بحث',
+    'common.language': 'اللغة',
+    'common.profile': 'الملف الشخصي',
+    'common.refresh': 'تحديث',
+    'common.filters': 'المرشحات',
+    'common.loading': 'جاري التحميل',
+    'common.actions': 'الإجراءات',
+    'common.status': 'الحالة',
+    'common.total': 'المجموع',
+    'common.new': 'جديد',
+    'common.quick_access': 'الوصول السريع',
+    'common.notifications': 'الإشعارات',
+    'common.system_online': 'النظام متصل',
+    
+    // Dashboard
+    'dashboard.title': 'لوحة التحكم',
+    'dashboard.total_sales_today': 'إجمالي المبيعات اليوم',
+    'dashboard.week': 'أسبوع',
+    'dashboard.month': 'شهر',
+    'dashboard.vs_last_week': 'مقارنة بالأسبوع الماضي',
+    'dashboard.inventory_value': 'قيمة المخزون',
+    'dashboard.stock_levels_healthy': 'مستويات المخزون صحية',
+    'dashboard.customer_debt': 'ديون العملاء',
+    'dashboard.all_invoices_current': 'جميع الفواتير حالية',
+    'dashboard.gold_price_per_gram': 'سعر الذهب (للجرام)',
+    'dashboard.market_rate': 'سعر السوق',
+    'dashboard.from_last_week': 'من الأسبوع الماضي',
+    'dashboard.sales_trends': 'اتجاهات المبيعات',
+    'dashboard.sales_trends_desc': 'أداء المبيعات اليومية خلال الـ ٣٠ يوماً الماضية',
+    'dashboard.sales_by_category': 'المبيعات حسب الفئة',
+    'dashboard.sales_by_category_desc': 'توزيع الإيرادات عبر فئات المنتجات',
+    'dashboard.top_products': 'أفضل المنتجات',
+    'dashboard.top_products_desc': 'أفضل المنتجات أداءً من ناحية الإيرادات',
+    'dashboard.alerts_notifications': 'التنبيهات والإشعارات',
+    'dashboard.alerts_count': '{count} تنبيه • {unread} غير مقروء',
+    'dashboard.show_dismissed': 'إظهار المرفوضة',
+    'dashboard.all_clear': 'كل شيء واضح!',
+    'dashboard.no_alerts': 'لا توجد تنبيهات للعرض.',
+    'dashboard.tab_all': 'الكل ({count})',
+    'dashboard.tab_critical': 'حرجة ({count})',
+    'dashboard.tab_unread': 'غير مقروءة ({count})',
+    'dashboard.refresh_chart': 'تحديث بيانات الرسم البياني',
+    'dashboard.export_chart': 'تصدير الرسم البياني كصورة',
+    'dashboard.fullscreen': 'دخول ملء الشاشة',
+    
+    // Accounting
+    'accounting.income': 'دفتر الإيرادات',
+    'accounting.income_title': 'دفتر الإيرادات',
+    'accounting.income_desc': 'تتبع جميع الإيرادات من الفواتير والمدفوعات',
+    'accounting.expense': 'دفتر المصروفات',
+    'accounting.cash_bank': 'النقد والبنك',
+    'accounting.gold_weight': 'وزن الذهب',
+    'accounting.profit_loss': 'الربح والخسارة',
+    'accounting.debt_tracking': 'تتبع الديون',
+    'accounting.total_revenue': 'إجمالي الإيرادات',
+    'accounting.outstanding_amount': 'المبلغ المستحق',
+    'accounting.total_invoices': 'إجمالي الفواتير',
+    'accounting.loading_income': 'جاري تحميل دفتر الإيرادات...',
+    
+    // Customers
+    'customers.title': 'إدارة العملاء',
+    'customers.desc': 'إدارة علاقات العملاء وتتبع تاريخ الشراء بأدوات احترافية',
+    'customers.add_customer': 'إضافة عميل',
+    'customers.total_customers': 'إجمالي العملاء',
+    'customers.clear_status': 'حالة التسوية',
+    'customers.with_debt': 'لديهم ديون',
+    'customers.total_purchases': 'إجمالي المشتريات',
+    'customers.directory': 'دليل العملاء',
+    'customers.search_placeholder': 'بحث...',
+    'customers.contact_info': 'معلومات الاتصال',
+    'customers.current_debt': 'الدين الحالي',
+    'customers.last_purchase': 'آخر شراء',
+    
+    // Reports
+    'reports.sales': 'تقارير المبيعات',
+    'reports.inventory': 'تقارير المخزون',
+    'reports.customers': 'تقارير العملاء',
+    
+    // SMS
+    'sms.campaign': 'حملة الرسائل النصية',
+    'sms.templates': 'قوالب الرسائل النصية',
+    'sms.history': 'تاريخ الرسائل النصية',
+    
+    // Settings
+    'settings.company': 'إعدادات الشركة',
+    'settings.gold_price': 'سعر الذهب',
+    'settings.invoice_template': 'قالب الفاتورة',
+    'settings.roles': 'الأدوار والصلاحيات',
+    'settings.users': 'إدارة المستخدمين',
   },
 };
 
@@ -100,20 +442,20 @@ export const useLanguageProvider = () => {
   useEffect(() => {
     // Load language from localStorage or browser preference
     const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage && ['en', 'fa'].includes(savedLanguage)) {
+    if (savedLanguage && ['en', 'fa', 'ar'].includes(savedLanguage)) {
       setLanguageState(savedLanguage);
-      setDirection(savedLanguage === 'fa' ? 'rtl' : 'ltr');
+      setDirection(savedLanguage === 'fa' || savedLanguage === 'ar' ? 'rtl' : 'ltr');
     }
   }, []);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    setDirection(lang === 'fa' ? 'rtl' : 'ltr');
+    setDirection(lang === 'fa' || lang === 'ar' ? 'rtl' : 'ltr');
     localStorage.setItem('language', lang);
     
     // Update document direction
-    document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
-    document.documentElement.lang = lang === 'fa' ? 'fa' : 'en';
+    document.documentElement.dir = lang === 'fa' || lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
   };
 
   const t = (key: string): string => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { CompanySettingsForm } from '../components/settings/CompanySettingsForm';
@@ -213,5 +214,85 @@ export const Settings: React.FC = () => {
         </Card>
       </div>
     </div>
+  );
+};
+
+// Individual route components
+const CompanySettingsRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <Building2 className="h-8 w-8 text-blue-600" />
+      <div>
+        <h1 className="text-3xl font-bold">Company Settings</h1>
+        <p className="text-muted-foreground">Configure your company details, logo, and default business settings</p>
+      </div>
+    </div>
+    <CompanySettingsForm />
+  </div>
+);
+
+const UserManagementRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <Users className="h-8 w-8 text-green-600" />
+      <div>
+        <h1 className="text-3xl font-bold">User Management</h1>
+        <p className="text-muted-foreground">Add, edit, and manage system users and their access permissions</p>
+      </div>
+    </div>
+    <UserManagementComponent />
+  </div>
+);
+
+const RoleManagementRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <Shield className="h-8 w-8 text-purple-600" />
+      <div>
+        <h1 className="text-3xl font-bold">Roles & Permissions</h1>
+        <p className="text-muted-foreground">Define user roles and assign specific permissions for different system functions</p>
+      </div>
+    </div>
+    <RolePermissionManager />
+  </div>
+);
+
+const GoldPriceRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <TrendingUp className="h-8 w-8 text-yellow-600" />
+      <div>
+        <h1 className="text-3xl font-bold">Gold Price Configuration</h1>
+        <p className="text-muted-foreground">Set current gold prices and configure automatic updates from external price feeds</p>
+      </div>
+    </div>
+    <GoldPriceConfig />
+  </div>
+);
+
+const InvoiceTemplatesRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <FileText className="h-8 w-8 text-indigo-600" />
+      <div>
+        <h1 className="text-3xl font-bold">Invoice Templates</h1>
+        <p className="text-muted-foreground">Customize invoice layouts, colors, fonts, and branding to match your business identity</p>
+      </div>
+    </div>
+    <InvoiceTemplateDesigner />
+  </div>
+);
+
+// Wrapper component to handle sub-routes
+export const SettingsWithRouting: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/company" element={<CompanySettingsRoute />} />
+      <Route path="/users" element={<UserManagementRoute />} />
+      <Route path="/roles" element={<RoleManagementRoute />} />
+      <Route path="/gold-price" element={<GoldPriceRoute />} />
+      <Route path="/invoice-templates" element={<InvoiceTemplatesRoute />} />
+      <Route path="/*" element={<Settings />} />
+    </Routes>
   );
 };

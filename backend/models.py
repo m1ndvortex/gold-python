@@ -38,11 +38,38 @@ class Category(Base):
     name = Column(String(100), nullable=False)
     parent_id = Column(UUID(as_uuid=True), ForeignKey("categories.id"))
     description = Column(Text)
+    icon = Column(String(50))  # Icon name for UI
+    color = Column(String(7))  # Hex color code
+    attributes = Column(JSONB)  # Custom attributes definition
+    category_metadata = Column(JSONB)  # Additional metadata
+    sort_order = Column(Integer, default=0)  # For drag-and-drop ordering
+    is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     parent = relationship("Category", remote_side=[id], back_populates="children")
     children = relationship("Category", back_populates="parent")
     inventory_items = relationship("InventoryItem", back_populates="category")
+    
+    __table_args__ = (
+        Index('idx_categories_parent', 'parent_id'),
+        Index('idx_categories_active', 'is_active'),
+        Index('idx_categories_sort', 'sort_order'),
+    )
+
+class CategoryTemplate(Base):
+    __tablename__ = "category_templates"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    template_data = Column(JSONB, nullable=False)  # Template structure with attributes
+    is_active = Column(Boolean, default=True)
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    creator = relationship("User")
 
 class InventoryItem(Base):
     __tablename__ = "inventory_items"

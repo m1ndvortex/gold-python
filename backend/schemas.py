@@ -57,10 +57,23 @@ class Role(RoleBase):
         from_attributes = True
 
 # Category Schemas
+class CategoryAttribute(BaseModel):
+    id: str
+    name: str
+    type: str  # 'text', 'number', 'select', 'boolean', 'date'
+    required: bool = False
+    options: Optional[List[str]] = None  # For select type
+    validation: Optional[Dict[str, Any]] = None
+
 class CategoryBase(BaseModel):
     name: str
     parent_id: Optional[UUID] = None
     description: Optional[str] = None
+    icon: Optional[str] = None
+    color: Optional[str] = None
+    attributes: Optional[List[CategoryAttribute]] = []
+    category_metadata: Optional[Dict[str, Any]] = {}
+    sort_order: Optional[int] = 0
 
 class CategoryCreate(CategoryBase):
     pass
@@ -69,10 +82,18 @@ class CategoryUpdate(BaseModel):
     name: Optional[str] = None
     parent_id: Optional[UUID] = None
     description: Optional[str] = None
+    icon: Optional[str] = None
+    color: Optional[str] = None
+    attributes: Optional[List[CategoryAttribute]] = None
+    category_metadata: Optional[Dict[str, Any]] = None
+    sort_order: Optional[int] = None
+    is_active: Optional[bool] = None
 
 class Category(CategoryBase):
     id: UUID
+    is_active: bool
     created_at: datetime
+    updated_at: datetime
     
     class Config:
         from_attributes = True
@@ -80,6 +101,52 @@ class Category(CategoryBase):
 class CategoryWithChildren(Category):
     children: List['CategoryWithChildren'] = []
     parent: Optional['Category'] = None
+
+class CategoryWithStats(Category):
+    product_count: int = 0
+    children: List['CategoryWithStats'] = []
+
+# Category Template Schemas
+class CategoryTemplateBase(BaseModel):
+    name: str
+    description: Optional[str] = None
+    template_data: Dict[str, Any]
+
+class CategoryTemplateCreate(CategoryTemplateBase):
+    pass
+
+class CategoryTemplateUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    template_data: Optional[Dict[str, Any]] = None
+    is_active: Optional[bool] = None
+
+class CategoryTemplate(CategoryTemplateBase):
+    id: UUID
+    is_active: bool
+    created_by: UUID
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class CategoryTemplateWithCreator(CategoryTemplate):
+    creator: Optional[User] = None
+
+# Category Bulk Operations
+class CategoryBulkUpdateRequest(BaseModel):
+    category_ids: List[UUID]
+    updates: Dict[str, Any]
+
+class CategoryBulkDeleteRequest(BaseModel):
+    category_ids: List[UUID]
+    force: bool = False  # Force delete even if has products
+
+class CategoryReorderRequest(BaseModel):
+    category_id: UUID
+    new_parent_id: Optional[UUID] = None
+    new_sort_order: int
 
 # Inventory Item Schemas
 class InventoryItemBase(BaseModel):

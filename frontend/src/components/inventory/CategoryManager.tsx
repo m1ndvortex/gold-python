@@ -1,40 +1,37 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, FolderTree, Folder, FolderOpen } from 'lucide-react';
+import { 
+  Plus, 
+  Settings, 
+  FolderTree, 
+  FileText,
+  Move,
+  ToggleLeft,
+  ToggleRight
+} from 'lucide-react';
 import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { CategoryTreeView } from './CategoryTreeView';
+import { CategoryForm } from './CategoryForm';
+import { CategoryTemplateManager } from './CategoryTemplateManager';
+import { CategoryBulkOperations } from './CategoryBulkOperations';
 import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter 
-} from '../ui/dialog';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '../ui/select';
-import { 
-  useCategories, 
-  useCreateCategory, 
-  useUpdateCategory, 
-  useDeleteCategory 
-} from '../../hooks/useInventory';
+  useCategoryTree,
+  useCategoryTemplates,
+  useEnhancedCreateCategory,
+  useEnhancedUpdateCategory,
+  useBulkUpdateCategories,
+  useCreateCategoryTemplate,
+  useCreateCategoryFromTemplate,
+  useCategoryDragAndDrop,
+  useCategorySelection
+} from '../../hooks/useCategoryManagement';
+import { useDeleteCategory } from '../../hooks/useInventory';
 import type { Category } from '../../types';
 
 interface CategoryManagerProps {
   onCategorySelect?: (category: Category) => void;
-}
-
-interface CategoryFormData {
-  name: string;
-  parent_id?: string;
-  description?: string;
 }
 
 export const CategoryManager: React.FC<CategoryManagerProps> = ({ 
@@ -42,67 +39,44 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
 }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [formData, setFormData] = useState<CategoryFormData>({
-    name: '',
-    parent_id: '',
-    description: '',
-  });
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [isDragMode, setIsDragMode] = useState(false);
+  const [activeTab, setActiveTab] = useState('tree');
 
-  const { data: categories = [], isLoading } = useCategories();
-  const createCategoryMutation = useCreateCategory();
-  const updateCategoryMutation = useUpdateCategory();
+  // Data hooks
+  const { data: categoryTree = [], isLoading: isLoadingTree } = useCategoryTree();
+  const { data: templates = [], isLoading: isLoadingTemplates } = useCategoryTemplates();
+
+  // Mutation hooks
+  const createCategoryMutation = useEnhancedCreateCategory();
+  const updateCategoryMutation = useEnhancedUpdateCategory();
   const deleteCategoryMutation = useDeleteCategory();
+  const bulkUpdateMutation = useBulkUpdateCategories();
+  const createTemplateMutation = useCreateCategoryTemplate();
+  const createFromTemplateMutation = useCreateCategoryFromTemplate();
 
-  // Build hierarchical category structure
-  const buildCategoryTree = (categories: Category[]): (Category & { children: Category[] })[] => {
-    const categoryMap = new Map<string, Category & { children: Category[] }>();
-    const rootCategories: (Category & { children: Category[] })[] = [];
+  // Utility hooks
+  const { handleDragStart, handleDrop } = useCategoryDragAndDrop();
+  const { 
+    selectedCategories, 
+    setSelectedCategories,
+    toggleCategory,
+    selectAll,
+    clearSelection 
+  } = useCategorySelection();
 
-    // Initialize all categories with empty children array
-    categories.forEach(category => {
-      categoryMap.set(category.id, { ...category, children: [] });
-    });
-
-    // Build the tree structure
-    categories.forEach(category => {
-      const categoryWithChildren = categoryMap.get(category.id)!;
-      
-      if (category.parent_id) {
-        const parent = categoryMap.get(category.parent_id);
-        if (parent) {
-          parent.children.push(categoryWithChildren);
-        } else {
-          // Parent not found, treat as root
-          rootCategories.push(categoryWithChildren);
-        }
-      } else {
-        rootCategories.push(categoryWithChildren);
-      }
-    });
-
-    return rootCategories;
-  };
-
-  const categoryTree = buildCategoryTree(categories);
-
-  const handleCreateCategory = () => {
+  const handleCreateCategory = (parentId?: string) => {
     setEditingCategory(null);
-    setFormData({ name: '', parent_id: '', description: '' });
     setShowForm(true);
   };
 
-  const handleEditCategory = (category: Category) => {
+  const handleEditCategory = (category: any) => {
     setEditingCategory(category);
-    setFormData({
-      name: category.name,
-      parent_id: category.parent_id || '',
-      description: category.description || '',
-    });
     setShowForm(true);
   };
 
-  const handleDeleteCategory = async (category: Category) => {
+  const handleDeleteCategory = async (category: any) => {
     if (window.confirm(`Are you sure you want to delete "${category.name}"? This action cannot be undone.`)) {
       try {
         await deleteCategoryMutation.mutateAsync(category.id);
@@ -112,34 +86,12 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    try {
-      const data = {
-        name: formData.name,
-        parent_id: formData.parent_id || undefined,
-        description: formData.description || undefined,
-      };
-
-      if (editingCategory) {
-        await updateCategoryMutation.mutateAsync({
-          id: editingCategory.id,
-          data,
-        });
-      } else {
-        await createCategoryMutation.mutateAsync(data);
-      }
-
-      setShowForm(false);
-      setFormData({ name: '', parent_id: '', description: '' });
-      setEditingCategory(null);
-    } catch (error) {
-      console.error('Failed to save category:', error);
-    }
+  const handleCategorySelect = (category: any) => {
+    setSelectedCategory(category.id);
+    onCategorySelect?.(category);
   };
 
-  const toggleExpanded = (categoryId: string) => {
+  const handleToggleExpanded = (categoryId: string) => {
     setExpandedCategories(prev => {
       const newSet = new Set(prev);
       if (newSet.has(categoryId)) {
@@ -151,89 +103,108 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
     });
   };
 
-  const renderCategoryTree = (
-    categories: (Category & { children: Category[] })[], 
-    level = 0
-  ) => {
-    return categories.map(category => {
-      const hasChildren = category.children.length > 0;
-      const isExpanded = expandedCategories.has(category.id);
-      const indent = level * 24;
-
-      return (
-        <div key={category.id} className="space-y-1">
-          <div 
-            className="flex items-center justify-between p-2 rounded-md hover:bg-muted/50 cursor-pointer"
-            style={{ paddingLeft: `${12 + indent}px` }}
-            onClick={() => onCategorySelect?.(category)}
-          >
-            <div className="flex items-center gap-2 flex-1">
-              {hasChildren ? (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 p-0"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleExpanded(category.id);
-                  }}
-                >
-                  {isExpanded ? (
-                    <FolderOpen className="h-4 w-4" />
-                  ) : (
-                    <Folder className="h-4 w-4" />
-                  )}
-                </Button>
-              ) : (
-                <div className="w-6 h-6 flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
-                </div>
-              )}
-              
-              <span className="font-medium">{category.name}</span>
-              
-              {category.description && (
-                <span className="text-sm text-muted-foreground truncate">
-                  - {category.description}
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => handleEditCategory(category)}
-              >
-                <Edit className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-red-600 hover:text-red-700"
-                onClick={() => handleDeleteCategory(category)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          {hasChildren && isExpanded && (
-            <div>
-              {renderCategoryTree(category.children as (Category & { children: Category[] })[], level + 1)}
-            </div>
-          )}
-        </div>
-      );
-    });
+  const handleFormSubmit = async (data: any) => {
+    try {
+      if (editingCategory) {
+        await updateCategoryMutation.mutateAsync({
+          id: editingCategory.id,
+          data,
+        });
+      } else {
+        await createCategoryMutation.mutateAsync(data);
+      }
+      setShowForm(false);
+      setEditingCategory(null);
+    } catch (error) {
+      console.error('Failed to save category:', error);
+      throw error;
+    }
   };
+
+  const handleBulkUpdate = async (categoryIds: string[], updates: Record<string, any>) => {
+    try {
+      await bulkUpdateMutation.mutateAsync({ categoryIds, updates });
+      clearSelection();
+    } catch (error) {
+      console.error('Failed to bulk update categories:', error);
+      throw error;
+    }
+  };
+
+  const handleBulkDelete = async (categoryIds: string[], force?: boolean) => {
+    try {
+      // For now, delete one by one since we don't have bulk delete endpoint
+      for (const categoryId of categoryIds) {
+        await deleteCategoryMutation.mutateAsync(categoryId);
+      }
+      clearSelection();
+    } catch (error) {
+      console.error('Failed to bulk delete categories:', error);
+      throw error;
+    }
+  };
+
+  const handleBulkMove = async (categoryIds: string[], newParentId?: string) => {
+    try {
+      await bulkUpdateMutation.mutateAsync({ 
+        categoryIds, 
+        updates: { parent_id: newParentId } 
+      });
+      clearSelection();
+    } catch (error) {
+      console.error('Failed to bulk move categories:', error);
+      throw error;
+    }
+  };
+
+  const handleCreateTemplate = async (data: any) => {
+    try {
+      await createTemplateMutation.mutateAsync(data);
+    } catch (error) {
+      console.error('Failed to create template:', error);
+      throw error;
+    }
+  };
+
+  const handleDuplicateTemplate = async (template: any) => {
+    try {
+      const duplicateData = {
+        name: `${template.name} (Copy)`,
+        description: template.description,
+        template_data: template.template_data
+      };
+      await createTemplateMutation.mutateAsync(duplicateData);
+    } catch (error) {
+      console.error('Failed to duplicate template:', error);
+      throw error;
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent, category: any) => {
+    e.preventDefault();
+  };
+
+  const handleDropCategory = async (e: React.DragEvent, targetCategory: any) => {
+    e.preventDefault();
+    const draggedCategoryId = e.dataTransfer.getData('text/plain');
+    
+    if (draggedCategoryId && draggedCategoryId !== targetCategory.id) {
+      try {
+        const dragData = { categoryId: draggedCategoryId };
+        await handleDrop(dragData, targetCategory);
+      } catch (error) {
+        console.error('Failed to drop category:', error);
+      }
+    }
+  };
+
+  const isLoading = isLoadingTree || isLoadingTemplates;
 
   if (isLoading) {
     return (
       <Card>
         <CardContent className="p-6">
-          <div className="text-center">Loading categories...</div>
+          <div className="text-center">Loading category management...</div>
         </CardContent>
       </Card>
     );
@@ -246,110 +217,105 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <FolderTree className="h-5 w-5" />
-              Category Management
-              <Badge variant="secondary">{categories.length} categories</Badge>
+              Advanced Category Management
+              <Badge variant="secondary">{categoryTree.length} categories</Badge>
             </CardTitle>
-            <Button onClick={handleCreateCategory} className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Add Category
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsDragMode(!isDragMode)}
+                className="flex items-center gap-2"
+              >
+                {isDragMode ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
+                {isDragMode ? 'Exit Drag Mode' : 'Drag Mode'}
+              </Button>
+              <Button onClick={() => handleCreateCategory()} className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Add Category
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
-          {categoryTree.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              No categories found. Create your first category to get started.
-            </div>
-          ) : (
-            <div className="space-y-1">
-              {renderCategoryTree(categoryTree)}
-            </div>
-          )}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="tree" className="flex items-center gap-2">
+                <FolderTree className="h-4 w-4" />
+                Category Tree
+              </TabsTrigger>
+              <TabsTrigger value="templates" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Templates
+              </TabsTrigger>
+              <TabsTrigger value="bulk" className="flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                Bulk Operations
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="tree" className="mt-4">
+              <CategoryTreeView
+                categories={categoryTree}
+                selectedCategory={selectedCategory}
+                expandedCategories={expandedCategories}
+                onCategorySelect={handleCategorySelect}
+                onCategoryEdit={handleEditCategory}
+                onCategoryDelete={handleDeleteCategory}
+                onCategoryAdd={handleCreateCategory}
+                onToggleExpanded={handleToggleExpanded}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDrop={handleDropCategory}
+                isDragMode={isDragMode}
+              />
+            </TabsContent>
+
+            <TabsContent value="templates" className="mt-4">
+              <CategoryTemplateManager
+                templates={templates}
+                onCreateTemplate={handleCreateTemplate}
+                onUpdateTemplate={async (id, data) => {
+                  // Template update would need its own endpoint
+                  console.log('Update template:', id, data);
+                }}
+                onDeleteTemplate={async (id) => {
+                  // Template delete would need its own endpoint
+                  console.log('Delete template:', id);
+                }}
+                onDuplicateTemplate={handleDuplicateTemplate}
+                isLoading={createTemplateMutation.isPending}
+              />
+            </TabsContent>
+
+            <TabsContent value="bulk" className="mt-4">
+              <CategoryBulkOperations
+                categories={categoryTree}
+                selectedCategories={selectedCategories}
+                onSelectionChange={setSelectedCategories}
+                onBulkUpdate={handleBulkUpdate}
+                onBulkDelete={handleBulkDelete}
+                onBulkMove={handleBulkMove}
+                isLoading={bulkUpdateMutation.isPending}
+              />
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
       {/* Category Form Dialog */}
-      <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {editingCategory ? 'Edit Category' : 'Create New Category'}
-            </DialogTitle>
-          </DialogHeader>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="category-name">Category Name *</Label>
-              <Input
-                id="category-name"
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                placeholder="e.g., Rings, Necklaces, Bracelets"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="parent-category">Parent Category</Label>
-              <Select
-                value={formData.parent_id || "none"}
-                onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, parent_id: value === "none" ? "" : value }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select parent category (optional)" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No parent (root category)</SelectItem>
-                  {categories
-                    .filter(cat => cat.id !== editingCategory?.id) // Don't allow self as parent
-                    .map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="category-description">Description</Label>
-              <textarea
-                id="category-description"
-                value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Optional description of the category..."
-              />
-            </div>
-
-            <DialogFooter>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => setShowForm(false)}
-              >
-                Cancel
-              </Button>
-              <Button 
-                type="submit"
-                disabled={
-                  createCategoryMutation.isPending || 
-                  updateCategoryMutation.isPending
-                }
-              >
-                {createCategoryMutation.isPending || updateCategoryMutation.isPending
-                  ? 'Saving...'
-                  : editingCategory 
-                    ? 'Update Category' 
-                    : 'Create Category'
-                }
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <CategoryForm
+        category={editingCategory || undefined}
+        parentCategories={categoryTree}
+        templates={templates}
+        isOpen={showForm}
+        onClose={() => {
+          setShowForm(false);
+          setEditingCategory(null);
+        }}
+        onSubmit={handleFormSubmit}
+        isLoading={createCategoryMutation.isPending || updateCategoryMutation.isPending}
+      />
     </>
   );
 };

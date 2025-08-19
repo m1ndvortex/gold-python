@@ -35,13 +35,31 @@ export interface AuthResponse {
   user?: User;
 }
 
+// Language and RTL Types
+export type Language = 'en' | 'ar' | 'fa';
+export type Direction = 'ltr' | 'rtl';
+
+export interface LanguageContextType {
+  language: Language;
+  direction: Direction;
+  t: (key: string) => string;
+  setLanguage: (lang: Language) => void;
+}
+
 // Inventory Types
 export interface Category {
   id: string;
   name: string;
-  parent_id?: string;
+  parent_id?: string | null;
   description?: string;
+  icon?: string;
+  color?: string;
+  attributes?: any[];
+  category_metadata?: Record<string, any>;
+  sort_order?: number;
+  is_active?: boolean;
   created_at: string;
+  updated_at?: string;
 }
 
 export interface InventoryItem {
@@ -61,16 +79,56 @@ export interface InventoryItem {
   updated_at: string;
 }
 
+// Inventory Filter Types
+export interface InventoryFilters {
+  search?: string;
+  categories: string[];
+  priceRange: {
+    min?: number;
+    max?: number;
+  };
+  stockRange: {
+    min?: number;
+    max?: number;
+  };
+  weightRange: {
+    min?: number;
+    max?: number;
+  };
+  dateRange: {
+    from?: Date;
+    to?: Date;
+  };
+  status: ('active' | 'inactive')[];
+  stockStatus: ('in_stock' | 'low_stock' | 'out_of_stock')[];
+  sortBy: 'name' | 'price' | 'stock' | 'created_at' | 'updated_at';
+  sortOrder: 'asc' | 'desc';
+}
+
+export interface FilterPreset {
+  id: string;
+  name: string;
+  filters: InventoryFilters;
+  isDefault?: boolean;
+  createdAt: string;
+}
+
+export interface CategoryNode extends Category {
+  children: CategoryNode[];
+  level: number;
+  productCount?: number;
+}
+
 // Customer Types
 export interface Customer {
   id: string;
   name: string;
-  phone?: string;
-  email?: string;
-  address?: string;
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
   total_purchases: number;
   current_debt: number;
-  last_purchase_date?: string;
+  last_purchase_date?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -687,15 +745,4 @@ export interface SMSScheduleRequest {
 export interface SMSScheduledCampaign extends SMSCampaign {
   scheduled_at: string;
   is_scheduled: boolean;
-}
-
-// Language and RTL Types
-export type Language = 'en' | 'fa';
-export type Direction = 'ltr' | 'rtl';
-
-export interface LanguageContextType {
-  language: Language;
-  direction: Direction;
-  setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
 }

@@ -6,8 +6,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { Login } from '../pages/Login';
 import { LanguageContext, useLanguageProvider } from '../hooks/useLanguage';
 
-// 🐳 Use the same pattern as the working auth.test.tsx
-const axios = require('axios');
+// 🐳 Unmock axios for Docker integration tests
+jest.unmock('axios');
+
+// 🐳 Use real axios for Docker backend testing
+import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 // Create axios instance for MAIN Docker backend testing
@@ -55,8 +58,8 @@ describe('🐳 MAIN Docker Authentication Tests', () => {
     try {
       const response = await realAxios.get('/health');
       console.log('✅ MAIN Docker backend is healthy:', response.data);
-      expect(response.data.status).toBe('healthy');
-      expect(response.data.database).toBe('connected');
+      expect((response.data as any).status).toBe('healthy');
+      expect((response.data as any).database).toBe('connected');
     } catch (error: any) {
       console.error('❌ Cannot connect to MAIN Docker backend:', error.message);
       throw new Error(`MAIN Docker backend not available at ${BACKEND_URL}`);
@@ -67,8 +70,8 @@ describe('🐳 MAIN Docker Authentication Tests', () => {
     const response = await realAxios.get('/health');
     
     expect(response.status).toBe(200);
-    expect(response.data.status).toBe('healthy');
-    expect(response.data.database).toBe('connected');
+    expect((response.data as any).status).toBe('healthy');
+    expect((response.data as any).database).toBe('connected');
     
     console.log('✅ MAIN Docker backend health check passed');
   });
@@ -82,14 +85,14 @@ describe('🐳 MAIN Docker Authentication Tests', () => {
     const response = await realAxios.post('/auth/login', loginData);
 
     expect(response.status).toBe(200);
-    expect(response.data).toHaveProperty('access_token');
-    expect(response.data).toHaveProperty('token_type', 'bearer');
-    expect(response.data).toHaveProperty('expires_in');
+    expect((response.data as any)).toHaveProperty('access_token');
+    expect((response.data as any)).toHaveProperty('token_type', 'bearer');
+    expect((response.data as any)).toHaveProperty('expires_in');
     
     console.log('✅ MAIN Docker backend authentication successful');
     
     // Test getting user info with token
-    const token = response.data.access_token;
+    const token = (response.data as any).access_token;
     const userResponse = await realAxios.get('/auth/me', {
       headers: { 
         'Authorization': `Bearer ${token}`
@@ -116,7 +119,7 @@ describe('🐳 MAIN Docker Authentication Tests', () => {
       expect(true).toBe(false);
     } catch (error: any) {
       expect(error.response.status).toBe(401);
-      expect(error.response.data.detail).toContain('Incorrect username or password');
+      expect((error.response.data as any).detail).toContain('Incorrect username or password');
       
       console.log('✅ MAIN Docker backend properly rejects invalid credentials');
     }
@@ -194,7 +197,7 @@ describe('🐳 MAIN Docker Authentication Tests', () => {
       password: 'admin123'
     });
 
-    const token = loginResponse.data.access_token;
+    const token = (loginResponse.data as any).access_token;
 
     // Test token refresh
     const refreshResponse = await realAxios.post('/auth/refresh', {}, {
@@ -204,8 +207,8 @@ describe('🐳 MAIN Docker Authentication Tests', () => {
     });
 
     expect(refreshResponse.status).toBe(200);
-    expect(refreshResponse.data).toHaveProperty('access_token');
-    expect(refreshResponse.data.access_token).not.toBe(token); // Should be a new token
+    expect((refreshResponse.data as any)).toHaveProperty('access_token');
+    expect((refreshResponse.data as any).access_token).not.toBe(token); // Should be a new token
     
     console.log('✅ Token refresh with MAIN Docker backend successful');
   });

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, User, Phone, Mail, MapPin, Save, Loader2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { Label } from '../ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useCreateCustomer, useUpdateCustomer } from '../../hooks/useCustomers';
 import { useToast } from '../ui/use-toast';
@@ -105,53 +104,72 @@ export const CustomerForm: React.FC<CustomerFormProps> = ({
   const isLoading = createCustomer.isPending || updateCustomer.isPending;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <Card className="w-full max-w-md mx-4">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle>
-            {customer ? 'Edit Customer' : 'Add New Customer'}
-          </CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            disabled={isLoading}
-          >
-            <X className="h-4 w-4" />
-          </Button>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-lg mx-auto shadow-2xl border-0">
+        <CardHeader className="bg-gradient-to-r from-primary-50 to-primary-100 border-b border-primary-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
+                <User className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-primary-900">
+                  {customer ? 'Edit Customer' : 'Add New Customer'}
+                </CardTitle>
+                <p className="text-sm text-primary-700">
+                  {customer ? 'Update customer information' : 'Create a new customer profile'}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              disabled={isLoading}
+              className="text-primary-600 hover:text-primary-800 hover:bg-primary-200"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        
+        <CardContent className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Customer Name - Floating Label */}
             <div className="space-y-2">
-              <Label htmlFor="name">Customer Name *</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 placeholder="Enter customer name"
                 disabled={isLoading}
+                floating
+                label="Customer Name *"
+                leftIcon={<User className="h-4 w-4" />}
+                error={errors.name}
+                className="text-base"
               />
-              {errors.name && (
-                <p className="text-sm text-destructive">{errors.name}</p>
-              )}
             </div>
 
+            {/* Phone Number - Floating Label */}
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
               <Input
                 id="phone"
+                type="tel"
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 placeholder="Enter phone number"
                 disabled={isLoading}
+                floating
+                label="Phone Number"
+                leftIcon={<Phone className="h-4 w-4" />}
+                error={errors.phone}
+                className="text-base"
               />
-              {errors.phone && (
-                <p className="text-sm text-destructive">{errors.phone}</p>
-              )}
             </div>
 
+            {/* Email Address - Floating Label */}
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
                 type="email"
@@ -159,34 +177,56 @@ export const CustomerForm: React.FC<CustomerFormProps> = ({
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 placeholder="Enter email address"
                 disabled={isLoading}
+                floating
+                label="Email Address"
+                leftIcon={<Mail className="h-4 w-4" />}
+                error={errors.email}
+                className="text-base"
               />
-              {errors.email && (
-                <p className="text-sm text-destructive">{errors.email}</p>
-              )}
             </div>
 
+            {/* Address - Floating Label */}
             <div className="space-y-2">
-              <Label htmlFor="address">Address</Label>
               <Input
                 id="address"
                 value={formData.address}
                 onChange={(e) => handleInputChange('address', e.target.value)}
-                placeholder="Enter address"
+                placeholder="Enter full address"
                 disabled={isLoading}
+                floating
+                label="Address"
+                leftIcon={<MapPin className="h-4 w-4" />}
+                className="text-base"
               />
             </div>
 
-            <div className="flex justify-end space-x-2 pt-4">
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-3 pt-6 border-t border-border">
               <Button
                 type="button"
                 variant="outline"
                 onClick={onClose}
                 disabled={isLoading}
+                className="px-6"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Saving...' : customer ? 'Update' : 'Create'}
+              <Button 
+                type="submit" 
+                disabled={isLoading}
+                className="px-6 bg-primary-600 hover:bg-primary-700 text-white"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4 mr-2" />
+                    {customer ? 'Update Customer' : 'Create Customer'}
+                  </>
+                )}
               </Button>
             </div>
           </form>

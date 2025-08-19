@@ -1,7 +1,7 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, func
 from database import get_db
 import models
 import schemas
@@ -9,6 +9,7 @@ from auth import get_current_active_user
 import os
 import uuid
 from pathlib import Path
+import json
 
 router = APIRouter(prefix="/inventory", tags=["inventory"])
 
@@ -208,6 +209,198 @@ async def delete_category(
     db.commit()
     
     return {"message": "Category deleted successfully"}
+
+# Enhanced Category Management Endpoints
+
+@router.get("/categories/tree", response_model=List[schemas.CategoryWithStats])
+async def get_category_tree(
+    include_stats: bool = True,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Get complete category tree with statistics"""
+    # Get all categories
+    categories = db.query(models.Category).filter(
+        models.Category.is_active == True
+    ).order_by(models.Category.sort_order, models.Category.name).all()
+    
+    if include_stats:
+        # Get product counts for each category
+        product_counts = db.query(
+            models.InventoryItem.category_id,
+            func.count(models.InventoryItem.id).label('count')
+        ).filter(
+            models.InventoryItem.is_active == True
+        ).group_by(models.InventoryItem.category_id).all()
+        
+        count_dict = {str(cat_id): count for cat_id, count in product_counts}
+    else:
+        count_dict = {}
+    
+    # Build tree structure
+    category_dict = {}
+    root_categories = []
+    
+    for category in categories:
+        category_data = {
+            **category.__dict__,
+            'children': [],
+            'product_count': count_dict.get(str(category.id), 0)
+        }
+        category_dict[str(category.id)] = category_data
+        
+        if not category.parent_id:
+            root_categories.append(category_data)
+    
+    # Build parent-child relationships
+    for category in categories:
+        if category.parent_id:
+            parent = category_dict.get(str(category.parent_id))
+            if parent:
+                parent['children'].append(category_dict[str(category.id)])
+    
+    return root_categories
+
+@router.post("/categories/bulk-update")
+async def bulk_update_categories(
+    request: schemas.CategoryBulkUpdateRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Bulk update multiple categories"""
+    categories = db.query(models.Category).filter(
+        models.Category.id.in_(request.category_ids)
+    ).all()
+    
+    if len(categories) != len(request.category_ids):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Some categories not found"
+        )
+    
+    updated_count = 0
+    for category in categories:
+        for field, value in request.updates.items():
+            if hasattr(category, field):
+                setattr(category, field, value)
+                updated_count += 1
+    
+    db.commit()
+    
+    return {"message": f"Updated {updated_count} categories", "updated_count": updated_count}
+
+@router.post("/categories/reorder")
+async def reorder_category(
+    request: schemas.CategoryReorderRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Reorder category (drag and drop support)"""
+    category = db.query(models.Category).filter(
+        models.Category.id == request.category_id
+    ).first()
+    
+    if not category:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Category not found"
+        )
+    
+    # Update parent if changed
+    if request.new_parent_id != category.parent_id:
+        if request.new_parent_id:
+            parent = db.query(models.Category).filter(
+                models.Category.id == request.new_parent_id
+            ).first()
+            if not parent:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Parent category not found"
+                )
+        
+        category.parent_id = request.new_parent_id
+    
+    # Update sort order
+    category.sort_order = request.new_sort_order
+    
+    db.commit()
+    db.refresh(category)
+    
+    return {"message": "Category reordered successfully", "category": category}
+
+# Category Template Management
+
+@router.post("/category-templates", response_model=schemas.CategoryTemplate)
+async def create_category_template(
+    template: schemas.CategoryTemplateCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Create a new category template"""
+    db_template = models.CategoryTemplate(
+        **template.model_dump(),
+        created_by=current_user.id
+    )
+    db.add(db_template)
+    db.commit()
+    db.refresh(db_template)
+    
+    return db_template
+
+@router.get("/category-templates", response_model=List[schemas.CategoryTemplateWithCreator])
+async def get_category_templates(
+    active_only: bool = True,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Get all category templates"""
+    query = db.query(models.CategoryTemplate).options(
+        joinedload(models.CategoryTemplate.creator)
+    )
+    
+    if active_only:
+        query = query.filter(models.CategoryTemplate.is_active == True)
+    
+    templates = query.order_by(models.CategoryTemplate.name).all()
+    return templates
+
+@router.post("/categories/from-template/{template_id}", response_model=schemas.Category)
+async def create_category_from_template(
+    template_id: str,
+    category_data: schemas.CategoryCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Create a category from a template"""
+    template = db.query(models.CategoryTemplate).filter(
+        models.CategoryTemplate.id == template_id,
+        models.CategoryTemplate.is_active == True
+    ).first()
+    
+    if not template:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Template not found"
+        )
+    
+    # Merge template data with provided data
+    template_data = template.template_data
+    category_dict = category_data.model_dump()
+    
+    # Apply template defaults
+    if 'attributes' in template_data:
+        category_dict['attributes'] = template_data['attributes']
+    if 'icon' in template_data:
+        category_dict.setdefault('icon', template_data['icon'])
+    if 'color' in template_data:
+        category_dict.setdefault('color', template_data['color'])
+    
+    db_category = models.Category(**category_dict)
+    db.add(db_category)
+    db.commit()
+    db.refresh(db_category)
+    
+    return db_category
 
 # Inventory Item Management Endpoints
 

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { DashboardSummary } from '../../types';
-import { TrendingUp, TrendingDown, Package, Users, DollarSign, Coins } from 'lucide-react';
+import { Package, Users, DollarSign, Coins, TrendingUp, TrendingDown, AlertTriangle } from 'lucide-react';
+import { MetricCard } from './MetricCard';
+import { useLanguage } from '../../hooks/useLanguage';
 
 interface SummaryCardsProps {
   data: DashboardSummary | null;
@@ -10,6 +11,7 @@ interface SummaryCardsProps {
 }
 
 export const SummaryCards: React.FC<SummaryCardsProps> = ({ data, isLoading, onCardClick }) => {
+  const { t } = useLanguage();
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -20,30 +22,26 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ data, isLoading, onC
     }).format(amount);
   };
 
-  const formatPercentage = (percentage: number) => {
-    const isPositive = percentage >= 0;
-    return (
-      <span className={`flex items-center ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
-        {isPositive ? <TrendingUp className="w-3 h-3 mr-1" /> : <TrendingDown className="w-3 h-3 mr-1" />}
-        {Math.abs(percentage).toFixed(1)}%
-      </span>
-    );
+  // Generate mock trend data for demonstration
+  const generateTrendData = (baseValue: number, volatility: number = 0.1) => {
+    return Array.from({ length: 7 }, (_, i) => {
+      const variation = (Math.random() - 0.5) * volatility;
+      return baseValue * (1 + variation);
+    });
   };
 
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="animate-pulse">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div className="h-4 bg-gray-200 rounded w-24"></div>
-              <div className="h-4 w-4 bg-gray-200 rounded"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="h-8 bg-gray-200 rounded w-20 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-32"></div>
-            </CardContent>
-          </Card>
+          <MetricCard
+            key={i}
+            title=""
+            value=""
+            icon={DollarSign}
+            color="gold"
+            isLoading={true}
+          />
         ))}
       </div>
     );
@@ -52,97 +50,78 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ data, isLoading, onC
   if (!data) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-center text-gray-500">No data available</p>
-          </CardContent>
-        </Card>
+        <div className="col-span-full flex items-center justify-center p-8 text-gray-500">
+          <AlertTriangle className="w-5 h-5 mr-2" />
+          {t('dashboard.no_data_available')}
+        </div>
       </div>
     );
   }
 
+  // Calculate sales growth (mock calculation for demo)
+  const salesGrowth = data.total_sales_week > 0 
+    ? ((data.total_sales_today * 7 - data.total_sales_week) / data.total_sales_week) * 100 
+    : 0;
+
+  // Calculate inventory status
+  const inventoryStatus = data.low_stock_count > 0 ? 'warning' : 'normal';
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {/* Total Sales Today */}
-      <Card 
-        className="cursor-pointer hover:shadow-lg transition-shadow"
+      <MetricCard
+        title={t('dashboard.total_sales_today')}
+        value={formatCurrency(data.total_sales_today)}
+        change={{
+          value: Math.abs(salesGrowth),
+          type: salesGrowth >= 0 ? 'increase' : 'decrease',
+          period: t('dashboard.vs_last_week')
+        }}
+        icon={DollarSign}
+        color="gold"
+        trend={generateTrendData(data.total_sales_today, 0.15)}
         onClick={() => onCardClick('sales')}
-      >
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Total Sales Today
-          </CardTitle>
-          <DollarSign className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{formatCurrency(data.total_sales_today)}</div>
-          <p className="text-xs text-muted-foreground">
-            Week: {formatCurrency(data.total_sales_week)} | Month: {formatCurrency(data.total_sales_month)}
-          </p>
-        </CardContent>
-      </Card>
+        subtitle={`${t('dashboard.week')}: ${formatCurrency(data.total_sales_week)} | ${t('dashboard.month')}: ${formatCurrency(data.total_sales_month)}`}
+      />
 
       {/* Inventory Value */}
-      <Card 
-        className="cursor-pointer hover:shadow-lg transition-shadow"
+      <MetricCard
+        title={t('dashboard.inventory_value')}
+        value={formatCurrency(data.total_inventory_value)}
+        icon={Package}
+        color={inventoryStatus === 'warning' ? 'red' : 'blue'}
+        trend={generateTrendData(data.total_inventory_value, 0.05)}
         onClick={() => onCardClick('inventory')}
-      >
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Inventory Value
-          </CardTitle>
-          <Package className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{formatCurrency(data.total_inventory_value)}</div>
-          <p className="text-xs text-muted-foreground">
-            {data.low_stock_count > 0 && (
-              <span className="text-orange-600">
-                {data.low_stock_count} items low stock
-              </span>
-            )}
-          </p>
-        </CardContent>
-      </Card>
+        subtitle={data.low_stock_count > 0 ? `${data.low_stock_count} ${t('dashboard.items_low_stock')}` : t('dashboard.stock_levels_healthy')}
+        badge={data.low_stock_count > 0 ? t('dashboard.low_stock') : undefined}
+      />
 
       {/* Customer Debt */}
-      <Card 
-        className="cursor-pointer hover:shadow-lg transition-shadow"
+      <MetricCard
+        title={t('dashboard.customer_debt')}
+        value={formatCurrency(data.total_customer_debt)}
+        icon={Users}
+        color={data.unpaid_invoices_count > 0 ? 'red' : 'green'}
+        trend={generateTrendData(data.total_customer_debt, 0.08)}
         onClick={() => onCardClick('customers')}
-      >
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Customer Debt
-          </CardTitle>
-          <Users className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{formatCurrency(data.total_customer_debt)}</div>
-          <p className="text-xs text-muted-foreground">
-            {data.unpaid_invoices_count > 0 && (
-              <span className="text-red-600">
-                {data.unpaid_invoices_count} unpaid invoices
-              </span>
-            )}
-          </p>
-        </CardContent>
-      </Card>
+        subtitle={data.unpaid_invoices_count > 0 ? `${data.unpaid_invoices_count} ${t('dashboard.unpaid_invoices')}` : t('dashboard.all_invoices_current')}
+        badge={data.unpaid_invoices_count > 0 ? t('dashboard.overdue') : undefined}
+      />
 
       {/* Gold Price */}
-      <Card className="cursor-pointer hover:shadow-lg transition-shadow">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Gold Price (per gram)
-          </CardTitle>
-          <Coins className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{formatCurrency(data.current_gold_price)}</div>
-          <p className="text-xs text-muted-foreground">
-            {formatPercentage(data.gold_price_change)} from last week
-          </p>
-        </CardContent>
-      </Card>
+      <MetricCard
+        title={t('dashboard.gold_price_per_gram')}
+        value={formatCurrency(data.current_gold_price)}
+        change={{
+          value: Math.abs(data.gold_price_change),
+          type: data.gold_price_change >= 0 ? 'increase' : 'decrease',
+          period: t('dashboard.from_last_week')
+        }}
+        icon={Coins}
+        color="gold"
+        trend={generateTrendData(data.current_gold_price, 0.03)}
+        subtitle={t('dashboard.market_rate')}
+      />
     </div>
   );
 };

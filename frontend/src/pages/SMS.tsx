@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { MessageSquare, BookTemplate, Send, History, BarChart3 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
@@ -247,5 +248,57 @@ export const SMS: React.FC = () => {
         </TabsContent>
       </Tabs>
     </div>
+  );
+};
+
+// Individual route components
+const SMSTemplatesRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <BookTemplate className="h-8 w-8 text-blue-600" />
+      <div>
+        <h1 className="text-3xl font-bold">SMS Templates</h1>
+        <p className="text-muted-foreground">Manage and customize SMS message templates</p>
+      </div>
+    </div>
+    <SMSTemplateManager />
+  </div>
+);
+
+const SMSCampaignsRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <Send className="h-8 w-8 text-green-600" />
+      <div>
+        <h1 className="text-3xl font-bold">SMS Campaigns</h1>
+        <p className="text-muted-foreground">Create and manage SMS marketing campaigns</p>
+      </div>
+    </div>
+    <SMSCampaignManager />
+  </div>
+);
+
+const SMSHistoryRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <History className="h-8 w-8 text-purple-600" />
+      <div>
+        <h1 className="text-3xl font-bold">SMS History</h1>
+        <p className="text-muted-foreground">View sent messages and delivery status</p>
+      </div>
+    </div>
+    <SMSHistoryTracker />
+  </div>
+);
+
+// Wrapper component to handle sub-routes
+export const SMSWithRouting: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/templates" element={<SMSTemplatesRoute />} />
+      <Route path="/campaigns" element={<SMSCampaignsRoute />} />
+      <Route path="/history" element={<SMSHistoryRoute />} />
+      <Route path="/*" element={<SMS />} />
+    </Routes>
   );
 };

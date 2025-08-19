@@ -4,13 +4,13 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { LanguageContext, useLanguageProvider } from './hooks/useLanguage';
 import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
-import { Inventory } from './pages/Inventory';
+import { InventoryWithRouting as Inventory } from './pages/Inventory';
 import { Customers } from './pages/Customers';
 import { Invoices } from './pages/Invoices';
-import { Accounting } from './pages/Accounting';
-import Reports from './pages/Reports';
-import { Settings } from './pages/Settings';
-import { SMS } from './pages/SMS';
+import { AccountingWithRouting as Accounting } from './pages/Accounting';
+import { ReportsWithRouting as Reports } from './pages/Reports';
+import { SettingsWithRouting as Settings } from './pages/Settings';
+import { SMSWithRouting as SMS } from './pages/SMS';
 import { AuthGuard } from './components/auth/AuthGuard';
 import { MainLayout } from './components/layout/MainLayout';
 import './App.css';
@@ -61,7 +61,7 @@ const AppContent: React.FC = () => {
             }
           />
           <Route
-            path="/inventory"
+            path="/inventory/*"
             element={
               <AuthGuard>
                 <MainLayout>
@@ -91,7 +91,7 @@ const AppContent: React.FC = () => {
             }
           />
           <Route
-            path="/accounting"
+            path="/accounting/*"
             element={
               <AuthGuard>
                 <MainLayout>
@@ -101,7 +101,7 @@ const AppContent: React.FC = () => {
             }
           />
           <Route
-            path="/reports"
+            path="/reports/*"
             element={
               <AuthGuard>
                 <MainLayout>
@@ -111,7 +111,7 @@ const AppContent: React.FC = () => {
             }
           />
           <Route
-            path="/settings"
+            path="/settings/*"
             element={
               <AuthGuard>
                 <MainLayout>
@@ -121,7 +121,7 @@ const AppContent: React.FC = () => {
             }
           />
           <Route
-            path="/sms"
+            path="/sms/*"
             element={
               <AuthGuard>
                 <MainLayout>

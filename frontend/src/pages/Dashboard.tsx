@@ -55,10 +55,10 @@ export const Dashboard: React.FC = () => {
   if (hasError) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-        <p className="text-lg text-gray-600">Failed to load dashboard data</p>
+        <p className="text-lg text-gray-600">{t('dashboard.error_loading')}</p>
         <Button onClick={handleRefresh} variant="outline">
           <RefreshCw className="w-4 h-4 mr-2" />
-          Try Again
+          {t('common.try_again')}
         </Button>
       </div>
     );
@@ -76,7 +76,7 @@ export const Dashboard: React.FC = () => {
           disabled={isLoading}
         >
           <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-          Refresh
+          {t('common.refresh')}
         </Button>
       </div>
 
@@ -93,6 +93,7 @@ export const Dashboard: React.FC = () => {
         categoryData={categoryData || null}
         topProducts={topProducts || null}
         isLoading={isLoading}
+        onRefresh={refreshAll}
       />
 
       {/* Alerts Panel */}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -118,6 +119,139 @@ const Reports: React.FC = () => {
         </TabsContent>
       </Tabs>
     </div>
+  );
+};
+
+// Individual route components
+const SalesReportsRoute: React.FC = () => {
+  const [globalFilters, setGlobalFilters] = useState({
+    start_date: '',
+    end_date: '',
+    category_id: '',
+  });
+
+  return (
+    <div className="container mx-auto p-6 space-y-6" dir="rtl">
+      <div className="flex items-center gap-3 mb-6">
+        <BarChart3 className="h-8 w-8 text-blue-600" />
+        <div>
+          <h1 className="text-3xl font-bold">گزارشات فروش</h1>
+          <p className="text-muted-foreground">تحلیل و بررسی فروش محصولات</p>
+        </div>
+      </div>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            فیلترهای گزارش
+          </CardTitle>
+          <CardDescription>
+            فیلترهای اعمال شده به گزارشات فروش
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ReportFilters
+            filters={globalFilters}
+            onFiltersChange={setGlobalFilters}
+          />
+        </CardContent>
+      </Card>
+
+      <SalesReports filters={globalFilters} />
+    </div>
+  );
+};
+
+const InventoryReportsRoute: React.FC = () => {
+  const [globalFilters, setGlobalFilters] = useState({
+    start_date: '',
+    end_date: '',
+    category_id: '',
+  });
+
+  return (
+    <div className="container mx-auto p-6 space-y-6" dir="rtl">
+      <div className="flex items-center gap-3 mb-6">
+        <Package className="h-8 w-8 text-green-600" />
+        <div>
+          <h1 className="text-3xl font-bold">گزارشات موجودی</h1>
+          <p className="text-muted-foreground">تحلیل و بررسی موجودی انبار</p>
+        </div>
+      </div>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            فیلترهای گزارش
+          </CardTitle>
+          <CardDescription>
+            فیلترهای اعمال شده به گزارشات موجودی
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ReportFilters
+            filters={globalFilters}
+            onFiltersChange={setGlobalFilters}
+          />
+        </CardContent>
+      </Card>
+
+      <InventoryReports filters={globalFilters} />
+    </div>
+  );
+};
+
+const CustomerReportsRoute: React.FC = () => {
+  const [globalFilters, setGlobalFilters] = useState({
+    start_date: '',
+    end_date: '',
+    category_id: '',
+  });
+
+  return (
+    <div className="container mx-auto p-6 space-y-6" dir="rtl">
+      <div className="flex items-center gap-3 mb-6">
+        <Users className="h-8 w-8 text-purple-600" />
+        <div>
+          <h1 className="text-3xl font-bold">گزارشات مشتریان</h1>
+          <p className="text-muted-foreground">تحلیل و بررسی رفتار مشتریان</p>
+        </div>
+      </div>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            فیلترهای گزارش
+          </CardTitle>
+          <CardDescription>
+            فیلترهای اعمال شده به گزارشات مشتریان
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ReportFilters
+            filters={globalFilters}
+            onFiltersChange={setGlobalFilters}
+          />
+        </CardContent>
+      </Card>
+
+      <CustomerReports filters={globalFilters} />
+    </div>
+  );
+};
+
+// Wrapper component to handle sub-routes
+export const ReportsWithRouting: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/sales" element={<SalesReportsRoute />} />
+      <Route path="/inventory" element={<InventoryReportsRoute />} />
+      <Route path="/customers" element={<CustomerReportsRoute />} />
+      <Route path="/*" element={<Reports />} />
+    </Routes>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
@@ -235,5 +236,99 @@ export const Accounting: React.FC = () => {
         </CardContent>
       </Card>
     </div>
+  );
+};
+
+// Individual route components
+const AccountingIncomeRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <TrendingUpIcon className="h-8 w-8 text-green-600" />
+      <div>
+        <h1 className="text-3xl font-bold">Income Ledger</h1>
+        <p className="text-muted-foreground">Track all revenue from invoices and payments</p>
+      </div>
+    </div>
+    <IncomeLedger />
+  </div>
+);
+
+const AccountingExpenseRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <TrendingDownIcon className="h-8 w-8 text-red-600" />
+      <div>
+        <h1 className="text-3xl font-bold">Expense Ledger</h1>
+        <p className="text-muted-foreground">Manage business expenses and categorization</p>
+      </div>
+    </div>
+    <ExpenseLedger />
+  </div>
+);
+
+const AccountingCashBankRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <CreditCardIcon className="h-8 w-8 text-blue-600" />
+      <div>
+        <h1 className="text-3xl font-bold">Cash & Bank</h1>
+        <p className="text-muted-foreground">Monitor cash flow and bank transactions</p>
+      </div>
+    </div>
+    <CashBankLedger />
+  </div>
+);
+
+const AccountingGoldWeightRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <ScaleIcon className="h-8 w-8 text-yellow-600" />
+      <div>
+        <h1 className="text-3xl font-bold">Gold Weight</h1>
+        <p className="text-muted-foreground">Track gold inventory valuation and weight</p>
+      </div>
+    </div>
+    <GoldWeightLedger />
+  </div>
+);
+
+const AccountingDebtRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <AlertTriangleIcon className="h-8 w-8 text-orange-600" />
+      <div>
+        <h1 className="text-3xl font-bold">Debt Tracking</h1>
+        <p className="text-muted-foreground">Monitor customer debt and payment history</p>
+      </div>
+    </div>
+    <DebtTracking />
+  </div>
+);
+
+const AccountingProfitLossRoute: React.FC = () => (
+  <div className="container mx-auto p-6 space-y-6">
+    <div className="flex items-center gap-3 mb-6">
+      <BarChart3Icon className="h-8 w-8 text-purple-600" />
+      <div>
+        <h1 className="text-3xl font-bold">Profit & Loss</h1>
+        <p className="text-muted-foreground">Comprehensive profit and loss analysis</p>
+      </div>
+    </div>
+    <ProfitLossAnalysis />
+  </div>
+);
+
+// Wrapper component to handle sub-routes
+export const AccountingWithRouting: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/income" element={<AccountingIncomeRoute />} />
+      <Route path="/expense" element={<AccountingExpenseRoute />} />
+      <Route path="/cash-bank" element={<AccountingCashBankRoute />} />
+      <Route path="/gold-weight" element={<AccountingGoldWeightRoute />} />
+      <Route path="/debt" element={<AccountingDebtRoute />} />
+      <Route path="/profit-loss" element={<AccountingProfitLossRoute />} />
+      <Route path="/*" element={<Accounting />} />
+    </Routes>
   );
 };
