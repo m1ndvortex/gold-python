@@ -8,7 +8,7 @@ import { Badge } from '../ui/badge';
 import { DataTable, DataTableColumn, DataTableAction } from '../ui/data-table';
 import { SearchableSelect } from '../ui/searchable-select';
 import { useCustomers, useCustomerSearch } from '../../hooks/useCustomers';
-import { CustomerForm } from './CustomerForm';
+import { ComprehensiveCustomerForm } from './ComprehensiveCustomerForm';
 import { CustomerProfile } from './CustomerProfile';
 import type { Customer, CustomerSearchFilters } from '../../types';
 
@@ -351,7 +351,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
 
       {/* Create/Edit Customer Form Dialog */}
       {showCreateForm && (
-        <CustomerForm
+        <ComprehensiveCustomerForm
           customer={selectedCustomer || undefined}
           onClose={() => {
             setShowCreateForm(false);

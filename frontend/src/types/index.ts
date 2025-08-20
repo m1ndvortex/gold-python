@@ -125,10 +125,54 @@ export interface Customer {
   name: string;
   phone?: string | null;
   email?: string | null;
-  address?: string | null;
+  
+  // Address fields (backward compatibility)
+  address?: string | null;  // Deprecated, use structured address fields
+  
+  // Comprehensive address fields
+  street_address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  postal_code?: string | null;
+  country?: string | null;
+  
+  // Personal information
+  national_id?: string | null;
+  date_of_birth?: string | null;
+  age?: number | null;
+  gender?: string | null;  // male, female, other, prefer_not_to_say
+  nationality?: string | null;
+  occupation?: string | null;
+  
+  // Emergency contact
+  emergency_contact_name?: string | null;
+  emergency_contact_phone?: string | null;
+  emergency_contact_relationship?: string | null;
+  
+  // Additional information
+  notes?: string | null;
+  tags?: string[] | null;
+  custom_fields?: Record<string, any> | null;
+  preferences?: Record<string, any> | null;
+  
+  // Business-related fields
+  customer_type?: string | null;  // retail, wholesale, corporate
+  credit_limit?: number | null;
+  payment_terms?: number | null;  // Days for payment
+  discount_percentage?: number | null;
+  tax_exempt?: boolean | null;
+  tax_id?: string | null;
+  
+  // Existing fields
   total_purchases: number;
   current_debt: number;
   last_purchase_date?: string | null;
+  
+  // Status fields
+  is_active?: boolean | null;
+  blacklisted?: boolean | null;
+  blacklist_reason?: string | null;
+  
   created_at: string;
   updated_at: string;
 }
@@ -137,14 +181,91 @@ export interface CustomerCreate {
   name: string;
   phone?: string;
   email?: string;
-  address?: string;
+  
+  // Address fields (backward compatibility)
+  address?: string;  // Deprecated, use structured address fields
+  
+  // Comprehensive address fields
+  street_address?: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
+  country?: string;
+  
+  // Personal information
+  national_id?: string;
+  date_of_birth?: string;
+  age?: number;
+  gender?: string;  // male, female, other, prefer_not_to_say
+  nationality?: string;
+  occupation?: string;
+  
+  // Emergency contact
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  emergency_contact_relationship?: string;
+  
+  // Additional information
+  notes?: string;
+  tags?: string[];
+  custom_fields?: Record<string, any>;
+  preferences?: Record<string, any>;
+  
+  // Business-related fields
+  customer_type?: string;  // retail, wholesale, corporate
+  credit_limit?: number;
+  payment_terms?: number;  // Days for payment
+  discount_percentage?: number;
+  tax_exempt?: boolean;
+  tax_id?: string;
 }
 
 export interface CustomerUpdate {
   name?: string;
   phone?: string;
   email?: string;
-  address?: string;
+  
+  // Address fields (backward compatibility)
+  address?: string;  // Deprecated, use structured address fields
+  
+  // Comprehensive address fields
+  street_address?: string;
+  city?: string;
+  state?: string;
+  postal_code?: string;
+  country?: string;
+  
+  // Personal information
+  national_id?: string;
+  date_of_birth?: string;
+  age?: number;
+  gender?: string;  // male, female, other, prefer_not_to_say
+  nationality?: string;
+  occupation?: string;
+  
+  // Emergency contact
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  emergency_contact_relationship?: string;
+  
+  // Additional information
+  notes?: string;
+  tags?: string[];
+  custom_fields?: Record<string, any>;
+  preferences?: Record<string, any>;
+  
+  // Business-related fields
+  customer_type?: string;  // retail, wholesale, corporate
+  credit_limit?: number;
+  payment_terms?: number;  // Days for payment
+  discount_percentage?: number;
+  tax_exempt?: boolean;
+  tax_id?: string;
+  
+  // Status fields
+  is_active?: boolean;
+  blacklisted?: boolean;
+  blacklist_reason?: string;
 }
 
 // Payment Types

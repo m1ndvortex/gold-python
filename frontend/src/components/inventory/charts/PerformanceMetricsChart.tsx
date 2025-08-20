@@ -142,7 +142,7 @@ export const PerformanceMetricsChart: React.FC<PerformanceMetricsChartProps> = (
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) => `${name}: ${((percent ?? 0) * 100).toFixed(0)}%`}
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
@@ -170,7 +170,7 @@ export const PerformanceMetricsChart: React.FC<PerformanceMetricsChartProps> = (
                     <Tooltip 
                       formatter={(value: number) => [formatCurrency(value), "Cost"]}
                     />
-                    <Bar dataKey="value" fill={(entry: any) => entry.color} />
+                    <Bar dataKey="value" fill="#8884d8" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

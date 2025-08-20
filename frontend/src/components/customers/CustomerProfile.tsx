@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { DataTable, DataTableColumn } from '../ui/data-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { useCustomer, useCustomerDebtHistory, useCustomerPayments } from '../../hooks/useCustomers';
-import { CustomerForm } from './CustomerForm';
+import { ComprehensiveCustomerForm } from './ComprehensiveCustomerForm';
 import { PaymentForm } from './PaymentForm';
 import type { Customer } from '../../types';
 
@@ -449,7 +449,7 @@ export const CustomerProfile: React.FC<CustomerProfileProps> = ({
 
         {/* Edit Customer Form */}
         {showEditForm && (
-          <CustomerForm
+          <ComprehensiveCustomerForm
             customer={displayCustomer}
             onClose={() => setShowEditForm(false)}
             onSuccess={() => setShowEditForm(false)}

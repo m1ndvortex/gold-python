@@ -41,6 +41,12 @@ async def create_customer(
         if existing_customer:
             raise HTTPException(status_code=400, detail="Customer with this email already exists")
     
+    # Check if customer with same national ID already exists
+    if customer.national_id:
+        existing_customer = db.query(Customer).filter(Customer.national_id == customer.national_id).first()
+        if existing_customer:
+            raise HTTPException(status_code=400, detail="Customer with this national ID already exists")
+    
     db_customer = Customer(**customer.model_dump())
     db.add(db_customer)
     db.commit()
@@ -51,21 +57,52 @@ async def create_customer(
 async def get_customers(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
+    
+    # Basic filters
     name: Optional[str] = Query(None, description="Filter by customer name"),
     phone: Optional[str] = Query(None, description="Filter by phone number"),
     email: Optional[str] = Query(None, description="Filter by email"),
+    
+    # Address filters
+    city: Optional[str] = Query(None, description="Filter by city"),
+    state: Optional[str] = Query(None, description="Filter by state"),
+    country: Optional[str] = Query(None, description="Filter by country"),
+    
+    # Personal information filters
+    national_id: Optional[str] = Query(None, description="Filter by national ID"),
+    gender: Optional[str] = Query(None, description="Filter by gender"),
+    nationality: Optional[str] = Query(None, description="Filter by nationality"),
+    occupation: Optional[str] = Query(None, description="Filter by occupation"),
+    
+    # Business filters
+    customer_type: Optional[str] = Query(None, description="Filter by customer type"),
+    
+    # Status filters
+    is_active: Optional[bool] = Query(None, description="Filter by active status"),
+    blacklisted: Optional[bool] = Query(None, description="Filter blacklisted customers"),
+    
+    # Financial filters
     has_debt: Optional[bool] = Query(None, description="Filter customers with debt"),
     min_debt: Optional[float] = Query(None, ge=0, description="Minimum debt amount"),
     max_debt: Optional[float] = Query(None, ge=0, description="Maximum debt amount"),
+    min_credit_limit: Optional[float] = Query(None, ge=0, description="Minimum credit limit"),
+    tax_exempt: Optional[bool] = Query(None, description="Filter tax exempt customers"),
+    
+    # Age filters
+    min_age: Optional[int] = Query(None, ge=0, description="Minimum age"),
+    max_age: Optional[int] = Query(None, ge=0, le=150, description="Maximum age"),
+    
+    # Sorting
     sort_by: str = Query("created_at", description="Sort field"),
     sort_order: str = Query("desc", description="Sort order (asc/desc)"),
+    
     db: Session = Depends(get_db),
     current_user = Depends(require_permission("view_customers"))
 ):
-    """Get customers with filtering and pagination"""
+    """Get customers with comprehensive filtering and pagination"""
     query = db.query(Customer)
     
-    # Apply filters
+    # Apply basic filters
     if name:
         query = query.filter(Customer.name.ilike(f"%{name}%"))
     
@@ -75,6 +112,41 @@ async def get_customers(
     if email:
         query = query.filter(Customer.email.ilike(f"%{email}%"))
     
+    # Apply address filters
+    if city:
+        query = query.filter(Customer.city.ilike(f"%{city}%"))
+        
+    if state:
+        query = query.filter(Customer.state.ilike(f"%{state}%"))
+        
+    if country:
+        query = query.filter(Customer.country.ilike(f"%{country}%"))
+    
+    # Apply personal information filters
+    if national_id:
+        query = query.filter(Customer.national_id.ilike(f"%{national_id}%"))
+        
+    if gender:
+        query = query.filter(Customer.gender == gender)
+        
+    if nationality:
+        query = query.filter(Customer.nationality.ilike(f"%{nationality}%"))
+        
+    if occupation:
+        query = query.filter(Customer.occupation.ilike(f"%{occupation}%"))
+    
+    # Apply business filters
+    if customer_type:
+        query = query.filter(Customer.customer_type == customer_type)
+    
+    # Apply status filters
+    if is_active is not None:
+        query = query.filter(Customer.is_active == is_active)
+        
+    if blacklisted is not None:
+        query = query.filter(Customer.blacklisted == blacklisted)
+    
+    # Apply financial filters
     if has_debt is not None:
         if has_debt:
             query = query.filter(Customer.current_debt > 0)
@@ -86,6 +158,19 @@ async def get_customers(
     
     if max_debt is not None:
         query = query.filter(Customer.current_debt <= max_debt)
+        
+    if min_credit_limit is not None:
+        query = query.filter(Customer.credit_limit >= min_credit_limit)
+        
+    if tax_exempt is not None:
+        query = query.filter(Customer.tax_exempt == tax_exempt)
+    
+    # Apply age filters
+    if min_age is not None:
+        query = query.filter(Customer.age >= min_age)
+        
+    if max_age is not None:
+        query = query.filter(Customer.age <= max_age)
     
     # Apply sorting
     if hasattr(Customer, sort_by):
@@ -181,7 +266,7 @@ async def update_customer(
     if not customer:
         raise HTTPException(status_code=404, detail="Customer not found")
     
-    # Check for duplicate phone/email if being updated
+    # Check for duplicate phone/email/national_id if being updated
     update_data = customer_update.model_dump(exclude_unset=True)
     
     if "phone" in update_data and update_data["phone"]:
@@ -197,6 +282,13 @@ async def update_customer(
         ).first()
         if existing:
             raise HTTPException(status_code=400, detail="Customer with this email already exists")
+            
+    if "national_id" in update_data and update_data["national_id"]:
+        existing = db.query(Customer).filter(
+            and_(Customer.national_id == update_data["national_id"], Customer.id != customer_id)
+        ).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Customer with this national ID already exists")
     
     # Update customer fields
     for field, value in update_data.items():

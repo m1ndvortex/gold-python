@@ -149,7 +149,7 @@ export const InventoryIntelligenceDashboard: React.FC<InventoryIntelligenceDashb
         <CardContent className="flex items-center justify-center h-96">
           <div className="text-center">
             <p className="text-destructive mb-2">Error loading inventory intelligence</p>
-            <p className="text-sm text-muted-foreground">{error.message}</p>
+            <p className="text-sm text-muted-foreground">{error instanceof Error ? error.message : 'An unknown error occurred'}</p>
             <Button 
               variant="outline" 
               onClick={() => refetch()} 

@@ -203,7 +203,43 @@ class CustomerBase(BaseModel):
     name: str
     phone: Optional[str] = None
     email: Optional[str] = None
-    address: Optional[str] = None
+    
+    # Address fields (backward compatibility)
+    address: Optional[str] = None  # Deprecated, use structured address fields
+    
+    # Comprehensive address fields
+    street_address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    postal_code: Optional[str] = None
+    country: Optional[str] = "United States"
+    
+    # Personal information
+    national_id: Optional[str] = None
+    date_of_birth: Optional[date] = None
+    age: Optional[int] = None
+    gender: Optional[str] = None  # male, female, other, prefer_not_to_say
+    nationality: Optional[str] = None
+    occupation: Optional[str] = None
+    
+    # Emergency contact
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_phone: Optional[str] = None
+    emergency_contact_relationship: Optional[str] = None
+    
+    # Additional information
+    notes: Optional[str] = None
+    tags: Optional[List[str]] = []
+    custom_fields: Optional[Dict[str, Any]] = {}
+    preferences: Optional[Dict[str, Any]] = {}
+    
+    # Business-related fields
+    customer_type: Optional[str] = "retail"  # retail, wholesale, corporate
+    credit_limit: Optional[float] = 0
+    payment_terms: Optional[int] = 0  # Days for payment
+    discount_percentage: Optional[float] = 0
+    tax_exempt: Optional[bool] = False
+    tax_id: Optional[str] = None
 
 class CustomerCreate(CustomerBase):
     pass
@@ -212,13 +248,58 @@ class CustomerUpdate(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None
     email: Optional[str] = None
+    
+    # Address fields
     address: Optional[str] = None
+    street_address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    postal_code: Optional[str] = None
+    country: Optional[str] = None
+    
+    # Personal information
+    national_id: Optional[str] = None
+    date_of_birth: Optional[date] = None
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    nationality: Optional[str] = None
+    occupation: Optional[str] = None
+    
+    # Emergency contact
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_phone: Optional[str] = None
+    emergency_contact_relationship: Optional[str] = None
+    
+    # Additional information
+    notes: Optional[str] = None
+    tags: Optional[List[str]] = None
+    custom_fields: Optional[Dict[str, Any]] = None
+    preferences: Optional[Dict[str, Any]] = None
+    
+    # Business-related fields
+    customer_type: Optional[str] = None
+    credit_limit: Optional[float] = None
+    payment_terms: Optional[int] = None
+    discount_percentage: Optional[float] = None
+    tax_exempt: Optional[bool] = None
+    tax_id: Optional[str] = None
+    
+    # Status fields
+    is_active: Optional[bool] = None
+    blacklisted: Optional[bool] = None
+    blacklist_reason: Optional[str] = None
 
 class Customer(CustomerBase):
     id: UUID
     total_purchases: float
     current_debt: float
     last_purchase_date: Optional[datetime] = None
+    
+    # Status fields
+    is_active: bool
+    blacklisted: bool
+    blacklist_reason: Optional[str] = None
+    
     created_at: datetime
     updated_at: datetime
     

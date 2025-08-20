@@ -104,10 +104,53 @@ class Customer(Base):
     name = Column(String(200), nullable=False)
     phone = Column(String(20))
     email = Column(String(100))
-    address = Column(Text)
+    
+    # Old address field (deprecated - kept for backward compatibility)
+    address = Column(Text)  # Will be removed in future migration
+    
+    # Comprehensive address fields
+    street_address = Column(String(255))
+    city = Column(String(100))
+    state = Column(String(100))
+    postal_code = Column(String(20))
+    country = Column(String(100), default='United States')
+    
+    # Personal information
+    national_id = Column(String(50), unique=True)  # SSN, National ID, etc.
+    date_of_birth = Column(Date)
+    age = Column(Integer)  # Calculated field, can be updated periodically
+    gender = Column(String(20))  # male, female, other, prefer_not_to_say
+    nationality = Column(String(100))
+    occupation = Column(String(100))
+    
+    # Emergency contact information
+    emergency_contact_name = Column(String(200))
+    emergency_contact_phone = Column(String(20))
+    emergency_contact_relationship = Column(String(50))
+    
+    # Additional information
+    notes = Column(Text)  # General notes about the customer
+    tags = Column(JSONB)  # Tags for categorization ["VIP", "Wholesale", etc.]
+    custom_fields = Column(JSONB)  # Flexible custom fields {"field_name": "value"}
+    preferences = Column(JSONB)  # Customer preferences {"contact_method": "phone", etc.}
+    
+    # Business-related fields
+    customer_type = Column(String(50), default='retail')  # retail, wholesale, corporate
+    credit_limit = Column(DECIMAL(12, 2), default=0)
+    payment_terms = Column(Integer, default=0)  # Days for payment (0 = immediate)
+    discount_percentage = Column(DECIMAL(5, 2), default=0)  # Default discount for this customer
+    tax_exempt = Column(Boolean, default=False)
+    tax_id = Column(String(50))  # Tax identification number for businesses
+    
+    # Existing fields
     total_purchases = Column(DECIMAL(12, 2), default=0)
     current_debt = Column(DECIMAL(12, 2), default=0)
     last_purchase_date = Column(DateTime(timezone=True))
+    
+    # Status and metadata
+    is_active = Column(Boolean, default=True)
+    blacklisted = Column(Boolean, default=False)
+    blacklist_reason = Column(Text)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
@@ -117,6 +160,12 @@ class Customer(Base):
     __table_args__ = (
         Index('idx_customers_debt', 'current_debt'),
         Index('idx_customers_phone', 'phone'),
+        Index('idx_customers_email', 'email'),
+        Index('idx_customers_national_id', 'national_id'),
+        Index('idx_customers_type', 'customer_type'),
+        Index('idx_customers_active', 'is_active'),
+        Index('idx_customers_city', 'city'),
+        Index('idx_customers_dob', 'date_of_birth'),
     )
 
 class Invoice(Base):
