@@ -14,3 +14,14 @@ pytest-asyncio==0.21.1
 httpx==0.25.2
 python-dotenv==1.0.0
 requests==2.31.0
+# Analytics and caching dependencies
+redis==4.6.0
+pandas==2.1.4
+numpy==1.25.2
+scikit-learn==1.3.2
+# Background task processing with Redis
+celery[redis]==5.3.4
+# Time series analysis
+statsmodels==0.14.0
+# Performance monitoring
+psutil==5.9.6

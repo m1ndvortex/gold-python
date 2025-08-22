@@ -1,19 +1,23 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database
+  # PostgreSQL Database with TimescaleDB
   db:
-    image: postgres:15
+    image: timescale/timescaledb:latest-pg15
     container_name: goldshop_db
     environment:
       POSTGRES_DB: goldshop
       POSTGRES_USER: goldshop_user
       POSTGRES_PASSWORD: goldshop_password
+      TIMESCALEDB_TELEMETRY: off
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./backend/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./backend/analytics_init.sql:/docker-entrypoint-initdb.d/02-analytics_init.sql
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
     networks:
       - goldshop_network
     healthcheck:
@@ -21,6 +25,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # Redis Cache for Analytics
+  redis:
+    image: redis:7-alpine
+    container_name: goldshop_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - goldshop_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
 
   # FastAPI Backend
   backend:
@@ -30,6 +51,7 @@ services:
     container_name: goldshop_backend
     environment:
       DATABASE_URL: postgresql://goldshop_user:goldshop_password@db:5432/goldshop
+      REDIS_URL: redis://redis:6379/0
       JWT_SECRET: your-super-secret-jwt-key-change-in-production
       SMS_API_KEY: your-sms-api-key
       ENVIRONMENT: development
@@ -40,6 +62,8 @@ services:
       - uploads_data:/app/uploads
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - goldshop_network
@@ -67,6 +91,8 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
     driver: local
   uploads_data:
     driver: local

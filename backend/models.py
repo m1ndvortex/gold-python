@@ -597,15 +597,13 @@ class SeasonalAnalysis(Base):
     analysis_type = Column(String(20), nullable=False)  # item, category, global
     season = Column(String(20), nullable=False)  # spring, summer, fall, winter, holiday, ramadan
     year = Column(Integer, nullable=False)
-    baseline_sales = Column(DECIMAL(12, 2), default=0)
-    seasonal_sales = Column(DECIMAL(12, 2), default=0)
-    seasonal_factor = Column(DECIMAL(4, 2), default=1.0)  # multiplier for seasonal adjustment
-    peak_month = Column(Integer)  # 1-12
-    low_month = Column(Integer)  # 1-12
-    seasonal_variance = Column(DECIMAL(8, 4), default=0)
-    correlation_strength = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
-    recommendations = Column(JSONB)  # Seasonal stocking recommendations
-    analyzed_at = Column(DateTime(timezone=True), server_default=func.now())
+    baseline_demand = Column(DECIMAL(10, 2), default=0)
+    seasonal_factor = Column(DECIMAL(6, 4), default=1.0)
+    peak_period_start = Column(Date)
+    peak_period_end = Column(Date)
+    demand_variance = Column(DECIMAL(8, 4), default=0)
+    confidence_level = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
+    recommendations = Column(JSONB)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
@@ -613,9 +611,285 @@ class SeasonalAnalysis(Base):
     category = relationship("Category")
 
     __table_args__ = (
-        Index('idx_seasonal_analysis_item', 'item_id'),
-        Index('idx_seasonal_analysis_category', 'category_id'),
-        Index('idx_seasonal_analysis_season', 'season', 'year'),
+        Index('idx_seasonal_analysis_item_season', 'item_id', 'season', 'year'),
+        Index('idx_seasonal_analysis_category_season', 'category_id', 'season', 'year'),
+    )
+
+# Advanced Analytics Models for Business Intelligence
+
+class KPISnapshot(Base):
+    """Time-series KPI tracking table"""
+    __tablename__ = "kpi_snapshots"
+    __table_args__ = {'schema': 'analytics'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    kpi_type = Column(String(50), nullable=False)  # 'financial', 'operational', 'customer'
+    kpi_name = Column(String(100), nullable=False)  # 'daily_revenue', 'inventory_turnover'
+    value = Column(DECIMAL(15, 4), nullable=False)
+    target_value = Column(DECIMAL(15, 4))
+    achievement_rate = Column(DECIMAL(5, 2))  # Percentage
+    trend_direction = Column(String(10))  # 'up', 'down', 'stable'
+    variance_percentage = Column(DECIMAL(8, 4))
+    period_start = Column(DateTime(timezone=True), nullable=False)
+    period_end = Column(DateTime(timezone=True), nullable=False)
+    kpi_metadata = Column(JSONB)  # Additional KPI-specific data
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class DemandForecast(Base):
+    """Demand forecasting table"""
+    __tablename__ = "demand_forecasts"
+    __table_args__ = {'schema': 'analytics'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
+    forecast_date = Column(Date, nullable=False)
+    forecast_period = Column(String(20), nullable=False)  # 'daily', 'weekly', 'monthly'
+    predicted_demand = Column(DECIMAL(10, 2), nullable=False)
+    confidence_interval_lower = Column(DECIMAL(10, 2))
+    confidence_interval_upper = Column(DECIMAL(10, 2))
+    confidence_score = Column(DECIMAL(5, 4))  # 0-1 scale
+    model_used = Column(String(50), nullable=False)  # 'arima', 'linear_regression'
+    accuracy_score = Column(DECIMAL(5, 4))  # Historical accuracy
+    seasonal_factor = Column(DECIMAL(6, 4), default=1.0)
+    trend_component = Column(DECIMAL(8, 4), default=0)
+    historical_data = Column(JSONB)  # Historical sales data used
+    external_factors = Column(JSONB)  # Events, promotions affecting demand
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    item = relationship("InventoryItem")
+
+class CustomReport(Base):
+    """Custom reports configuration table"""
+    __tablename__ = "custom_reports"
+    __table_args__ = {'schema': 'analytics'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(200), nullable=False)
+    description = Column(Text)
+    report_type = Column(String(50), nullable=False)  # 'dashboard', 'table', 'chart'
+    data_sources = Column(JSONB, nullable=False)  # Configuration for data sources
+    filters = Column(JSONB)  # Filter configurations
+    visualizations = Column(JSONB, nullable=False)  # Chart and visualization configs
+    layout = Column(JSONB)  # Layout configuration
+    styling = Column(JSONB)  # Styling and branding
+    schedule_config = Column(JSONB)  # Scheduling configuration
+    is_scheduled = Column(Boolean, default=False)
+    is_public = Column(Boolean, default=False)
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    shared_with = Column(JSONB)  # User IDs with access
+    last_generated = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    # Relationships
+    creator = relationship("User")
+
+class AnalyticsCache(Base):
+    """Analytics cache table for performance optimization"""
+    __tablename__ = "analytics_cache"
+    __table_args__ = {'schema': 'analytics'}
+
+    cache_key = Column(String(255), primary_key=True)
+    data = Column(JSONB, nullable=False)
+    ttl = Column(Integer, nullable=False)  # Time to live in seconds
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    cache_type = Column(String(50), nullable=False)  # 'kpi', 'report', 'forecast'
+    entity_type = Column(String(50))  # 'global', 'customer', 'item', 'category'
+    entity_id = Column(UUID(as_uuid=True))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class StockOptimizationRecommendation(Base):
+    """Stock optimization recommendations table"""
+    __tablename__ = "stock_optimization_recommendations"
+    __table_args__ = {'schema': 'analytics'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
+    recommendation_type = Column(String(30), nullable=False)  # 'reorder', 'reduce', 'increase'
+    current_stock = Column(Integer, nullable=False)
+    recommended_stock = Column(Integer)
+    reorder_point = Column(Integer)
+    reorder_quantity = Column(Integer)
+    safety_stock = Column(Integer)
+    max_stock_level = Column(Integer)
+    economic_order_quantity = Column(Integer)
+    lead_time_days = Column(Integer, default=7)
+    holding_cost_per_unit = Column(DECIMAL(10, 4), default=0)
+    ordering_cost = Column(DECIMAL(10, 2), default=0)
+    stockout_cost = Column(DECIMAL(10, 2), default=0)
+    confidence_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
+    reasoning = Column(Text)
+    priority_level = Column(String(10), default='medium')  # 'high', 'medium', 'low'
+    estimated_savings = Column(DECIMAL(12, 2), default=0)
+    implementation_date = Column(Date)
+    status = Column(String(20), default='pending')  # 'pending', 'approved', 'implemented'
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    expires_at = Column(DateTime(timezone=True))
+
+    # Relationships
+    item = relationship("InventoryItem")
+
+class CostAnalysis(Base):
+    """Cost analysis table for optimization insights"""
+    __tablename__ = "cost_analysis"
+    __table_args__ = {'schema': 'analytics'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    entity_type = Column(String(50), nullable=False)  # 'item', 'category', 'global'
+    entity_id = Column(UUID(as_uuid=True))
+    analysis_date = Column(Date, nullable=False)
+    carrying_cost = Column(DECIMAL(12, 2), default=0)
+    ordering_cost = Column(DECIMAL(12, 2), default=0)
+    stockout_cost = Column(DECIMAL(12, 2), default=0)
+    total_cost = Column(DECIMAL(12, 2), default=0)
+    cost_per_unit = Column(DECIMAL(10, 4), default=0)
+    cost_breakdown = Column(JSONB)  # Detailed cost components
+    optimization_potential = Column(DECIMAL(12, 2), default=0)
+    recommendations = Column(JSONB)  # Cost reduction recommendations
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class CategoryPerformance(Base):
+    """Category performance analysis table"""
+    __tablename__ = "category_performance"
+    __table_args__ = {'schema': 'analytics'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.id", ondelete="CASCADE"), nullable=False)
+    analysis_date = Column(Date, nullable=False)
+    revenue = Column(DECIMAL(15, 2), default=0)
+    units_sold = Column(Integer, default=0)
+    profit_margin = Column(DECIMAL(5, 2), default=0)
+    inventory_turnover = Column(DECIMAL(8, 4), default=0)
+    velocity_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
+    movement_classification = Column(String(20), default='normal')  # 'fast', 'normal', 'slow'
+    seasonal_factor = Column(DECIMAL(6, 4), default=1.0)
+    cross_selling_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
+    performance_trend = Column(String(15), default='stable')  # 'improving', 'declining'
+    recommendations = Column(JSONB)  # Performance improvement suggestions
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    category = relationship("Category")
+
+class PerformanceMetric(Base):
+    """System performance metrics table"""
+    __tablename__ = "performance_metrics"
+    __table_args__ = {'schema': 'analytics'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    metric_type = Column(String(50), nullable=False)  # 'response_time', 'memory_usage'
+    metric_name = Column(String(100), nullable=False)
+    value = Column(DECIMAL(15, 4), nullable=False)
+    unit = Column(String(20))  # 'ms', 'mb', 'percent', 'count'
+    threshold_value = Column(DECIMAL(15, 4))
+    status = Column(String(20), default='normal')  # 'normal', 'warning', 'critical'
+    service_name = Column(String(50))  # 'backend', 'database', 'redis'
+    endpoint = Column(String(200))  # For API performance metrics
+    additional_data = Column(JSONB)
+    recorded_at = Column(DateTime(timezone=True), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class BackupLog(Base):
+    """Backup operations log table"""
+    __tablename__ = "backup_logs"
+    __table_args__ = {'schema': 'analytics'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    backup_type = Column(String(30), nullable=False)  # 'database', 'files', 'full'
+    backup_status = Column(String(20), nullable=False)  # 'started', 'completed', 'failed'
+    backup_size_bytes = Column(Integer)
+    backup_location = Column(String(500))
+    encryption_used = Column(Boolean, default=False)
+    compression_used = Column(Boolean, default=False)
+    verification_status = Column(String(20))  # 'pending', 'passed', 'failed'
+    error_message = Column(Text)
+    started_at = Column(DateTime(timezone=True), nullable=False)
+    completed_at = Column(DateTime(timezone=True))
+    retention_until = Column(Date)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class AlertRule(Base):
+    """Alert rules configuration table"""
+    __tablename__ = "alert_rules"
+    __table_args__ = {'schema': 'analytics'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    rule_name = Column(String(100), nullable=False)
+    rule_type = Column(String(50), nullable=False)  # 'kpi_threshold', 'performance'
+    conditions = Column(JSONB, nullable=False)  # Alert conditions and thresholds
+    severity = Column(String(20), default='medium')  # 'low', 'medium', 'high', 'critical'
+    notification_channels = Column(JSONB)  # Email, SMS, webhook configurations
+    is_active = Column(Boolean, default=True)
+    cooldown_minutes = Column(Integer, default=60)  # Minimum time between alerts
+    escalation_rules = Column(JSONB)  # Escalation configuration
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    last_triggered = Column(DateTime(timezone=True))
+    trigger_count = Column(Integer, default=0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    # Relationships
+    creator = relationship("User")
+
+class AlertHistory(Base):
+    """Alert history table"""
+    __tablename__ = "alert_history"
+    __table_args__ = {'schema': 'analytics'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    rule_id = Column(UUID(as_uuid=True), ForeignKey("analytics.alert_rules.id", ondelete="CASCADE"), nullable=False)
+    alert_level = Column(String(20), nullable=False)
+    message = Column(Text, nullable=False)
+    triggered_value = Column(DECIMAL(15, 4))
+    threshold_value = Column(DECIMAL(15, 4))
+    entity_type = Column(String(50))
+    entity_id = Column(UUID(as_uuid=True))
+    notification_sent = Column(Boolean, default=False)
+    acknowledged = Column(Boolean, default=False)
+    acknowledged_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    acknowledged_at = Column(DateTime(timezone=True))
+    resolved = Column(Boolean, default=False)
+    resolved_at = Column(DateTime(timezone=True))
+    additional_data = Column(JSONB)
+    triggered_at = Column(DateTime(timezone=True), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    rule = relationship("AlertRule")
+    acknowledger = relationship("User")
+
+class ImageManagement(Base):
+    """Enhanced image management table"""
+    __tablename__ = "image_management"
+    __table_args__ = {'schema': 'analytics'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    entity_type = Column(String(50), nullable=False)  # 'product', 'category', 'company'
+    entity_id = Column(UUID(as_uuid=True), nullable=False)
+    original_filename = Column(String(255), nullable=False)
+    stored_filename = Column(String(255), nullable=False)
+    file_path = Column(String(500), nullable=False)
+    file_size_bytes = Column(Integer, nullable=False)
+    mime_type = Column(String(100), nullable=False)
+    image_width = Column(Integer)
+    image_height = Column(Integer)
+    thumbnails = Column(JSONB)  # Generated thumbnail information
+    is_primary = Column(Boolean, default=False)
+    alt_text = Column(String(255))
+    caption = Column(Text)
+    sort_order = Column(Integer, default=0)
+    optimization_applied = Column(Boolean, default=False)
+    compression_ratio = Column(DECIMAL(5, 4))
+    upload_metadata = Column(JSONB)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        Index('idx_image_management_entity', 'entity_type', 'entity_id'),
+        Index('idx_image_management_primary', 'is_primary'),
+        Index('idx_image_management_sort', 'sort_order'),
+        {'schema': 'analytics'}
     )
 
 class InventoryPerformanceMetrics(Base):
