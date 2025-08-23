@@ -2415,3 +2415,1047 @@ class OperationalKPICalculator:
         except Exception as e:
             print(f"Error getting weekly turnover data: {e}")
             return []
+
+
+class CustomerKPICalculator:
+    """Customer KPI calculator with cohort analysis and lifecycle tracking"""
+    
+    def __init__(self, db: Session):
+        self.db = db
+        self.cache = get_analytics_cache()
+        self.cache_ttl = 300  # 5 minutes default TTL
+    
+    async def calculate_customer_acquisition_kpis(
+        self, 
+        start_date: date, 
+        end_date: date,
+        targets: Optional[Dict[str, float]] = None
+    ) -> Dict[str, Any]:
+        """Calculate customer acquisition rate tracking with cohort analysis"""
+        
+        cache_key = f"customer_acquisition_kpis_{start_date}_{end_date}"
+        cached_data = await self.cache.get_kpi_data("customer", "acquisition", period=cache_key)
+        
+        if cached_data:
+            return cached_data["data"]
+        
+        try:
+            # Calculate current period acquisition metrics
+            current_metrics = await self._calculate_acquisition_metrics(start_date, end_date)
+            
+            # Calculate previous period for comparison
+            period_days = (end_date - start_date).days
+            prev_start = start_date - timedelta(days=period_days)
+            prev_end = start_date - timedelta(days=1)
+            previous_metrics = await self._calculate_acquisition_metrics(prev_start, prev_end)
+            
+            # Calculate growth rates
+            new_customers_growth = 0.0
+            if previous_metrics["new_customers"] > 0:
+                new_customers_growth = ((current_metrics["new_customers"] - previous_metrics["new_customers"]) / previous_metrics["new_customers"]) * 100
+            
+            acquisition_rate_change = current_metrics["acquisition_rate"] - previous_metrics["acquisition_rate"]
+            
+            # Perform cohort analysis
+            cohort_analysis = await self._perform_cohort_analysis(start_date, end_date)
+            
+            # Calculate customer acquisition cost (CAC) if available
+            cac_metrics = await self._calculate_customer_acquisition_cost(start_date, end_date)
+            
+            # Calculate achievement rate if targets provided
+            achievement_data = {}
+            if targets and "new_customers" in targets:
+                target_customers = targets["new_customers"]
+                achievement_rate = (current_metrics["new_customers"] / target_customers * 100) if target_customers > 0 else 0
+                variance = current_metrics["new_customers"] - target_customers
+                
+                achievement_data = {
+                    "new_customers_target": target_customers,
+                    "acquisition_achievement_rate": round(achievement_rate, 2),
+                    "acquisition_variance": variance,
+                    "target_status": "exceeded" if achievement_rate > 100 else "met" if achievement_rate >= 95 else "below"
+                }
+            
+            result = {
+                **current_metrics,
+                "previous_new_customers": previous_metrics["new_customers"],
+                "previous_acquisition_rate": round(previous_metrics["acquisition_rate"], 2),
+                "new_customers_growth": round(new_customers_growth, 2),
+                "acquisition_rate_change": round(acquisition_rate_change, 2),
+                "trend_direction": "up" if new_customers_growth > 5 else "down" if new_customers_growth < -5 else "stable",
+                "cohort_analysis": cohort_analysis,
+                "cac_metrics": cac_metrics,
+                "period_start": start_date.isoformat(),
+                "period_end": end_date.isoformat(),
+                "calculated_at": datetime.utcnow().isoformat(),
+                **achievement_data
+            }
+            
+            # Cache the results
+            await self.cache.set_kpi_data("customer", "acquisition", result, ttl=self.cache_ttl, period=cache_key)
+            
+            return result
+            
+        except Exception as e:
+            print(f"Error calculating customer acquisition KPIs: {e}")
+            return {
+                "error": str(e),
+                "new_customers": 0,
+                "acquisition_rate": 0.0,
+                "trend_direction": "stable"
+            }
+    
+    async def calculate_customer_retention_kpis(
+        self, 
+        start_date: date, 
+        end_date: date,
+        targets: Optional[Dict[str, float]] = None
+    ) -> Dict[str, Any]:
+        """Calculate retention rate with customer lifecycle analysis"""
+        
+        cache_key = f"customer_retention_kpis_{start_date}_{end_date}"
+        cached_data = await self.cache.get_kpi_data("customer", "retention", period=cache_key)
+        
+        if cached_data:
+            return cached_data["data"]
+        
+        try:
+            # Calculate current period retention metrics
+            current_metrics = await self._calculate_retention_metrics(start_date, end_date)
+            
+            # Calculate previous period for comparison
+            period_days = (end_date - start_date).days
+            prev_start = start_date - timedelta(days=period_days)
+            prev_end = start_date - timedelta(days=1)
+            previous_metrics = await self._calculate_retention_metrics(prev_start, prev_end)
+            
+            # Calculate retention changes
+            retention_rate_change = current_metrics["retention_rate"] - previous_metrics["retention_rate"]
+            churn_rate_change = current_metrics["churn_rate"] - previous_metrics["churn_rate"]
+            
+            # Perform customer lifecycle analysis
+            lifecycle_analysis = await self._perform_lifecycle_analysis(start_date, end_date)
+            
+            # Calculate customer segments
+            customer_segments = await self._analyze_customer_segments(start_date, end_date)
+            
+            # Calculate achievement rate if targets provided
+            achievement_data = {}
+            if targets and "retention_rate" in targets:
+                target_retention = targets["retention_rate"]
+                achievement_rate = (current_metrics["retention_rate"] / target_retention * 100) if target_retention > 0 else 0
+                variance = current_metrics["retention_rate"] - target_retention
+                
+                achievement_data = {
+                    "retention_target": target_retention,
+                    "retention_achievement_rate": round(achievement_rate, 2),
+                    "retention_variance": round(variance, 2),
+                    "target_status": "exceeded" if achievement_rate > 100 else "met" if achievement_rate >= 95 else "below"
+                }
+            
+            result = {
+                **current_metrics,
+                "previous_retention_rate": round(previous_metrics["retention_rate"], 2),
+                "previous_churn_rate": round(previous_metrics["churn_rate"], 2),
+                "retention_rate_change": round(retention_rate_change, 2),
+                "churn_rate_change": round(churn_rate_change, 2),
+                "trend_direction": "up" if retention_rate_change > 1 else "down" if retention_rate_change < -1 else "stable",
+                "lifecycle_analysis": lifecycle_analysis,
+                "customer_segments": customer_segments,
+                "period_start": start_date.isoformat(),
+                "period_end": end_date.isoformat(),
+                "calculated_at": datetime.utcnow().isoformat(),
+                **achievement_data
+            }
+            
+            # Cache the results
+            await self.cache.set_kpi_data("customer", "retention", result, ttl=self.cache_ttl, period=cache_key)
+            
+            return result
+            
+        except Exception as e:
+            print(f"Error calculating customer retention KPIs: {e}")
+            return {
+                "error": str(e),
+                "retention_rate": 0.0,
+                "churn_rate": 0.0,
+                "trend_direction": "stable"
+            }
+    
+    async def calculate_customer_value_kpis(
+        self, 
+        start_date: date, 
+        end_date: date,
+        targets: Optional[Dict[str, float]] = None
+    ) -> Dict[str, Any]:
+        """Calculate average transaction value and customer lifetime value"""
+        
+        cache_key = f"customer_value_kpis_{start_date}_{end_date}"
+        cached_data = await self.cache.get_kpi_data("customer", "value", period=cache_key)
+        
+        if cached_data:
+            return cached_data["data"]
+        
+        try:
+            # Calculate current period value metrics
+            current_metrics = await self._calculate_value_metrics(start_date, end_date)
+            
+            # Calculate previous period for comparison
+            period_days = (end_date - start_date).days
+            prev_start = start_date - timedelta(days=period_days)
+            prev_end = start_date - timedelta(days=1)
+            previous_metrics = await self._calculate_value_metrics(prev_start, prev_end)
+            
+            # Calculate value changes
+            atv_change = current_metrics["average_transaction_value"] - previous_metrics["average_transaction_value"]
+            atv_growth = 0.0
+            if previous_metrics["average_transaction_value"] > 0:
+                atv_growth = (atv_change / previous_metrics["average_transaction_value"]) * 100
+            
+            clv_change = current_metrics["customer_lifetime_value"] - previous_metrics["customer_lifetime_value"]
+            clv_growth = 0.0
+            if previous_metrics["customer_lifetime_value"] > 0:
+                clv_growth = (clv_change / previous_metrics["customer_lifetime_value"]) * 100
+            
+            # Calculate customer value distribution
+            value_distribution = await self._analyze_customer_value_distribution(start_date, end_date)
+            
+            # Calculate RFM analysis (Recency, Frequency, Monetary)
+            rfm_analysis = await self._perform_rfm_analysis(start_date, end_date)
+            
+            # Calculate achievement rate if targets provided
+            achievement_data = {}
+            if targets and "average_transaction_value" in targets:
+                target_atv = targets["average_transaction_value"]
+                achievement_rate = (current_metrics["average_transaction_value"] / target_atv * 100) if target_atv > 0 else 0
+                variance = current_metrics["average_transaction_value"] - target_atv
+                
+                achievement_data = {
+                    "atv_target": target_atv,
+                    "atv_achievement_rate": round(achievement_rate, 2),
+                    "atv_variance": round(variance, 2),
+                    "target_status": "exceeded" if achievement_rate > 100 else "met" if achievement_rate >= 95 else "below"
+                }
+            
+            result = {
+                **current_metrics,
+                "previous_average_transaction_value": round(previous_metrics["average_transaction_value"], 2),
+                "previous_customer_lifetime_value": round(previous_metrics["customer_lifetime_value"], 2),
+                "atv_change": round(atv_change, 2),
+                "atv_growth": round(atv_growth, 2),
+                "clv_change": round(clv_change, 2),
+                "clv_growth": round(clv_growth, 2),
+                "trend_direction": "up" if atv_growth > 5 else "down" if atv_growth < -5 else "stable",
+                "value_distribution": value_distribution,
+                "rfm_analysis": rfm_analysis,
+                "period_start": start_date.isoformat(),
+                "period_end": end_date.isoformat(),
+                "calculated_at": datetime.utcnow().isoformat(),
+                **achievement_data
+            }
+            
+            # Cache the results
+            await self.cache.set_kpi_data("customer", "value", result, ttl=self.cache_ttl, period=cache_key)
+            
+            return result
+            
+        except Exception as e:
+            print(f"Error calculating customer value KPIs: {e}")
+            return {
+                "error": str(e),
+                "average_transaction_value": 0.0,
+                "customer_lifetime_value": 0.0,
+                "trend_direction": "stable"
+            }
+    
+    async def _calculate_acquisition_metrics(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Calculate customer acquisition metrics for a period"""
+        
+        try:
+            # Get new customers in the period
+            new_customers_query = text("""
+                SELECT 
+                    COUNT(*) as new_customers,
+                    COUNT(DISTINCT DATE(created_at)) as active_days
+                FROM customers 
+                WHERE DATE(created_at) BETWEEN :start_date AND :end_date
+                AND is_active = true
+            """)
+            
+            result = self.db.execute(new_customers_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchone()
+            
+            new_customers = result.new_customers or 0
+            active_days = result.active_days or 1
+            
+            # Calculate acquisition rate (new customers per day)
+            acquisition_rate = new_customers / active_days if active_days > 0 else 0
+            
+            # Get total customers for context
+            total_customers_query = text("""
+                SELECT COUNT(*) as total_customers
+                FROM customers 
+                WHERE is_active = true
+            """)
+            
+            total_result = self.db.execute(total_customers_query).fetchone()
+            total_customers = total_result.total_customers or 0
+            
+            # Calculate acquisition percentage
+            acquisition_percentage = (new_customers / total_customers * 100) if total_customers > 0 else 0
+            
+            return {
+                "new_customers": new_customers,
+                "acquisition_rate": round(acquisition_rate, 2),
+                "acquisition_percentage": round(acquisition_percentage, 2),
+                "total_customers": total_customers,
+                "active_days": active_days
+            }
+            
+        except Exception as e:
+            print(f"Error calculating acquisition metrics: {e}")
+            return {
+                "new_customers": 0,
+                "acquisition_rate": 0.0,
+                "acquisition_percentage": 0.0,
+                "total_customers": 0,
+                "active_days": 0
+            }
+    
+    async def _calculate_retention_metrics(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Calculate customer retention metrics for a period"""
+        
+        try:
+            # Get customers who made purchases in the period
+            active_customers_query = text("""
+                SELECT 
+                    COUNT(DISTINCT customer_id) as active_customers
+                FROM invoices 
+                WHERE DATE(created_at) BETWEEN :start_date AND :end_date
+                AND status IN ('completed', 'paid', 'partially_paid')
+            """)
+            
+            active_result = self.db.execute(active_customers_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchone()
+            
+            active_customers = active_result.active_customers or 0
+            
+            # Get customers who made purchases in the previous period
+            period_days = (end_date - start_date).days
+            prev_start = start_date - timedelta(days=period_days)
+            prev_end = start_date - timedelta(days=1)
+            
+            previous_customers_query = text("""
+                SELECT 
+                    COUNT(DISTINCT customer_id) as previous_customers
+                FROM invoices 
+                WHERE DATE(created_at) BETWEEN :prev_start AND :prev_end
+                AND status IN ('completed', 'paid', 'partially_paid')
+            """)
+            
+            previous_result = self.db.execute(previous_customers_query, {
+                "prev_start": prev_start,
+                "prev_end": prev_end
+            }).fetchone()
+            
+            previous_customers = previous_result.previous_customers or 0
+            
+            # Get retained customers (customers who purchased in both periods)
+            retained_customers_query = text("""
+                SELECT COUNT(DISTINCT customer_id) as retained_customers
+                FROM (
+                    SELECT customer_id
+                    FROM invoices 
+                    WHERE DATE(created_at) BETWEEN :prev_start AND :prev_end
+                    AND status IN ('completed', 'paid', 'partially_paid')
+                    
+                    INTERSECT
+                    
+                    SELECT customer_id
+                    FROM invoices 
+                    WHERE DATE(created_at) BETWEEN :start_date AND :end_date
+                    AND status IN ('completed', 'paid', 'partially_paid')
+                ) retained
+            """)
+            
+            retained_result = self.db.execute(retained_customers_query, {
+                "prev_start": prev_start,
+                "prev_end": prev_end,
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchone()
+            
+            retained_customers = retained_result.retained_customers or 0
+            
+            # Calculate retention rate
+            retention_rate = (retained_customers / previous_customers * 100) if previous_customers > 0 else 0
+            
+            # Calculate churn rate
+            churned_customers = previous_customers - retained_customers
+            churn_rate = (churned_customers / previous_customers * 100) if previous_customers > 0 else 0
+            
+            # Calculate repeat purchase rate
+            repeat_customers_query = text("""
+                SELECT COUNT(DISTINCT customer_id) as repeat_customers
+                FROM (
+                    SELECT customer_id, COUNT(*) as purchase_count
+                    FROM invoices 
+                    WHERE DATE(created_at) BETWEEN :start_date AND :end_date
+                    AND status IN ('completed', 'paid', 'partially_paid')
+                    GROUP BY customer_id
+                    HAVING COUNT(*) > 1
+                ) repeat_buyers
+            """)
+            
+            repeat_result = self.db.execute(repeat_customers_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchone()
+            
+            repeat_customers = repeat_result.repeat_customers or 0
+            repeat_purchase_rate = (repeat_customers / active_customers * 100) if active_customers > 0 else 0
+            
+            return {
+                "retention_rate": round(retention_rate, 2),
+                "churn_rate": round(churn_rate, 2),
+                "active_customers": active_customers,
+                "previous_customers": previous_customers,
+                "retained_customers": retained_customers,
+                "churned_customers": churned_customers,
+                "repeat_customers": repeat_customers,
+                "repeat_purchase_rate": round(repeat_purchase_rate, 2)
+            }
+            
+        except Exception as e:
+            print(f"Error calculating retention metrics: {e}")
+            return {
+                "retention_rate": 0.0,
+                "churn_rate": 0.0,
+                "active_customers": 0,
+                "previous_customers": 0,
+                "retained_customers": 0,
+                "churned_customers": 0,
+                "repeat_customers": 0,
+                "repeat_purchase_rate": 0.0
+            }
+    
+    async def _calculate_value_metrics(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Calculate customer value metrics for a period"""
+        
+        try:
+            # Calculate average transaction value and customer lifetime value
+            value_query = text("""
+                SELECT 
+                    COUNT(DISTINCT i.customer_id) as unique_customers,
+                    COUNT(i.id) as total_transactions,
+                    COALESCE(SUM(i.total_amount), 0) as total_revenue,
+                    COALESCE(AVG(i.total_amount), 0) as avg_transaction_value,
+                    COALESCE(MAX(i.total_amount), 0) as max_transaction_value,
+                    COALESCE(MIN(i.total_amount), 0) as min_transaction_value
+                FROM invoices i
+                WHERE DATE(i.created_at) BETWEEN :start_date AND :end_date
+                AND i.status IN ('completed', 'paid', 'partially_paid')
+            """)
+            
+            result = self.db.execute(value_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchone()
+            
+            unique_customers = result.unique_customers or 0
+            total_transactions = result.total_transactions or 0
+            total_revenue = float(result.total_revenue or 0)
+            avg_transaction_value = float(result.avg_transaction_value or 0)
+            max_transaction_value = float(result.max_transaction_value or 0)
+            min_transaction_value = float(result.min_transaction_value or 0)
+            
+            # Calculate customer lifetime value (simplified as average revenue per customer)
+            customer_lifetime_value = (total_revenue / unique_customers) if unique_customers > 0 else 0
+            
+            # Calculate purchase frequency
+            purchase_frequency = (total_transactions / unique_customers) if unique_customers > 0 else 0
+            
+            # Get customer value distribution
+            value_distribution_query = text("""
+                SELECT 
+                    customer_id,
+                    SUM(total_amount) as customer_total_value,
+                    COUNT(*) as customer_transaction_count,
+                    AVG(total_amount) as customer_avg_value
+                FROM invoices 
+                WHERE DATE(created_at) BETWEEN :start_date AND :end_date
+                AND status IN ('completed', 'paid', 'partially_paid')
+                GROUP BY customer_id
+                ORDER BY customer_total_value DESC
+            """)
+            
+            distribution_results = self.db.execute(value_distribution_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchall()
+            
+            # Calculate percentiles
+            customer_values = [float(row.customer_total_value) for row in distribution_results]
+            
+            percentile_25 = 0
+            percentile_50 = 0
+            percentile_75 = 0
+            percentile_90 = 0
+            
+            if customer_values:
+                customer_values.sort()
+                n = len(customer_values)
+                percentile_25 = customer_values[int(n * 0.25)] if n > 0 else 0
+                percentile_50 = customer_values[int(n * 0.50)] if n > 0 else 0
+                percentile_75 = customer_values[int(n * 0.75)] if n > 0 else 0
+                percentile_90 = customer_values[int(n * 0.90)] if n > 0 else 0
+            
+            return {
+                "average_transaction_value": round(avg_transaction_value, 2),
+                "customer_lifetime_value": round(customer_lifetime_value, 2),
+                "total_revenue": round(total_revenue, 2),
+                "unique_customers": unique_customers,
+                "total_transactions": total_transactions,
+                "purchase_frequency": round(purchase_frequency, 2),
+                "max_transaction_value": round(max_transaction_value, 2),
+                "min_transaction_value": round(min_transaction_value, 2),
+                "value_percentiles": {
+                    "p25": round(percentile_25, 2),
+                    "p50": round(percentile_50, 2),
+                    "p75": round(percentile_75, 2),
+                    "p90": round(percentile_90, 2)
+                }
+            }
+            
+        except Exception as e:
+            print(f"Error calculating value metrics: {e}")
+            # Rollback the transaction to clear the error state
+            self.db.rollback()
+            return {
+                "average_transaction_value": 0.0,
+                "customer_lifetime_value": 0.0,
+                "total_revenue": 0.0,
+                "unique_customers": 0,
+                "total_transactions": 0,
+                "purchase_frequency": 0.0,
+                "max_transaction_value": 0.0,
+                "min_transaction_value": 0.0,
+                "value_percentiles": {"p25": 0, "p50": 0, "p75": 0, "p90": 0}
+            }
+    
+    async def _perform_cohort_analysis(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Perform cohort analysis for customer acquisition"""
+        
+        try:
+            # Get customer cohorts by month
+            cohort_query = text("""
+                SELECT 
+                    DATE_TRUNC('month', created_at) as cohort_month,
+                    COUNT(*) as cohort_size,
+                    AVG(total_purchases) as avg_cohort_value
+                FROM customers 
+                WHERE DATE(created_at) BETWEEN :start_date AND :end_date
+                AND is_active = true
+                GROUP BY DATE_TRUNC('month', created_at)
+                ORDER BY cohort_month
+            """)
+            
+            cohort_results = self.db.execute(cohort_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchall()
+            
+            cohorts = []
+            for row in cohort_results:
+                cohorts.append({
+                    "cohort_month": row.cohort_month.strftime("%Y-%m") if row.cohort_month else "unknown",
+                    "cohort_size": row.cohort_size or 0,
+                    "avg_cohort_value": round(float(row.avg_cohort_value or 0), 2)
+                })
+            
+            # Calculate cohort retention (simplified)
+            total_cohort_size = sum(c["cohort_size"] for c in cohorts)
+            avg_cohort_value = sum(c["avg_cohort_value"] for c in cohorts) / len(cohorts) if cohorts else 0
+            
+            return {
+                "cohorts": cohorts,
+                "total_cohort_size": total_cohort_size,
+                "avg_cohort_value": round(avg_cohort_value, 2),
+                "cohort_count": len(cohorts)
+            }
+            
+        except Exception as e:
+            print(f"Error performing cohort analysis: {e}")
+            return {
+                "cohorts": [],
+                "total_cohort_size": 0,
+                "avg_cohort_value": 0.0,
+                "cohort_count": 0
+            }
+    
+    async def _perform_lifecycle_analysis(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Perform customer lifecycle analysis"""
+        
+        try:
+            # Analyze customer lifecycle stages
+            lifecycle_query = text("""
+                SELECT 
+                    c.id,
+                    c.name,
+                    c.created_at as first_purchase_date,
+                    MAX(i.created_at) as last_purchase_date,
+                    c.total_purchases,
+                    COUNT(i.id) as transaction_count,
+                    COALESCE(SUM(i.total_amount), 0) as total_spent,
+                    COALESCE(EXTRACT(DAYS FROM (CURRENT_DATE - MAX(i.created_at))), 999) as days_since_last_purchase
+                FROM customers c
+                LEFT JOIN invoices i ON c.id = i.customer_id 
+                    AND DATE(i.created_at) BETWEEN :start_date AND :end_date
+                    AND i.status IN ('completed', 'paid', 'partially_paid')
+                WHERE c.is_active = true
+                GROUP BY c.id, c.name, c.created_at, c.total_purchases
+            """)
+            
+            lifecycle_results = self.db.execute(lifecycle_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchall()
+            
+            # Categorize customers by lifecycle stage
+            new_customers = []
+            active_customers = []
+            at_risk_customers = []
+            dormant_customers = []
+            
+            for row in lifecycle_results:
+                days_since_last = row.days_since_last_purchase or 0
+                transaction_count = row.transaction_count or 0
+                total_spent = float(row.total_spent or 0)
+                
+                customer_data = {
+                    "customer_id": str(row.id),
+                    "customer_name": row.name,
+                    "transaction_count": transaction_count,
+                    "total_spent": round(total_spent, 2),
+                    "days_since_last_purchase": days_since_last
+                }
+                
+                # Categorize based on recency and frequency
+                if days_since_last <= 30 and transaction_count > 0:
+                    if transaction_count == 1:
+                        new_customers.append(customer_data)
+                    else:
+                        active_customers.append(customer_data)
+                elif 30 < days_since_last <= 90:
+                    at_risk_customers.append(customer_data)
+                else:
+                    dormant_customers.append(customer_data)
+            
+            return {
+                "new_customers": {
+                    "count": len(new_customers),
+                    "customers": new_customers[:10]  # Top 10 for performance
+                },
+                "active_customers": {
+                    "count": len(active_customers),
+                    "customers": sorted(active_customers, key=lambda x: x["total_spent"], reverse=True)[:10]
+                },
+                "at_risk_customers": {
+                    "count": len(at_risk_customers),
+                    "customers": sorted(at_risk_customers, key=lambda x: x["days_since_last_purchase"])[:10]
+                },
+                "dormant_customers": {
+                    "count": len(dormant_customers),
+                    "customers": sorted(dormant_customers, key=lambda x: x["days_since_last_purchase"], reverse=True)[:10]
+                }
+            }
+            
+        except Exception as e:
+            print(f"Error performing lifecycle analysis: {e}")
+            # Rollback the transaction to clear the error state
+            self.db.rollback()
+            return {
+                "new_customers": {"count": 0, "customers": []},
+                "active_customers": {"count": 0, "customers": []},
+                "at_risk_customers": {"count": 0, "customers": []},
+                "dormant_customers": {"count": 0, "customers": []}
+            }
+    
+    async def _analyze_customer_segments(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Analyze customer segments based on value and behavior"""
+        
+        try:
+            # Segment customers by value and frequency
+            segments_query = text("""
+                SELECT 
+                    c.id,
+                    c.name,
+                    c.customer_type,
+                    COUNT(i.id) as transaction_count,
+                    COALESCE(SUM(i.total_amount), 0) as total_value,
+                    COALESCE(AVG(i.total_amount), 0) as avg_transaction_value
+                FROM customers c
+                LEFT JOIN invoices i ON c.id = i.customer_id 
+                    AND DATE(i.created_at) BETWEEN :start_date AND :end_date
+                    AND i.status IN ('completed', 'paid', 'partially_paid')
+                WHERE c.is_active = true
+                GROUP BY c.id, c.name, c.customer_type
+                HAVING COUNT(i.id) > 0
+                ORDER BY total_value DESC
+            """)
+            
+            segment_results = self.db.execute(segments_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchall()
+            
+            # Categorize customers into segments
+            vip_customers = []
+            high_value_customers = []
+            regular_customers = []
+            low_value_customers = []
+            
+            # Calculate thresholds based on data distribution
+            total_values = [float(row.total_value) for row in segment_results]
+            if total_values:
+                total_values.sort(reverse=True)
+                n = len(total_values)
+                vip_threshold = total_values[int(n * 0.1)] if n > 10 else total_values[0] if n > 0 else 1000
+                high_value_threshold = total_values[int(n * 0.3)] if n > 3 else total_values[-1] if n > 0 else 500
+                regular_threshold = total_values[int(n * 0.7)] if n > 1 else 0
+            else:
+                vip_threshold = 1000
+                high_value_threshold = 500
+                regular_threshold = 100
+            
+            for row in segment_results:
+                total_value = float(row.total_value)
+                customer_data = {
+                    "customer_id": str(row.id),
+                    "customer_name": row.name,
+                    "customer_type": row.customer_type,
+                    "transaction_count": row.transaction_count,
+                    "total_value": round(total_value, 2),
+                    "avg_transaction_value": round(float(row.avg_transaction_value), 2)
+                }
+                
+                if total_value >= vip_threshold:
+                    vip_customers.append(customer_data)
+                elif total_value >= high_value_threshold:
+                    high_value_customers.append(customer_data)
+                elif total_value >= regular_threshold:
+                    regular_customers.append(customer_data)
+                else:
+                    low_value_customers.append(customer_data)
+            
+            return {
+                "vip_customers": {
+                    "count": len(vip_customers),
+                    "threshold": vip_threshold,
+                    "customers": vip_customers[:10]
+                },
+                "high_value_customers": {
+                    "count": len(high_value_customers),
+                    "threshold": high_value_threshold,
+                    "customers": high_value_customers[:10]
+                },
+                "regular_customers": {
+                    "count": len(regular_customers),
+                    "threshold": regular_threshold,
+                    "customers": regular_customers[:10]
+                },
+                "low_value_customers": {
+                    "count": len(low_value_customers),
+                    "customers": low_value_customers[:10]
+                }
+            }
+            
+        except Exception as e:
+            print(f"Error analyzing customer segments: {e}")
+            # Rollback the transaction to clear the error state
+            self.db.rollback()
+            return {
+                "vip_customers": {"count": 0, "threshold": 0, "customers": []},
+                "high_value_customers": {"count": 0, "threshold": 0, "customers": []},
+                "regular_customers": {"count": 0, "threshold": 0, "customers": []},
+                "low_value_customers": {"count": 0, "customers": []}
+            }
+    
+    async def _analyze_customer_value_distribution(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Analyze customer value distribution"""
+        
+        try:
+            # Get customer value distribution
+            distribution_query = text("""
+                SELECT 
+                    SUM(total_amount) as customer_value,
+                    COUNT(*) as transaction_count
+                FROM invoices 
+                WHERE DATE(created_at) BETWEEN :start_date AND :end_date
+                AND status IN ('completed', 'paid', 'partially_paid')
+                GROUP BY customer_id
+                ORDER BY customer_value DESC
+            """)
+            
+            distribution_results = self.db.execute(distribution_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchall()
+            
+            customer_values = [float(row.customer_value) for row in distribution_results]
+            
+            if not customer_values:
+                return {
+                    "total_customers": 0,
+                    "value_ranges": {},
+                    "concentration": {}
+                }
+            
+            # Calculate value ranges
+            total_customers = len(customer_values)
+            total_value = sum(customer_values)
+            
+            # Define value ranges
+            ranges = {
+                "0-100": 0,
+                "100-500": 0,
+                "500-1000": 0,
+                "1000-5000": 0,
+                "5000+": 0
+            }
+            
+            for value in customer_values:
+                if value < 100:
+                    ranges["0-100"] += 1
+                elif value < 500:
+                    ranges["100-500"] += 1
+                elif value < 1000:
+                    ranges["500-1000"] += 1
+                elif value < 5000:
+                    ranges["1000-5000"] += 1
+                else:
+                    ranges["5000+"] += 1
+            
+            # Calculate concentration (80/20 rule)
+            customer_values.sort(reverse=True)
+            top_20_percent = int(total_customers * 0.2)
+            top_20_value = sum(customer_values[:top_20_percent]) if top_20_percent > 0 else 0
+            concentration_ratio = (top_20_value / total_value * 100) if total_value > 0 else 0
+            
+            return {
+                "total_customers": total_customers,
+                "total_value": round(total_value, 2),
+                "avg_customer_value": round(total_value / total_customers, 2),
+                "value_ranges": {k: {"count": v, "percentage": round(v / total_customers * 100, 1)} for k, v in ranges.items()},
+                "concentration": {
+                    "top_20_percent_customers": top_20_percent,
+                    "top_20_percent_value": round(top_20_value, 2),
+                    "concentration_ratio": round(concentration_ratio, 1)
+                }
+            }
+            
+        except Exception as e:
+            print(f"Error analyzing customer value distribution: {e}")
+            # Rollback the transaction to clear the error state
+            self.db.rollback()
+            return {
+                "total_customers": 0,
+                "value_ranges": {},
+                "concentration": {}
+            }
+    
+    async def _perform_rfm_analysis(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Perform RFM (Recency, Frequency, Monetary) analysis"""
+        
+        try:
+            # Calculate RFM metrics for each customer
+            rfm_query = text("""
+                SELECT 
+                    c.id as customer_id,
+                    c.name as customer_name,
+                    EXTRACT(DAYS FROM (CURRENT_DATE - MAX(i.created_at))) as recency_days,
+                    COUNT(i.id) as frequency,
+                    COALESCE(SUM(i.total_amount), 0) as monetary_value
+                FROM customers c
+                LEFT JOIN invoices i ON c.id = i.customer_id 
+                    AND DATE(i.created_at) BETWEEN :start_date AND :end_date
+                    AND i.status IN ('completed', 'paid', 'partially_paid')
+                WHERE c.is_active = true
+                GROUP BY c.id, c.name
+                HAVING COUNT(i.id) > 0
+                ORDER BY monetary_value DESC
+            """)
+            
+            rfm_results = self.db.execute(rfm_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchall()
+            
+            if not rfm_results:
+                return {
+                    "total_customers": 0,
+                    "rfm_segments": {},
+                    "top_customers": []
+                }
+            
+            # Calculate RFM scores (1-5 scale)
+            recency_values = [row.recency_days for row in rfm_results]
+            frequency_values = [row.frequency for row in rfm_results]
+            monetary_values = [float(row.monetary_value) for row in rfm_results]
+            
+            # Calculate quintiles for scoring
+            recency_values.sort()
+            frequency_values.sort(reverse=True)  # Lower recency is better
+            monetary_values.sort(reverse=True)  # Higher values are better
+            
+            n = len(rfm_results)
+            
+            def get_rfm_score(value, values_list, reverse=False):
+                if not values_list:
+                    return 1
+                
+                sorted_values = sorted(values_list, reverse=reverse)
+                
+                if value <= sorted_values[int(n * 0.2)]:
+                    return 5 if not reverse else 1
+                elif value <= sorted_values[int(n * 0.4)]:
+                    return 4 if not reverse else 2
+                elif value <= sorted_values[int(n * 0.6)]:
+                    return 3
+                elif value <= sorted_values[int(n * 0.8)]:
+                    return 2 if not reverse else 4
+                else:
+                    return 1 if not reverse else 5
+            
+            # Categorize customers
+            rfm_segments = {
+                "champions": [],
+                "loyal_customers": [],
+                "potential_loyalists": [],
+                "at_risk": [],
+                "hibernating": []
+            }
+            
+            for row in rfm_results:
+                recency_score = get_rfm_score(row.recency_days, recency_values, reverse=True)
+                frequency_score = get_rfm_score(row.frequency, frequency_values)
+                monetary_score = get_rfm_score(float(row.monetary_value), monetary_values)
+                
+                rfm_score = f"{recency_score}{frequency_score}{monetary_score}"
+                
+                customer_data = {
+                    "customer_id": str(row.customer_id),
+                    "customer_name": row.customer_name,
+                    "recency_days": row.recency_days,
+                    "frequency": row.frequency,
+                    "monetary_value": round(float(row.monetary_value), 2),
+                    "rfm_score": rfm_score,
+                    "recency_score": recency_score,
+                    "frequency_score": frequency_score,
+                    "monetary_score": monetary_score
+                }
+                
+                # Segment based on RFM scores
+                if recency_score >= 4 and frequency_score >= 4 and monetary_score >= 4:
+                    rfm_segments["champions"].append(customer_data)
+                elif recency_score >= 3 and frequency_score >= 3:
+                    rfm_segments["loyal_customers"].append(customer_data)
+                elif recency_score >= 3 and monetary_score >= 3:
+                    rfm_segments["potential_loyalists"].append(customer_data)
+                elif recency_score <= 2 and frequency_score >= 2:
+                    rfm_segments["at_risk"].append(customer_data)
+                else:
+                    rfm_segments["hibernating"].append(customer_data)
+            
+            # Get top customers by RFM score
+            all_customers = []
+            for segment_customers in rfm_segments.values():
+                all_customers.extend(segment_customers)
+            
+            top_customers = sorted(all_customers, 
+                                 key=lambda x: (x["recency_score"] + x["frequency_score"] + x["monetary_score"]), 
+                                 reverse=True)[:10]
+            
+            return {
+                "total_customers": len(rfm_results),
+                "rfm_segments": {
+                    segment: {
+                        "count": len(customers),
+                        "percentage": round(len(customers) / len(rfm_results) * 100, 1),
+                        "customers": customers[:5]  # Top 5 per segment
+                    }
+                    for segment, customers in rfm_segments.items()
+                },
+                "top_customers": top_customers
+            }
+            
+        except Exception as e:
+            print(f"Error performing RFM analysis: {e}")
+            # Rollback the transaction to clear the error state
+            self.db.rollback()
+            return {
+                "total_customers": 0,
+                "rfm_segments": {},
+                "top_customers": []
+            }
+    
+    async def _calculate_customer_acquisition_cost(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Calculate customer acquisition cost metrics"""
+        
+        try:
+            # This is a simplified CAC calculation
+            # In a real scenario, you'd include marketing spend, sales costs, etc.
+            
+            # Get new customers and their first purchase values
+            cac_query = text("""
+                SELECT 
+                    COUNT(*) as new_customers,
+                    COALESCE(AVG(first_purchase.total_amount), 0) as avg_first_purchase_value
+                FROM customers c
+                LEFT JOIN LATERAL (
+                    SELECT total_amount
+                    FROM invoices i
+                    WHERE i.customer_id = c.id
+                    AND i.status IN ('completed', 'paid', 'partially_paid')
+                    ORDER BY i.created_at ASC
+                    LIMIT 1
+                ) first_purchase ON true
+                WHERE DATE(c.created_at) BETWEEN :start_date AND :end_date
+                AND c.is_active = true
+            """)
+            
+            result = self.db.execute(cac_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchone()
+            
+            new_customers = result.new_customers or 0
+            avg_first_purchase = float(result.avg_first_purchase_value or 0)
+            
+            # Simplified CAC calculation (assuming 10% of first purchase value as acquisition cost)
+            estimated_cac = avg_first_purchase * 0.1 if avg_first_purchase > 0 else 0
+            
+            # Calculate CAC payback period (simplified)
+            payback_period_months = (estimated_cac / avg_first_purchase * 12) if avg_first_purchase > 0 else 0
+            
+            return {
+                "new_customers": new_customers,
+                "avg_first_purchase_value": round(avg_first_purchase, 2),
+                "estimated_cac": round(estimated_cac, 2),
+                "cac_to_ltv_ratio": round((estimated_cac / avg_first_purchase) if avg_first_purchase > 0 else 0, 2),
+                "payback_period_months": round(payback_period_months, 1)
+            }
+            
+        except Exception as e:
+            print(f"Error calculating customer acquisition cost: {e}")
+            return {
+                "new_customers": 0,
+                "avg_first_purchase_value": 0.0,
+                "estimated_cac": 0.0,
+                "cac_to_ltv_ratio": 0.0,
+                "payback_period_months": 0.0
+            }
