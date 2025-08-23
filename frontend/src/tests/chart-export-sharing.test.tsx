@@ -1,16 +1,16 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-// Mock dependencies
-const mockToast = {
-  success: jest.fn(),
-  error: jest.fn()
-};
 import { ChartExportMenu } from '@/components/analytics/charts/ChartExportMenu';
 import { ChartAnnotations } from '@/components/analytics/charts/ChartAnnotations';
 import { InteractiveChart } from '@/components/analytics/charts/InteractiveChart';
 import { chartExportService } from '@/services/chartExportService';
 import { toast } from 'sonner';
+// Mock dependencies
+const mockToast = {
+  success: jest.fn(),
+  error: jest.fn()
+};
 
 jest.mock('sonner', () => ({
   toast: mockToast

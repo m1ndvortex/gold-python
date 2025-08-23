@@ -2,6 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+// Import components after mocking
+import { CustomerList } from '../CustomerList';
+import { CustomerForm } from '../CustomerForm';
+
 // Mock all the hooks to avoid API dependencies
 jest.mock('../../../hooks/useCustomers', () => ({
   useCustomers: () => ({
@@ -58,10 +62,6 @@ jest.mock('../../ui/use-toast', () => ({
     toast: jest.fn(),
   }),
 }));
-
-// Import components after mocking
-import { CustomerList } from '../CustomerList';
-import { CustomerForm } from '../CustomerForm';
 
 const createTestQueryClient = () => {
   return new QueryClient({

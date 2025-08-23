@@ -292,10 +292,10 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-bold text-foreground leading-tight">
-                Gold Shop
+                {t('common.gold_shop_management')}
               </span>
               <span className="text-xs text-muted-foreground font-medium">
-                Professional
+                {t('common.professional_edition')}
               </span>
             </div>
           </div>

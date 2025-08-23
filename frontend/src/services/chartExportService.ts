@@ -2,7 +2,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 export interface ExportOptions {
-  format: 'png' | 'svg' | 'pdf' | 'csv';
+  format?: 'png' | 'svg' | 'pdf' | 'csv';
   filename?: string;
   quality?: number;
   width?: number;
@@ -54,7 +54,7 @@ export class ChartExportService {
    */
   async exportToPNG(
     element: HTMLElement,
-    options: ExportOptions = {}
+    options: ExportOptions = { format: 'png' }
   ): Promise<ExportResult> {
     try {
       const canvas = await html2canvas(element, {
@@ -100,7 +100,7 @@ export class ChartExportService {
    */
   async exportToSVG(
     element: HTMLElement,
-    options: ExportOptions = {}
+    options: ExportOptions = { format: 'svg' }
   ): Promise<ExportResult> {
     try {
       const svgElement = element.querySelector('svg');
@@ -169,7 +169,7 @@ export class ChartExportService {
    */
   async exportToPDF(
     element: HTMLElement,
-    options: ExportOptions = {}
+    options: ExportOptions = { format: 'pdf' }
   ): Promise<ExportResult> {
     try {
       const canvas = await html2canvas(element, {
@@ -195,8 +195,7 @@ export class ChartExportService {
           title: 'Analytics Chart Export',
           subject: 'Chart exported from Advanced Analytics System',
           author: 'Advanced Analytics System',
-          creator: 'Chart Export Service',
-          creationDate: new Date()
+          creator: 'Chart Export Service'
         });
       }
 
@@ -221,7 +220,7 @@ export class ChartExportService {
    */
   async exportToCSV(
     data: ChartData[],
-    options: ExportOptions = {}
+    options: ExportOptions = { format: 'csv' }
   ): Promise<ExportResult> {
     try {
       if (!data || data.length === 0) {
@@ -417,7 +416,7 @@ export class ChartExportService {
       filename: string;
     }>,
     format: 'png' | 'svg' | 'pdf' | 'csv',
-    options: ExportOptions = {}
+    options: ExportOptions = { format: 'png' }
   ): Promise<ExportResult[]> {
     const results: ExportResult[] = [];
     

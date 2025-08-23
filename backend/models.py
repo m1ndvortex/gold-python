@@ -720,31 +720,7 @@ class DemandForecast(Base):
     # Relationships
     item = relationship("InventoryItem")
 
-class CustomReport(Base):
-    """Custom reports configuration table"""
-    __tablename__ = "custom_reports"
-    __table_args__ = {'schema': 'analytics'}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(200), nullable=False)
-    description = Column(Text)
-    report_type = Column(String(50), nullable=False)  # 'dashboard', 'table', 'chart'
-    data_sources = Column(JSONB, nullable=False)  # Configuration for data sources
-    filters = Column(JSONB)  # Filter configurations
-    visualizations = Column(JSONB, nullable=False)  # Chart and visualization configs
-    layout = Column(JSONB)  # Layout configuration
-    styling = Column(JSONB)  # Styling and branding
-    schedule_config = Column(JSONB)  # Scheduling configuration
-    is_scheduled = Column(Boolean, default=False)
-    is_public = Column(Boolean, default=False)
-    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    shared_with = Column(JSONB)  # User IDs with access
-    last_generated = Column(DateTime(timezone=True))
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
-    # Relationships
-    creator = relationship("User")
+# Duplicate CustomReport removed - using the one defined earlier
 
 class AnalyticsCache(Base):
     """Analytics cache table for performance optimization"""
@@ -979,4 +955,51 @@ class InventoryPerformanceMetrics(Base):
     __table_args__ = (
         Index('idx_inventory_performance_date', 'metric_date'),
         Index('idx_inventory_performance_score', 'optimization_score'),
+    )
+
+# Additional models for background tasks
+class ForecastModel(Base):
+    __tablename__ = "forecast_models"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id"), nullable=False)
+    model_type = Column(String(50), nullable=False)  # 'arima', 'linear_regression', 'seasonal_decompose'
+    confidence_score = Column(DECIMAL(5, 4), nullable=False)
+    accuracy_metrics = Column(JSONB)
+    training_date = Column(Date, nullable=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    item = relationship("InventoryItem")
+    
+    __table_args__ = (
+        Index('idx_forecast_models_item', 'item_id'),
+        Index('idx_forecast_models_active', 'is_active'),
+        Index('idx_forecast_models_confidence', 'confidence_score'),
+    )
+
+class ReportExecution(Base):
+    __tablename__ = "report_executions"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    report_id = Column(UUID(as_uuid=True), ForeignKey("custom_reports.id"), nullable=False)
+    execution_type = Column(String(20), nullable=False)  # 'manual', 'scheduled'
+    status = Column(String(20), nullable=False)  # 'pending', 'running', 'completed', 'failed'
+    export_format = Column(String(20))  # 'pdf', 'excel', 'csv'
+    file_path = Column(String(500))
+    file_size = Column(Integer, default=0)
+    generation_time_seconds = Column(Integer, default=0)
+    error_message = Column(Text)
+    parameters = Column(JSONB)
+    task_metadata = Column(JSONB)  # Renamed from metadata to avoid conflict
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    completed_at = Column(DateTime(timezone=True))
+    
+    report = relationship("CustomReport")
+    
+    __table_args__ = (
+        Index('idx_report_executions_report', 'report_id'),
+        Index('idx_report_executions_status', 'status'),
+        Index('idx_report_executions_type', 'execution_type'),
+        Index('idx_report_executions_created', 'created_at'),
     )

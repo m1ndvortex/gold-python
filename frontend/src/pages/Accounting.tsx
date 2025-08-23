@@ -440,18 +440,21 @@ export const Accounting: React.FC = () => {
 };
 
 // Individual route components
-const AccountingIncomeRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    <div className="flex items-center gap-3 mb-6">
-      <TrendingUpIcon className="h-8 w-8 text-green-600" />
-      <div>
-        <h1 className="text-3xl font-bold">Income Ledger</h1>
-        <p className="text-muted-foreground">Track all revenue from invoices and payments</p>
+const AccountingIncomeRoute: React.FC = () => {
+  const { t } = useLanguage();
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center gap-3 mb-6">
+        <TrendingUpIcon className="h-8 w-8 text-green-600" />
+        <div>
+          <h1 className="text-3xl font-bold">{t('accounting.income_title')}</h1>
+          <p className="text-muted-foreground">{t('accounting.income_desc')}</p>
+        </div>
       </div>
+      <IncomeLedger />
     </div>
-    <IncomeLedger />
-  </div>
-);
+  );
+};
 
 const AccountingExpenseRoute: React.FC = () => {
   const { t } = useLanguage();

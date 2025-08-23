@@ -249,6 +249,35 @@ const translations = {
     'common.notifications': 'اعلان‌ها',
     'common.system_online': 'سیستم آنلاین',
     'common.try_again': 'تلاش مجدد',
+    'common.search_placeholder': 'جستجو...',
+    'common.no_data': 'اطلاعاتی موجود نیست',
+    'common.view': 'مشاهده',
+    'common.close': 'بستن',
+    'common.submit': 'ارسال',
+    'common.reset': 'بازنشانی',
+    'common.select': 'انتخاب',
+    'common.all': 'همه',
+    'common.none': 'هیچکدام',
+    'common.yes': 'بله',
+    'common.no': 'خیر',
+    'common.confirm': 'تأیید',
+    'common.warning': 'هشدار',
+    'common.error': 'خطا',
+    'common.success': 'موفقیت',
+    'common.info': 'اطلاعات',
+    'common.dismiss': 'رد کردن',
+    'common.dismiss_alert': 'رد کردن هشدار',
+    'common.action_required': 'نیاز به اقدام',
+    'common.high': 'بالا',
+    'common.medium': 'متوسط',
+    'common.low': 'پایین',
+    'common.just_now': 'همین الان',
+    'common.minutes_ago': '{count} دقیقه پیش',
+    'common.hours_ago': '{count} ساعت پیش',
+    'common.days_ago': '{count} روز پیش',
+    'common.professional_edition': 'نسخه حرفه‌ای',
+    'common.gold_shop_management': 'مدیریت طلافروشی',
+    'common.version': 'نسخه',
     
     // Dashboard
     'dashboard.title': 'داشبورد',
@@ -291,6 +320,10 @@ const translations = {
     'dashboard.hide_dismissed': 'مخفی کردن رد شده‌ها',
     'dashboard.alerts': 'هشدار',
     'dashboard.unread': 'خوانده نشده',
+    'dashboard.low_stock_alert': 'موجودی کم: {product}',
+    'dashboard.current_stock': 'موجودی فعلی: {current}، حداقل: {min}',
+    'dashboard.overdue_payment': 'پرداخت سررسید گذشته: {invoice}',
+    'dashboard.days_overdue': 'روز سررسید گذشته',
     
     // Customers
     'customers.title': 'مدیریت مشتریان',
@@ -314,6 +347,9 @@ const translations = {
     'customers.edit': 'ویرایش',
     'customers.delete': 'حذف',
     'customers.view_profile': 'مشاهده پروفایل',
+    'customers.no_contact_info': 'اطلاعات تماس موجود نیست',
+    'customers.no_customers_found': 'هیچ مشتری یافت نشد. اولین مشتری خود را اضافه کنید.',
+    'customers.no_customers_found_search': 'هیچ مشتری با معیارهای جستجوی شما یافت نشد.',
     
     // Accounting
     'accounting.income': 'دفتر درآمد',
@@ -550,8 +586,16 @@ export const useLanguageProvider = () => {
     document.documentElement.lang = lang;
   };
 
-  const t = (key: string): string => {
-    return translations[language][key as keyof typeof translations[typeof language]] || key;
+  const t = (key: string, params?: Record<string, string | number>): string => {
+    let translation = translations[language][key as keyof typeof translations[typeof language]] || key;
+    
+    if (params) {
+      Object.entries(params).forEach(([paramKey, paramValue]) => {
+        translation = translation.replace(new RegExp(`{${paramKey}}`, 'g'), String(paramValue));
+      });
+    }
+    
+    return translation;
   };
 
   return {

@@ -2,6 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
+// Import components after mocking
+import { InteractiveChart } from '../components/analytics/charts/InteractiveChart';
+import { TrendChart } from '../components/analytics/charts/TrendChart';
+
 // Mock all external dependencies to avoid complex interactions
 jest.mock('framer-motion', () => ({
   motion: {
@@ -67,10 +71,6 @@ jest.mock('../components/ui/tooltip', () => ({
   TooltipTrigger: ({ children }: any) => <div>{children}</div>,
   TooltipContent: ({ children }: any) => <div>{children}</div>
 }));
-
-// Import components after mocking
-import { InteractiveChart } from '../components/analytics/charts/InteractiveChart';
-import { TrendChart } from '../components/analytics/charts/TrendChart';
 
 describe('Advanced Chart Components - Basic Functionality', () => {
   const mockData = [
@@ -313,7 +313,7 @@ describe('Advanced Chart Components - Basic Functionality', () => {
         <InteractiveChart 
           data={mockData} 
           type="line"
-          zoom={{ enabled: false }}
+          zoom={{ enabled: false, type: 'x' }}
           export={{ enabled: false, formats: [] }}
         />
       );

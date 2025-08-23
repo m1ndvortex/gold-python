@@ -42,7 +42,7 @@ export type Direction = 'ltr' | 'rtl';
 export interface LanguageContextType {
   language: Language;
   direction: Direction;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
   setLanguage: (lang: Language) => void;
 }
 

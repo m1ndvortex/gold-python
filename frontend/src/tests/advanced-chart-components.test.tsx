@@ -238,7 +238,7 @@ describe('InteractiveChart Component', () => {
       ...defaultProps,
       export: {
         enabled: true,
-        formats: ['png', 'svg', 'pdf', 'csv'] as const,
+        formats: ['png', 'svg', 'pdf', 'csv'] as ('png' | 'svg' | 'pdf' | 'csv')[],
         onExport: jest.fn()
       }
     };
@@ -254,7 +254,7 @@ describe('InteractiveChart Component', () => {
       ...defaultProps,
       export: {
         enabled: true,
-        formats: ['png'] as const,
+        formats: ['png'] as ('png' | 'svg' | 'pdf' | 'csv')[],
         onExport: mockExport
       }
     };

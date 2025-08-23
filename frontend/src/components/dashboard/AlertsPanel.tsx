@@ -129,8 +129,8 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
         const priority: AlertPriority = item.status === 'critical' ? 'critical' : 'high';
         alerts.push({
           id: `stock-${item.item_id}`,
-          title: `Low Stock: ${item.item_name}`,
-          description: `${item.category_name} • Current: ${item.current_stock}, Min: ${item.min_stock_level}`,
+          title: t('dashboard.low_stock_alert', { product: item.item_name }),
+          description: t('dashboard.current_stock', { current: item.current_stock, min: item.min_stock_level }) + ` • ${item.category_name}`,
           category: 'inventory',
           priority,
           timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000), // Mock timestamp
@@ -151,8 +151,8 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
 
         alerts.push({
           id: `invoice-${invoice.invoice_id}`,
-          title: `Overdue Payment: ${invoice.invoice_number}`,
-          description: `${invoice.customer_name} • ${formatCurrency(invoice.remaining_amount)} • ${invoice.days_overdue} days overdue`,
+          title: t('dashboard.overdue_payment', { invoice: invoice.invoice_number }),
+          description: `${invoice.customer_name} • ${formatCurrency(invoice.remaining_amount)} • ${invoice.days_overdue} ${t('dashboard.days_overdue')}`,
           category: 'finance',
           priority,
           timestamp: new Date(Date.now() - invoice.days_overdue * 24 * 60 * 60 * 1000),
@@ -366,7 +366,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                         {alert.actionRequired && (
                           <span className="flex items-center space-x-1 text-amber-600">
                             <TrendingUp className="w-3 h-3" />
-                            <span>Action Required</span>
+                            <span>{t('common.action_required')}</span>
                           </span>
                         )}
                       </div>
@@ -378,7 +378,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                     <Badge className={`${getPriorityColor(alert.priority)} text-xs font-medium`}>
                       <span className="flex items-center space-x-1">
                         {getPriorityIcon(alert.priority)}
-                        <span className="capitalize">{alert.priority}</span>
+                        <span className="capitalize">{t(`common.${alert.priority}`)}</span>
                       </span>
                     </Badge>
                     
@@ -391,8 +391,8 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                           handleDismissAlert(alert.id);
                         }}
                         className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
-                        aria-label="Dismiss alert"
-                        title="Dismiss alert"
+                        aria-label={t('common.dismiss_alert')}
+                        title={t('common.dismiss_alert')}
                       >
                         <Archive className="w-3 h-3" />
                       </Button>

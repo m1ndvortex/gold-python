@@ -6,11 +6,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { Login } from '../pages/Login';
 import { LanguageContext, useLanguageProvider } from '../hooks/useLanguage';
 
-// 🐳 Unmock axios for Docker integration tests
-jest.unmock('axios');
-
 // 🐳 Use real axios for Docker backend testing
 import axios from 'axios';
+
+// 🐳 Unmock axios for Docker integration tests
+jest.unmock('axios');
 const BACKEND_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 // Create axios instance for MAIN Docker backend testing

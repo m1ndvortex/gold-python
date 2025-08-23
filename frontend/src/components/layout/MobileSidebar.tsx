@@ -4,6 +4,7 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { Sidebar } from './Sidebar';
+import { useLanguage } from '../../hooks/useLanguage';
 import { cn } from '../../lib/utils';
 
 interface MobileSidebarProps {
@@ -11,6 +12,7 @@ interface MobileSidebarProps {
 }
 
 export const MobileSidebar: React.FC<MobileSidebarProps> = ({ className }) => {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -54,7 +56,7 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({ className }) => {
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-foreground text-lg leading-tight">
-                  Gold Shop
+                  {t('common.gold_shop_management')}
                 </span>
                 <span className="text-xs text-muted-foreground font-medium">
                   Mobile Menu

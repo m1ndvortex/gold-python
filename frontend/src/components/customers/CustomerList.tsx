@@ -113,7 +113,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
             </div>
           )}
           {!row.phone && !row.email && (
-            <span className="text-sm text-muted-foreground">No contact info</span>
+            <span className="text-sm text-muted-foreground">{t('customers.no_contact_info')}</span>
           )}
         </div>
       )
@@ -328,7 +328,8 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
             columns={columns}
             actions={actions}
             loading={isLoading}
-            emptyMessage={searchQuery ? 'No customers found matching your search criteria.' : 'No customers found. Add your first customer to get started.'}
+            emptyMessage={searchQuery ? t('customers.no_customers_found_search') : t('customers.no_customers_found')}
+            searchPlaceholder={t('common.search_placeholder')}
             globalFilter={searchQuery}
             onGlobalFilterChange={setSearchQuery}
             selection={{

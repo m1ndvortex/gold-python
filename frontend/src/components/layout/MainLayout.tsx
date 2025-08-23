@@ -43,6 +43,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children, className }) =
         className
       )}
       dir={direction}
+      style={{ direction }}
     >
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex">

@@ -530,14 +530,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             <div className="text-center space-y-1">
               <div className="text-xs font-semibold text-primary-700">
-                Gold Shop Management
+                {t('common.gold_shop_management')}
               </div>
               <div className="text-xs text-muted-foreground">
-                Professional Edition v2.0
+                {t('common.professional_edition')} {t('common.version')} 2.0
               </div>
               <div className="flex items-center justify-center space-x-1 text-xs text-muted-foreground">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span>System Online</span>
+                <span>{t('common.system_online')}</span>
               </div>
             </div>
           </motion.div>

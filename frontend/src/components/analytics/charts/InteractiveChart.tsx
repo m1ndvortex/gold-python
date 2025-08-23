@@ -20,7 +20,7 @@ import {
   Brush,
   ReferenceLine,
   ReferenceArea,
-  ZoomableGroup
+
 } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -271,12 +271,15 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
   }, [activeFilters, filters]);
 
   // Handle data point interactions
-  const handleDataPointClick = useCallback((data: any, index: number) => {
-    const dataPoint = data.payload || data;
-    onDataPointClick?.(dataPoint, index);
-    
-    if (drillDown?.enabled) {
-      handleDrillDown(dataPoint);
+  const handleDataPointClick = useCallback((data: any, event?: any) => {
+    if (data && data.activePayload && data.activePayload.length > 0) {
+      const dataPoint = data.activePayload[0].payload;
+      const index = data.activeTooltipIndex || 0;
+      onDataPointClick?.(dataPoint, index);
+      
+      if (drillDown?.enabled) {
+        handleDrillDown(dataPoint);
+      }
     }
   }, [onDataPointClick, drillDown, handleDrillDown]);
 
@@ -419,7 +422,7 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
               outerRadius={120}
               fill={colors[0]}
               dataKey="value"
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
               animationDuration={animation.enabled ? animation.duration : 0}
               animationBegin={animation.delay || 0}
             >
@@ -453,7 +456,7 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
         );
 
       default:
-        return null;
+        return <div>Unsupported chart type</div>;
     }
   };
 

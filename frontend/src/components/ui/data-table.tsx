@@ -99,6 +99,7 @@ export interface DataTableProps<T = any> extends VariantProps<typeof dataTableVa
   loading?: boolean
   loadingRows?: number
   emptyMessage?: string
+  searchPlaceholder?: string
   
   // Responsive
   mobileBreakpoint?: number
@@ -367,6 +368,7 @@ export const DataTable = <T,>({
   loading = false,
   loadingRows = 5,
   emptyMessage = "No data available",
+  searchPlaceholder = "Search...",
   mobileBreakpoint = 768,
   showMobileCards = true,
   className,
@@ -454,7 +456,7 @@ export const DataTable = <T,>({
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search..."
+                placeholder={searchPlaceholder}
                 value={globalFilter}
                 onChange={(e) => onGlobalFilterChange(e.target.value)}
                 className="pl-10"
@@ -585,7 +587,7 @@ export const DataTable = <T,>({
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search..."
+                placeholder={searchPlaceholder}
                 value={globalFilter}
                 onChange={(e) => onGlobalFilterChange(e.target.value)}
                 className="pl-10 w-64"

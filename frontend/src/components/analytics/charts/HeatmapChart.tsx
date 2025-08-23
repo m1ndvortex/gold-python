@@ -196,7 +196,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
 
   // Generate color scale
   const colorScale = useMemo(() => {
-    const colors = customColors || colorSchemes[colorScheme] || colorSchemes.viridis;
+    const colors = customColors || (colorScheme !== 'custom' ? colorSchemes[colorScheme as keyof typeof colorSchemes] : undefined) || colorSchemes.viridis;
     const steps = colorSteps;
     const range = maxValue - minValue;
     
@@ -733,7 +733,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
                       x={width / 2}
                       y={height - 5}
                       textAnchor="middle"
-                      fontSize={visual.fontSize + 2}
+                      fontSize={(visual.fontSize || 12) + 2}
                       fill="#374151"
                       fontWeight="500"
                     >
@@ -744,7 +744,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({
                       x={15}
                       y={height / 2}
                       textAnchor="middle"
-                      fontSize={visual.fontSize + 2}
+                      fontSize={(visual.fontSize || 12) + 2}
                       fill="#374151"
                       fontWeight="500"
                       transform={`rotate(-90, 15, ${height / 2})`}

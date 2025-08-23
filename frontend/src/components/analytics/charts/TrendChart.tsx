@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   ResponsiveContainer,
   LineChart,
@@ -593,10 +593,10 @@ export const TrendChart: React.FC<TrendChartProps> = ({
               <LineChart
               data={processedData}
               margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-              onClick={(data) => {
-                if (data && data.activePayload) {
-                  const dataPoint = data.activePayload[0].payload;
-                  onDataPointClick?.(dataPoint, data.activeTooltipIndex || 0);
+              onClick={(data: any) => {
+                if (data && (data as any).activePayload) {
+                  const dataPoint = (data as any).activePayload[0].payload;
+                  onDataPointClick?.(dataPoint, (data as any).activeTooltipIndex || 0);
                 }
               }}
             >
