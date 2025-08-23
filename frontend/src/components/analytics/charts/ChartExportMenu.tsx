@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Separator } from '@/components/ui/separator';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '../../../lib/utils';
+import { Button } from '../../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
+import { Badge } from '../../ui/badge';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
+import { Textarea } from '../../ui/textarea';
+import { Switch } from '../../ui/switch';
+import { Separator } from '../../ui/separator';
+import { Progress } from '../../ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuLabel
-} from '@/components/ui/dropdown-menu';
+} from '../../ui/dropdown-menu';
 import {
   Dialog,
   DialogContent,
@@ -27,7 +27,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter
-} from '@/components/ui/dialog';
+} from '../../ui/dialog';
 import {
   Download,
   Share2,
@@ -47,7 +47,7 @@ import {
   Loader2,
   X
 } from 'lucide-react';
-import { chartExportService, ExportOptions, ShareOptions, EmbedOptions } from '@/services/chartExportService';
+import { chartExportService, ExportOptions, ShareOptions, EmbedOptions } from '../../../services/chartExportService';
 import { toast } from 'sonner';
 
 export interface ChartExportMenuProps {

@@ -1,20 +1,20 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { cn } from '../../../lib/utils';
+import { Button } from '../../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
+import { Badge } from '../../ui/badge';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
+import { Textarea } from '../../ui/textarea';
+import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator
-} from '@/components/ui/dropdown-menu';
+} from '../../ui/dropdown-menu';
 import {
   Dialog,
   DialogContent,
@@ -23,13 +23,13 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter
-} from '@/components/ui/dialog';
+} from '../../ui/dialog';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
-} from '@/components/ui/tooltip';
+} from '../../ui/tooltip';
 import {
   MessageSquare,
   Plus,
@@ -48,7 +48,7 @@ import {
   HelpCircle,
   X
 } from 'lucide-react';
-import { chartExportService } from '@/services/chartExportService';
+import { chartExportService } from '../../../services/chartExportService';
 import { toast } from 'sonner';
 
 export interface Annotation {

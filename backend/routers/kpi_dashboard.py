@@ -51,6 +51,27 @@ class KPIConnectionManager:
             # Remove disconnected clients
             for connection in disconnected:
                 self.disconnect(connection)
+    
+    async def send_alert_notification(self, alert_data: dict):
+        """Send alert notifications to all connected KPI clients"""
+        if self.active_connections:
+            message = json.dumps({
+                "type": "alert",
+                "data": alert_data,
+                "timestamp": datetime.now().isoformat()
+            })
+            disconnected = []
+            
+            for connection in self.active_connections:
+                try:
+                    await connection.send_text(message)
+                except Exception as e:
+                    logger.error(f"Error sending alert WebSocket message: {e}")
+                    disconnected.append(connection)
+            
+            # Remove disconnected clients
+            for connection in disconnected:
+                self.disconnect(connection)
 
 # Global connection manager
 kpi_manager = KPIConnectionManager()

@@ -37,8 +37,8 @@ class FinancialKPICalculator:
     ) -> Dict[str, Any]:
         """Calculate comprehensive revenue KPIs with trend analysis"""
         
-        # Check cache first
-        cache_key = f"revenue_kpis_{start_date}_{end_date}"
+        # Check cache first with enhanced caching strategy
+        cache_key = f"revenue_kpis_{start_date}_{end_date}_{hash(str(targets))}"
         cached_data = await self.cache.get_kpi_data("financial", "revenue", period=cache_key)
         
         if cached_data:

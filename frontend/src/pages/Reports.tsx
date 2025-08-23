@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -22,7 +22,8 @@ import {
   LineChart,
   Eye,
   Target,
-  Zap
+  Zap,
+  Wrench
 } from 'lucide-react';
 import { useRefreshReports } from '../hooks/useReports';
 import { useToast } from '../components/ui/use-toast';
@@ -33,8 +34,14 @@ import SalesReports from '../components/reports/SalesReports';
 import InventoryReports from '../components/reports/InventoryReports';
 import CustomerReports from '../components/reports/CustomerReports';
 import ReportFilters from '../components/reports/ReportFilters';
+import ReportBuilderPage from './ReportBuilder';
+import AdvancedChartsPage from './AdvancedCharts';
+import CacheManagementPage from './CacheManagement';
+import StockOptimizationPage from './StockOptimization';
+import ForecastingAnalyticsPage from './ForecastingAnalytics';
 
 const Reports: React.FC = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('sales');
   const [globalFilters, setGlobalFilters] = useState({
     start_date: '',
@@ -289,6 +296,208 @@ const Reports: React.FC = () => {
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* Advanced Analytics Features Section */}
+      <div className="space-y-6">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-foreground mb-2">Advanced Analytics Suite</h2>
+          <p className="text-muted-foreground">Powerful analytics tools for comprehensive business intelligence</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50 hover:shadow-xl transition-all duration-300">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                  <Wrench className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-semibold">Report Builder</CardTitle>
+                  <CardDescription className="text-base">
+                    Drag-and-drop report creation
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="bg-blue-100 text-blue-700">Drag & Drop</Badge>
+                <Badge variant="secondary" className="bg-indigo-100 text-indigo-700">Visual Builder</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Build sophisticated reports with intuitive drag-and-drop interface and real-time preview.
+              </p>
+              <Button 
+                className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
+                onClick={() => navigate('/reports/builder')}
+              >
+                <Wrench className="h-4 w-4 mr-2" />
+                Open Report Builder
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-teal-100/50 hover:shadow-xl transition-all duration-300">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+                  <BarChart3 className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-semibold">Advanced Charts</CardTitle>
+                  <CardDescription className="text-base">
+                    Interactive data visualizations
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="bg-green-100 text-green-700">Interactive</Badge>
+                <Badge variant="secondary" className="bg-teal-100 text-teal-700">Heatmaps</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Explore data with interactive charts, heatmaps, and real-time visualizations.
+              </p>
+              <Button 
+                className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700"
+                onClick={() => navigate('/reports/charts')}
+              >
+                <BarChart3 className="h-4 w-4 mr-2" />
+                Explore Charts
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50 hover:shadow-xl transition-all duration-300">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
+                  <TrendingUp className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-semibold">Forecasting Analytics</CardTitle>
+                  <CardDescription className="text-base">
+                    AI-powered demand predictions
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="bg-purple-100 text-purple-700">AI Powered</Badge>
+                <Badge variant="secondary" className="bg-violet-100 text-violet-700">Predictions</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Advanced demand forecasting with machine learning algorithms and confidence intervals.
+              </p>
+              <Button 
+                className="w-full bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700"
+                onClick={() => navigate('/reports/forecasting')}
+              >
+                <TrendingUp className="h-4 w-4 mr-2" />
+                View Forecasts
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-50 to-red-100/50 hover:shadow-xl transition-all duration-300">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg">
+                  <Package className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-semibold">Stock Optimization</CardTitle>
+                  <CardDescription className="text-base">
+                    Inventory optimization engine
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="bg-orange-100 text-orange-700">Optimization</Badge>
+                <Badge variant="secondary" className="bg-red-100 text-red-700">Recommendations</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                AI-powered inventory optimization with reorder recommendations and cost analysis.
+              </p>
+              <Button 
+                className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
+                onClick={() => navigate('/reports/stock-optimization')}
+              >
+                <Package className="h-4 w-4 mr-2" />
+                Optimize Stock
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-cyan-50 to-blue-100/50 hover:shadow-xl transition-all duration-300">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-semibold">Cache Management</CardTitle>
+                  <CardDescription className="text-base">
+                    Performance monitoring
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="bg-cyan-100 text-cyan-700">Performance</Badge>
+                <Badge variant="secondary" className="bg-blue-100 text-blue-700">Monitoring</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Monitor Redis cache performance, hit rates, and optimize system performance.
+              </p>
+              <Button 
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
+                onClick={() => navigate('/reports/cache-management')}
+              >
+                <Zap className="h-4 w-4 mr-2" />
+                Manage Cache
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-50 to-green-100/50 hover:shadow-xl transition-all duration-300">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg">
+                  <Target className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-semibold">KPI Dashboard</CardTitle>
+                  <CardDescription className="text-base">
+                    Real-time business metrics
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">Real-time</Badge>
+                <Badge variant="secondary" className="bg-green-100 text-green-700">KPIs</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Monitor key performance indicators with real-time updates and trend analysis.
+              </p>
+              <Button 
+                className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700"
+                onClick={() => navigate('/dashboard')}
+              >
+                <Target className="h-4 w-4 mr-2" />
+                View KPIs
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
@@ -421,7 +630,13 @@ export const ReportsWithRouting: React.FC = () => {
       <Route path="/sales" element={<SalesReportsRoute />} />
       <Route path="/inventory" element={<InventoryReportsRoute />} />
       <Route path="/customers" element={<CustomerReportsRoute />} />
-      <Route path="/*" element={<Reports />} />
+      <Route path="/builder" element={<ReportBuilderPage />} />
+      <Route path="/charts" element={<AdvancedChartsPage />} />
+      <Route path="/forecasting" element={<ForecastingAnalyticsPage />} />
+      <Route path="/stock-optimization" element={<StockOptimizationPage />} />
+      <Route path="/cache-management" element={<CacheManagementPage />} />
+      <Route path="/" element={<Reports />} />
+      <Route path="" element={<Reports />} />
     </Routes>
   );
 };

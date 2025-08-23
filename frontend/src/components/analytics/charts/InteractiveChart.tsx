@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import {
   ResponsiveContainer,
   LineChart,
@@ -17,29 +17,19 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  Brush,
-  ReferenceLine,
-  ReferenceArea,
-
+  Brush
 } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { cn } from '../../../lib/utils';
+import { Button } from '../../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
+import { Badge } from '../../ui/badge';
 import {
   ZoomIn,
   ZoomOut,
   RotateCcw,
-  Filter,
-  Download,
   Maximize2,
   ChevronDown,
-  ChevronUp,
-  TrendingUp,
-  TrendingDown,
-  Minus,
   MessageSquare
 } from 'lucide-react';
 import { ChartExportMenu } from './ChartExportMenu';
@@ -158,7 +148,6 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [hoveredData, setHoveredData] = useState<ChartDataPoint | null>(null);
-  const [selectedArea, setSelectedArea] = useState<{ x1?: number; x2?: number; y1?: number; y2?: number } | null>(null);
   const [showAnnotations, setShowAnnotations] = useState(false);
 
   // Filter data based on active filters
@@ -271,7 +260,7 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
   }, [activeFilters, filters]);
 
   // Handle data point interactions
-  const handleDataPointClick = useCallback((data: any, event?: any) => {
+  const handleDataPointClick = useCallback((data: any) => {
     if (data && data.activePayload && data.activePayload.length > 0) {
       const dataPoint = data.activePayload[0].payload;
       const index = data.activeTooltipIndex || 0;
@@ -307,7 +296,9 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
               style={{ backgroundColor: entry.color }}
             />
             <span className="text-muted-foreground">{entry.name}:</span>
-            <span className="font-medium">{entry.value.toLocaleString()}</span>
+            <span className="font-medium">
+              {entry.value != null ? entry.value.toLocaleString() : 'N/A'}
+            </span>
           </div>
         ))}
         {drillDown?.enabled && (
@@ -422,7 +413,7 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
               outerRadius={120}
               fill={colors[0]}
               dataKey="value"
-              label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+              label={({ name, percent }: { name?: string; percent?: number }) => `${name || ''} ${((percent || 0) * 100).toFixed(0)}%`}
               animationDuration={animation.enabled ? animation.duration : 0}
               animationBegin={animation.delay || 0}
             >
@@ -627,7 +618,7 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Selected: {hoveredData.name}</span>
                 <span className="text-sm text-muted-foreground">
-                  Value: {hoveredData.value.toLocaleString()}
+                  Value: {hoveredData.value != null ? hoveredData.value.toLocaleString() : 'N/A'}
                 </span>
               </div>
             </motion.div>

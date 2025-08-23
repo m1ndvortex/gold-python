@@ -24,6 +24,9 @@ import {
   Plus,
   Search,
   TrendingUp,
+  Zap,
+  Target,
+  Activity
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -156,6 +159,41 @@ const navigationItems: NavigationItem[] = [
         icon: Users,
         href: '/reports/customers',
         permission: 'view_reports',
+      },
+      {
+        key: 'nav.reports.builder',
+        icon: Settings,
+        href: '/reports/builder',
+        permission: 'view_reports',
+        badge: 'New',
+      },
+      {
+        key: 'nav.reports.charts',
+        icon: BarChart3,
+        href: '/reports/charts',
+        permission: 'view_reports',
+        badge: 'New',
+      },
+      {
+        key: 'nav.reports.forecasting',
+        icon: TrendingUp,
+        href: '/reports/forecasting',
+        permission: 'view_reports',
+        badge: 'AI',
+      },
+      {
+        key: 'nav.reports.stock_optimization',
+        icon: Package,
+        href: '/reports/stock-optimization',
+        permission: 'view_reports',
+        badge: 'AI',
+      },
+      {
+        key: 'nav.reports.cache_management',
+        icon: Zap,
+        href: '/reports/cache-management',
+        permission: 'view_reports',
+        badge: 'Pro',
       },
     ],
   },
@@ -377,48 +415,58 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {/* Main Navigation Item */}
               <div className="relative">
                 {hasChildren && !isCollapsed ? (
-                  <button
-                    onClick={() => toggleExpanded(item.key)}
-                    className={cn(
-                      'w-full flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
-                      'hover:bg-primary/10 hover:text-primary-700 hover:shadow-sm',
-                      'focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2',
-                      'group relative overflow-hidden',
-                      isActive && 'bg-gradient-to-r from-primary/15 to-primary/5 text-primary-700 shadow-sm border border-primary/20',
-                      isCollapsed ? 'justify-center' : 'justify-start space-x-3 rtl:space-x-reverse'
-                    )}
-                  >
-                    {/* Active indicator */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeIndicator"
-                        className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-600 rounded-r-full"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
-                    
-                    <Icon className={cn(
-                      'h-5 w-5 flex-shrink-0 transition-colors duration-200',
-                      isActive ? 'text-primary-600' : 'text-muted-foreground group-hover:text-primary-600'
-                    )} />
-                    
-                    {!isCollapsed && (
-                      <>
-                        <span className="truncate flex-1 text-left">{t(item.key)}</span>
-                        {item.badge && (
-                          <span className="px-2 py-0.5 text-xs font-semibold bg-primary-100 text-primary-700 rounded-full">
-                            {item.badge}
-                          </span>
-                        )}
+                  <div className="flex">
+                    <Link
+                      to={item.href}
+                      className={cn(
+                        'flex-1 flex items-center px-3 py-2.5 rounded-l-xl text-sm font-medium transition-all duration-200',
+                        'hover:bg-primary/10 hover:text-primary-700 hover:shadow-sm',
+                        'focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2',
+                        'group relative overflow-hidden',
+                        isActive && 'bg-gradient-to-r from-primary/15 to-primary/5 text-primary-700 shadow-sm border border-primary/20 border-r-0',
+                        'justify-start space-x-3 rtl:space-x-reverse'
+                      )}
+                      title={isCollapsed ? t(item.key) : undefined}
+                    >
+                      {/* Active indicator */}
+                      {isActive && (
                         <motion.div
-                          animate={{ rotate: isExpanded ? 180 : 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                        </motion.div>
-                      </>
-                    )}
-                  </button>
+                          layoutId="activeIndicator"
+                          className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-500 to-primary-600 rounded-r-full"
+                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                      )}
+                      
+                      <Icon className={cn(
+                        'h-5 w-5 flex-shrink-0 transition-colors duration-200',
+                        isActive ? 'text-primary-600' : 'text-muted-foreground group-hover:text-primary-600'
+                      )} />
+                      
+                      <span className="truncate flex-1">{t(item.key)}</span>
+                      {item.badge && (
+                        <span className="px-2 py-0.5 text-xs font-semibold bg-primary-100 text-primary-700 rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
+                    <button
+                      onClick={() => toggleExpanded(item.key)}
+                      className={cn(
+                        'px-2 py-2.5 rounded-r-xl text-sm font-medium transition-all duration-200',
+                        'hover:bg-primary/10 hover:text-primary-700 hover:shadow-sm',
+                        'focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2',
+                        'group relative overflow-hidden border-l border-primary/10',
+                        isActive && 'bg-gradient-to-r from-primary/15 to-primary/5 text-primary-700 shadow-sm border border-primary/20 border-l-0'
+                      )}
+                    >
+                      <motion.div
+                        animate={{ rotate: isExpanded ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      </motion.div>
+                    </button>
+                  </div>
                 ) : (
                   <Link
                     to={item.href}
