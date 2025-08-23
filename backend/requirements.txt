@@ -27,3 +27,14 @@ statsmodels==0.14.0
 scipy==1.11.4
 # Performance monitoring
 psutil==5.9.6
+# Report scheduling
+schedule==1.2.0
+# Report export formats
+reportlab==4.0.7
+openpyxl==3.1.2
+# Email functionality
+email-validator==2.1.0
+# Additional utilities
+python-dateutil==2.8.2
+# Excel chart support (optional)
+xlsxwriter==3.1.9

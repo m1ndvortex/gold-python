@@ -495,6 +495,67 @@ class CustomerBehaviorAnalysis(Base):
         Index('idx_customer_behavior_churn', 'churn_probability'),
     )
 
+# Report Scheduling Models
+class ScheduledReport(Base):
+    __tablename__ = "scheduled_reports"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(200), nullable=False)
+    description = Column(Text)
+    report_config = Column(JSONB, nullable=False)  # Report configuration
+    schedule_config = Column(JSONB, nullable=False)  # Schedule configuration
+    recipients = Column(JSONB, nullable=False)  # List of email addresses
+    export_formats = Column(JSONB, default=['pdf'])  # List of export formats
+    is_active = Column(Boolean, default=True)
+    
+    # Execution tracking
+    next_run_at = Column(DateTime(timezone=True))
+    last_run_at = Column(DateTime(timezone=True))
+    last_success_at = Column(DateTime(timezone=True))
+    run_count = Column(Integer, default=0)
+    error_count = Column(Integer, default=0)
+    last_error = Column(Text)
+    
+    # Metadata
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    creator = relationship("User")
+    
+    __table_args__ = (
+        Index('idx_scheduled_reports_active', 'is_active'),
+        Index('idx_scheduled_reports_next_run', 'next_run_at'),
+        Index('idx_scheduled_reports_created_by', 'created_by'),
+    )
+
+class CustomReport(Base):
+    __tablename__ = "custom_reports"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(200), nullable=False)
+    description = Column(Text)
+    report_config = Column(JSONB, nullable=False)  # Report configuration
+    is_template = Column(Boolean, default=False)  # Is this a reusable template
+    is_public = Column(Boolean, default=False)  # Can other users see this report
+    
+    # Usage tracking
+    last_generated_at = Column(DateTime(timezone=True))
+    generation_count = Column(Integer, default=0)
+    
+    # Metadata
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    creator = relationship("User")
+    
+    __table_args__ = (
+        Index('idx_custom_reports_template', 'is_template'),
+        Index('idx_custom_reports_public', 'is_public'),
+        Index('idx_custom_reports_created_by', 'created_by'),
+    )
+
 # Inventory Intelligence Models
 class InventoryTurnoverAnalysis(Base):
     __tablename__ = "inventory_turnover_analysis"
