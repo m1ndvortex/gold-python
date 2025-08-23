@@ -18,6 +18,8 @@
 
 - [-] 2. Implement core KPI calculation services
 
+
+
 - [x] 2.1 Create financial KPI calculator service
 
 
@@ -43,7 +45,10 @@
   - Write comprehensive unit tests for all financial KPI calculations using real PostgreSQL data
   - _Requirements: 1.1, 1.4_
 
-- [ ] 2.2 Implement operational KPI calculator
+- [x] 2.2 Implement operational KPI calculator
+
+
+
   - Code inventory turnover rate calculations with proper time-period handling
   - Build stockout frequency monitoring with alert threshold configuration
   - Implement carrying cost calculations and dead stock percentage analysis

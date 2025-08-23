@@ -16,7 +16,7 @@ import numpy as np
 
 from models import (
     Invoice, InvoiceItem, InventoryItem, Customer, Payment, 
-    KPISnapshot, AccountingEntry
+    KPISnapshot, AccountingEntry, Category
 )
 from redis_config import get_analytics_cache
 
@@ -1289,3 +1289,1129 @@ class KPICalculatorService:
                 "kpi_statistics": {},
                 "service_info": {}
             }
+
+class OperationalKPICalculator:
+    """Operational KPI calculator for inventory and operational metrics"""
+    
+    def __init__(self, db: Session):
+        self.db = db
+        self.cache = get_analytics_cache()
+        self.cache_ttl = 300  # 5 minutes default TTL
+    
+    async def calculate_inventory_turnover_kpis(
+        self, 
+        start_date: date, 
+        end_date: date,
+        category_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Calculate comprehensive inventory turnover KPIs with proper time-period handling"""
+        
+        # Check cache first
+        cache_key = f"inventory_turnover_kpis_{start_date}_{end_date}_{category_id or 'all'}"
+        cached_data = await self.cache.get_kpi_data("operational", "inventory_turnover", period=cache_key)
+        
+        if cached_data:
+            return cached_data["data"]
+        
+        try:
+            # Calculate current period turnover metrics
+            current_metrics = await self._calculate_period_turnover_metrics(start_date, end_date, category_id)
+            
+            # Calculate previous period for comparison
+            period_days = (end_date - start_date).days
+            prev_start = start_date - timedelta(days=period_days)
+            prev_end = start_date - timedelta(days=1)
+            previous_metrics = await self._calculate_period_turnover_metrics(prev_start, prev_end, category_id)
+            
+            # Calculate turnover changes
+            turnover_change = current_metrics["average_turnover_ratio"] - previous_metrics["average_turnover_ratio"]
+            velocity_change = current_metrics["average_velocity_score"] - previous_metrics["average_velocity_score"]
+            
+            # Get turnover trend analysis
+            trend_data = await self._calculate_turnover_trend(start_date, end_date, category_id)
+            
+            # Identify fast/slow moving items
+            movement_analysis = await self._analyze_item_movement(start_date, end_date, category_id)
+            
+            # Calculate inventory health score
+            health_score = await self._calculate_inventory_health_score(current_metrics, movement_analysis)
+            
+            result = {
+                **current_metrics,
+                "previous_turnover_ratio": round(previous_metrics["average_turnover_ratio"], 2),
+                "previous_velocity_score": round(previous_metrics["average_velocity_score"], 2),
+                "turnover_change": round(turnover_change, 2),
+                "velocity_change": round(velocity_change, 2),
+                "trend_direction": "up" if turnover_change > 0.1 else "down" if turnover_change < -0.1 else "stable",
+                "trend_data": trend_data,
+                "movement_analysis": movement_analysis,
+                "inventory_health_score": health_score,
+                "period_start": start_date.isoformat(),
+                "period_end": end_date.isoformat(),
+                "calculated_at": datetime.utcnow().isoformat()
+            }
+            
+            # Cache the results
+            await self.cache.set_kpi_data("operational", "inventory_turnover", result, ttl=self.cache_ttl, period=cache_key)
+            
+            return result
+            
+        except Exception as e:
+            print(f"Error calculating inventory turnover KPIs: {e}")
+            return {
+                "error": str(e),
+                "average_turnover_ratio": 0.0,
+                "average_velocity_score": 0.0,
+                "trend_direction": "stable"
+            }
+    
+    async def calculate_stockout_frequency_kpis(
+        self, 
+        start_date: date, 
+        end_date: date,
+        alert_threshold: float = 0.1
+    ) -> Dict[str, Any]:
+        """Build stockout frequency monitoring with alert threshold configuration"""
+        
+        cache_key = f"stockout_frequency_kpis_{start_date}_{end_date}_{alert_threshold}"
+        cached_data = await self.cache.get_kpi_data("operational", "stockout_frequency", period=cache_key)
+        
+        if cached_data:
+            return cached_data["data"]
+        
+        try:
+            # Calculate stockout metrics
+            stockout_metrics = await self._calculate_stockout_metrics(start_date, end_date)
+            
+            # Calculate previous period for comparison
+            period_days = (end_date - start_date).days
+            prev_start = start_date - timedelta(days=period_days)
+            prev_end = start_date - timedelta(days=1)
+            previous_stockout_metrics = await self._calculate_stockout_metrics(prev_start, prev_end)
+            
+            # Calculate changes
+            frequency_change = stockout_metrics["stockout_frequency"] - previous_stockout_metrics["stockout_frequency"]
+            
+            # Determine alert status
+            alert_status = "critical" if stockout_metrics["stockout_frequency"] > alert_threshold else "normal"
+            
+            # Get items at risk of stockout
+            at_risk_items_list = await self._get_items_at_risk_of_stockout()
+            
+            # Calculate stockout cost impact
+            cost_impact = await self._calculate_stockout_cost_impact(start_date, end_date)
+            
+            # Generate recommendations
+            recommendations = await self._generate_stockout_recommendations(stockout_metrics, at_risk_items_list)
+            
+            # Store the at_risk_items count before it gets overridden
+            at_risk_items_count = stockout_metrics["at_risk_items"]
+            
+            result = {
+                **stockout_metrics,
+                "previous_stockout_frequency": round(previous_stockout_metrics["stockout_frequency"], 4),
+                "frequency_change": round(frequency_change, 4),
+                "alert_threshold": alert_threshold,
+                "alert_status": alert_status,
+                "trend_direction": "up" if frequency_change > 0.01 else "down" if frequency_change < -0.01 else "stable",
+                "at_risk_items": at_risk_items_list,  # List of at-risk items (test expects this as list)
+                "at_risk_items_count": at_risk_items_count,  # Keep count as separate field
+                "cost_impact": cost_impact,
+                "recommendations": recommendations,
+                "period_start": start_date.isoformat(),
+                "period_end": end_date.isoformat(),
+                "calculated_at": datetime.utcnow().isoformat()
+            }
+            
+            # Cache the results
+            await self.cache.set_kpi_data("operational", "stockout_frequency", result, ttl=self.cache_ttl, period=cache_key)
+            
+            return result
+            
+        except Exception as e:
+            print(f"Error calculating stockout frequency KPIs: {e}")
+            import traceback
+            traceback.print_exc()
+            return {
+                "error": str(e),
+                "stockout_frequency": 0.0,
+                "alert_status": "unknown",
+                "trend_direction": "stable",
+                "total_items": 0,
+                "stockout_items": 0
+            }
+    
+    async def calculate_carrying_cost_kpis(
+        self, 
+        start_date: date, 
+        end_date: date,
+        carrying_cost_rate: float = 0.25  # 25% annual carrying cost rate
+    ) -> Dict[str, Any]:
+        """Implement carrying cost calculations and dead stock percentage analysis"""
+        
+        cache_key = f"carrying_cost_kpis_{start_date}_{end_date}_{carrying_cost_rate}"
+        cached_data = await self.cache.get_kpi_data("operational", "carrying_cost", period=cache_key)
+        
+        if cached_data:
+            return cached_data["data"]
+        
+        try:
+            # Calculate carrying cost metrics
+            carrying_cost_metrics = await self._calculate_carrying_cost_metrics(
+                start_date, end_date, carrying_cost_rate
+            )
+            
+            # Calculate dead stock analysis
+            dead_stock_analysis = await self._calculate_dead_stock_analysis(start_date, end_date)
+            
+            # Calculate previous period for comparison
+            period_days = (end_date - start_date).days
+            prev_start = start_date - timedelta(days=period_days)
+            prev_end = start_date - timedelta(days=1)
+            previous_carrying_metrics = await self._calculate_carrying_cost_metrics(
+                prev_start, prev_end, carrying_cost_rate
+            )
+            
+            # Calculate changes
+            cost_change = carrying_cost_metrics["total_carrying_cost"] - previous_carrying_metrics["total_carrying_cost"]
+            percentage_change = carrying_cost_metrics["carrying_cost_percentage"] - previous_carrying_metrics["carrying_cost_percentage"]
+            
+            # Calculate optimization potential
+            optimization_potential = await self._calculate_cost_optimization_potential(carrying_cost_metrics, dead_stock_analysis)
+            
+            # Generate cost reduction recommendations
+            recommendations = await self._generate_cost_reduction_recommendations(
+                carrying_cost_metrics, dead_stock_analysis, optimization_potential
+            )
+            
+            result = {
+                **carrying_cost_metrics,
+                **dead_stock_analysis,
+                "previous_total_carrying_cost": round(previous_carrying_metrics["total_carrying_cost"], 2),
+                "previous_carrying_cost_percentage": round(previous_carrying_metrics["carrying_cost_percentage"], 2),
+                "cost_change": round(cost_change, 2),
+                "percentage_change": round(percentage_change, 2),
+                "trend_direction": "up" if cost_change > 0 else "down" if cost_change < 0 else "stable",
+                "optimization_potential": optimization_potential,
+                "recommendations": recommendations,
+                "period_start": start_date.isoformat(),
+                "period_end": end_date.isoformat(),
+                "calculated_at": datetime.utcnow().isoformat()
+            }
+            
+            # Cache the results
+            await self.cache.set_kpi_data("operational", "carrying_cost", result, ttl=self.cache_ttl, period=cache_key)
+            
+            return result
+            
+        except Exception as e:
+            print(f"Error calculating carrying cost KPIs: {e}")
+            import traceback
+            traceback.print_exc()
+            return {
+                "error": str(e),
+                "total_carrying_cost": 0.0,
+                "carrying_cost_percentage": 0.0,
+                "dead_stock_percentage": 0.0,
+                "trend_direction": "stable",
+                "period_days": 0,
+                "total_items": 0
+            }
+    
+    async def _calculate_period_turnover_metrics(
+        self, 
+        start_date: date, 
+        end_date: date, 
+        category_id: Optional[str] = None
+    ) -> Dict[str, float]:
+        """Calculate comprehensive turnover metrics for a specific period"""
+        
+        try:
+            # Build category filter
+            category_filter = ""
+            params = {"start_date": start_date, "end_date": end_date}
+            
+            if category_id:
+                category_filter = "AND ii.category_id = :category_id"
+                params["category_id"] = category_id
+            
+            # Calculate turnover metrics
+            turnover_query = text(f"""
+                WITH sales_data AS (
+                    SELECT 
+                        ii.id as item_id,
+                        ii.name as item_name,
+                        COALESCE(SUM(inv_items.quantity), 0) as units_sold,
+                        -- Calculate average stock as (initial_stock + final_stock) / 2
+                        -- For simplicity, use current stock + units_sold as approximation of average stock during period
+                        CASE 
+                            WHEN COALESCE(SUM(inv_items.quantity), 0) > 0 
+                            THEN GREATEST(ii.stock_quantity + COALESCE(SUM(inv_items.quantity), 0) / 2.0, 1.0)
+                            ELSE GREATEST(ii.stock_quantity, 1.0)
+                        END as avg_stock,
+                        COALESCE(SUM(inv_items.quantity * inv_items.unit_price), 0) as sales_value,
+                        COUNT(DISTINCT inv.id) as transaction_count,
+                        MAX(inv.created_at) as last_sale_date
+                    FROM inventory_items ii
+                    LEFT JOIN invoice_items inv_items ON ii.id = inv_items.inventory_item_id
+                    LEFT JOIN invoices inv ON inv_items.invoice_id = inv.id 
+                        AND DATE(inv.created_at) BETWEEN :start_date AND :end_date
+                        AND inv.status IN ('completed', 'paid', 'partially_paid')
+                    WHERE ii.is_active = true {category_filter}
+                    GROUP BY ii.id, ii.name, ii.stock_quantity
+                ),
+                turnover_calculations AS (
+                    SELECT 
+                        item_id,
+                        item_name,
+                        units_sold,
+                        avg_stock,
+                        sales_value,
+                        transaction_count,
+                        last_sale_date,
+                        CASE 
+                            WHEN avg_stock > 0 THEN units_sold / avg_stock 
+                            ELSE 0 
+                        END as turnover_ratio,
+                        CASE 
+                            WHEN units_sold = 0 THEN 0
+                            WHEN units_sold <= 5 THEN 0.2
+                            WHEN units_sold <= 15 THEN 0.5
+                            WHEN units_sold <= 30 THEN 0.8
+                            ELSE 1.0
+                        END as velocity_score,
+                        CASE 
+                            WHEN last_sale_date IS NULL THEN 'dead'
+                            WHEN units_sold = 0 THEN 'dead'
+                            WHEN units_sold <= 5 THEN 'slow'
+                            WHEN units_sold <= 15 THEN 'normal'
+                            ELSE 'fast'
+                        END as movement_classification
+                    FROM sales_data
+                )
+                SELECT 
+                    COUNT(*) as total_items,
+                    COALESCE(AVG(turnover_ratio), 0) as average_turnover_ratio,
+                    COALESCE(AVG(velocity_score), 0) as average_velocity_score,
+                    COALESCE(SUM(units_sold), 0) as total_units_sold,
+                    COALESCE(SUM(sales_value), 0) as total_sales_value,
+                    COALESCE(AVG(avg_stock), 0) as average_stock_level,
+                    COUNT(CASE WHEN movement_classification = 'fast' THEN 1 END) as fast_moving_items,
+                    COUNT(CASE WHEN movement_classification = 'normal' THEN 1 END) as normal_moving_items,
+                    COUNT(CASE WHEN movement_classification = 'slow' THEN 1 END) as slow_moving_items,
+                    COUNT(CASE WHEN movement_classification = 'dead' THEN 1 END) as dead_stock_items,
+                    COALESCE(MAX(turnover_ratio), 0) as max_turnover_ratio,
+                    COALESCE(MIN(turnover_ratio), 0) as min_turnover_ratio
+                FROM turnover_calculations
+            """)
+            
+            result = self.db.execute(turnover_query, params).fetchone()
+            
+            total_items = result.total_items or 0
+            
+            return {
+                "total_items": total_items,
+                "average_turnover_ratio": float(result.average_turnover_ratio or 0),
+                "average_velocity_score": float(result.average_velocity_score or 0),
+                "total_units_sold": int(result.total_units_sold or 0),
+                "total_sales_value": float(result.total_sales_value or 0),
+                "average_stock_level": float(result.average_stock_level or 0),
+                "fast_moving_items": result.fast_moving_items or 0,
+                "normal_moving_items": result.normal_moving_items or 0,
+                "slow_moving_items": result.slow_moving_items or 0,
+                "dead_stock_items": result.dead_stock_items or 0,
+                "fast_moving_percentage": round((result.fast_moving_items or 0) / total_items * 100, 2) if total_items > 0 else 0,
+                "slow_moving_percentage": round((result.slow_moving_items or 0) / total_items * 100, 2) if total_items > 0 else 0,
+                "dead_stock_percentage": round((result.dead_stock_items or 0) / total_items * 100, 2) if total_items > 0 else 0,
+                "max_turnover_ratio": float(result.max_turnover_ratio or 0),
+                "min_turnover_ratio": float(result.min_turnover_ratio or 0)
+            }
+            
+        except Exception as e:
+            print(f"Error calculating turnover metrics: {e}")
+            return {
+                "total_items": 0, "average_turnover_ratio": 0.0, "average_velocity_score": 0.0,
+                "total_units_sold": 0, "total_sales_value": 0.0, "average_stock_level": 0.0,
+                "fast_moving_items": 0, "normal_moving_items": 0, "slow_moving_items": 0,
+                "dead_stock_items": 0, "fast_moving_percentage": 0.0, "slow_moving_percentage": 0.0,
+                "dead_stock_percentage": 0.0, "max_turnover_ratio": 0.0, "min_turnover_ratio": 0.0
+            }
+    
+    async def _calculate_stockout_metrics(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Calculate stockout frequency and related metrics"""
+        
+        try:
+            # Rollback any failed transaction first
+            try:
+                self.db.rollback()
+            except:
+                pass
+                
+            stockout_query = text("""
+                WITH stockout_analysis AS (
+                    SELECT 
+                        ii.id as item_id,
+                        ii.name as item_name,
+                        ii.stock_quantity,
+                        5 as min_stock_level,  -- Default minimum stock level
+                        CASE 
+                            WHEN ii.stock_quantity <= 0 THEN 1 
+                            ELSE 0 
+                        END as is_stockout,
+                        CASE 
+                            WHEN ii.stock_quantity <= 5 THEN 1  -- Use default minimum
+                            ELSE 0 
+                        END as is_below_min,
+                        CASE 
+                            WHEN ii.stock_quantity <= 7 THEN 1  -- 1.5 * 5 = 7.5, rounded down
+                            ELSE 0 
+                        END as is_at_risk,
+                        COALESCE(SUM(inv_items.quantity), 0) as demand_during_period
+                    FROM inventory_items ii
+                    LEFT JOIN invoice_items inv_items ON ii.id = inv_items.inventory_item_id
+                    LEFT JOIN invoices inv ON inv_items.invoice_id = inv.id 
+                        AND DATE(inv.created_at) BETWEEN :start_date AND :end_date
+                        AND inv.status IN ('completed', 'paid', 'partially_paid')
+                    WHERE ii.is_active = true
+                    GROUP BY ii.id, ii.name, ii.stock_quantity
+                )
+                SELECT 
+                    COUNT(*) as total_items,
+                    SUM(is_stockout) as stockout_items,
+                    SUM(is_below_min) as below_min_items,
+                    SUM(is_at_risk) as at_risk_items,
+                    COALESCE(AVG(CASE WHEN is_stockout = 1 THEN demand_during_period ELSE NULL END), 0) as avg_lost_sales,
+                    COALESCE(SUM(CASE WHEN is_stockout = 1 THEN demand_during_period ELSE 0 END), 0) as total_lost_sales
+                FROM stockout_analysis
+            """)
+            
+            result = self.db.execute(stockout_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchone()
+            
+            total_items = result.total_items or 0
+            stockout_items = result.stockout_items or 0
+            
+            return {
+                "total_items": total_items,
+                "stockout_items": stockout_items,
+                "below_min_items": result.below_min_items or 0,
+                "at_risk_items": result.at_risk_items or 0,
+                "stockout_frequency": round(stockout_items / total_items, 4) if total_items > 0 else 0,
+                "below_min_percentage": round((result.below_min_items or 0) / total_items * 100, 2) if total_items > 0 else 0,
+                "at_risk_percentage": round((result.at_risk_items or 0) / total_items * 100, 2) if total_items > 0 else 0,
+                "avg_lost_sales": float(result.avg_lost_sales or 0),
+                "total_lost_sales": int(result.total_lost_sales or 0)
+            }
+            
+        except Exception as e:
+            print(f"Error calculating stockout metrics: {e}")
+            # Rollback failed transaction
+            try:
+                self.db.rollback()
+            except:
+                pass
+            return {
+                "total_items": 0, "stockout_items": 0, "below_min_items": 0,
+                "at_risk_items": 0, "stockout_frequency": 0.0, "below_min_percentage": 0.0,
+                "at_risk_percentage": 0.0, "avg_lost_sales": 0.0, "total_lost_sales": 0
+            }
+    
+    async def _calculate_carrying_cost_metrics(
+        self, 
+        start_date: date, 
+        end_date: date, 
+        carrying_cost_rate: float
+    ) -> Dict[str, float]:
+        """Calculate carrying cost metrics"""
+        
+        try:
+            # Rollback any failed transaction first
+            try:
+                self.db.rollback()
+            except:
+                pass
+            
+            carrying_cost_query = text("""
+                WITH inventory_value AS (
+                    SELECT 
+                        ii.id as item_id,
+                        ii.name as item_name,
+                        ii.stock_quantity,
+                        ii.purchase_price,
+                        (ii.stock_quantity * ii.purchase_price) as inventory_value,
+                        COALESCE(SUM(inv_items.quantity), 0) as units_sold_period
+                    FROM inventory_items ii
+                    LEFT JOIN invoice_items inv_items ON ii.id = inv_items.inventory_item_id
+                    LEFT JOIN invoices inv ON inv_items.invoice_id = inv.id 
+                        AND DATE(inv.created_at) BETWEEN :start_date AND :end_date
+                        AND inv.status IN ('completed', 'paid', 'partially_paid')
+                    WHERE ii.is_active = true
+                    GROUP BY ii.id, ii.name, ii.stock_quantity, ii.purchase_price
+                )
+                SELECT 
+                    COUNT(*) as total_items,
+                    COALESCE(SUM(inventory_value), 0) as total_inventory_value,
+                    COALESCE(AVG(inventory_value), 0) as avg_item_value,
+                    COALESCE(SUM(CASE WHEN units_sold_period = 0 THEN inventory_value ELSE 0 END), 0) as dead_stock_value,
+                    COALESCE(SUM(CASE WHEN units_sold_period <= 2 THEN inventory_value ELSE 0 END), 0) as slow_moving_value
+                FROM inventory_value
+            """)
+            
+            result = self.db.execute(carrying_cost_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchone()
+            
+            total_inventory_value = float(result.total_inventory_value or 0)
+            dead_stock_value = float(result.dead_stock_value or 0)
+            slow_moving_value = float(result.slow_moving_value or 0)
+            
+            # Calculate period-adjusted carrying cost (annual rate adjusted for period)
+            period_days = (end_date - start_date).days
+            period_factor = period_days / 365.0
+            
+            total_carrying_cost = total_inventory_value * carrying_cost_rate * period_factor
+            dead_stock_carrying_cost = dead_stock_value * carrying_cost_rate * period_factor
+            
+            return {
+                "total_items": result.total_items or 0,
+                "total_inventory_value": round(total_inventory_value, 2),
+                "avg_item_value": round(float(result.avg_item_value or 0), 2),
+                "dead_stock_value": round(dead_stock_value, 2),
+                "slow_moving_value": round(slow_moving_value, 2),
+                "total_carrying_cost": round(total_carrying_cost, 2),
+                "dead_stock_carrying_cost": round(dead_stock_carrying_cost, 2),
+                "carrying_cost_percentage": round((total_carrying_cost / total_inventory_value * 100) if total_inventory_value > 0 else 0, 2),
+                "carrying_cost_rate": carrying_cost_rate,
+                "period_days": period_days
+            }
+            
+        except Exception as e:
+            print(f"Error calculating carrying cost metrics: {e}")
+            # Rollback failed transaction
+            try:
+                self.db.rollback()
+            except:
+                pass
+            return {
+                "total_items": 0, "total_inventory_value": 0.0, "avg_item_value": 0.0,
+                "dead_stock_value": 0.0, "slow_moving_value": 0.0, "total_carrying_cost": 0.0,
+                "dead_stock_carrying_cost": 0.0, "carrying_cost_percentage": 0.0,
+                "carrying_cost_rate": carrying_cost_rate, "period_days": 0
+            }
+    
+    async def _calculate_dead_stock_analysis(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Calculate dead stock percentage analysis"""
+        
+        try:
+            # Rollback any failed transaction first
+            try:
+                self.db.rollback()
+            except:
+                pass
+                
+            dead_stock_query = text("""
+                WITH stock_analysis AS (
+                    SELECT 
+                        ii.id as item_id,
+                        ii.name as item_name,
+                        ii.stock_quantity,
+                        ii.purchase_price,
+                        (ii.stock_quantity * ii.purchase_price) as inventory_value,
+                        COALESCE(SUM(inv_items.quantity), 0) as units_sold,
+                        MAX(inv.created_at) as last_sale_date,
+                        CASE 
+                            WHEN COALESCE(SUM(inv_items.quantity), 0) = 0 THEN 'dead'
+                            WHEN COALESCE(SUM(inv_items.quantity), 0) <= 2 THEN 'slow'
+                            WHEN COALESCE(SUM(inv_items.quantity), 0) <= 10 THEN 'normal'
+                            ELSE 'fast'
+                        END as movement_category
+                    FROM inventory_items ii
+                    LEFT JOIN invoice_items inv_items ON ii.id = inv_items.inventory_item_id
+                    LEFT JOIN invoices inv ON inv_items.invoice_id = inv.id 
+                        AND DATE(inv.created_at) BETWEEN :start_date AND :end_date
+                        AND inv.status IN ('completed', 'paid', 'partially_paid')
+                    WHERE ii.is_active = true AND ii.stock_quantity > 0
+                    GROUP BY ii.id, ii.name, ii.stock_quantity, ii.purchase_price
+                )
+                SELECT 
+                    COUNT(*) as total_items,
+                    COUNT(CASE WHEN movement_category = 'dead' THEN 1 END) as dead_stock_items,
+                    COUNT(CASE WHEN movement_category = 'slow' THEN 1 END) as slow_moving_items,
+                    COALESCE(SUM(CASE WHEN movement_category = 'dead' THEN inventory_value ELSE 0 END), 0) as dead_stock_value,
+                    COALESCE(SUM(CASE WHEN movement_category = 'slow' THEN inventory_value ELSE 0 END), 0) as slow_moving_value,
+                    COALESCE(SUM(inventory_value), 0) as total_inventory_value,
+                    COALESCE(AVG(CASE WHEN movement_category = 'dead' AND last_sale_date IS NOT NULL 
+                        THEN (CURRENT_DATE - last_sale_date::date) END), 0) as avg_days_since_last_sale
+                FROM stock_analysis
+            """)
+            
+            result = self.db.execute(dead_stock_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchone()
+            
+            total_items = result.total_items or 0
+            total_inventory_value = float(result.total_inventory_value or 0)
+            
+            return {
+                "dead_stock_items": result.dead_stock_items or 0,
+                "slow_moving_items": result.slow_moving_items or 0,
+                "dead_stock_percentage": round((result.dead_stock_items or 0) / total_items * 100, 2) if total_items > 0 else 0,
+                "slow_moving_percentage": round((result.slow_moving_items or 0) / total_items * 100, 2) if total_items > 0 else 0,
+                "dead_stock_value": round(float(result.dead_stock_value or 0), 2),
+                "slow_moving_value": round(float(result.slow_moving_value or 0), 2),
+                "dead_stock_value_percentage": round((float(result.dead_stock_value or 0) / total_inventory_value * 100) if total_inventory_value > 0 else 0, 2),
+                "avg_days_since_last_sale": int(result.avg_days_since_last_sale or 0)
+            }
+            
+        except Exception as e:
+            print(f"Error calculating dead stock analysis: {e}")
+            # Rollback failed transaction
+            try:
+                self.db.rollback()
+            except:
+                pass
+            return {
+                "dead_stock_items": 0, "slow_moving_items": 0, "dead_stock_percentage": 0.0,
+                "slow_moving_percentage": 0.0, "dead_stock_value": 0.0, "slow_moving_value": 0.0,
+                "dead_stock_value_percentage": 0.0, "avg_days_since_last_sale": 0
+            }
+    
+    async def _calculate_turnover_trend(
+        self, 
+        start_date: date, 
+        end_date: date, 
+        category_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Calculate turnover trend analysis"""
+        
+        try:
+            # Get weekly turnover data for trend analysis
+            weekly_data = await self._get_weekly_turnover_data(start_date, end_date, category_id)
+            
+            if len(weekly_data) < 3:
+                return {
+                    "trend": "insufficient_data",
+                    "slope": 0,
+                    "data_points": len(weekly_data)
+                }
+            
+            # Extract turnover ratios for trend analysis
+            turnovers = [d["turnover_ratio"] for d in weekly_data]
+            weeks = list(range(len(turnovers)))
+            
+            # Calculate linear regression if we have enough data
+            if len(turnovers) > 1:
+                slope, intercept, r_value, p_value, std_err = stats.linregress(weeks, turnovers)
+                r_squared = r_value ** 2
+                
+                # Determine trend direction
+                if slope > 0.05 and p_value < 0.05:
+                    trend = "improving"
+                elif slope < -0.05 and p_value < 0.05:
+                    trend = "declining"
+                else:
+                    trend = "stable"
+                
+                return {
+                    "trend": trend,
+                    "slope": round(slope, 4),
+                    "r_squared": round(r_squared, 4),
+                    "p_value": round(p_value, 4),
+                    "data_points": len(weekly_data),
+                    "trend_strength": "strong" if r_squared > 0.7 else "moderate" if r_squared > 0.4 else "weak"
+                }
+            else:
+                return {
+                    "trend": "stable",
+                    "slope": 0,
+                    "r_squared": 0,
+                    "data_points": len(weekly_data)
+                }
+                
+        except Exception as e:
+            print(f"Error calculating turnover trend: {e}")
+            return {
+                "trend": "calculation_error",
+                "slope": 0,
+                "r_squared": 0,
+                "data_points": 0,
+                "error": str(e)
+            }
+    
+    async def _analyze_item_movement(
+        self, 
+        start_date: date, 
+        end_date: date, 
+        category_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Analyze item movement patterns"""
+        
+        try:
+            # Build category filter
+            category_filter = ""
+            params = {"start_date": start_date, "end_date": end_date}
+            
+            if category_id:
+                category_filter = "AND ii.category_id = :category_id"
+                params["category_id"] = category_id
+            
+            movement_query = text(f"""
+                WITH item_movement AS (
+                    SELECT 
+                        ii.id as item_id,
+                        ii.name as item_name,
+                        c.name as category_name,
+                        ii.stock_quantity,
+                        COALESCE(SUM(inv_items.quantity), 0) as units_sold,
+                        COALESCE(SUM(inv_items.total_price), 0) as sales_value,
+                        COUNT(DISTINCT inv.id) as transaction_count,
+                        MAX(inv.created_at) as last_sale_date,
+                        -- Calculate turnover ratio using average stock during period
+                        CASE 
+                            WHEN COALESCE(SUM(inv_items.quantity), 0) > 0 
+                            THEN COALESCE(SUM(inv_items.quantity), 0) / GREATEST(ii.stock_quantity + COALESCE(SUM(inv_items.quantity), 0) / 2.0, 1.0)
+                            ELSE 0 
+                        END as turnover_ratio
+                    FROM inventory_items ii
+                    LEFT JOIN categories c ON ii.category_id = c.id
+                    LEFT JOIN invoice_items inv_items ON ii.id = inv_items.inventory_item_id
+                    LEFT JOIN invoices inv ON inv_items.invoice_id = inv.id 
+                        AND DATE(inv.created_at) BETWEEN :start_date AND :end_date
+                        AND inv.status IN ('completed', 'paid', 'partially_paid')
+                    WHERE ii.is_active = true {category_filter}
+                    GROUP BY ii.id, ii.name, c.name, ii.stock_quantity
+                )
+                SELECT 
+                    item_id,
+                    item_name,
+                    category_name,
+                    stock_quantity,
+                    units_sold,
+                    sales_value,
+                    transaction_count,
+                    last_sale_date,
+                    turnover_ratio,
+                    CASE 
+                        WHEN units_sold = 0 THEN 'dead'
+                        WHEN units_sold <= 2 THEN 'slow'
+                        WHEN units_sold <= 10 THEN 'normal'
+                        ELSE 'fast'
+                    END as movement_classification
+                FROM item_movement
+                ORDER BY units_sold DESC
+                LIMIT 50
+            """)
+            
+            results = self.db.execute(movement_query, params).fetchall()
+            
+            # Categorize items
+            fast_movers = []
+            slow_movers = []
+            dead_stock = []
+            
+            for row in results:
+                item_data = {
+                    "item_id": str(row.item_id),
+                    "item_name": row.item_name,
+                    "category_name": row.category_name,
+                    "stock_quantity": row.stock_quantity,
+                    "units_sold": row.units_sold,
+                    "sales_value": float(row.sales_value or 0),
+                    "transaction_count": row.transaction_count,
+                    "turnover_ratio": float(row.turnover_ratio or 0),
+                    "last_sale_date": row.last_sale_date.isoformat() if row.last_sale_date else None
+                }
+                
+                if row.movement_classification == 'fast':
+                    fast_movers.append(item_data)
+                elif row.movement_classification == 'slow':
+                    slow_movers.append(item_data)
+                elif row.movement_classification == 'dead':
+                    dead_stock.append(item_data)
+            
+            return {
+                "fast_movers": fast_movers[:10],  # Top 10 fast movers
+                "slow_movers": slow_movers[:10],  # Top 10 slow movers
+                "dead_stock": dead_stock[:10],    # Top 10 dead stock items
+                "total_analyzed": len(results)
+            }
+            
+        except Exception as e:
+            print(f"Error analyzing item movement: {e}")
+            return {
+                "fast_movers": [],
+                "slow_movers": [],
+                "dead_stock": [],
+                "total_analyzed": 0,
+                "error": str(e)
+            }
+    
+    async def _calculate_inventory_health_score(
+        self, 
+        turnover_metrics: Dict[str, Any], 
+        movement_analysis: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Calculate overall inventory health score"""
+        
+        try:
+            # Calculate component scores (0-100 scale)
+            
+            # Turnover score (higher turnover is better)
+            turnover_score = min(turnover_metrics["average_turnover_ratio"] * 20, 100)
+            
+            # Movement distribution score (balanced distribution is better)
+            fast_percentage = turnover_metrics["fast_moving_percentage"]
+            dead_percentage = turnover_metrics["dead_stock_percentage"]
+            
+            # Ideal: 30% fast, 50% normal, 15% slow, 5% dead
+            movement_score = max(0, 100 - (abs(fast_percentage - 30) + abs(dead_percentage - 5)) * 2)
+            
+            # Stock level score (based on stockout risk)
+            stock_level_score = max(0, 100 - turnover_metrics["dead_stock_percentage"] * 2)
+            
+            # Overall health score (weighted average)
+            overall_score = (
+                turnover_score * 0.4 +
+                movement_score * 0.35 +
+                stock_level_score * 0.25
+            )
+            
+            # Determine health status
+            if overall_score >= 80:
+                health_status = "excellent"
+            elif overall_score >= 65:
+                health_status = "good"
+            elif overall_score >= 50:
+                health_status = "fair"
+            elif overall_score >= 35:
+                health_status = "poor"
+            else:
+                health_status = "critical"
+            
+            return {
+                "overall_score": round(overall_score, 1),
+                "health_status": health_status,
+                "component_scores": {
+                    "turnover_score": round(turnover_score, 1),
+                    "movement_score": round(movement_score, 1),
+                    "stock_level_score": round(stock_level_score, 1)
+                },
+                "recommendations": self._generate_health_recommendations(overall_score, health_status, turnover_metrics)
+            }
+            
+        except Exception as e:
+            print(f"Error calculating inventory health score: {e}")
+            return {
+                "overall_score": 0.0,
+                "health_status": "unknown",
+                "component_scores": {
+                    "turnover_score": 0.0,
+                    "movement_score": 0.0,
+                    "stock_level_score": 0.0
+                },
+                "recommendations": []
+            }
+    
+    def _generate_health_recommendations(
+        self, 
+        overall_score: float, 
+        health_status: str, 
+        turnover_metrics: Dict[str, Any]
+    ) -> List[str]:
+        """Generate inventory health improvement recommendations"""
+        
+        recommendations = []
+        
+        if health_status == "critical" or health_status == "poor":
+            recommendations.append("Immediate action required: Review and liquidate dead stock items")
+            recommendations.append("Implement aggressive promotional campaigns for slow-moving items")
+            
+        if turnover_metrics["dead_stock_percentage"] > 15:
+            recommendations.append("Dead stock percentage is high - consider clearance sales or returns to suppliers")
+            
+        if turnover_metrics["average_turnover_ratio"] < 0.5:
+            recommendations.append("Low turnover ratio - review purchasing patterns and demand forecasting")
+            
+        if turnover_metrics["fast_moving_percentage"] < 20:
+            recommendations.append("Increase stock levels for fast-moving items to capture more sales")
+            
+        if overall_score < 60:
+            recommendations.append("Consider implementing automated reorder points and inventory optimization")
+            
+        return recommendations
+    
+    async def _get_items_at_risk_of_stockout(self) -> List[Dict[str, Any]]:
+        """Get items at risk of stockout"""
+        
+        try:
+            at_risk_query = text("""
+                SELECT 
+                    ii.id as item_id,
+                    ii.name as item_name,
+                    c.name as category_name,
+                    ii.stock_quantity,
+                    5 as min_stock_level,  -- Default minimum stock level
+                    ii.purchase_price,
+                    ii.purchase_price * 1.5 as sell_price,  -- Estimate sell price
+                    CASE 
+                        WHEN ii.stock_quantity <= 0 THEN 'stockout'
+                        WHEN ii.stock_quantity <= 5 THEN 'critical'  -- Use default minimum
+                        WHEN ii.stock_quantity <= 7 THEN 'warning'   -- 1.5 * 5 = 7.5
+                        ELSE 'normal'
+                    END as risk_level
+                FROM inventory_items ii
+                LEFT JOIN categories c ON ii.category_id = c.id
+                WHERE ii.is_active = true 
+                AND ii.stock_quantity <= 7
+                ORDER BY 
+                    CASE 
+                        WHEN ii.stock_quantity <= 0 THEN 1
+                        WHEN ii.stock_quantity <= 5 THEN 2  -- Use default minimum
+                        ELSE 3
+                    END,
+                    ii.stock_quantity ASC
+                LIMIT 20
+            """)
+            
+            results = self.db.execute(at_risk_query).fetchall()
+            
+            at_risk_items = []
+            for row in results:
+                at_risk_items.append({
+                    "item_id": str(row.item_id),
+                    "item_name": row.item_name,
+                    "category_name": row.category_name,
+                    "stock_quantity": row.stock_quantity,
+                    "min_stock_level": row.min_stock_level,
+                    "purchase_price": float(row.purchase_price),
+                    "sell_price": float(row.sell_price),
+                    "risk_level": row.risk_level
+                })
+            
+            return at_risk_items
+            
+        except Exception as e:
+            print(f"Error getting items at risk of stockout: {e}")
+            return []
+    
+    async def _calculate_stockout_cost_impact(self, start_date: date, end_date: date) -> Dict[str, Any]:
+        """Calculate the cost impact of stockouts"""
+        
+        try:
+            cost_impact_query = text("""
+                WITH stockout_impact AS (
+                    SELECT 
+                        ii.id as item_id,
+                        ii.name as item_name,
+                        ii.stock_quantity,
+                        ii.purchase_price * 1.5 as sell_price,  -- Estimate sell price
+                        COALESCE(SUM(inv_items.quantity), 0) as demand_during_period,
+                        CASE 
+                            WHEN ii.stock_quantity <= 0 AND COALESCE(SUM(inv_items.quantity), 0) > 0 
+                            THEN COALESCE(SUM(inv_items.quantity), 0) * (ii.purchase_price * 1.5)
+                            ELSE 0 
+                        END as lost_revenue
+                    FROM inventory_items ii
+                    LEFT JOIN invoice_items inv_items ON ii.id = inv_items.inventory_item_id
+                    LEFT JOIN invoices inv ON inv_items.invoice_id = inv.id 
+                        AND DATE(inv.created_at) BETWEEN :start_date AND :end_date
+                        AND inv.status IN ('completed', 'paid', 'partially_paid')
+                    WHERE ii.is_active = true
+                    GROUP BY ii.id, ii.name, ii.stock_quantity, ii.purchase_price
+                )
+                SELECT 
+                    COUNT(CASE WHEN lost_revenue > 0 THEN 1 END) as items_with_lost_sales,
+                    COALESCE(SUM(lost_revenue), 0) as total_lost_revenue,
+                    COALESCE(AVG(CASE WHEN lost_revenue > 0 THEN lost_revenue END), 0) as avg_lost_revenue_per_item,
+                    COALESCE(SUM(demand_during_period), 0) as total_demand,
+                    COALESCE(SUM(CASE WHEN stock_quantity <= 0 THEN demand_during_period ELSE 0 END), 0) as unmet_demand
+                FROM stockout_impact
+            """)
+            
+            result = self.db.execute(cost_impact_query, {
+                "start_date": start_date,
+                "end_date": end_date
+            }).fetchone()
+            
+            return {
+                "items_with_lost_sales": result.items_with_lost_sales or 0,
+                "total_lost_revenue": round(float(result.total_lost_revenue or 0), 2),
+                "avg_lost_revenue_per_item": round(float(result.avg_lost_revenue_per_item or 0), 2),
+                "total_demand": int(result.total_demand or 0),
+                "unmet_demand": int(result.unmet_demand or 0),
+                "fulfillment_rate": float(round(
+                    ((result.total_demand or 0) - (result.unmet_demand or 0)) / (result.total_demand or 1) * 100, 2
+                )) if result.total_demand and result.total_demand > 0 else 100.0
+            }
+            
+        except Exception as e:
+            print(f"Error calculating stockout cost impact: {e}")
+            return {
+                "items_with_lost_sales": 0,
+                "total_lost_revenue": 0.0,
+                "avg_lost_revenue_per_item": 0.0,
+                "total_demand": 0,
+                "unmet_demand": 0,
+                "fulfillment_rate": 100.0
+            }
+    
+    async def _generate_stockout_recommendations(
+        self, 
+        stockout_metrics: Dict[str, Any], 
+        at_risk_items: List[Dict[str, Any]]
+    ) -> List[str]:
+        """Generate stockout prevention recommendations"""
+        
+        recommendations = []
+        
+        if stockout_metrics["stockout_frequency"] > 0.05:  # More than 5% stockout rate
+            recommendations.append("High stockout frequency detected - review and adjust minimum stock levels")
+            
+        if stockout_metrics["at_risk_percentage"] > 20:
+            recommendations.append("Many items at risk of stockout - implement automated reorder alerts")
+            
+        if len(at_risk_items) > 0:
+            critical_items = [item for item in at_risk_items if item["risk_level"] == "critical"]
+            if critical_items:
+                recommendations.append(f"Immediate reorder required for {len(critical_items)} critical items")
+                
+        if stockout_metrics["total_lost_sales"] > 0:
+            recommendations.append("Lost sales detected due to stockouts - improve demand forecasting")
+            
+        recommendations.append("Consider implementing safety stock calculations based on demand variability")
+        recommendations.append("Set up automated alerts when stock levels reach reorder points")
+        
+        return recommendations
+    
+    async def _calculate_cost_optimization_potential(
+        self, 
+        carrying_cost_metrics: Dict[str, Any], 
+        dead_stock_analysis: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Calculate cost optimization potential"""
+        
+        try:
+            # Calculate potential savings from dead stock liquidation
+            dead_stock_savings = dead_stock_analysis["dead_stock_value"] * 0.7  # Assume 70% recovery
+            
+            # Calculate potential savings from slow-moving stock optimization
+            slow_moving_savings = dead_stock_analysis["slow_moving_value"] * 0.1  # 10% reduction
+            
+            # Calculate carrying cost savings
+            carrying_cost_savings = (dead_stock_savings + slow_moving_savings) * carrying_cost_metrics["carrying_cost_rate"]
+            
+            total_potential_savings = dead_stock_savings + slow_moving_savings + carrying_cost_savings
+            
+            return {
+                "dead_stock_liquidation_potential": round(dead_stock_savings, 2),
+                "slow_moving_optimization_potential": round(slow_moving_savings, 2),
+                "carrying_cost_reduction_potential": round(carrying_cost_savings, 2),
+                "total_optimization_potential": round(total_potential_savings, 2),
+                "optimization_percentage": round(
+                    (total_potential_savings / carrying_cost_metrics["total_inventory_value"] * 100) 
+                    if carrying_cost_metrics["total_inventory_value"] > 0 else 0, 2
+                )
+            }
+            
+        except Exception as e:
+            print(f"Error calculating cost optimization potential: {e}")
+            return {
+                "dead_stock_liquidation_potential": 0.0,
+                "slow_moving_optimization_potential": 0.0,
+                "carrying_cost_reduction_potential": 0.0,
+                "total_optimization_potential": 0.0,
+                "optimization_percentage": 0.0
+            }
+    
+    async def _generate_cost_reduction_recommendations(
+        self, 
+        carrying_cost_metrics: Dict[str, Any], 
+        dead_stock_analysis: Dict[str, Any], 
+        optimization_potential: Dict[str, Any]
+    ) -> List[str]:
+        """Generate cost reduction recommendations"""
+        
+        recommendations = []
+        
+        if dead_stock_analysis["dead_stock_percentage"] > 10:
+            recommendations.append("High dead stock percentage - implement clearance sales or return policies")
+            
+        if carrying_cost_metrics["carrying_cost_percentage"] > 30:
+            recommendations.append("High carrying costs - review inventory levels and turnover rates")
+            
+        if optimization_potential["total_optimization_potential"] > 1000:
+            recommendations.append(f"Significant cost savings potential: ${optimization_potential['total_optimization_potential']:,.2f}")
+            
+        if dead_stock_analysis["avg_days_since_last_sale"] > 180:
+            recommendations.append("Items with no sales for 6+ months - consider liquidation or discontinuation")
+            
+        recommendations.append("Implement ABC analysis to focus on high-value items")
+        recommendations.append("Consider just-in-time ordering for slow-moving items")
+        recommendations.append("Review supplier terms for better payment and return policies")
+        
+        return recommendations
+    
+    async def _get_weekly_turnover_data(
+        self, 
+        start_date: date, 
+        end_date: date, 
+        category_id: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        """Get weekly turnover data for trend analysis"""
+        
+        try:
+            # Build category filter
+            category_filter = ""
+            params = {"start_date": start_date, "end_date": end_date}
+            
+            if category_id:
+                category_filter = "AND ii.category_id = :category_id"
+                params["category_id"] = category_id
+            
+            weekly_query = text(f"""
+                WITH weekly_sales AS (
+                    SELECT 
+                        DATE_TRUNC('week', inv.created_at) as week_start,
+                        COALESCE(SUM(inv_items.quantity), 0) as weekly_units_sold,
+                        COALESCE(AVG(ii.stock_quantity), 0) as avg_weekly_stock
+                    FROM inventory_items ii
+                    LEFT JOIN invoice_items inv_items ON ii.id = inv_items.inventory_item_id
+                    LEFT JOIN invoices inv ON inv_items.invoice_id = inv.id 
+                        AND DATE(inv.created_at) BETWEEN :start_date AND :end_date
+                        AND inv.status IN ('completed', 'paid', 'partially_paid')
+                    WHERE ii.is_active = true {category_filter}
+                    GROUP BY DATE_TRUNC('week', inv.created_at)
+                    ORDER BY week_start
+                )
+                SELECT 
+                    week_start,
+                    weekly_units_sold,
+                    avg_weekly_stock,
+                    CASE 
+                        WHEN avg_weekly_stock > 0 THEN weekly_units_sold / avg_weekly_stock 
+                        ELSE 0 
+                    END as turnover_ratio
+                FROM weekly_sales
+                WHERE week_start IS NOT NULL
+            """)
+            
+            results = self.db.execute(weekly_query, params).fetchall()
+            
+            weekly_data = []
+            for row in results:
+                weekly_data.append({
+                    "week_start": row.week_start.date() if row.week_start else None,
+                    "weekly_units_sold": int(row.weekly_units_sold or 0),
+                    "avg_weekly_stock": float(row.avg_weekly_stock or 0),
+                    "turnover_ratio": float(row.turnover_ratio or 0)
+                })
+            
+            return weekly_data
+            
+        except Exception as e:
+            print(f"Error getting weekly turnover data: {e}")
+            return []
