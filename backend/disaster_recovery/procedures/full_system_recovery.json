@@ -1,0 +1,83 @@
+{
+  "procedure_id": "full_system_recovery",
+  "name": "Full System Recovery",
+  "description": "Complete system recovery from backups",
+  "steps": [
+    {
+      "step_id": "stop_all_services",
+      "name": "Stop All Services",
+      "description": "Stop all Docker services",
+      "command": "docker-compose down",
+      "timeout_seconds": 120
+    },
+    {
+      "step_id": "backup_current_state",
+      "name": "Backup Current State",
+      "description": "Create emergency backup of current state",
+      "command": "create_emergency_full_backup",
+      "timeout_seconds": 600
+    },
+    {
+      "step_id": "restore_database",
+      "name": "Restore Database",
+      "description": "Restore database from backup",
+      "command": "restore_database_backup",
+      "timeout_seconds": 600
+    },
+    {
+      "step_id": "restore_files",
+      "name": "Restore Files",
+      "description": "Restore file system from backup",
+      "command": "restore_file_backup",
+      "timeout_seconds": 300
+    },
+    {
+      "step_id": "restore_configuration",
+      "name": "Restore Configuration",
+      "description": "Restore system configuration",
+      "command": "restore_configuration",
+      "timeout_seconds": 60
+    },
+    {
+      "step_id": "start_services",
+      "name": "Start Services",
+      "description": "Start all services in correct order",
+      "command": "docker-compose up -d",
+      "timeout_seconds": 180
+    },
+    {
+      "step_id": "verify_system",
+      "name": "Verify System",
+      "description": "Comprehensive system verification",
+      "command": "verify_full_system",
+      "timeout_seconds": 300
+    }
+  ],
+  "estimated_duration_minutes": 60,
+  "prerequisites": [
+    "All services stopped",
+    "Full backup available",
+    "System credentials configured",
+    "Docker environment ready"
+  ],
+  "validation_steps": [
+    {
+      "step_id": "test_all_services",
+      "name": "Test All Services",
+      "description": "Verify all services are running",
+      "command": "test_all_services"
+    },
+    {
+      "step_id": "verify_data_integrity",
+      "name": "Verify Data Integrity",
+      "description": "Complete data integrity check",
+      "command": "verify_complete_data_integrity"
+    },
+    {
+      "step_id": "test_user_workflows",
+      "name": "Test User Workflows",
+      "description": "Test critical user workflows",
+      "command": "test_critical_workflows"
+    }
+  ]
+}

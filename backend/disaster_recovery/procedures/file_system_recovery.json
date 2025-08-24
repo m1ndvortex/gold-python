@@ -1,0 +1,62 @@
+{
+  "procedure_id": "file_system_recovery",
+  "name": "File System Recovery",
+  "description": "Recovery of file system components",
+  "steps": [
+    {
+      "step_id": "stop_file_services",
+      "name": "Stop File Services",
+      "description": "Stop services that use files",
+      "command": "docker-compose stop backend frontend",
+      "timeout_seconds": 60
+    },
+    {
+      "step_id": "backup_current_files",
+      "name": "Backup Current Files",
+      "description": "Backup current file state",
+      "command": "create_emergency_file_backup",
+      "timeout_seconds": 300
+    },
+    {
+      "step_id": "restore_files",
+      "name": "Restore Files",
+      "description": "Restore files from backup",
+      "command": "restore_file_backup",
+      "timeout_seconds": 300
+    },
+    {
+      "step_id": "verify_files",
+      "name": "Verify Files",
+      "description": "Verify file integrity",
+      "command": "verify_file_integrity",
+      "timeout_seconds": 120
+    },
+    {
+      "step_id": "start_services",
+      "name": "Start Services",
+      "description": "Restart services",
+      "command": "docker-compose up -d backend frontend",
+      "timeout_seconds": 120
+    }
+  ],
+  "estimated_duration_minutes": 20,
+  "prerequisites": [
+    "File backup available",
+    "Target directories accessible",
+    "Sufficient disk space"
+  ],
+  "validation_steps": [
+    {
+      "step_id": "test_file_access",
+      "name": "Test File Access",
+      "description": "Verify file accessibility",
+      "command": "test_file_access"
+    },
+    {
+      "step_id": "verify_uploads",
+      "name": "Verify Uploads",
+      "description": "Test file upload functionality",
+      "command": "test_file_uploads"
+    }
+  ]
+}

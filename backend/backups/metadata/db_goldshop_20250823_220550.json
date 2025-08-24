@@ -1,0 +1,13 @@
+{
+  "backup_id": "db_goldshop_20250823_220550",
+  "backup_type": "database",
+  "created_at": "2025-08-23T22:05:50.960542",
+  "file_path": "/app/backups/database/db_goldshop_20250823_220550.backup.enc",
+  "encrypted": true,
+  "compressed": true,
+  "size_bytes": 38728,
+  "checksum": "57b6ad0c766fa9ef12775751a25a49aa0c913ce0dc1d1c88b264a226617f9cf6",
+  "database_name": "goldshop",
+  "source_path": null,
+  "encryption_salt": "4+T9sHAt1Rt4j6dWDBLY7A=="
+}

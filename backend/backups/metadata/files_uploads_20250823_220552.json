@@ -1,0 +1,13 @@
+{
+  "backup_id": "files_uploads_20250823_220552",
+  "backup_type": "files",
+  "created_at": "2025-08-23T22:05:52.628091",
+  "file_path": "/app/backups/files/files_uploads_20250823_220552.backup.enc",
+  "encrypted": true,
+  "compressed": true,
+  "size_bytes": 392,
+  "checksum": "b25e882bf766c8eaab8f121084630996667e8b6d0e13552ba902a0c232851006",
+  "database_name": null,
+  "source_path": "/app/uploads",
+  "encryption_salt": "kgwBYJ+GcSoQ0/+0l8yxPQ=="
+}

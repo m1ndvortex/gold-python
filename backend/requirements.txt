@@ -38,3 +38,10 @@ email-validator==2.1.0
 python-dateutil==2.8.2
 # Excel chart support (optional)
 xlsxwriter==3.1.9
+# Backup encryption
+cryptography>=41.0.0
+# Off-site storage support
+boto3==1.34.0
+botocore==1.34.0
+# YAML parsing for Docker Compose tests
+PyYAML==6.0.1

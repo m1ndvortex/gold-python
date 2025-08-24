@@ -10,6 +10,7 @@ import { GoldPriceConfig } from '../components/settings/GoldPriceConfig';
 import { InvoiceTemplateDesigner } from '../components/settings/InvoiceTemplateDesigner';
 import { RolePermissionManager } from '../components/settings/RolePermissionManager';
 import { UserManagementComponent } from '../components/settings/UserManagement';
+import { DisasterRecoveryDashboard } from '../components/settings/DisasterRecoveryDashboard';
 import { useLanguage } from '../hooks/useLanguage';
 import { useAuth } from '../hooks/useAuth';
 import { 
@@ -97,7 +98,7 @@ export const Settings: React.FC = () => {
           <Tabs defaultValue="company" className="w-full">
             {/* Modern Tab Navigation */}
             <div className="bg-gradient-to-r from-slate-50 via-gray-50 to-slate-50 border-b-2 border-slate-200">
-              <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5 bg-transparent h-auto p-1 gap-1">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 bg-transparent h-auto p-1 gap-1">
                 <TabsTrigger 
                   value="company" 
                   className={cn(
@@ -171,6 +172,20 @@ export const Settings: React.FC = () => {
                     <span className="text-xs font-medium">Users</span>
                   </TabsTrigger>
                 )}
+                
+                <TabsTrigger 
+                  value="disaster-recovery" 
+                  className={cn(
+                    "flex flex-col items-center gap-2 p-4 rounded-lg transition-all duration-300 group",
+                    "hover:bg-white hover:shadow-sm",
+                    "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-red-300"
+                  )}
+                >
+                  <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Shield className="h-4 w-4 text-red-600" />
+                  </div>
+                  <span className="text-xs font-medium">Disaster Recovery</span>
+                </TabsTrigger>
               </TabsList>
             </div>
 
@@ -283,6 +298,12 @@ export const Settings: React.FC = () => {
                 </div>
               </TabsContent>
             )}
+
+            <TabsContent value="disaster-recovery" className="p-0">
+              <div className="p-6 space-y-6 bg-gradient-to-br from-red-50/30 to-white">
+                <DisasterRecoveryDashboard />
+              </div>
+            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>

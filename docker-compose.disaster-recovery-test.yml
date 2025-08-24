@@ -1,0 +1,303 @@
+version: '3.8'
+
+services:
+  # Test database for disaster recovery testing
+  db-test:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: goldshop_test
+      POSTGRES_USER: goldshop_user
+      POSTGRES_PASSWORD: goldshop_password
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U goldshop_user -d goldshop_test"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - disaster-recovery-test
+
+  # Redis for caching during disaster recovery tests
+  redis-test:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_test_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - disaster-recovery-test
+
+  # Backend service for disaster recovery testing
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://goldshop_user:goldshop_password@db-test:5432/goldshop_test
+      - REDIS_URL=redis://redis-test:6379/0
+      - BACKUP_DIRECTORY=/app/backups
+      - BACKUP_ENCRYPTION_PASSWORD=test_disaster_recovery_password_123
+      - OFFSITE_STORAGE_PROVIDER=aws_s3
+      - OFFSITE_STORAGE_BUCKET=test-disaster-recovery-backups
+      - OFFSITE_STORAGE_REGION=us-east-1
+      - OFFSITE_STORAGE_ACCESS_KEY=test_access_key
+      - OFFSITE_STORAGE_SECRET_KEY=test_secret_key
+      - OFFSITE_STORAGE_ENCRYPTION=true
+      - RETENTION_DAILY_DAYS=3
+      - RETENTION_WEEKLY_WEEKS=2
+      - RETENTION_MONTHLY_MONTHS=6
+      - RETENTION_YEARLY_YEARS=2
+      - RETENTION_CRITICAL_DAYS=30
+      - CELERY_BROKER_URL=redis://redis-test:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis-test:6379/2
+    volumes:
+      - ./backend:/app
+      - disaster_recovery_backups:/app/backups
+      - disaster_recovery_logs:/app/disaster_recovery
+      - disaster_recovery_uploads:/app/uploads
+    ports:
+      - "8001:8000"
+    depends_on:
+      db-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - disaster-recovery-test
+    command: >
+      sh -c "
+        echo 'Waiting for database to be ready...' &&
+        python -c 'import time; time.sleep(10)' &&
+        echo 'Running database migrations...' &&
+        python -m alembic upgrade head &&
+        echo 'Creating test data...' &&
+        python seed_comprehensive_data.py &&
+        echo 'Starting FastAPI server...' &&
+        uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      "
+
+  # Celery worker for disaster recovery tasks
+  celery-worker-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://goldshop_user:goldshop_password@db-test:5432/goldshop_test
+      - REDIS_URL=redis://redis-test:6379/0
+      - BACKUP_DIRECTORY=/app/backups
+      - BACKUP_ENCRYPTION_PASSWORD=test_disaster_recovery_password_123
+      - OFFSITE_STORAGE_PROVIDER=aws_s3
+      - OFFSITE_STORAGE_BUCKET=test-disaster-recovery-backups
+      - OFFSITE_STORAGE_REGION=us-east-1
+      - OFFSITE_STORAGE_ACCESS_KEY=test_access_key
+      - OFFSITE_STORAGE_SECRET_KEY=test_secret_key
+      - CELERY_BROKER_URL=redis://redis-test:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis-test:6379/2
+    volumes:
+      - ./backend:/app
+      - disaster_recovery_backups:/app/backups
+      - disaster_recovery_logs:/app/disaster_recovery
+      - disaster_recovery_uploads:/app/uploads
+    depends_on:
+      db-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+      backend-test:
+        condition: service_healthy
+    networks:
+      - disaster-recovery-test
+    command: >
+      sh -c "
+        echo 'Waiting for backend to be ready...' &&
+        python -c 'import time; time.sleep(15)' &&
+        echo 'Starting Celery worker...' &&
+        celery -A celery_app worker --loglevel=info --concurrency=2
+      "
+
+  # Celery beat scheduler for disaster recovery tasks
+  celery-beat-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://goldshop_user:goldshop_password@db-test:5432/goldshop_test
+      - REDIS_URL=redis://redis-test:6379/0
+      - BACKUP_DIRECTORY=/app/backups
+      - BACKUP_ENCRYPTION_PASSWORD=test_disaster_recovery_password_123
+      - CELERY_BROKER_URL=redis://redis-test:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis-test:6379/2
+    volumes:
+      - ./backend:/app
+      - disaster_recovery_backups:/app/backups
+      - disaster_recovery_logs:/app/disaster_recovery
+    depends_on:
+      db-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+      backend-test:
+        condition: service_healthy
+    networks:
+      - disaster-recovery-test
+    command: >
+      sh -c "
+        echo 'Waiting for backend to be ready...' &&
+        python -c 'import time; time.sleep(20)' &&
+        echo 'Starting Celery beat scheduler...' &&
+        celery -A celery_app beat --loglevel=info
+      "
+
+  # MinIO for testing off-site storage (S3-compatible)
+  minio-test:
+    image: minio/minio:latest
+    environment:
+      - MINIO_ROOT_USER=test_access_key
+      - MINIO_ROOT_PASSWORD=test_secret_key
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_test_data:/data
+    networks:
+      - disaster-recovery-test
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Test runner service
+  disaster-recovery-tests:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://goldshop_user:goldshop_password@db-test:5432/goldshop_test
+      - REDIS_URL=redis://redis-test:6379/0
+      - BACKUP_DIRECTORY=/app/backups
+      - BACKUP_ENCRYPTION_PASSWORD=test_disaster_recovery_password_123
+      - OFFSITE_STORAGE_PROVIDER=aws_s3
+      - OFFSITE_STORAGE_BUCKET=test-disaster-recovery-backups
+      - OFFSITE_STORAGE_REGION=us-east-1
+      - OFFSITE_STORAGE_ACCESS_KEY=test_access_key
+      - OFFSITE_STORAGE_SECRET_KEY=test_secret_key
+      - OFFSITE_STORAGE_ENDPOINT=http://minio-test:9000
+      - PYTHONPATH=/app
+    volumes:
+      - ./backend:/app
+      - disaster_recovery_backups:/app/backups
+      - disaster_recovery_logs:/app/disaster_recovery
+      - disaster_recovery_uploads:/app/uploads
+    depends_on:
+      db-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+      backend-test:
+        condition: service_healthy
+      minio-test:
+        condition: service_healthy
+    networks:
+      - disaster-recovery-test
+    profiles:
+      - test
+    command: >
+      sh -c "
+        echo 'Waiting for all services to be ready...' &&
+        python -c 'import time; time.sleep(30)' &&
+        echo 'Creating MinIO bucket for testing...' &&
+        python -c '
+        import boto3
+        from botocore.exceptions import ClientError
+        try:
+            client = boto3.client(
+                \"s3\",
+                endpoint_url=\"http://minio-test:9000\",
+                aws_access_key_id=\"test_access_key\",
+                aws_secret_access_key=\"test_secret_key\"
+            )
+            client.create_bucket(Bucket=\"test-disaster-recovery-backups\")
+            print(\"MinIO bucket created successfully\")
+        except ClientError as e:
+            if e.response[\"Error\"][\"Code\"] != \"BucketAlreadyOwnedByYou\":
+                raise
+            print(\"MinIO bucket already exists\")
+        except Exception as e:
+            print(f\"MinIO setup error: {e}\")
+        ' &&
+        echo 'Running disaster recovery integration tests...' &&
+        python -m pytest test_disaster_recovery_integration.py -v --tb=short --maxfail=5 &&
+        echo 'Running disaster recovery API tests...' &&
+        python -c '
+        import requests
+        import time
+        import json
+        
+        base_url = \"http://backend-test:8000\"
+        
+        # Test disaster recovery API endpoints
+        print(\"Testing disaster recovery API endpoints...\")
+        
+        try:
+            # Test status endpoint
+            response = requests.get(f\"{base_url}/api/disaster-recovery/status\", timeout=10)
+            print(f\"Status endpoint: {response.status_code}\")
+            if response.status_code == 200:
+                status = response.json()
+                print(f\"System status: {status.get(\"status\")}\")
+                print(f\"Total backups: {status.get(\"backup_statistics\", {}).get(\"total_backups\", 0)}\")
+            
+            # Test procedures listing
+            response = requests.get(f\"{base_url}/api/disaster-recovery/procedures\", timeout=10)
+            print(f\"Procedures endpoint: {response.status_code}\")
+            if response.status_code == 200:
+                procedures = response.json()
+                print(f\"Available procedures: {len(procedures)}\")
+            
+            # Test retention policy
+            response = requests.get(f\"{base_url}/api/disaster-recovery/retention-policy\", timeout=10)
+            print(f\"Retention policy endpoint: {response.status_code}\")
+            
+            # Test off-site storage status
+            response = requests.get(f\"{base_url}/api/disaster-recovery/offsite-storage/status\", timeout=10)
+            print(f\"Off-site storage status: {response.status_code}\")
+            if response.status_code == 200:
+                storage_status = response.json()
+                print(f\"Off-site storage configured: {storage_status.get(\"configured\")}\")
+            
+            print(\"All disaster recovery API tests completed successfully!\")
+            
+        except Exception as e:
+            print(f\"API test error: {e}\")
+            exit(1)
+        ' &&
+        echo 'All disaster recovery tests completed successfully!'
+      "
+
+volumes:
+  postgres_test_data:
+  redis_test_data:
+  minio_test_data:
+  disaster_recovery_backups:
+  disaster_recovery_logs:
+  disaster_recovery_uploads:
+
+networks:
+  disaster-recovery-test:
+    driver: bridge

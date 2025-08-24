@@ -1,0 +1,68 @@
+{
+  "procedure_id": "database_recovery",
+  "name": "Database Recovery",
+  "description": "Complete database recovery from backup",
+  "steps": [
+    {
+      "step_id": "stop_services",
+      "name": "Stop Database Services",
+      "description": "Stop all database-dependent services",
+      "command": "docker-compose stop backend frontend",
+      "timeout_seconds": 60
+    },
+    {
+      "step_id": "backup_current_db",
+      "name": "Backup Current Database",
+      "description": "Create backup of current database state",
+      "command": "create_emergency_backup",
+      "timeout_seconds": 300
+    },
+    {
+      "step_id": "restore_database",
+      "name": "Restore Database",
+      "description": "Restore database from backup",
+      "command": "restore_database_backup",
+      "timeout_seconds": 600
+    },
+    {
+      "step_id": "verify_database",
+      "name": "Verify Database",
+      "description": "Verify database integrity and connectivity",
+      "command": "verify_database_integrity",
+      "timeout_seconds": 120
+    },
+    {
+      "step_id": "start_services",
+      "name": "Start Services",
+      "description": "Start all services and verify functionality",
+      "command": "docker-compose up -d",
+      "timeout_seconds": 120
+    }
+  ],
+  "estimated_duration_minutes": 30,
+  "prerequisites": [
+    "Database service stopped",
+    "Backup file available",
+    "Database credentials configured"
+  ],
+  "validation_steps": [
+    {
+      "step_id": "test_database_connection",
+      "name": "Test Database Connection",
+      "description": "Verify database connectivity",
+      "command": "test_db_connection"
+    },
+    {
+      "step_id": "verify_data_integrity",
+      "name": "Verify Data Integrity",
+      "description": "Run data integrity checks",
+      "command": "verify_data_integrity"
+    },
+    {
+      "step_id": "test_api_endpoints",
+      "name": "Test API Endpoints",
+      "description": "Verify API functionality",
+      "command": "test_api_endpoints"
+    }
+  ]
+}
