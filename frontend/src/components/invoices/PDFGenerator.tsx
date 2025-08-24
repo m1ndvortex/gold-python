@@ -222,7 +222,10 @@ export const PDFGenerator: React.FC<PDFGeneratorProps> = ({
   };
 
   return (
-    <Button onClick={generatePDF} className="flex items-center gap-2">
+    <Button 
+      onClick={generatePDF} 
+      className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+    >
       <Download className="h-4 w-4" />
       Generate PDF
     </Button>

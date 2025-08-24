@@ -132,15 +132,15 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'paid':
-        return <Badge variant="default" className="bg-green-500">Paid</Badge>;
+        return <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-sm">Paid</Badge>;
       case 'partially_paid':
-        return <Badge variant="secondary">Partially Paid</Badge>;
+        return <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 border-0 shadow-sm">Partially Paid</Badge>;
       case 'pending':
-        return <Badge variant="outline">Pending</Badge>;
+        return <Badge className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border-0 shadow-sm">Pending</Badge>;
       case 'cancelled':
-        return <Badge variant="destructive">Cancelled</Badge>;
+        return <Badge className="bg-gradient-to-r from-red-100 to-rose-100 text-red-700 border-0 shadow-sm">Cancelled</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge className="bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 border-0 shadow-sm">{status}</Badge>;
     }
   };
 
@@ -166,7 +166,10 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Invoices</h2>
         {onCreateNew && (
-          <Button onClick={onCreateNew}>
+          <Button 
+            onClick={onCreateNew}
+            className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+          >
             <Plus className="h-4 w-4 mr-2" />
             Create Invoice
           </Button>
@@ -174,11 +177,13 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="border-0 shadow-lg bg-gradient-to-r from-slate-50 to-slate-100/80">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Filters
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-slate-500 to-slate-600 flex items-center justify-center shadow-lg">
+              <Filter className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-slate-700">Filters</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -240,7 +245,7 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
       </Card>
 
       {/* Invoice Table */}
-      <Card>
+      <Card className="border-0 shadow-lg bg-white">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
@@ -343,6 +348,7 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
             variant="outline"
             onClick={() => setPage(prev => prev + 1)}
             disabled={isLoading}
+            className="border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400 transition-all duration-300"
           >
             Load More
           </Button>

@@ -78,9 +78,11 @@ describe('Enhanced Form Components - Core Functionality', () => {
     it('toggles password visibility', async () => {
       render(<Input type="password" showPasswordToggle />);
       
-      const input = screen.getByRole('textbox') as HTMLInputElement;
+      // Password inputs don't have textbox role, so we need to query by type
+      const input = document.querySelector('input[type="password"]') as HTMLInputElement;
       const toggleButton = screen.getByRole('button');
       
+      expect(input).toBeInTheDocument();
       expect(input.type).toBe('password');
       
       await userEvent.click(toggleButton);

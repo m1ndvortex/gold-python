@@ -24,7 +24,8 @@ import {
   Settings, 
   Database,
   Palette,
-  Filter
+  Filter,
+  BarChart3
 } from 'lucide-react';
 
 interface ReportBuilderProps {
@@ -181,40 +182,48 @@ export const ReportBuilder: React.FC<ReportBuilderProps> = ({
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="h-full flex flex-col bg-background">
-        {/* Header */}
-        <div className="border-b bg-card p-4">
+      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50/30 to-white">
+        {/* Enhanced Header */}
+        <div className="border-b-2 border-indigo-200 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 p-6">
           <div className="flex items-center justify-between">
-            <div className="flex-1 max-w-md space-y-2">
-              <Input
-                placeholder="Report Name"
-                value={reportConfig.name}
-                onChange={(e) => setReportConfig(prev => ({ ...prev, name: e.target.value }))}
-                className="font-medium"
-              />
-              <Textarea
-                placeholder="Report Description (optional)"
-                value={reportConfig.description}
-                onChange={(e) => setReportConfig(prev => ({ ...prev, description: e.target.value }))}
-                className="text-sm resize-none"
-                rows={2}
-              />
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                <Settings className="h-6 w-6 text-white" />
+              </div>
+              <div className="flex-1 max-w-md space-y-2">
+                <Input
+                  placeholder="Report Name"
+                  value={reportConfig.name}
+                  onChange={(e) => setReportConfig(prev => ({ ...prev, name: e.target.value }))}
+                  className="font-medium border-0 shadow-lg bg-white hover:shadow-xl transition-all duration-300"
+                />
+                <Textarea
+                  placeholder="Report Description (optional)"
+                  value={reportConfig.description}
+                  onChange={(e) => setReportConfig(prev => ({ ...prev, description: e.target.value }))}
+                  className="text-sm resize-none border-0 shadow-lg bg-white hover:shadow-xl transition-all duration-300"
+                  rows={2}
+                />
+              </div>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs">
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 text-xs">
+                <Database className="w-3 h-3 mr-1" />
                 {reportConfig.dataSources.length} data sources
               </Badge>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 text-xs">
+                <BarChart3 className="w-3 h-3 mr-1" />
                 {reportConfig.visualizations.length} visualizations
               </Badge>
-              <Button variant="outline" onClick={onCancel}>
+              <Button variant="outline" onClick={onCancel} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                 Cancel
               </Button>
               <Button 
                 variant="outline" 
                 onClick={handlePreview}
                 disabled={!isReportValid}
+                className="border-0 shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <Play className="w-4 h-4 mr-1" />
                 Preview
@@ -222,6 +231,7 @@ export const ReportBuilder: React.FC<ReportBuilderProps> = ({
               <Button 
                 onClick={handleSave}
                 disabled={!isReportValid}
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <Save className="w-4 h-4 mr-1" />
                 Save Report
@@ -232,83 +242,113 @@ export const ReportBuilder: React.FC<ReportBuilderProps> = ({
 
         {/* Main Content */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Left Sidebar */}
-          <div className="w-80 border-r bg-card flex flex-col">
+          {/* Enhanced Left Sidebar */}
+          <div className="w-80 border-r-2 border-indigo-200 bg-gradient-to-b from-white to-slate-50 flex flex-col shadow-lg">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-              <TabsList className="grid w-full grid-cols-4 m-2">
-                <TabsTrigger value="data" className="text-xs">
-                  <Database className="w-3 h-3 mr-1" />
-                  Data
-                </TabsTrigger>
-                <TabsTrigger value="fields" className="text-xs">
-                  <Palette className="w-3 h-3 mr-1" />
-                  Fields
-                </TabsTrigger>
-                <TabsTrigger value="filters" className="text-xs">
-                  <Filter className="w-3 h-3 mr-1" />
-                  Filters
-                </TabsTrigger>
-                <TabsTrigger value="settings" className="text-xs">
-                  <Settings className="w-3 h-3 mr-1" />
-                  Style
-                </TabsTrigger>
-              </TabsList>
+              <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border-b-2 border-indigo-200 p-2">
+                <TabsList className="grid w-full grid-cols-4 bg-transparent h-auto p-1 gap-1">
+                  <TabsTrigger 
+                    value="data" 
+                    className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-indigo-300 text-xs"
+                  >
+                    <div className="h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center">
+                      <Database className="w-3 h-3 text-indigo-600" />
+                    </div>
+                    <span className="font-medium">Data</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="fields" 
+                    className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300 text-xs"
+                  >
+                    <div className="h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center">
+                      <Palette className="w-3 h-3 text-purple-600" />
+                    </div>
+                    <span className="font-medium">Fields</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="filters" 
+                    className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-pink-300 text-xs"
+                  >
+                    <div className="h-6 w-6 rounded-full bg-pink-100 flex items-center justify-center">
+                      <Filter className="w-3 h-3 text-pink-600" />
+                    </div>
+                    <span className="font-medium">Filters</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="settings" 
+                    className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-cyan-300 text-xs"
+                  >
+                    <div className="h-6 w-6 rounded-full bg-cyan-100 flex items-center justify-center">
+                      <Settings className="w-3 h-3 text-cyan-600" />
+                    </div>
+                    <span className="font-medium">Style</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               <div className="flex-1 overflow-hidden">
-                <TabsContent value="data" className="h-full m-0 p-2">
-                  <DataSourceSelector
-                    availableDataSources={availableDataSources}
-                    selectedDataSources={reportConfig.dataSources}
-                    onDataSourceSelect={handleDataSourceSelect}
-                    onDataSourceRemove={handleDataSourceRemove}
-                    onRelationshipAdd={handleRelationshipAdd}
-                  />
+                <TabsContent value="data" className="h-full m-0 p-0">
+                  <div className="p-4 bg-gradient-to-br from-indigo-50/30 to-white h-full">
+                    <DataSourceSelector
+                      availableDataSources={availableDataSources}
+                      selectedDataSources={reportConfig.dataSources}
+                      onDataSourceSelect={handleDataSourceSelect}
+                      onDataSourceRemove={handleDataSourceRemove}
+                      onRelationshipAdd={handleRelationshipAdd}
+                    />
+                  </div>
                 </TabsContent>
 
-                <TabsContent value="fields" className="h-full m-0 p-2">
-                  <FieldPalette
-                    dataSources={reportConfig.dataSources}
-                    searchTerm={fieldSearchTerm}
-                    onSearchChange={setFieldSearchTerm}
-                  />
+                <TabsContent value="fields" className="h-full m-0 p-0">
+                  <div className="p-4 bg-gradient-to-br from-purple-50/30 to-white h-full">
+                    <FieldPalette
+                      dataSources={reportConfig.dataSources}
+                      searchTerm={fieldSearchTerm}
+                      onSearchChange={setFieldSearchTerm}
+                    />
+                  </div>
                 </TabsContent>
 
-                <TabsContent value="filters" className="h-full m-0 p-2">
-                  <FilterBuilder
-                    dataSources={reportConfig.dataSources}
-                    filters={reportConfig.filters}
-                    onFilterAdd={handleFilterAdd}
-                    onFilterUpdate={handleFilterUpdate}
-                    onFilterRemove={handleFilterRemove}
-                  />
+                <TabsContent value="filters" className="h-full m-0 p-0">
+                  <div className="p-4 bg-gradient-to-br from-pink-50/30 to-white h-full">
+                    <FilterBuilder
+                      dataSources={reportConfig.dataSources}
+                      filters={reportConfig.filters}
+                      onFilterAdd={handleFilterAdd}
+                      onFilterUpdate={handleFilterUpdate}
+                      onFilterRemove={handleFilterRemove}
+                    />
+                  </div>
                 </TabsContent>
 
-                <TabsContent value="settings" className="h-full m-0 p-2">
-                  <LayoutDesigner
-                    layout={reportConfig.layout}
-                    styling={reportConfig.styling}
-                    visualizations={reportConfig.visualizations}
-                    onLayoutUpdate={(updates) => 
-                      setReportConfig(prev => ({ 
-                        ...prev, 
-                        layout: { ...prev.layout, ...updates } 
-                      }))
-                    }
-                    onStylingUpdate={(updates) => 
-                      setReportConfig(prev => ({ 
-                        ...prev, 
-                        styling: { ...prev.styling, ...updates } 
-                      }))
-                    }
-                    onVisualizationUpdate={handleVisualizationUpdate}
-                  />
+                <TabsContent value="settings" className="h-full m-0 p-0">
+                  <div className="p-4 bg-gradient-to-br from-cyan-50/30 to-white h-full">
+                    <LayoutDesigner
+                      layout={reportConfig.layout}
+                      styling={reportConfig.styling}
+                      visualizations={reportConfig.visualizations}
+                      onLayoutUpdate={(updates) => 
+                        setReportConfig(prev => ({ 
+                          ...prev, 
+                          layout: { ...prev.layout, ...updates } 
+                        }))
+                      }
+                      onStylingUpdate={(updates) => 
+                        setReportConfig(prev => ({ 
+                          ...prev, 
+                          styling: { ...prev.styling, ...updates } 
+                        }))
+                      }
+                      onVisualizationUpdate={handleVisualizationUpdate}
+                    />
+                  </div>
                 </TabsContent>
               </div>
             </Tabs>
           </div>
 
-          {/* Main Canvas */}
-          <div className="flex-1 overflow-hidden">
+          {/* Enhanced Main Canvas */}
+          <div className="flex-1 overflow-hidden bg-gradient-to-br from-slate-50/50 to-white">
             <ReportCanvas
               reportConfig={reportConfig}
               onVisualizationAdd={handleVisualizationAdd}

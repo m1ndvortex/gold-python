@@ -331,23 +331,26 @@ export const ProductManagement: React.FC<ProductManagementProps> = ({
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+              <Package className="h-5 w-5 text-white" />
+            </div>
             {isEditing ? 'Edit Product' : 'Create New Product'}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 overflow-hidden">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="basic">Basic Info</TabsTrigger>
-              <TabsTrigger value="categories">Categories</TabsTrigger>
-              <TabsTrigger value="images">Images</TabsTrigger>
-              <TabsTrigger value="variants">Variants</TabsTrigger>
-              <TabsTrigger value="seo">SEO & Meta</TabsTrigger>
+            <TabsList variant="gradient-green" className="grid w-full grid-cols-5">
+              <TabsTrigger variant="gradient-green" value="basic">Basic Info</TabsTrigger>
+              <TabsTrigger variant="gradient-green" value="categories">Categories</TabsTrigger>
+              <TabsTrigger variant="gradient-green" value="images">Images</TabsTrigger>
+              <TabsTrigger variant="gradient-green" value="variants">Variants</TabsTrigger>
+              <TabsTrigger variant="gradient-green" value="seo">SEO & Meta</TabsTrigger>
             </TabsList>
 
             <ScrollArea className="flex-1 mt-4">
-              <TabsContent value="basic" className="space-y-6">
+              <TabsContent variant="gradient-green" value="basic" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Product Name *</Label>
@@ -477,7 +480,7 @@ export const ProductManagement: React.FC<ProductManagementProps> = ({
                 </div>
               </TabsContent>
 
-              <TabsContent value="categories" className="space-y-6">
+              <TabsContent variant="gradient-green" value="categories" className="space-y-6">
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Category Assignment</h3>
                   <p className="text-sm text-muted-foreground">
@@ -586,13 +589,13 @@ export const ProductManagement: React.FC<ProductManagementProps> = ({
                 )}
               </TabsContent>
 
-              <TabsContent value="images" className="space-y-6">
+              <TabsContent variant="gradient-green" value="images" className="space-y-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-semibold">Product Images</h3>
                     <div className="flex items-center gap-2">
                       <Label htmlFor="image-upload" className="cursor-pointer">
-                        <Button type="button" variant="outline" asChild disabled={isUploading}>
+                        <Button type="button" variant="outline-gradient-green" asChild disabled={isUploading}>
                           <span className="flex items-center gap-2">
                             <Upload className="h-4 w-4" />
                             {isUploading ? 'Uploading...' : 'Upload Images'}
@@ -611,7 +614,7 @@ export const ProductManagement: React.FC<ProductManagementProps> = ({
                   </div>
 
                   {productImages.length === 0 ? (
-                    <Card>
+                    <Card variant="gradient-green">
                       <CardContent className="p-8 text-center">
                         <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                         <p className="text-lg font-medium mb-2">No images uploaded</p>
@@ -623,7 +626,7 @@ export const ProductManagement: React.FC<ProductManagementProps> = ({
                   ) : (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                       {productImages.map((image, index) => (
-                        <Card key={image.id} className="relative group">
+                        <Card key={image.id} variant="professional" className="relative group">
                           <CardContent className="p-2">
                             <div className="aspect-square relative">
                               <img
@@ -669,7 +672,7 @@ export const ProductManagement: React.FC<ProductManagementProps> = ({
                 </div>
               </TabsContent>
 
-              <TabsContent value="variants" className="space-y-6">
+              <TabsContent variant="gradient-green" value="variants" className="space-y-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -678,21 +681,21 @@ export const ProductManagement: React.FC<ProductManagementProps> = ({
                         Create variants for different sizes, colors, or specifications
                       </p>
                     </div>
-                    <Button type="button" onClick={addVariant}>
+                    <Button type="button" variant="gradient-green" onClick={addVariant}>
                       <Plus className="h-4 w-4 mr-2" />
                       Add Variant
                     </Button>
                   </div>
 
                   {variantFields.length === 0 ? (
-                    <Card>
+                    <Card variant="gradient-green">
                       <CardContent className="p-8 text-center">
                         <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                         <p className="text-lg font-medium mb-2">No variants created</p>
                         <p className="text-sm text-muted-foreground mb-4">
                           Add variants to offer different options for this product
                         </p>
-                        <Button type="button" onClick={addVariant}>
+                        <Button type="button" variant="gradient-green" onClick={addVariant}>
                           <Plus className="h-4 w-4 mr-2" />
                           Create First Variant
                         </Button>
@@ -701,7 +704,7 @@ export const ProductManagement: React.FC<ProductManagementProps> = ({
                   ) : (
                     <div className="space-y-4">
                       {variantFields.map((variant, index) => (
-                        <Card key={variant.id}>
+                        <Card key={variant.id} variant="professional">
                           <CardHeader className="pb-3">
                             <div className="flex items-center justify-between">
                               <CardTitle className="text-base">
@@ -769,7 +772,7 @@ export const ProductManagement: React.FC<ProductManagementProps> = ({
                 </div>
               </TabsContent>
 
-              <TabsContent value="seo" className="space-y-6">
+              <TabsContent variant="gradient-green" value="seo" className="space-y-6">
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">SEO & Metadata</h3>
                   
@@ -813,11 +816,12 @@ export const ProductManagement: React.FC<ProductManagementProps> = ({
           </Tabs>
 
           <DialogFooter className="mt-6">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline-gradient-green" onClick={onClose}>
               Cancel
             </Button>
             <Button 
               type="submit" 
+              variant="gradient-green"
               disabled={isSubmitting || isUploading}
             >
               {isSubmitting ? 'Saving...' : (isEditing ? 'Update Product' : 'Create Product')}

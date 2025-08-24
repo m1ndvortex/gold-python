@@ -347,79 +347,140 @@ export const LayoutDesigner: React.FC<LayoutDesignerProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Layout className="w-4 h-4" />
-          <h3 className="font-medium">Layout Designer</h3>
+      {/* Enhanced Header */}
+      <div className="flex items-center justify-between p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg border-2 border-cyan-200">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
+            <Layout className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg text-foreground">Layout Designer</h3>
+            <p className="text-sm text-muted-foreground">Design and customize your report layout</p>
+          </div>
         </div>
         
-        <div className="flex items-center gap-2">
-          {/* Preview Mode Selector */}
-          <div className="flex items-center border rounded-lg p-1">
+        <div className="flex items-center gap-3">
+          {/* Enhanced Preview Mode Selector */}
+          <div className="flex items-center bg-white border-2 border-cyan-200 rounded-lg p-1 shadow-lg">
             <Button
               variant={previewMode === 'desktop' ? 'default' : 'ghost'}
               size="sm"
-              className="h-7 px-2"
+              className={`h-8 px-3 transition-all duration-300 ${
+                previewMode === 'desktop' 
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg' 
+                  : 'hover:bg-cyan-50'
+              }`}
               onClick={() => setPreviewMode('desktop')}
             >
-              <Monitor className="w-3 h-3" />
+              <Monitor className="w-4 h-4" />
             </Button>
             <Button
               variant={previewMode === 'tablet' ? 'default' : 'ghost'}
               size="sm"
-              className="h-7 px-2"
+              className={`h-8 px-3 transition-all duration-300 ${
+                previewMode === 'tablet' 
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg' 
+                  : 'hover:bg-cyan-50'
+              }`}
               onClick={() => setPreviewMode('tablet')}
             >
-              <Tablet className="w-3 h-3" />
+              <Tablet className="w-4 h-4" />
             </Button>
             <Button
               variant={previewMode === 'mobile' ? 'default' : 'ghost'}
               size="sm"
-              className="h-7 px-2"
+              className={`h-8 px-3 transition-all duration-300 ${
+                previewMode === 'mobile' 
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg' 
+                  : 'hover:bg-cyan-50'
+              }`}
               onClick={() => setPreviewMode('mobile')}
             >
-              <Smartphone className="w-3 h-3" />
+              <Smartphone className="w-4 h-4" />
             </Button>
             <Button
               variant={previewMode === 'print' ? 'default' : 'ghost'}
               size="sm"
-              className="h-7 px-2"
+              className={`h-8 px-3 transition-all duration-300 ${
+                previewMode === 'print' 
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg' 
+                  : 'hover:bg-cyan-50'
+              }`}
               onClick={() => setPreviewMode('print')}
             >
-              <Printer className="w-3 h-3" />
+              <Printer className="w-4 h-4" />
             </Button>
           </div>
 
-          <Button variant="outline" size="sm">
-            <Eye className="w-4 h-4 mr-1" />
+          <Button variant="outline" size="sm" className="border-0 shadow-lg bg-white hover:shadow-xl transition-all duration-300">
+            <Eye className="w-4 h-4 mr-2" />
             Preview
           </Button>
         </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="layout">Layout</TabsTrigger>
-          <TabsTrigger value="styling">Styling</TabsTrigger>
-          <TabsTrigger value="alignment">Alignment</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
+        <div className="bg-gradient-to-r from-cyan-50 via-blue-50 to-indigo-50 border-2 border-cyan-200 rounded-lg p-1 mb-6">
+          <TabsList className="grid w-full grid-cols-4 bg-transparent h-auto p-1 gap-1">
+            <TabsTrigger 
+              value="layout" 
+              className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-cyan-300"
+            >
+              <div className="h-6 w-6 rounded-full bg-cyan-100 flex items-center justify-center">
+                <Layout className="w-3 h-3 text-cyan-600" />
+              </div>
+              <span className="font-medium text-sm">Layout</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="styling" 
+              className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-blue-300"
+            >
+              <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
+                <Palette className="w-3 h-3 text-blue-600" />
+              </div>
+              <span className="font-medium text-sm">Styling</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="alignment" 
+              className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-indigo-300"
+            >
+              <div className="h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center">
+                <AlignCenter className="w-3 h-3 text-indigo-600" />
+              </div>
+              <span className="font-medium text-sm">Alignment</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="settings" 
+              className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300"
+            >
+              <div className="h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center">
+                <Settings className="w-3 h-3 text-purple-600" />
+              </div>
+              <span className="font-medium text-sm">Settings</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
-        <TabsContent value="layout" className="space-y-4 mt-4">
-          {/* Layout Templates */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Layout Templates</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3">
-                {LAYOUT_TEMPLATES.map((template) => (
-                  <div
-                    key={template.id}
-                    className="p-3 border rounded-lg cursor-pointer hover:border-primary/50 transition-colors"
-                    onClick={() => applyLayoutTemplate(template)}
-                  >
+        <TabsContent value="layout" className="space-y-4 mt-0">
+          <div className="bg-gradient-to-br from-cyan-50/30 to-white p-4 rounded-lg">
+            {/* Layout Templates */}
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-slate-50">
+              <CardHeader className="pb-4 bg-gradient-to-r from-cyan-50 to-blue-50 border-b-2 border-cyan-200">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                    <Grid className="h-4 w-4 text-white" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold">Layout Templates</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {LAYOUT_TEMPLATES.map((template) => (
+                    <div
+                      key={template.id}
+                      className="p-3 border-0 rounded-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl bg-gradient-to-r from-slate-50 to-slate-100 hover:from-cyan-50 hover:to-blue-50"
+                      onClick={() => applyLayoutTemplate(template)}
+                    >
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-sm">{template.name}</span>
                       <Badge variant="outline" className="text-xs">
@@ -449,12 +510,17 @@ export const LayoutDesigner: React.FC<LayoutDesignerProps> = ({
             </CardContent>
           </Card>
 
-          {/* Page Size */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Page Size</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+            {/* Page Size */}
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-slate-50">
+              <CardHeader className="pb-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b-2 border-blue-200">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                    <Monitor className="h-4 w-4 text-white" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold">Page Size</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-xs">Page Size</Label>
@@ -519,28 +585,35 @@ export const LayoutDesigner: React.FC<LayoutDesignerProps> = ({
               </div>
             </CardContent>
           </Card>
+          </div>
         </TabsContent>
 
-        <TabsContent value="styling" className="space-y-4 mt-4">
-          {/* Theme Presets */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Theme Presets</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3">
-                {THEME_PRESETS.map((preset) => (
-                  <div
-                    key={preset.name}
-                    className={`
-                      p-3 border rounded-lg cursor-pointer transition-all hover:border-primary/50
-                      ${styling.theme === preset.theme && styling.primaryColor === preset.primaryColor
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border'
-                      }
-                    `}
-                    onClick={() => applyThemePreset(preset)}
-                  >
+        <TabsContent value="styling" className="space-y-4 mt-0">
+          <div className="bg-gradient-to-br from-blue-50/30 to-white p-4 rounded-lg">
+            {/* Theme Presets */}
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-slate-50">
+              <CardHeader className="pb-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b-2 border-blue-200">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                    <Palette className="h-4 w-4 text-white" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold">Theme Presets</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {THEME_PRESETS.map((preset) => (
+                    <div
+                      key={preset.name}
+                      className={`
+                        p-3 border-0 rounded-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl
+                        ${styling.theme === preset.theme && styling.primaryColor === preset.primaryColor
+                          ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-xl'
+                          : 'bg-gradient-to-r from-slate-50 to-slate-100 hover:from-blue-50 hover:to-indigo-50'
+                        }
+                      `}
+                      onClick={() => applyThemePreset(preset)}
+                    >
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-sm">{preset.name}</span>
                       <div className="flex gap-1">
@@ -560,12 +633,17 @@ export const LayoutDesigner: React.FC<LayoutDesignerProps> = ({
             </CardContent>
           </Card>
 
-          {/* Custom Styling */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Custom Styling</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+            {/* Custom Styling */}
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-slate-50">
+              <CardHeader className="pb-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b-2 border-indigo-200">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                    <Type className="h-4 w-4 text-white" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold">Custom Styling</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-xs">Primary Color</Label>
@@ -639,15 +717,22 @@ export const LayoutDesigner: React.FC<LayoutDesignerProps> = ({
               </div>
             </CardContent>
           </Card>
+          </div>
         </TabsContent>
 
-        <TabsContent value="alignment" className="space-y-4 mt-4">
-          {/* Alignment Tools */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Alignment Tools</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+        <TabsContent value="alignment" className="space-y-4 mt-0">
+          <div className="bg-gradient-to-br from-indigo-50/30 to-white p-4 rounded-lg">
+            {/* Alignment Tools */}
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-slate-50">
+              <CardHeader className="pb-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b-2 border-indigo-200">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                    <AlignCenter className="h-4 w-4 text-white" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold">Alignment Tools</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 space-y-4">
               <div className="space-y-3">
                 <div>
                   <Label className="text-xs font-medium mb-2 block">Horizontal Alignment</Label>
@@ -736,12 +821,17 @@ export const LayoutDesigner: React.FC<LayoutDesignerProps> = ({
             </CardContent>
           </Card>
 
-          {/* Grid Settings */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Grid & Snapping</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+            {/* Grid Settings */}
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-slate-50">
+              <CardHeader className="pb-4 bg-gradient-to-r from-purple-50 to-pink-50 border-b-2 border-purple-200">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+                    <Grid className="h-4 w-4 text-white" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold">Grid & Snapping</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <Label className="text-sm">Show Grid</Label>
@@ -780,15 +870,22 @@ export const LayoutDesigner: React.FC<LayoutDesignerProps> = ({
               </div>
             </CardContent>
           </Card>
+          </div>
         </TabsContent>
 
-        <TabsContent value="settings" className="space-y-4 mt-4">
-          {/* Export Settings */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Export Settings</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+        <TabsContent value="settings" className="space-y-4 mt-0">
+          <div className="bg-gradient-to-br from-purple-50/30 to-white p-4 rounded-lg">
+            {/* Export Settings */}
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-slate-50">
+              <CardHeader className="pb-4 bg-gradient-to-r from-purple-50 to-pink-50 border-b-2 border-purple-200">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+                    <Download className="h-4 w-4 text-white" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold">Export Settings</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <Button variant="outline" className="h-auto p-3 flex flex-col items-center gap-2">
                   <Download className="w-5 h-5" />
@@ -837,6 +934,7 @@ export const LayoutDesigner: React.FC<LayoutDesignerProps> = ({
               </Button>
             </CardContent>
           </Card>
+          </div>
         </TabsContent>
       </Tabs>
 

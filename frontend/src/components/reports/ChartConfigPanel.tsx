@@ -24,7 +24,8 @@ import {
   Hash,
   Plus,
   X,
-  Move
+  Move,
+  Database
 } from 'lucide-react';
 
 interface ChartConfigPanelProps {
@@ -167,47 +168,84 @@ export const ChartConfigPanel: React.FC<ChartConfigPanelProps> = ({
   };
 
   return (
-    <Card className="w-full max-w-2xl">
-      <CardHeader className="pb-3">
+    <Card className="w-full max-w-2xl border-0 shadow-xl bg-gradient-to-br from-slate-50 to-white">
+      <CardHeader className="pb-4 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border-b-2 border-indigo-200">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Settings className="w-5 h-5" />
-            Chart Configuration
-          </CardTitle>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+              <Settings className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-semibold text-foreground">Chart Configuration</CardTitle>
+              <p className="text-sm text-muted-foreground">Customize your visualization settings</p>
+            </div>
+          </div>
           {onClose && (
-            <Button variant="ghost" size="sm" onClick={onClose}>
+            <Button variant="ghost" size="sm" onClick={onClose} className="hover:bg-white hover:shadow-md transition-all duration-300">
               ×
             </Button>
           )}
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="type">Type & Layout</TabsTrigger>
-            <TabsTrigger value="styling">Colors & Style</TabsTrigger>
-            <TabsTrigger value="options">Display Options</TabsTrigger>
-          </TabsList>
+          <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border-2 border-indigo-200 rounded-lg p-1 mb-6">
+            <TabsList className="grid w-full grid-cols-3 bg-transparent h-auto p-1 gap-1">
+              <TabsTrigger 
+                value="type" 
+                className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-indigo-300"
+              >
+                <div className="h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <BarChart3 className="w-3 h-3 text-indigo-600" />
+                </div>
+                <span className="font-medium text-sm">Type & Layout</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="styling" 
+                className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300"
+              >
+                <div className="h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center">
+                  <Palette className="w-3 h-3 text-purple-600" />
+                </div>
+                <span className="font-medium text-sm">Colors & Style</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="options" 
+                className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-pink-300"
+              >
+                <div className="h-6 w-6 rounded-full bg-pink-100 flex items-center justify-center">
+                  <Eye className="w-3 h-3 text-pink-600" />
+                </div>
+                <span className="font-medium text-sm">Display Options</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-          <TabsContent value="type" className="space-y-6 mt-4">
-            {/* Field Configuration */}
-            <div className="space-y-4">
-              <Label className="text-sm font-medium">Data Fields</Label>
-              
-              {/* Dimensions Drop Zone */}
-              <div className="space-y-2">
-                <Label className="text-xs font-medium text-muted-foreground">Dimensions (Categories)</Label>
-                <div
-                  ref={dropDimensions}
-                  className={`
-                    min-h-[60px] p-3 border-2 border-dashed rounded-lg transition-colors
-                    ${isOverDimensions 
-                      ? 'border-blue-400 bg-blue-50' 
-                      : 'border-muted-foreground/25 bg-muted/20'
-                    }
-                  `}
-                >
+          <TabsContent value="type" className="space-y-6 mt-0">
+            <div className="bg-gradient-to-br from-indigo-50/30 to-white p-4 rounded-lg">
+              {/* Field Configuration */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center">
+                    <Database className="h-4 w-4 text-white" />
+                  </div>
+                  <Label className="text-sm font-medium">Data Fields</Label>
+                </div>
+                
+                {/* Dimensions Drop Zone */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-medium text-muted-foreground">Dimensions (Categories)</Label>
+                  <div
+                    ref={dropDimensions}
+                    className={`
+                      min-h-[60px] p-3 border-2 border-dashed rounded-lg transition-all duration-300 shadow-sm
+                      ${isOverDimensions 
+                        ? 'border-blue-400 bg-gradient-to-r from-blue-50 to-blue-100 shadow-lg' 
+                        : 'border-muted-foreground/25 bg-gradient-to-r from-slate-50 to-slate-100/50'
+                      }
+                    `}
+                  >
                   {visualization.dimensions.length === 0 ? (
                     <div className="flex items-center justify-center h-12 text-sm text-muted-foreground">
                       <Move className="w-4 h-4 mr-2" />
@@ -239,19 +277,19 @@ export const ChartConfigPanel: React.FC<ChartConfigPanelProps> = ({
                 </div>
               </div>
 
-              {/* Measures Drop Zone */}
-              <div className="space-y-2">
-                <Label className="text-xs font-medium text-muted-foreground">Measures (Values)</Label>
-                <div
-                  ref={dropMeasures}
-                  className={`
-                    min-h-[60px] p-3 border-2 border-dashed rounded-lg transition-colors
-                    ${isOverMeasures 
-                      ? 'border-green-400 bg-green-50' 
-                      : 'border-muted-foreground/25 bg-muted/20'
-                    }
-                  `}
-                >
+                {/* Measures Drop Zone */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-medium text-muted-foreground">Measures (Values)</Label>
+                  <div
+                    ref={dropMeasures}
+                    className={`
+                      min-h-[60px] p-3 border-2 border-dashed rounded-lg transition-all duration-300 shadow-sm
+                      ${isOverMeasures 
+                        ? 'border-green-400 bg-gradient-to-r from-green-50 to-green-100 shadow-lg' 
+                        : 'border-muted-foreground/25 bg-gradient-to-r from-slate-50 to-slate-100/50'
+                      }
+                    `}
+                  >
                   {visualization.measures.length === 0 ? (
                     <div className="flex items-center justify-center h-12 text-sm text-muted-foreground">
                       <Hash className="w-4 h-4 mr-2" />
@@ -284,24 +322,29 @@ export const ChartConfigPanel: React.FC<ChartConfigPanelProps> = ({
               </div>
             </div>
 
-            {/* Visualization Type Selection */}
-            <div className="space-y-3">
-              <Label className="text-sm font-medium">Visualization Type</Label>
-              <div className="grid grid-cols-2 gap-3">
-                {VISUALIZATION_TYPES.map((type) => {
-                  const Icon = type.icon;
-                  return (
-                    <div
-                      key={type.value}
-                      className={`
-                        p-3 border rounded-lg cursor-pointer transition-all hover:border-primary/50
-                        ${visualization.type === type.value 
-                          ? 'border-primary bg-primary/5' 
-                          : 'border-border'
-                        }
-                      `}
-                      onClick={() => handleVisualizationTypeChange(type.value)}
-                    >
+              {/* Visualization Type Selection */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                    <Eye className="h-4 w-4 text-white" />
+                  </div>
+                  <Label className="text-sm font-medium">Visualization Type</Label>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {VISUALIZATION_TYPES.map((type) => {
+                    const Icon = type.icon;
+                    return (
+                      <div
+                        key={type.value}
+                        className={`
+                          p-3 border-0 rounded-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl
+                          ${visualization.type === type.value 
+                            ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-xl' 
+                            : 'bg-gradient-to-r from-slate-50 to-slate-100 hover:from-indigo-50 hover:to-purple-50'
+                          }
+                        `}
+                        onClick={() => handleVisualizationTypeChange(type.value)}
+                      >
                       <div className="flex items-center gap-2 mb-1">
                         <Icon className="w-4 h-4" />
                         <span className="font-medium text-sm">{type.label}</span>
@@ -313,25 +356,30 @@ export const ChartConfigPanel: React.FC<ChartConfigPanelProps> = ({
               </div>
             </div>
 
-            {/* Chart Type Selection (only for chart visualizations) */}
-            {visualization.type === 'chart' && (
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Chart Type</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  {CHART_TYPES.map((chart) => {
-                    const Icon = chart.icon;
-                    return (
-                      <div
-                        key={chart.value}
-                        className={`
-                          p-3 border rounded-lg cursor-pointer transition-all hover:border-primary/50
-                          ${visualization.chartType === chart.value 
-                            ? 'border-primary bg-primary/5' 
-                            : 'border-border'
-                          }
-                        `}
-                        onClick={() => handleChartTypeChange(chart.value)}
-                      >
+              {/* Chart Type Selection (only for chart visualizations) */}
+              {visualization.type === 'chart' && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
+                      <BarChart3 className="h-4 w-4 text-white" />
+                    </div>
+                    <Label className="text-sm font-medium">Chart Type</Label>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {CHART_TYPES.map((chart) => {
+                      const Icon = chart.icon;
+                      return (
+                        <div
+                          key={chart.value}
+                          className={`
+                            p-3 border-0 rounded-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl
+                            ${visualization.chartType === chart.value 
+                              ? 'bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-xl' 
+                              : 'bg-gradient-to-r from-slate-50 to-slate-100 hover:from-green-50 hover:to-teal-50'
+                            }
+                          `}
+                          onClick={() => handleChartTypeChange(chart.value)}
+                        >
                         <div className="flex items-center gap-2 mb-1">
                           <Icon className="w-4 h-4" />
                           <span className="font-medium text-sm">{chart.label}</span>
@@ -379,25 +427,32 @@ export const ChartConfigPanel: React.FC<ChartConfigPanelProps> = ({
                 </div>
               )}
             </div>
+          </div>
           </TabsContent>
 
-          <TabsContent value="styling" className="space-y-6 mt-4">
-            {/* Color Palette Selection */}
-            <div className="space-y-3">
-              <Label className="text-sm font-medium">Color Palette</Label>
+          <TabsContent value="styling" className="space-y-6 mt-0">
+            <div className="bg-gradient-to-br from-purple-50/30 to-white p-4 rounded-lg">
+              {/* Color Palette Selection */}
               <div className="space-y-3">
-                {DEFAULT_COLOR_PALETTES.map((palette) => (
-                  <div
-                    key={palette.name}
-                    className={`
-                      p-3 border rounded-lg cursor-pointer transition-all hover:border-primary/50
-                      ${JSON.stringify(visualization.styling.colors) === JSON.stringify(palette.colors)
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border'
-                      }
-                    `}
-                    onClick={() => handleColorPaletteSelect(palette)}
-                  >
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+                    <Palette className="h-4 w-4 text-white" />
+                  </div>
+                  <Label className="text-sm font-medium">Color Palette</Label>
+                </div>
+                <div className="space-y-3">
+                  {DEFAULT_COLOR_PALETTES.map((palette) => (
+                    <div
+                      key={palette.name}
+                      className={`
+                        p-3 border-0 rounded-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl
+                        ${JSON.stringify(visualization.styling.colors) === JSON.stringify(palette.colors)
+                          ? 'bg-gradient-to-r from-purple-500 to-violet-600 text-white shadow-xl'
+                          : 'bg-gradient-to-r from-slate-50 to-slate-100 hover:from-purple-50 hover:to-violet-50'
+                        }
+                      `}
+                      onClick={() => handleColorPaletteSelect(palette)}
+                    >
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium text-sm">{palette.name}</span>
                       <Badge variant="outline" className="text-xs">
@@ -457,45 +512,54 @@ export const ChartConfigPanel: React.FC<ChartConfigPanelProps> = ({
                 ))}
               </div>
             </div>
+          </div>
           </TabsContent>
 
-          <TabsContent value="options" className="space-y-6 mt-4">
-            {/* Display Options */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label className="text-sm font-medium">Show Legend</Label>
-                  <p className="text-xs text-muted-foreground">Display chart legend</p>
+          <TabsContent value="options" className="space-y-6 mt-0">
+            <div className="bg-gradient-to-br from-pink-50/30 to-white p-4 rounded-lg">
+              {/* Display Options */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
+                    <Eye className="h-4 w-4 text-white" />
+                  </div>
+                  <Label className="text-sm font-medium">Display Options</Label>
                 </div>
-                <Switch
-                  checked={visualization.styling.showLegend}
-                  onCheckedChange={(checked) => handleStylingUpdate({ showLegend: checked })}
-                />
-              </div>
-
-              {visualization.type === 'chart' && (
-                <div className="flex items-center justify-between">
+                
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg shadow-sm">
                   <div className="space-y-1">
-                    <Label className="text-sm font-medium">Show Grid</Label>
-                    <p className="text-xs text-muted-foreground">Display grid lines</p>
+                    <Label className="text-sm font-medium">Show Legend</Label>
+                    <p className="text-xs text-muted-foreground">Display chart legend</p>
                   </div>
                   <Switch
-                    checked={visualization.styling.showGrid}
-                    onCheckedChange={(checked) => handleStylingUpdate({ showGrid: checked })}
+                    checked={visualization.styling.showLegend}
+                    onCheckedChange={(checked) => handleStylingUpdate({ showLegend: checked })}
                   />
                 </div>
-              )}
 
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label className="text-sm font-medium">Show Data Labels</Label>
-                  <p className="text-xs text-muted-foreground">Display values on chart</p>
+                {visualization.type === 'chart' && (
+                  <div className="flex items-center justify-between p-3 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg shadow-sm">
+                    <div className="space-y-1">
+                      <Label className="text-sm font-medium">Show Grid</Label>
+                      <p className="text-xs text-muted-foreground">Display grid lines</p>
+                    </div>
+                    <Switch
+                      checked={visualization.styling.showGrid}
+                      onCheckedChange={(checked) => handleStylingUpdate({ showGrid: checked })}
+                    />
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg shadow-sm">
+                  <div className="space-y-1">
+                    <Label className="text-sm font-medium">Show Data Labels</Label>
+                    <p className="text-xs text-muted-foreground">Display values on chart</p>
+                  </div>
+                  <Switch
+                    checked={visualization.styling.showDataLabels || false}
+                    onCheckedChange={(checked) => handleStylingUpdate({ showDataLabels: checked })}
+                  />
                 </div>
-                <Switch
-                  checked={visualization.styling.showDataLabels || false}
-                  onCheckedChange={(checked) => handleStylingUpdate({ showDataLabels: checked })}
-                />
-              </div>
 
               {visualization.type === 'chart' && visualization.chartType === 'line' && (
                 <div className="flex items-center justify-between">
@@ -527,43 +591,44 @@ export const ChartConfigPanel: React.FC<ChartConfigPanelProps> = ({
               )}
             </div>
 
-            {/* Preview */}
-            <div className="space-y-3">
-              <Label className="text-sm font-medium flex items-center gap-2">
-                <Eye className="w-4 h-4" />
-                Preview
-              </Label>
-              <div className="p-4 border rounded-lg bg-muted/20">
-                <div className="text-center text-sm text-muted-foreground">
-                  {visualization.styling.title && (
-                    <div className="font-medium mb-2">{visualization.styling.title}</div>
-                  )}
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    {visualization.type === 'chart' && visualization.chartType && (
-                      <>
-                        {CHART_TYPES.find(t => t.value === visualization.chartType)?.icon && 
-                          React.createElement(
-                            CHART_TYPES.find(t => t.value === visualization.chartType)!.icon,
-                            { className: "w-8 h-8" }
-                          )
-                        }
-                        <span>{CHART_TYPES.find(t => t.value === visualization.chartType)?.label}</span>
-                      </>
+              {/* Preview */}
+              <div className="space-y-3">
+                <Label className="text-sm font-medium flex items-center gap-2">
+                  <Eye className="w-4 h-4" />
+                  Preview
+                </Label>
+                <div className="p-4 border rounded-lg bg-muted/20">
+                  <div className="text-center text-sm text-muted-foreground">
+                    {visualization.styling.title && (
+                      <div className="font-medium mb-2">{visualization.styling.title}</div>
                     )}
-                  </div>
-                  <div className="flex justify-center gap-1 mb-2">
-                    {visualization.styling.colors?.slice(0, 5).map((color, index) => (
-                      <div
-                        key={index}
-                        className="w-4 h-4 rounded border"
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
-                  </div>
-                  <div className="text-xs space-y-1">
-                    {visualization.styling.showLegend && <div>✓ Legend enabled</div>}
-                    {visualization.styling.showGrid && <div>✓ Grid enabled</div>}
-                    {visualization.styling.showDataLabels && <div>✓ Data labels enabled</div>}
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      {visualization.type === 'chart' && visualization.chartType && (
+                        <>
+                          {CHART_TYPES.find(t => t.value === visualization.chartType)?.icon && 
+                            React.createElement(
+                              CHART_TYPES.find(t => t.value === visualization.chartType)!.icon,
+                              { className: "w-8 h-8" }
+                            )
+                          }
+                          <span>{CHART_TYPES.find(t => t.value === visualization.chartType)?.label}</span>
+                        </>
+                      )}
+                    </div>
+                    <div className="flex justify-center gap-1 mb-2">
+                      {visualization.styling.colors?.slice(0, 5).map((color, index) => (
+                        <div
+                          key={index}
+                          className="w-4 h-4 rounded border"
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                    </div>
+                    <div className="text-xs space-y-1">
+                      {visualization.styling.showLegend && <div>✓ Legend enabled</div>}
+                      {visualization.styling.showGrid && <div>✓ Grid enabled</div>}
+                      {visualization.styling.showDataLabels && <div>✓ Data labels enabled</div>}
+                    </div>
                   </div>
                 </div>
               </div>

@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../../lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -24,6 +24,22 @@ const buttonVariants = cva(
         warning: "bg-orange-500 text-white hover:bg-orange-600",
         error: "bg-red-500 text-white hover:bg-red-600",
         info: "bg-blue-500 text-white hover:bg-blue-600",
+        // New gradient variants matching reports/charts design
+        "gradient-green": "bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl",
+        "gradient-teal": "bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl",
+        "gradient-blue": "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl",
+        "gradient-purple": "bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl",
+        "gradient-pink": "bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg hover:shadow-xl",
+        "gradient-orange": "bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl",
+        // Outline gradient variants
+        "outline-gradient-green": "border-2 border-transparent bg-gradient-to-r from-green-500 to-teal-600 bg-clip-border text-green-600 hover:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-600 hover:shadow-lg",
+        "outline-gradient-blue": "border-2 border-transparent bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-border text-blue-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:shadow-lg",
+        "outline-gradient-purple": "border-2 border-transparent bg-gradient-to-r from-purple-500 to-violet-600 bg-clip-border text-purple-600 hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-violet-600 hover:shadow-lg",
+        // Icon container variants
+        "icon-gradient-green": "h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg hover:shadow-xl text-white",
+        "icon-gradient-teal": "h-10 w-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-lg hover:shadow-xl text-white",
+        "icon-gradient-blue": "h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg hover:shadow-xl text-white",
+        "icon-gradient-purple": "h-10 w-10 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg hover:shadow-xl text-white",
       },
       size: {
         default: "h-10 px-4 py-2",

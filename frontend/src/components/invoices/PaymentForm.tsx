@@ -74,15 +74,17 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
   ];
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md border-0 shadow-xl bg-gradient-to-br from-amber-50 to-orange-100/50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <DollarSign className="h-5 w-5" />
-          Add Payment
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
+            <DollarSign className="h-4 w-4 text-white" />
+          </div>
+          <span className="text-amber-800">Add Payment</span>
         </CardTitle>
-        <div className="text-sm text-gray-600">
-          <p>Invoice: {invoice.invoice_number}</p>
-          <p>Remaining Amount: ${invoice.remaining_amount.toFixed(2)}</p>
+        <div className="text-sm text-amber-700">
+          <p>Invoice: <span className="font-medium">{invoice.invoice_number}</span></p>
+          <p>Remaining Amount: <span className="font-bold">${invoice.remaining_amount.toFixed(2)}</span></p>
         </div>
       </CardHeader>
       
@@ -147,7 +149,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
           </div>
 
           {/* Payment Summary */}
-          <div className="p-3 bg-gray-50 rounded-lg space-y-2 text-sm">
+          <div className="p-3 bg-gradient-to-r from-amber-100/50 to-orange-100/50 rounded-lg space-y-2 text-sm border border-amber-200/50">
             <div className="flex justify-between">
               <span>Invoice Total:</span>
               <span>${invoice.total_amount.toFixed(2)}</span>
@@ -184,7 +186,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
             <Button
               type="submit"
               disabled={addPaymentMutation.isPending || !form.formState.isValid}
-              className="flex-1"
+              className="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
             >
               {addPaymentMutation.isPending ? 'Processing...' : 'Add Payment'}
             </Button>

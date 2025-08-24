@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Badge } from '../ui/badge';
-import { FilterIcon, RefreshCwIcon, AlertTriangleIcon, PhoneIcon, CalendarIcon } from 'lucide-react';
+import { FilterIcon, RefreshCwIcon, AlertTriangleIcon, PhoneIcon, CalendarIcon, UsersIcon, BarChart3Icon, CheckCircleIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { LedgerFilters } from '../../types';
 
@@ -92,72 +92,137 @@ export const DebtTracking: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header with Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Outstanding Debt
-            </CardTitle>
+      {/* Enhanced Header with Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-red-50 to-rose-100/60">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <AlertTriangleIcon className="h-5 w-5 text-red-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-red-800">
+                  Total Outstanding Debt
+                </CardTitle>
+              </div>
+              <Badge className="bg-red-100 text-red-700 hover:bg-red-100">
+                Critical
+              </Badge>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold text-red-900">
               {formatCurrency(totalDebt)}
             </div>
+            <div className="flex items-center gap-2">
+              <div className="h-2 flex-1 bg-red-200 rounded-full overflow-hidden">
+                <div className="h-full bg-red-500 w-4/5 rounded-full"></div>
+              </div>
+              <span className="text-xs text-red-600">Risk Level</span>
+            </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Customers with Debt
-            </CardTitle>
+        <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-blue-50 to-indigo-100/60">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <UsersIcon className="h-5 w-5 text-blue-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-blue-800">
+                  Customers with Debt
+                </CardTitle>
+              </div>
+              <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+                Count
+              </Badge>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold text-blue-900">
               {totalCustomers}
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Average Debt
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">
-              {formatCurrency(averageDebt)}
+            <div className="flex items-center justify-between text-xs text-blue-600">
+              <span>Active Cases</span>
+              <UsersIcon className="h-3 w-3" />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Critical Cases
-            </CardTitle>
+        <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-orange-50 to-amber-100/60">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <BarChart3Icon className="h-5 w-5 text-orange-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-orange-800">
+                  Average Debt
+                </CardTitle>
+              </div>
+              <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100">
+                Average
+              </Badge>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold text-orange-900">
+              {formatCurrency(averageDebt)}
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-2 flex-1 bg-orange-200 rounded-full overflow-hidden">
+                <div className="h-full bg-orange-500 w-3/5 rounded-full"></div>
+              </div>
+              <span className="text-xs text-orange-600">Per Customer</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-purple-50 to-violet-100/60">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <AlertTriangleIcon className="h-5 w-5 text-purple-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-purple-800">
+                  Critical Cases
+                </CardTitle>
+              </div>
+              <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100">
+                High Risk
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold text-purple-900">
               {criticalDebtCount}
+            </div>
+            <div className="flex items-center justify-between text-xs text-purple-600">
+              <span>≥$10,000</span>
+              <AlertTriangleIcon className="h-3 w-3" />
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Main Debt Tracking Card */}
-      <Card>
-        <CardHeader>
+      {/* Enhanced Main Debt Tracking Card */}
+      <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-orange-50/20 to-white">
+        <CardHeader className="bg-gradient-to-r from-orange-50 via-red-50 to-orange-50 border-b-2 border-orange-200">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangleIcon className="h-5 w-5" />
-              Customer Debt Tracking
-            </CardTitle>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg">
+                <AlertTriangleIcon className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-orange-800">Customer Debt Tracking</CardTitle>
+                <p className="text-sm text-orange-600">Monitor customer debt and payment history</p>
+              </div>
+            </div>
             <div className="flex items-center gap-2">
               <Button
-                variant="outline"
+                variant="outline-gradient-orange"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
               >
@@ -165,7 +230,7 @@ export const DebtTracking: React.FC = () => {
                 Filters
               </Button>
               <Button
-                variant="outline"
+                variant="gradient-orange"
                 size="sm"
                 onClick={() => refetch()}
                 disabled={isLoading}
@@ -177,12 +242,12 @@ export const DebtTracking: React.FC = () => {
           </div>
         </CardHeader>
 
-        {/* Filters Panel */}
+        {/* Enhanced Filters Panel */}
         {showFilters && (
-          <CardContent className="border-b">
+          <CardContent className="border-b bg-gradient-to-r from-orange-50/50 to-red-50/30">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label className="text-sm font-medium mb-2 block">Customer Name</label>
+                <label className="text-sm font-medium mb-2 block text-orange-800">Customer Name</label>
                 <Input
                   placeholder="Search by name..."
                   value={filters.customer_name || ''}
@@ -190,7 +255,7 @@ export const DebtTracking: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Min Debt Amount</label>
+                <label className="text-sm font-medium mb-2 block text-orange-800">Min Debt Amount</label>
                 <Input
                   type="number"
                   step="0.01"
@@ -201,7 +266,7 @@ export const DebtTracking: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Max Debt Amount</label>
+                <label className="text-sm font-medium mb-2 block text-orange-800">Max Debt Amount</label>
                 <Input
                   type="number"
                   step="0.01"
@@ -212,7 +277,7 @@ export const DebtTracking: React.FC = () => {
                 />
               </div>
               <div className="flex items-end">
-                <Button variant="outline" onClick={clearFilters} className="w-full">
+                <Button variant="outline-gradient-orange" onClick={clearFilters} className="w-full">
                   Clear Filters
                 </Button>
               </div>
@@ -313,46 +378,63 @@ export const DebtTracking: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Debt Summary by Severity */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Debt Summary by Severity</CardTitle>
+      {/* Enhanced Debt Summary by Severity */}
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-50/30 to-white">
+        <CardHeader className="bg-gradient-to-r from-orange-50/50 to-red-50/30 border-b border-orange-200">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-md">
+              <BarChart3Icon className="h-4 w-4 text-white" />
+            </div>
+            <CardTitle className="text-lg font-semibold text-orange-800">Debt Summary by Severity</CardTitle>
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200">
-              <div className="text-2xl font-bold text-red-600 mb-2">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="text-center p-6 bg-gradient-to-br from-red-50 to-rose-100/60 rounded-xl border-0 shadow-md hover:shadow-lg transition-all duration-300">
+              <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-3">
+                <AlertTriangleIcon className="h-6 w-6 text-red-600" />
+              </div>
+              <div className="text-3xl font-bold text-red-700 mb-2">
                 {debtEntries?.filter(e => e.total_debt >= 10000).length || 0}
               </div>
-              <div className="text-sm text-muted-foreground">Critical (≥$10,000)</div>
-              <div className="text-xs text-red-600 font-medium">
+              <div className="text-sm font-medium text-red-600 mb-1">Critical (≥$10,000)</div>
+              <div className="text-xs text-red-500 font-medium">
                 {formatCurrency(debtEntries?.filter(e => e.total_debt >= 10000).reduce((sum, e) => sum + e.total_debt, 0) || 0)}
               </div>
             </div>
-            <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-              <div className="text-2xl font-bold text-orange-600 mb-2">
+            <div className="text-center p-6 bg-gradient-to-br from-orange-50 to-amber-100/60 rounded-xl border-0 shadow-md hover:shadow-lg transition-all duration-300">
+              <div className="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-3">
+                <AlertTriangleIcon className="h-6 w-6 text-orange-600" />
+              </div>
+              <div className="text-3xl font-bold text-orange-700 mb-2">
                 {debtEntries?.filter(e => e.total_debt >= 5000 && e.total_debt < 10000).length || 0}
               </div>
-              <div className="text-sm text-muted-foreground">High ($5,000-$9,999)</div>
-              <div className="text-xs text-orange-600 font-medium">
+              <div className="text-sm font-medium text-orange-600 mb-1">High ($5,000-$9,999)</div>
+              <div className="text-xs text-orange-500 font-medium">
                 {formatCurrency(debtEntries?.filter(e => e.total_debt >= 5000 && e.total_debt < 10000).reduce((sum, e) => sum + e.total_debt, 0) || 0)}
               </div>
             </div>
-            <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-              <div className="text-2xl font-bold text-yellow-600 mb-2">
+            <div className="text-center p-6 bg-gradient-to-br from-yellow-50 to-amber-100/60 rounded-xl border-0 shadow-md hover:shadow-lg transition-all duration-300">
+              <div className="h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center mx-auto mb-3">
+                <AlertTriangleIcon className="h-6 w-6 text-yellow-600" />
+              </div>
+              <div className="text-3xl font-bold text-yellow-700 mb-2">
                 {debtEntries?.filter(e => e.total_debt >= 1000 && e.total_debt < 5000).length || 0}
               </div>
-              <div className="text-sm text-muted-foreground">Medium ($1,000-$4,999)</div>
-              <div className="text-xs text-yellow-600 font-medium">
+              <div className="text-sm font-medium text-yellow-600 mb-1">Medium ($1,000-$4,999)</div>
+              <div className="text-xs text-yellow-500 font-medium">
                 {formatCurrency(debtEntries?.filter(e => e.total_debt >= 1000 && e.total_debt < 5000).reduce((sum, e) => sum + e.total_debt, 0) || 0)}
               </div>
             </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-              <div className="text-2xl font-bold text-green-600 mb-2">
+            <div className="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-100/60 rounded-xl border-0 shadow-md hover:shadow-lg transition-all duration-300">
+              <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
+                <CheckCircleIcon className="h-6 w-6 text-green-600" />
+              </div>
+              <div className="text-3xl font-bold text-green-700 mb-2">
                 {debtEntries?.filter(e => e.total_debt < 1000).length || 0}
               </div>
-              <div className="text-sm text-muted-foreground">Low (&lt;$1,000)</div>
-              <div className="text-xs text-green-600 font-medium">
+              <div className="text-sm font-medium text-green-600 mb-1">Low (&lt;$1,000)</div>
+              <div className="text-xs text-green-500 font-medium">
                 {formatCurrency(debtEntries?.filter(e => e.total_debt < 1000).reduce((sum, e) => sum + e.total_debt, 0) || 0)}
               </div>
             </div>

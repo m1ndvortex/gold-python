@@ -32,22 +32,22 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'paid':
-        return <Badge className="bg-green-500">Paid</Badge>;
+        return <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-sm">Paid</Badge>;
       case 'partially_paid':
-        return <Badge variant="secondary">Partially Paid</Badge>;
+        return <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 border-0 shadow-sm">Partially Paid</Badge>;
       case 'pending':
-        return <Badge variant="outline">Pending</Badge>;
+        return <Badge className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border-0 shadow-sm">Pending</Badge>;
       case 'cancelled':
-        return <Badge variant="destructive">Cancelled</Badge>;
+        return <Badge className="bg-gradient-to-r from-red-100 to-rose-100 text-red-700 border-0 shadow-sm">Cancelled</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge className="bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 border-0 shadow-sm">{status}</Badge>;
     }
   };
 
   return (
     <div className={`max-w-4xl mx-auto ${className}`}>
-      <Card>
-        <CardHeader className="space-y-4">
+      <Card className="border-0 shadow-xl bg-white">
+        <CardHeader className="space-y-4 bg-gradient-to-r from-slate-50 to-slate-100/80 rounded-t-lg">
           {/* Header Actions */}
           <div className="flex justify-between items-start">
             <div>
@@ -79,11 +79,11 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               </span>
             </div>
             <div className="text-right">
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                 ${invoice.total_amount.toFixed(2)}
               </p>
               {invoice.remaining_amount > 0 && (
-                <p className="text-sm text-red-600">
+                <p className="text-sm bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent font-medium">
                   Remaining: ${invoice.remaining_amount.toFixed(2)}
                 </p>
               )}

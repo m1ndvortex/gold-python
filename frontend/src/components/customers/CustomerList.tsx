@@ -83,8 +83,8 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
       filterType: 'text',
       cell: ({ row }) => (
         <div className="flex items-center space-x-3">
-          <div className="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
-            <Users className="h-5 w-5 text-primary-600" />
+          <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center shadow-sm">
+            <Users className="h-5 w-5 text-green-600" />
           </div>
           <div>
             <div className="font-semibold text-foreground">{row.name}</div>
@@ -102,13 +102,13 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
         <div className="space-y-1">
           {row.phone && (
             <div className="flex items-center text-sm text-muted-foreground">
-              <Phone className="h-3 w-3 mr-2 text-primary-500" />
+              <Phone className="h-3 w-3 mr-2 text-green-500" />
               <span className="font-medium">{row.phone}</span>
             </div>
           )}
           {row.email && (
             <div className="flex items-center text-sm text-muted-foreground">
-              <Mail className="h-3 w-3 mr-2 text-primary-500" />
+              <Mail className="h-3 w-3 mr-2 text-blue-500" />
               <span className="font-medium">{row.email}</span>
             </div>
           )}
@@ -128,8 +128,10 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
       align: 'right',
       cell: ({ row }) => (
         <div className="flex items-center justify-end space-x-2">
-          <DollarSign className="h-4 w-4 text-success-600" />
-          <span className="font-semibold text-success-700">
+          <div className="w-6 h-6 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center">
+            <DollarSign className="h-3 w-3 text-green-600" />
+          </div>
+          <span className="font-semibold text-green-700">
             {formatCurrency(row.total_purchases)}
           </span>
         </div>
@@ -216,25 +218,33 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
 
   return (
     <div className="space-y-6">
-      {/* Modern Header with Professional Styling */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            {t('customers.title')}
-          </h1>
-          <p className="text-muted-foreground">
-            {t('customers.description')}
-          </p>
+      {/* Enhanced Header with Gradient Styling */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-green-500 via-teal-500 to-blue-500 flex items-center justify-center shadow-lg">
+              <Users className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">
+                {t('customers.title')}
+              </h1>
+              <p className="text-muted-foreground text-lg">
+                {t('customers.description')}
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center gap-3">
           {selectedRows.length > 0 && (
-            <Badge variant="secondary" className="px-3 py-1">
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 gap-1 px-3 py-1">
+              <Users className="h-3 w-3" />
               {selectedRows.length} selected
             </Badge>
           )}
           <Button 
             onClick={() => setShowCreateForm(true)}
-            className="bg-primary-600 hover:bg-primary-700 text-white shadow-sm"
+            className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <Plus className="h-4 w-4 mr-2" />
             {t('customers.add_customer')}
@@ -242,111 +252,149 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
         </div>
       </div>
 
-      {/* Professional Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-l-4 border-l-primary-500">
-          <CardContent className="p-4">
+      {/* Enhanced Stats Cards with Gradient Styling */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-teal-100/50 hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="space-y-1">
                 <p className="text-sm font-medium text-muted-foreground">{t('customers.total_customers')}</p>
-                <p className="text-2xl font-bold text-foreground">
+                <p className="text-3xl font-bold text-green-700">
                   {displayCustomers?.length || 0}
                 </p>
+                <p className="text-xs text-green-600 flex items-center">
+                  <Users className="h-3 w-3 mr-1" />
+                  Active customers
+                </p>
               </div>
-              <Users className="h-8 w-8 text-primary-500" />
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <Users className="h-6 w-6 text-green-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-l-4 border-l-success-500">
-          <CardContent className="p-4">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50 hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="space-y-1">
                 <p className="text-sm font-medium text-muted-foreground">{t('customers.clear_status')}</p>
-                <p className="text-2xl font-bold text-success-700">
+                <p className="text-3xl font-bold text-blue-700">
                   {displayCustomers?.filter(c => c.current_debt === 0).length || 0}
                 </p>
+                <p className="text-xs text-blue-600 flex items-center">
+                  <DollarSign className="h-3 w-3 mr-1" />
+                  No outstanding debt
+                </p>
               </div>
-              <DollarSign className="h-8 w-8 text-success-500" />
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <DollarSign className="h-6 w-6 text-blue-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-l-4 border-l-warning-500">
-          <CardContent className="p-4">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50 hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="space-y-1">
                 <p className="text-sm font-medium text-muted-foreground">{t('customers.with_debt')}</p>
-                <p className="text-2xl font-bold text-warning-700">
+                <p className="text-3xl font-bold text-purple-700">
                   {displayCustomers?.filter(c => c.current_debt > 0).length || 0}
                 </p>
+                <p className="text-xs text-purple-600 flex items-center">
+                  <AlertTriangle className="h-3 w-3 mr-1" />
+                  Requires attention
+                </p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-warning-500" />
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                <AlertTriangle className="h-6 w-6 text-purple-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="border-l-4 border-l-info-500">
-          <CardContent className="p-4">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-pink-50 to-rose-100/50 hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="space-y-1">
                 <p className="text-sm font-medium text-muted-foreground">{t('customers.total_purchases')}</p>
-                <p className="text-2xl font-bold text-info-700">
+                <p className="text-3xl font-bold text-pink-700">
                   {formatCurrency(displayCustomers?.reduce((sum, c) => sum + c.total_purchases, 0) || 0)}
                 </p>
+                <p className="text-xs text-pink-600 flex items-center">
+                  <DollarSign className="h-3 w-3 mr-1" />
+                  Lifetime value
+                </p>
               </div>
-              <DollarSign className="h-8 w-8 text-info-500" />
+              <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
+                <DollarSign className="h-6 w-6 text-pink-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Modern Data Table */}
-      <Card className="shadow-sm">
-        <CardHeader className="border-b border-border/50">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-xl font-semibold flex items-center space-x-2">
-              <Users className="h-5 w-5 text-primary-600" />
-              <span>{t('customers.directory')}</span>
-            </CardTitle>
-            {selectedRows.length > 0 && (
-              <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm">
-                  <Mail className="h-4 w-4 mr-2" />
-                  Send Email
-                </Button>
-                <Button variant="outline" size="sm">
-                  Export Selected
-                </Button>
-              </div>
-            )}
-          </div>
-        </CardHeader>
+      {/* Enhanced Data Table with Gradient Styling */}
+      <Card className="border-0 shadow-xl overflow-hidden">
         <CardContent className="p-0">
-          <DataTable
-            data={displayCustomers || []}
-            columns={columns}
-            actions={actions}
-            loading={isLoading}
-            emptyMessage={searchQuery ? t('customers.no_customers_found_search') : t('customers.no_customers_found')}
-            searchPlaceholder={t('common.search_placeholder')}
-            globalFilter={searchQuery}
-            onGlobalFilterChange={setSearchQuery}
-            selection={{
-              selectedRows,
-              onSelectionChange: setSelectedRows
-            }}
-            onRowClick={(customer) => {
-              if (onCustomerSelect) {
-                onCustomerSelect(customer);
-              } else {
-                setSelectedCustomer(customer);
-                setShowProfile(true);
-              }
-            }}
-            striped
-            className="border-0"
-          />
+          {/* Modern Table Header */}
+          <div className="bg-gradient-to-r from-green-50 via-teal-50 to-blue-50 border-b-2 border-green-200 p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+                  <Users className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-foreground">{t('customers.directory')}</h3>
+                  <p className="text-sm text-muted-foreground">Manage and view customer information</p>
+                </div>
+              </div>
+              {selectedRows.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                    <Users className="h-3 w-3 mr-1" />
+                    {selectedRows.length} selected
+                  </Badge>
+                  <Button variant="outline" size="sm" className="bg-white hover:bg-green-50 border-green-200">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Send Email
+                  </Button>
+                  <Button variant="outline" size="sm" className="bg-white hover:bg-green-50 border-green-200">
+                    Export Selected
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Table Content */}
+          <div className="bg-gradient-to-br from-green-50/30 to-white">
+            <DataTable
+              data={displayCustomers || []}
+              columns={columns}
+              actions={actions}
+              loading={isLoading}
+              emptyMessage={searchQuery ? t('customers.no_customers_found_search') : t('customers.no_customers_found')}
+              searchPlaceholder={t('common.search_placeholder')}
+              globalFilter={searchQuery}
+              onGlobalFilterChange={setSearchQuery}
+              selection={{
+                selectedRows,
+                onSelectionChange: setSelectedRows
+              }}
+              onRowClick={(customer) => {
+                if (onCustomerSelect) {
+                  onCustomerSelect(customer);
+                } else {
+                  setSelectedCustomer(customer);
+                  setShowProfile(true);
+                }
+              }}
+              striped
+              className="border-0"
+            />
+          </div>
         </CardContent>
       </Card>
 

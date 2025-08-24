@@ -67,18 +67,104 @@
     --info: 221 83% 53%;
     --info-foreground: 0 0% 100%;
 
+    /* Enhanced Gradient Color Variables */
+    --gradient-green-from: 34 197 94;
+    --gradient-green-to: 20 184 166;
+    --gradient-green-hover-from: 22 163 74;
+    --gradient-green-hover-to: 17 94 89;
+
+    --gradient-teal-from: 20 184 166;
+    --gradient-teal-to: 59 130 246;
+    --gradient-teal-hover-from: 17 94 89;
+    --gradient-teal-hover-to: 37 99 235;
+
+    --gradient-blue-from: 59 130 246;
+    --gradient-blue-to: 99 102 241;
+    --gradient-blue-hover-from: 37 99 235;
+    --gradient-blue-hover-to: 79 70 229;
+
+    --gradient-indigo-from: 99 102 241;
+    --gradient-indigo-to: 139 92 246;
+    --gradient-indigo-hover-from: 79 70 229;
+    --gradient-indigo-hover-to: 124 58 237;
+
+    --gradient-purple-from: 139 92 246;
+    --gradient-purple-to: 168 85 247;
+    --gradient-purple-hover-from: 124 58 237;
+    --gradient-purple-hover-to: 147 51 234;
+
+    --gradient-violet-from: 168 85 247;
+    --gradient-violet-to: 236 72 153;
+    --gradient-violet-hover-from: 147 51 234;
+    --gradient-violet-hover-to: 219 39 119;
+
+    --gradient-pink-from: 236 72 153;
+    --gradient-pink-to: 244 63 94;
+    --gradient-pink-hover-from: 219 39 119;
+    --gradient-pink-hover-to: 225 29 72;
+
+    --gradient-rose-from: 244 63 94;
+    --gradient-rose-to: 239 68 68;
+    --gradient-rose-hover-from: 225 29 72;
+    --gradient-rose-hover-to: 220 38 38;
+
+    --gradient-orange-from: 249 115 22;
+    --gradient-orange-to: 239 68 68;
+    --gradient-orange-hover-from: 234 88 12;
+    --gradient-orange-hover-to: 220 38 38;
+
+    --gradient-cyan-from: 6 182 212;
+    --gradient-cyan-to: 59 130 246;
+    --gradient-cyan-hover-from: 8 145 178;
+    --gradient-cyan-hover-to: 37 99 235;
+
+    /* Light Background Gradients */
+    --gradient-light-green-from: 240 253 244;
+    --gradient-light-green-to: 255 255 255;
+    --gradient-light-teal-from: 240 253 250;
+    --gradient-light-teal-to: 255 255 255;
+    --gradient-light-blue-from: 239 246 255;
+    --gradient-light-blue-to: 255 255 255;
+    --gradient-light-purple-from: 250 245 255;
+    --gradient-light-purple-to: 255 255 255;
+    --gradient-light-pink-from: 253 242 248;
+    --gradient-light-pink-to: 255 255 255;
+
+    /* Professional Shadow Variables */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
+    /* Gradient Shadow Variables */
+    --shadow-gradient-green: 0 10px 25px -5px rgb(34 197 94 / 0.1), 0 8px 10px -6px rgb(34 197 94 / 0.1);
+    --shadow-gradient-blue: 0 10px 25px -5px rgb(59 130 246 / 0.1), 0 8px 10px -6px rgb(59 130 246 / 0.1);
+    --shadow-gradient-purple: 0 10px 25px -5px rgb(139 92 246 / 0.1), 0 8px 10px -6px rgb(139 92 246 / 0.1);
+    --shadow-gradient-pink: 0 10px 25px -5px rgb(236 72 153 / 0.1), 0 8px 10px -6px rgb(236 72 153 / 0.1);
+
     /* Animation Variables */
     --animation-fast: 150ms;
     --animation-normal: 300ms;
     --animation-slow: 500ms;
     --animation-slower: 750ms;
 
-    /* Easing Functions */
+    /* Enhanced Easing Functions */
     --ease-linear: linear;
     --ease-in: cubic-bezier(0.4, 0, 1, 1);
     --ease-out: cubic-bezier(0, 0, 0.2, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-elegant: cubic-bezier(0.23, 1, 0.32, 1);
+
+    /* Transition Variables */
+    --transition-colors: color 300ms var(--ease-in-out), background-color 300ms var(--ease-in-out), border-color 300ms var(--ease-in-out);
+    --transition-shadow: box-shadow 300ms var(--ease-elegant);
+    --transition-transform: transform 300ms var(--ease-elegant);
+    --transition-all: all 300ms var(--ease-in-out);
   }
 
   .dark {
@@ -470,42 +556,245 @@
   text-align: left;
 }
 
-/* Component Styles */
+/* Enhanced Component Styles */
 @layer components {
-  /* Professional Button Variants */
+  /* Enhanced Button Variants */
   .btn-gold {
-    @apply bg-primary hover:bg-primary/90 text-primary-foreground shadow-gold transition-all duration-200 hover:shadow-gold-md;
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
   }
 
   .btn-gold-outline {
-    @apply border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200;
+    @apply border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all-smooth;
   }
 
   .btn-gold-ghost {
-    @apply text-primary hover:bg-primary/10 transition-all duration-200;
+    @apply text-primary hover:bg-primary/10 transition-all-smooth;
   }
 
-  /* Professional Card Styles */
+  /* Gradient Button Variants */
+  .btn-gradient-green {
+    @apply bg-gradient-green text-white shadow-gradient-green hover:shadow-gradient-lg transition-all-smooth hover-lift;
+  }
+
+  .btn-gradient-green:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-green-hover-from)), rgb(var(--gradient-green-hover-to)));
+  }
+
+  .btn-gradient-blue {
+    @apply bg-gradient-blue text-white shadow-gradient-blue hover:shadow-gradient-lg transition-all-smooth hover-lift;
+  }
+
+  .btn-gradient-blue:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-blue-hover-from)), rgb(var(--gradient-blue-hover-to)));
+  }
+
+  .btn-gradient-purple {
+    @apply bg-gradient-purple text-white shadow-gradient-purple hover:shadow-gradient-lg transition-all-smooth hover-lift;
+  }
+
+  .btn-gradient-purple:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-purple-hover-from)), rgb(var(--gradient-purple-hover-to)));
+  }
+
+  .btn-gradient-pink {
+    @apply bg-gradient-pink text-white shadow-gradient-pink hover:shadow-gradient-lg transition-all-smooth hover-lift;
+  }
+
+  .btn-gradient-pink:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-pink-hover-from)), rgb(var(--gradient-pink-hover-to)));
+  }
+
+  /* Outline Gradient Buttons */
+  .btn-outline-gradient-green {
+    @apply border-2 border-green-300 text-green-600 hover:bg-gradient-green hover:text-white hover:border-transparent transition-all-smooth;
+  }
+
+  .btn-outline-gradient-blue {
+    @apply border-2 border-blue-300 text-blue-600 hover:bg-gradient-blue hover:text-white hover:border-transparent transition-all-smooth;
+  }
+
+  .btn-outline-gradient-purple {
+    @apply border-2 border-purple-300 text-purple-600 hover:bg-gradient-purple hover:text-white hover:border-transparent transition-all-smooth;
+  }
+
+  .btn-outline-gradient-pink {
+    @apply border-2 border-pink-300 text-pink-600 hover:bg-gradient-pink hover:text-white hover:border-transparent transition-all-smooth;
+  }
+
+  /* Icon Container Buttons */
+  .btn-icon-gradient-green {
+    @apply h-10 w-10 rounded-lg bg-gradient-green flex items-center justify-center shadow-gradient-green hover:shadow-gradient-lg transition-all-smooth hover-lift;
+  }
+
+  .btn-icon-gradient-blue {
+    @apply h-10 w-10 rounded-lg bg-gradient-blue flex items-center justify-center shadow-gradient-blue hover:shadow-gradient-lg transition-all-smooth hover-lift;
+  }
+
+  .btn-icon-gradient-purple {
+    @apply h-10 w-10 rounded-lg bg-gradient-purple flex items-center justify-center shadow-gradient-purple hover:shadow-gradient-lg transition-all-smooth hover-lift;
+  }
+
+  .btn-icon-gradient-pink {
+    @apply h-10 w-10 rounded-lg bg-gradient-pink flex items-center justify-center shadow-gradient-pink hover:shadow-gradient-lg transition-all-smooth hover-lift;
+  }
+
+  /* Enhanced Card Styles */
   .card-professional {
-    @apply bg-card border border-border rounded-lg shadow-professional hover:shadow-elegant transition-shadow duration-300;
+    @apply bg-card border-0 rounded-lg shadow-professional hover:shadow-elegant transition-shadow-smooth hover-lift;
   }
 
   .card-gold {
-    @apply bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 rounded-lg shadow-gold hover:shadow-gold-lg transition-all duration-300;
+    @apply bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 rounded-lg shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
   }
 
-  /* Professional Input Styles */
+  /* Gradient Card Variants */
+  .card-gradient-green {
+    @apply bg-gradient-card-green border-0 rounded-lg shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
+  }
+
+  .card-gradient-teal {
+    @apply bg-gradient-card-teal border-0 rounded-lg shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
+  }
+
+  .card-gradient-blue {
+    @apply bg-gradient-card-blue border-0 rounded-lg shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
+  }
+
+  .card-gradient-indigo {
+    @apply bg-gradient-card-indigo border-0 rounded-lg shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
+  }
+
+  .card-gradient-purple {
+    @apply bg-gradient-card-purple border-0 rounded-lg shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
+  }
+
+  .card-gradient-violet {
+    @apply bg-gradient-card-violet border-0 rounded-lg shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
+  }
+
+  .card-gradient-pink {
+    @apply bg-gradient-card-pink border-0 rounded-lg shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
+  }
+
+  .card-gradient-rose {
+    @apply bg-gradient-card-rose border-0 rounded-lg shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
+  }
+
+  .card-gradient-orange {
+    @apply bg-gradient-card-orange border-0 rounded-lg shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
+  }
+
+  .card-gradient-cyan {
+    @apply bg-gradient-card-cyan border-0 rounded-lg shadow-professional hover:shadow-elegant transition-all-smooth hover-lift;
+  }
+
+  /* Filter/Header Cards */
+  .card-filter {
+    @apply border-0 shadow-professional bg-gradient-to-r from-slate-50 to-slate-100/80;
+  }
+
+  .card-filter-gradient-green {
+    @apply border-0 shadow-professional bg-gradient-tab-green;
+  }
+
+  .card-filter-gradient-blue {
+    @apply border-0 shadow-professional bg-gradient-tab-blue;
+  }
+
+  .card-filter-gradient-purple {
+    @apply border-0 shadow-professional bg-gradient-tab-purple;
+  }
+
+  .card-filter-gradient-pink {
+    @apply border-0 shadow-professional bg-gradient-tab-pink;
+  }
+
+  /* Enhanced Input Styles */
   .input-professional {
-    @apply border border-border rounded-md px-3 py-2 text-sm bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors duration-200;
+    @apply border border-border rounded-md px-3 py-2 text-sm bg-background placeholder:text-muted-foreground focus:outline-none transition-colors-smooth;
   }
 
-  /* Professional Table Styles */
+  .input-gradient-green:focus {
+    @apply ring-2 ring-green-500/20 border-green-500;
+  }
+
+  .input-gradient-blue:focus {
+    @apply ring-2 ring-blue-500/20 border-blue-500;
+  }
+
+  .input-gradient-purple:focus {
+    @apply ring-2 ring-purple-500/20 border-purple-500;
+  }
+
+  .input-gradient-pink:focus {
+    @apply ring-2 ring-pink-500/20 border-pink-500;
+  }
+
+  /* Enhanced Select Styles */
+  .select-professional {
+    @apply border border-border rounded-md px-3 py-2 text-sm bg-background focus:outline-none transition-colors-smooth;
+  }
+
+  .select-gradient-green:focus {
+    @apply ring-2 ring-green-500/20 border-green-500;
+  }
+
+  .select-gradient-blue:focus {
+    @apply ring-2 ring-blue-500/20 border-blue-500;
+  }
+
+  .select-gradient-purple:focus {
+    @apply ring-2 ring-purple-500/20 border-purple-500;
+  }
+
+  .select-gradient-pink:focus {
+    @apply ring-2 ring-pink-500/20 border-pink-500;
+  }
+
+  /* Enhanced Tab Styles */
+  .tab-container-green {
+    @apply bg-gradient-tab-green rounded-lg p-1;
+  }
+
+  .tab-container-blue {
+    @apply bg-gradient-tab-blue rounded-lg p-1;
+  }
+
+  .tab-container-purple {
+    @apply bg-gradient-tab-purple rounded-lg p-1;
+  }
+
+  .tab-container-pink {
+    @apply bg-gradient-tab-pink rounded-lg p-1;
+  }
+
+  .tab-active-green {
+    @apply bg-white shadow-md border-2 border-green-300 text-green-700 rounded-md px-3 py-2 text-sm font-medium transition-all-smooth;
+  }
+
+  .tab-active-blue {
+    @apply bg-white shadow-md border-2 border-blue-300 text-blue-700 rounded-md px-3 py-2 text-sm font-medium transition-all-smooth;
+  }
+
+  .tab-active-purple {
+    @apply bg-white shadow-md border-2 border-purple-300 text-purple-700 rounded-md px-3 py-2 text-sm font-medium transition-all-smooth;
+  }
+
+  .tab-active-pink {
+    @apply bg-white shadow-md border-2 border-pink-300 text-pink-700 rounded-md px-3 py-2 text-sm font-medium transition-all-smooth;
+  }
+
+  .tab-inactive {
+    @apply text-gray-600 hover:text-gray-800 rounded-md px-3 py-2 text-sm font-medium transition-colors-smooth;
+  }
+
+  /* Enhanced Table Styles */
   .table-professional {
     @apply w-full border-collapse;
   }
 
   .table-professional th {
-    @apply bg-neutral-50 border-b border-border px-4 py-3 text-left text-sm font-semibold text-neutral-700;
+    @apply bg-gradient-to-r from-slate-50 to-slate-100 border-b border-border px-4 py-3 text-left text-sm font-semibold text-neutral-700;
   }
 
   .table-professional td {
@@ -513,10 +802,27 @@
   }
 
   .table-professional tbody tr:hover {
-    @apply bg-neutral-50/50;
+    @apply bg-gradient-to-r from-slate-50/50 to-transparent transition-colors-smooth;
   }
 
-  /* Loading States */
+  /* Gradient Table Headers */
+  .table-header-green {
+    @apply bg-gradient-to-r from-green-50 to-green-100/50 border-b border-green-200;
+  }
+
+  .table-header-blue {
+    @apply bg-gradient-to-r from-blue-50 to-blue-100/50 border-b border-blue-200;
+  }
+
+  .table-header-purple {
+    @apply bg-gradient-to-r from-purple-50 to-purple-100/50 border-b border-purple-200;
+  }
+
+  .table-header-pink {
+    @apply bg-gradient-to-r from-pink-50 to-pink-100/50 border-b border-pink-200;
+  }
+
+  /* Enhanced Loading States */
   .loading-shimmer {
     @apply relative overflow-hidden bg-neutral-200 rounded;
   }
@@ -526,7 +832,25 @@
     content: '';
   }
 
-  /* Professional Status Indicators */
+  .loading-gradient-green {
+    @apply relative overflow-hidden bg-gradient-card-green rounded;
+  }
+
+  .loading-gradient-green::after {
+    @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-green-100/60 to-transparent animate-shimmer;
+    content: '';
+  }
+
+  .loading-gradient-blue {
+    @apply relative overflow-hidden bg-gradient-card-blue rounded;
+  }
+
+  .loading-gradient-blue::after {
+    @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-blue-100/60 to-transparent animate-shimmer;
+    content: '';
+  }
+
+  /* Enhanced Status Indicators */
   .status-success {
     @apply bg-success/10 text-success border border-success/20 rounded-full px-2 py-1 text-xs font-medium;
   }
@@ -542,28 +866,497 @@
   .status-info {
     @apply bg-info/10 text-info border border-info/20 rounded-full px-2 py-1 text-xs font-medium;
   }
+
+  /* Gradient Status Badges */
+  .badge-gradient-green {
+    @apply bg-gradient-green text-white rounded-full px-3 py-1 text-xs font-medium shadow-gradient-green;
+  }
+
+  .badge-gradient-blue {
+    @apply bg-gradient-blue text-white rounded-full px-3 py-1 text-xs font-medium shadow-gradient-blue;
+  }
+
+  .badge-gradient-purple {
+    @apply bg-gradient-purple text-white rounded-full px-3 py-1 text-xs font-medium shadow-gradient-purple;
+  }
+
+  .badge-gradient-pink {
+    @apply bg-gradient-pink text-white rounded-full px-3 py-1 text-xs font-medium shadow-gradient-pink;
+  }
+
+  /* Modal and Popup Styles */
+  .modal-gradient-backdrop {
+    @apply backdrop-blur-professional bg-black/20;
+  }
+
+  .modal-gradient-content {
+    @apply bg-white border-0 rounded-lg shadow-gradient;
+  }
+
+  .popup-gradient-green {
+    @apply bg-gradient-card-green border-0 rounded-lg shadow-elegant;
+  }
+
+  .popup-gradient-blue {
+    @apply bg-gradient-card-blue border-0 rounded-lg shadow-elegant;
+  }
+
+  .popup-gradient-purple {
+    @apply bg-gradient-card-purple border-0 rounded-lg shadow-elegant;
+  }
+
+  .popup-gradient-pink {
+    @apply bg-gradient-card-pink border-0 rounded-lg shadow-elegant;
+  }
+
+  /* Navigation Styles */
+  .sidebar-gradient {
+    @apply bg-gradient-to-b from-slate-50 to-slate-100;
+  }
+
+  .nav-item-active-green {
+    @apply bg-gradient-card-green text-green-700 border-l-4 border-green-500;
+  }
+
+  .nav-item-active-blue {
+    @apply bg-gradient-card-blue text-blue-700 border-l-4 border-blue-500;
+  }
+
+  .nav-item-active-purple {
+    @apply bg-gradient-card-purple text-purple-700 border-l-4 border-purple-500;
+  }
+
+  .nav-item-active-pink {
+    @apply bg-gradient-card-pink text-pink-700 border-l-4 border-pink-500;
+  }
+
+  .nav-item-hover {
+    @apply hover:bg-slate-100/50 transition-colors-smooth;
+  }
 }
 
-/* Utility Classes */
+/* Enhanced Utility Classes */
 @layer utilities {
-  /* Text Gradients */
+  /* Enhanced Text Gradients */
   .text-gradient-gold {
     @apply bg-gradient-to-r from-primary via-primary-600 to-primary-700 bg-clip-text text-transparent;
   }
 
-  /* Professional Shadows */
+  .text-gradient-green {
+    background: linear-gradient(to right, rgb(var(--gradient-green-from)), rgb(var(--gradient-green-to)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-teal {
+    background: linear-gradient(to right, rgb(var(--gradient-teal-from)), rgb(var(--gradient-teal-to)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-blue {
+    background: linear-gradient(to right, rgb(var(--gradient-blue-from)), rgb(var(--gradient-blue-to)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-indigo {
+    background: linear-gradient(to right, rgb(var(--gradient-indigo-from)), rgb(var(--gradient-indigo-to)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-purple {
+    background: linear-gradient(to right, rgb(var(--gradient-purple-from)), rgb(var(--gradient-purple-to)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-violet {
+    background: linear-gradient(to right, rgb(var(--gradient-violet-from)), rgb(var(--gradient-violet-to)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-pink {
+    background: linear-gradient(to right, rgb(var(--gradient-pink-from)), rgb(var(--gradient-pink-to)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-rose {
+    background: linear-gradient(to right, rgb(var(--gradient-rose-from)), rgb(var(--gradient-rose-to)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-orange {
+    background: linear-gradient(to right, rgb(var(--gradient-orange-from)), rgb(var(--gradient-orange-to)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-cyan {
+    background: linear-gradient(to right, rgb(var(--gradient-cyan-from)), rgb(var(--gradient-cyan-to)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Enhanced Gradient Backgrounds - Primary Gradients */
+  .bg-gradient-green {
+    background: linear-gradient(to right, rgb(var(--gradient-green-from)), rgb(var(--gradient-green-to)));
+  }
+
+  .bg-gradient-green-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-green-hover-from)), rgb(var(--gradient-green-hover-to)));
+  }
+
+  .bg-gradient-teal {
+    background: linear-gradient(to right, rgb(var(--gradient-teal-from)), rgb(var(--gradient-teal-to)));
+  }
+
+  .bg-gradient-teal-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-teal-hover-from)), rgb(var(--gradient-teal-hover-to)));
+  }
+
+  .bg-gradient-blue {
+    background: linear-gradient(to right, rgb(var(--gradient-blue-from)), rgb(var(--gradient-blue-to)));
+  }
+
+  .bg-gradient-blue-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-blue-hover-from)), rgb(var(--gradient-blue-hover-to)));
+  }
+
+  .bg-gradient-indigo {
+    background: linear-gradient(to right, rgb(var(--gradient-indigo-from)), rgb(var(--gradient-indigo-to)));
+  }
+
+  .bg-gradient-indigo-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-indigo-hover-from)), rgb(var(--gradient-indigo-hover-to)));
+  }
+
+  .bg-gradient-purple {
+    background: linear-gradient(to right, rgb(var(--gradient-purple-from)), rgb(var(--gradient-purple-to)));
+  }
+
+  .bg-gradient-purple-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-purple-hover-from)), rgb(var(--gradient-purple-hover-to)));
+  }
+
+  .bg-gradient-violet {
+    background: linear-gradient(to right, rgb(var(--gradient-violet-from)), rgb(var(--gradient-violet-to)));
+  }
+
+  .bg-gradient-violet-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-violet-hover-from)), rgb(var(--gradient-violet-hover-to)));
+  }
+
+  .bg-gradient-pink {
+    background: linear-gradient(to right, rgb(var(--gradient-pink-from)), rgb(var(--gradient-pink-to)));
+  }
+
+  .bg-gradient-pink-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-pink-hover-from)), rgb(var(--gradient-pink-hover-to)));
+  }
+
+  .bg-gradient-rose {
+    background: linear-gradient(to right, rgb(var(--gradient-rose-from)), rgb(var(--gradient-rose-to)));
+  }
+
+  .bg-gradient-rose-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-rose-hover-from)), rgb(var(--gradient-rose-hover-to)));
+  }
+
+  .bg-gradient-orange {
+    background: linear-gradient(to right, rgb(var(--gradient-orange-from)), rgb(var(--gradient-orange-to)));
+  }
+
+  .bg-gradient-orange-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-orange-hover-from)), rgb(var(--gradient-orange-hover-to)));
+  }
+
+  .bg-gradient-cyan {
+    background: linear-gradient(to right, rgb(var(--gradient-cyan-from)), rgb(var(--gradient-cyan-to)));
+  }
+
+  .bg-gradient-cyan-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-cyan-hover-from)), rgb(var(--gradient-cyan-hover-to)));
+  }
+
+  /* Light Background Gradients */
+  .bg-gradient-green-light {
+    background: linear-gradient(to bottom right, rgb(var(--gradient-light-green-from)), rgb(var(--gradient-light-green-to)));
+  }
+
+  .bg-gradient-teal-light {
+    background: linear-gradient(to bottom right, rgb(var(--gradient-light-teal-from)), rgb(var(--gradient-light-teal-to)));
+  }
+
+  .bg-gradient-blue-light {
+    background: linear-gradient(to bottom right, rgb(var(--gradient-light-blue-from)), rgb(var(--gradient-light-blue-to)));
+  }
+
+  .bg-gradient-purple-light {
+    background: linear-gradient(to bottom right, rgb(var(--gradient-light-purple-from)), rgb(var(--gradient-light-purple-to)));
+  }
+
+  .bg-gradient-pink-light {
+    background: linear-gradient(to bottom right, rgb(var(--gradient-light-pink-from)), rgb(var(--gradient-light-pink-to)));
+  }
+
+  /* Card Background Gradients */
+  .bg-gradient-card-green {
+    @apply bg-gradient-to-br from-green-50 to-green-100/50;
+  }
+
+  .bg-gradient-card-teal {
+    @apply bg-gradient-to-br from-teal-50 to-teal-100/50;
+  }
+
+  .bg-gradient-card-blue {
+    @apply bg-gradient-to-br from-blue-50 to-blue-100/50;
+  }
+
+  .bg-gradient-card-indigo {
+    @apply bg-gradient-to-br from-indigo-50 to-indigo-100/50;
+  }
+
+  .bg-gradient-card-purple {
+    @apply bg-gradient-to-br from-purple-50 to-purple-100/50;
+  }
+
+  .bg-gradient-card-violet {
+    @apply bg-gradient-to-br from-violet-50 to-violet-100/50;
+  }
+
+  .bg-gradient-card-pink {
+    @apply bg-gradient-to-br from-pink-50 to-pink-100/50;
+  }
+
+  .bg-gradient-card-rose {
+    @apply bg-gradient-to-br from-rose-50 to-rose-100/50;
+  }
+
+  .bg-gradient-card-orange {
+    @apply bg-gradient-to-br from-orange-50 to-orange-100/50;
+  }
+
+  .bg-gradient-card-cyan {
+    @apply bg-gradient-to-br from-cyan-50 to-cyan-100/50;
+  }
+
+  /* Tab Navigation Gradients */
+  .bg-gradient-tab-green {
+    @apply bg-gradient-to-r from-green-50 via-teal-50 to-blue-50;
+  }
+
+  .bg-gradient-tab-blue {
+    @apply bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50;
+  }
+
+  .bg-gradient-tab-purple {
+    @apply bg-gradient-to-r from-purple-50 via-violet-50 to-pink-50;
+  }
+
+  .bg-gradient-tab-pink {
+    @apply bg-gradient-to-r from-pink-50 via-rose-50 to-orange-50;
+  }
+
+  .bg-gradient-tab-orange {
+    @apply bg-gradient-to-r from-orange-50 via-amber-50 to-yellow-50;
+  }
+
+  .bg-gradient-tab-cyan {
+    @apply bg-gradient-to-r from-cyan-50 via-sky-50 to-blue-50;
+  }
+
+  /* Content Background Gradients */
+  .bg-gradient-content-green {
+    @apply bg-gradient-to-br from-green-50/30 to-white;
+  }
+
+  .bg-gradient-content-teal {
+    @apply bg-gradient-to-br from-teal-50/30 to-white;
+  }
+
+  .bg-gradient-content-blue {
+    @apply bg-gradient-to-br from-blue-50/30 to-white;
+  }
+
+  .bg-gradient-content-indigo {
+    @apply bg-gradient-to-br from-indigo-50/30 to-white;
+  }
+
+  .bg-gradient-content-purple {
+    @apply bg-gradient-to-br from-purple-50/30 to-white;
+  }
+
+  .bg-gradient-content-violet {
+    @apply bg-gradient-to-br from-violet-50/30 to-white;
+  }
+
+  .bg-gradient-content-pink {
+    @apply bg-gradient-to-br from-pink-50/30 to-white;
+  }
+
+  .bg-gradient-content-rose {
+    @apply bg-gradient-to-br from-rose-50/30 to-white;
+  }
+
+  .bg-gradient-content-orange {
+    @apply bg-gradient-to-br from-orange-50/30 to-white;
+  }
+
+  .bg-gradient-content-cyan {
+    @apply bg-gradient-to-br from-cyan-50/30 to-white;
+  }
+
+  /* Enhanced Professional Shadows */
   .shadow-professional {
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    box-shadow: var(--shadow-md);
   }
 
   .shadow-elegant {
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .shadow-gradient {
+    box-shadow: var(--shadow-xl);
+  }
+
+  .shadow-gradient-lg {
+    box-shadow: var(--shadow-2xl);
+  }
+
+  /* Gradient-Specific Shadows */
+  .shadow-gradient-green {
+    box-shadow: var(--shadow-gradient-green);
+  }
+
+  .shadow-gradient-blue {
+    box-shadow: var(--shadow-gradient-blue);
+  }
+
+  .shadow-gradient-purple {
+    box-shadow: var(--shadow-gradient-purple);
+  }
+
+  .shadow-gradient-pink {
+    box-shadow: var(--shadow-gradient-pink);
+  }
+
+  /* Enhanced Animation Utilities */
+  .animate-fade-in {
+    animation: fadeIn var(--animation-normal) var(--ease-out);
+  }
+
+  .animate-slide-up {
+    animation: slideUp var(--animation-normal) var(--ease-elegant);
+  }
+
+  .animate-slide-down {
+    animation: slideDown var(--animation-normal) var(--ease-elegant);
+  }
+
+  .animate-scale-in {
+    animation: scaleIn var(--animation-normal) var(--ease-bounce);
+  }
+
+  .animate-gradient-shift {
+    animation: gradientShift 3s var(--ease-in-out) infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s var(--ease-in-out) infinite;
+  }
+
+  /* Form Loading Shimmer Animation */
+  .animate-form-shimmer {
+    animation: formShimmer 1.5s var(--ease-in-out) infinite;
+  }
+
+  .animate-pulse-gentle {
+    animation: pulseGentle 2s var(--ease-in-out) infinite;
+  }
+
+  .animate-float {
+    animation: float 3s var(--ease-in-out) infinite;
+  }
+
+  /* Transition Utilities */
+  .transition-colors-smooth {
+    transition: var(--transition-colors);
+  }
+
+  .transition-shadow-smooth {
+    transition: var(--transition-shadow);
+  }
+
+  .transition-transform-smooth {
+    transition: var(--transition-transform);
+  }
+
+  .transition-all-smooth {
+    transition: var(--transition-all);
+  }
+
+  /* Hover Effects */
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    transition: var(--transition-transform);
+  }
+
+  .hover-lift-lg:hover {
+    transform: translateY(-4px);
+    transition: var(--transition-transform);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.02);
+    transition: var(--transition-transform);
+  }
+
+  .hover-scale-lg:hover {
+    transform: scale(1.05);
+    transition: var(--transition-transform);
+  }
+
+  /* Focus Ring Utilities */
+  .focus-ring-green:focus {
+    @apply ring-2 ring-green-500/20 ring-offset-2;
+  }
+
+  .focus-ring-blue:focus {
+    @apply ring-2 ring-blue-500/20 ring-offset-2;
+  }
+
+  .focus-ring-purple:focus {
+    @apply ring-2 ring-purple-500/20 ring-offset-2;
+  }
+
+  .focus-ring-pink:focus {
+    @apply ring-2 ring-pink-500/20 ring-offset-2;
   }
 
   /* Backdrop Blur */
   .backdrop-blur-professional {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+  }
+
+  .backdrop-blur-elegant {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   /* Professional Borders */
@@ -573,6 +1366,22 @@
 
   .border-gold {
     @apply border border-primary/30;
+  }
+
+  .border-gradient-green {
+    @apply border border-green-200;
+  }
+
+  .border-gradient-blue {
+    @apply border border-blue-200;
+  }
+
+  .border-gradient-purple {
+    @apply border border-purple-200;
+  }
+
+  .border-gradient-pink {
+    @apply border border-pink-200;
   }
 
   /* Responsive Text */
@@ -592,6 +1401,14 @@
     @apply text-xl md:text-2xl;
   }
 
+  .text-responsive-2xl {
+    @apply text-2xl md:text-3xl;
+  }
+
+  .text-responsive-3xl {
+    @apply text-3xl md:text-4xl;
+  }
+
   /* Professional Spacing */
   .space-professional > * + * {
     @apply mt-6;
@@ -603,5 +1420,148 @@
 
   .space-professional-lg > * + * {
     @apply mt-8;
+  }
+
+  .space-professional-xl > * + * {
+    @apply mt-12;
+  }
+
+  /* Responsive Gradient Utilities */
+  @media (max-width: 768px) {
+    .mobile-gradient-simple .bg-gradient-green,
+    .mobile-gradient-simple .bg-gradient-blue,
+    .mobile-gradient-simple .bg-gradient-purple,
+    .mobile-gradient-simple .bg-gradient-pink {
+      background: rgb(var(--gradient-green-from));
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .tablet-gradient-reduced .bg-gradient-green {
+      background: linear-gradient(135deg, rgb(var(--gradient-green-from)), rgb(var(--gradient-green-to)));
+    }
+    
+    .tablet-gradient-reduced .bg-gradient-blue {
+      background: linear-gradient(135deg, rgb(var(--gradient-blue-from)), rgb(var(--gradient-blue-to)));
+    }
+    
+    .tablet-gradient-reduced .bg-gradient-purple {
+      background: linear-gradient(135deg, rgb(var(--gradient-purple-from)), rgb(var(--gradient-purple-to)));
+    }
+    
+    .tablet-gradient-reduced .bg-gradient-pink {
+      background: linear-gradient(135deg, rgb(var(--gradient-pink-from)), rgb(var(--gradient-pink-to)));
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .desktop-gradient-enhanced .bg-gradient-green {
+      background: linear-gradient(135deg, rgb(var(--gradient-green-from)), rgb(var(--gradient-green-to)), rgb(var(--gradient-teal-from)));
+    }
+    
+    .desktop-gradient-enhanced .bg-gradient-blue {
+      background: linear-gradient(135deg, rgb(var(--gradient-blue-from)), rgb(var(--gradient-blue-to)), rgb(var(--gradient-indigo-from)));
+    }
+    
+    .desktop-gradient-enhanced .bg-gradient-purple {
+      background: linear-gradient(135deg, rgb(var(--gradient-purple-from)), rgb(var(--gradient-purple-to)), rgb(var(--gradient-violet-from)));
+    }
+    
+    .desktop-gradient-enhanced .bg-gradient-pink {
+      background: linear-gradient(135deg, rgb(var(--gradient-pink-from)), rgb(var(--gradient-pink-to)), rgb(var(--gradient-rose-from)));
+    }
+  }
+}
+
+/* Enhanced Keyframe Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes formShimmer {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes pulseGentle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
   }
 }

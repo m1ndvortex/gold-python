@@ -214,11 +214,13 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
 
   return (
     <>
-      <Card>
+      <Card variant="gradient-teal">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              <FolderTree className="h-5 w-5" />
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-lg">
+                <FolderTree className="h-5 w-5 text-white" />
+              </div>
               Advanced Category Management
               <Badge variant="secondary">{categoryTree.length} categories</Badge>
             </CardTitle>
@@ -232,7 +234,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
                 {isDragMode ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
                 {isDragMode ? 'Exit Drag Mode' : 'Drag Mode'}
               </Button>
-              <Button onClick={() => handleCreateCategory()} className="flex items-center gap-2">
+              <Button onClick={() => handleCreateCategory()} variant="gradient-teal" className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
                 Add Category
               </Button>
@@ -241,26 +243,26 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="tree" className="flex items-center gap-2">
+            <TabsList variant="gradient-teal" className="grid w-full grid-cols-4">
+              <TabsTrigger variant="gradient-teal" value="tree" className="flex items-center gap-2">
                 <FolderTree className="h-4 w-4" />
                 Category Tree
               </TabsTrigger>
-              <TabsTrigger value="images" className="flex items-center gap-2">
+              <TabsTrigger variant="gradient-teal" value="images" className="flex items-center gap-2">
                 <ImageIcon className="h-4 w-4" />
                 Images
               </TabsTrigger>
-              <TabsTrigger value="templates" className="flex items-center gap-2">
+              <TabsTrigger variant="gradient-teal" value="templates" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 Templates
               </TabsTrigger>
-              <TabsTrigger value="bulk" className="flex items-center gap-2">
+              <TabsTrigger variant="gradient-teal" value="bulk" className="flex items-center gap-2">
                 <Settings className="h-4 w-4" />
                 Bulk Operations
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="tree" className="mt-4">
+            <TabsContent variant="gradient-teal" value="tree" className="mt-4">
               <CategoryTreeView
                 categories={categoryTree}
                 selectedCategory={selectedCategory}
@@ -277,7 +279,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
               />
             </TabsContent>
 
-            <TabsContent value="images" className="mt-4">
+            <TabsContent variant="gradient-teal" value="images" className="mt-4">
               {selectedCategory ? (
                 <CategoryImageManager
                   categoryId={selectedCategory}
@@ -294,7 +296,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
               )}
             </TabsContent>
 
-            <TabsContent value="templates" className="mt-4">
+            <TabsContent variant="gradient-teal" value="templates" className="mt-4">
               <CategoryTemplateManager
                 templates={templates}
                 onCreateTemplate={handleCreateTemplate}
@@ -311,7 +313,7 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
               />
             </TabsContent>
 
-            <TabsContent value="bulk" className="mt-4">
+            <TabsContent variant="gradient-teal" value="bulk" className="mt-4">
               <CategoryBulkOperations
                 categories={categoryTree}
                 selectedCategories={selectedCategories}

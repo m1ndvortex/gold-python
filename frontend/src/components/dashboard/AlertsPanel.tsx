@@ -1,9 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
-import { Alert, AlertDescription } from '../ui/alert';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import { LowStockItem, UnpaidInvoice } from '../../types';
 import { useLanguage } from '../../hooks/useLanguage';
 import { 
@@ -12,8 +11,7 @@ import {
   Package, 
   CreditCard, 
   Bell, 
-  BellOff, 
-  Filter,
+  BellOff,
   CheckCircle,
   XCircle,
   AlertCircle,
@@ -225,21 +223,26 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
 
   if (isLoading) {
     return (
-      <Card className="animate-pulse">
-        <CardHeader>
-          <div className="h-6 bg-gray-200 rounded w-48"></div>
-          <div className="h-4 bg-gray-200 rounded w-64"></div>
+      <Card className="animate-pulse border-0 shadow-xl bg-gradient-to-br from-green-50/30 via-teal-50/20 to-blue-50/10">
+        <CardHeader className="bg-gradient-to-r from-green-50/50 via-teal-50/40 to-blue-50/30 rounded-t-xl">
+          <div className="flex items-center space-x-4">
+            <div className="h-14 w-14 bg-gradient-to-br from-green-300 to-teal-400 rounded-2xl shadow-lg"></div>
+            <div>
+              <div className="h-7 bg-gradient-to-r from-green-300 to-teal-400 rounded-lg w-52"></div>
+              <div className="h-5 bg-gradient-to-r from-green-300 to-teal-400 rounded-lg w-72 mt-3"></div>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex items-center space-x-4 p-4 border rounded-lg">
-                <div className="h-8 w-8 bg-gray-200 rounded-full"></div>
+              <div key={i} className="flex items-center space-x-4 p-5 border rounded-xl bg-gradient-to-r from-white/70 to-green-50/30 shadow-md">
+                <div className="h-10 w-10 bg-gradient-to-br from-green-300 to-teal-400 rounded-xl"></div>
                 <div className="flex-1">
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-5 bg-gradient-to-r from-green-300 to-teal-400 rounded-lg w-3/4 mb-3"></div>
+                  <div className="h-4 bg-gradient-to-r from-green-300 to-teal-400 rounded-lg w-1/2"></div>
                 </div>
-                <div className="h-6 bg-gray-200 rounded w-16"></div>
+                <div className="h-7 bg-gradient-to-r from-green-300 to-teal-400 rounded-lg w-20"></div>
               </div>
             ))}
           </div>
@@ -249,14 +252,14 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader className="pb-4">
+    <Card className="w-full border-0 shadow-xl bg-gradient-to-br from-green-50/30 via-teal-50/20 to-blue-50/10 hover:shadow-2xl transition-all duration-300 hover:scale-[1.01]">
+      <CardHeader className="pb-6 bg-gradient-to-r from-green-50/50 via-teal-50/40 to-blue-50/30 rounded-t-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="relative">
-              <Bell className="w-6 h-6 text-amber-600" />
+            <div className="relative h-12 w-12 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+              <Bell className="w-6 h-6 text-white" />
               {unreadCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-md">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
@@ -281,7 +284,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
               variant="outline"
               size="sm"
               onClick={() => setShowDismissed(!showDismissed)}
-              className="h-8"
+              className="h-8 bg-gradient-to-r from-green-50 to-teal-50 border-green-200 hover:from-green-100 hover:to-teal-100 hover:border-green-300 transition-all duration-300"
             >
               {showDismissed ? <EyeOff className="w-4 h-4 mr-1" /> : <Eye className="w-4 h-4 mr-1" />}
               {showDismissed ? t('dashboard.hide_dismissed') : t('dashboard.show_dismissed')}
@@ -290,16 +293,25 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
         </div>
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="mt-4">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="all" className="flex items-center space-x-2">
+          <TabsList className="grid w-full grid-cols-3 bg-gradient-to-r from-green-50 via-teal-50 to-blue-50 p-1 rounded-lg shadow-sm">
+            <TabsTrigger 
+              value="all" 
+              className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-green-300 transition-all duration-300"
+            >
               <Bell className="w-4 h-4" />
               <span>{t('dashboard.tab_all').replace('{count}', enhancedAlerts.filter(a => !showDismissed ? !a.isDismissed : true).length.toString())}</span>
             </TabsTrigger>
-            <TabsTrigger value="critical" className="flex items-center space-x-2">
+            <TabsTrigger 
+              value="critical" 
+              className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-red-300 transition-all duration-300"
+            >
               <XCircle className="w-4 h-4" />
               <span>{t('dashboard.tab_critical').replace('{count}', criticalCount.toString())}</span>
             </TabsTrigger>
-            <TabsTrigger value="unread" className="flex items-center space-x-2">
+            <TabsTrigger 
+              value="unread" 
+              className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-teal-300 transition-all duration-300"
+            >
               <BellOff className="w-4 h-4" />
               <span>{t('dashboard.tab_unread').replace('{count}', unreadCount.toString())}</span>
             </TabsTrigger>
@@ -314,9 +326,12 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
               <div
                 key={alert.id}
                 className={`
-                  relative p-4 border rounded-lg cursor-pointer transition-all duration-200
-                  hover:shadow-md hover:border-amber-300
-                  ${alert.isRead ? 'bg-gray-50 border-gray-200' : 'bg-white border-amber-200 shadow-sm'}
+                  relative p-4 border-0 rounded-lg cursor-pointer transition-all duration-300
+                  hover:shadow-lg hover:scale-[1.01]
+                  ${alert.isRead 
+                    ? 'bg-gradient-to-r from-gray-50 to-gray-100/50 shadow-sm' 
+                    : 'bg-gradient-to-r from-white to-green-50/20 shadow-md hover:shadow-xl'
+                  }
                   ${alert.isDismissed ? 'opacity-60' : ''}
                 `}
                 onClick={() => handleAlertClick(alert)}
@@ -332,11 +347,11 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                   <div className="flex items-start space-x-3 flex-1">
                     {/* Category icon */}
                     <div className={`
-                      p-2 rounded-full flex-shrink-0
-                      ${alert.category === 'inventory' ? 'bg-blue-100 text-blue-600' :
-                        alert.category === 'finance' ? 'bg-green-100 text-green-600' :
-                        alert.category === 'customer' ? 'bg-purple-100 text-purple-600' :
-                        'bg-gray-100 text-gray-600'}
+                      p-2 rounded-xl flex-shrink-0 shadow-md transition-all duration-300
+                      ${alert.category === 'inventory' ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white' :
+                        alert.category === 'finance' ? 'bg-gradient-to-br from-green-500 to-teal-600 text-white' :
+                        alert.category === 'customer' ? 'bg-gradient-to-br from-purple-500 to-violet-600 text-white' :
+                        'bg-gradient-to-br from-gray-500 to-gray-600 text-white'}
                     `}>
                       {getCategoryIcon(alert.category)}
                     </div>
@@ -350,7 +365,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                           {alert.title}
                         </h4>
                         {!alert.isRead && (
-                          <div className="w-2 h-2 bg-amber-500 rounded-full flex-shrink-0" />
+                          <div className="w-2 h-2 bg-teal-500 rounded-full flex-shrink-0" />
                         )}
                       </div>
                       
@@ -364,7 +379,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                           <span>{formatTimeAgo(alert.timestamp)}</span>
                         </span>
                         {alert.actionRequired && (
-                          <span className="flex items-center space-x-1 text-amber-600">
+                          <span className="flex items-center space-x-1 text-teal-600">
                             <TrendingUp className="w-3 h-3" />
                             <span>{t('common.action_required')}</span>
                           </span>
@@ -390,7 +405,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
                           e.stopPropagation();
                           handleDismissAlert(alert.id);
                         }}
-                        className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+                        className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 rounded-lg transition-all duration-300"
                         aria-label={t('common.dismiss_alert')}
                         title={t('common.dismiss_alert')}
                       >
@@ -403,8 +418,8 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
             ))
           ) : (
             <div className="text-center py-12">
-              <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <CheckCircle className="w-8 h-8 text-green-600" />
+              <div className="mx-auto w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center mb-4 shadow-lg">
+                <CheckCircle className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">{t('dashboard.all_clear')}</h3>
               <p className="text-gray-600">

@@ -8,7 +8,7 @@ import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Trash2, Plus, Calculator, Eye } from 'lucide-react';
+import { Trash2, Plus, Calculator, Eye, FileText, Receipt } from 'lucide-react';
 import { useCustomers } from '../../hooks/useCustomers';
 import { useInventoryItems } from '../../hooks/useInventory';
 import { useCalculateInvoice, useCreateInvoice } from '../../hooks/useInvoices';
@@ -161,9 +161,14 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
     <div className="space-y-6">
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {/* Customer Selection */}
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50">
           <CardHeader>
-            <CardTitle>Customer Information</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                <FileText className="h-4 w-4 text-white" />
+              </div>
+              <span className="text-blue-800">Customer Information</span>
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -213,9 +218,14 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
         </Card>
 
         {/* Pricing Configuration */}
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-50 to-teal-100/50">
           <CardHeader>
-            <CardTitle>Pricing Configuration</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+                <Calculator className="h-4 w-4 text-white" />
+              </div>
+              <span className="text-emerald-800">Pricing Configuration</span>
+            </CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
@@ -287,10 +297,20 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
         </Card>
 
         {/* Items Selection */}
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Invoice Items</CardTitle>
-            <Button type="button" onClick={addItem} size="sm">
+            <CardTitle className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
+                <Receipt className="h-4 w-4 text-white" />
+              </div>
+              <span className="text-purple-800">Invoice Items</span>
+            </CardTitle>
+            <Button 
+              type="button" 
+              onClick={addItem} 
+              size="sm"
+              className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Add Item
             </Button>
@@ -382,11 +402,13 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
 
         {/* Calculation Summary */}
         {calculation && (
-          <Card>
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-100/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calculator className="h-5 w-5" />
-                Invoice Summary
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
+                  <Calculator className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-green-800">Invoice Summary</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -408,10 +430,10 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                   <p className="font-medium">${calculation.total_vat.toFixed(2)}</p>
                 </div>
               </div>
-              <div className="mt-4 pt-4 border-t">
+              <div className="mt-4 pt-4 border-t border-green-200">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold">Grand Total:</span>
-                  <span className="text-xl font-bold text-green-600">
+                  <span className="text-lg font-semibold text-green-800">Grand Total:</span>
+                  <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                     ${calculation.grand_total.toFixed(2)}
                   </span>
                 </div>
@@ -443,6 +465,7 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
           <Button
             type="submit"
             disabled={!calculation || createMutation.isPending}
+            className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
           >
             {createMutation.isPending ? 'Creating...' : 'Create Invoice'}
           </Button>

@@ -352,7 +352,7 @@ const MobileCard: React.FC<{
 }
 
 // Main DataTable component
-export const DataTable = <T,>({
+export function DataTable<T>({
   data,
   columns,
   getRowId = (row: T, index: number) => String(index),
@@ -380,7 +380,7 @@ export const DataTable = <T,>({
   onRowClick,
   onRowDoubleClick,
   ...props
-}: DataTableProps<T>) => {
+}: DataTableProps<T>) {
   const [isMobile, setIsMobile] = React.useState(false)
   const [showFilters, setShowFilters] = React.useState(false)
   
@@ -549,8 +549,8 @@ export const DataTable = <T,>({
         
         {/* Pagination */}
         {pagination && (
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-muted-foreground">
+          <div className="flex items-center justify-between bg-gradient-to-r from-slate-50/50 via-white to-slate-50/50 rounded-lg p-4 border shadow-sm">
+            <div className="text-sm font-medium text-slate-700">
               Page {pagination.pageIndex + 1} of {pagination.pageCount}
             </div>
             <div className="flex items-center space-x-2">
@@ -559,6 +559,7 @@ export const DataTable = <T,>({
                 size="sm"
                 disabled={pagination.pageIndex === 0}
                 onClick={() => pagination.onPageChange(pagination.pageIndex - 1)}
+                className="hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 hover:text-green-700 hover:border-green-200 transition-all duration-300"
               >
                 Previous
               </Button>
@@ -567,6 +568,7 @@ export const DataTable = <T,>({
                 size="sm"
                 disabled={pagination.pageIndex >= pagination.pageCount - 1}
                 onClick={() => pagination.onPageChange(pagination.pageIndex + 1)}
+                className="hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 hover:text-green-700 hover:border-green-200 transition-all duration-300"
               >
                 Next
               </Button>
@@ -664,7 +666,7 @@ export const DataTable = <T,>({
           )}
           {...props}
         >
-          <thead className="bg-muted/50">
+          <thead className="bg-gradient-to-r from-slate-50 via-slate-100/50 to-slate-50">
             <tr className="border-b">
               {/* Selection header */}
               {selection && (
@@ -688,12 +690,12 @@ export const DataTable = <T,>({
                   <th
                     key={column.id}
                     className={cn(
-                      "px-4 py-3 text-left font-medium text-muted-foreground",
+                      "px-4 py-3 text-left font-semibold text-slate-700",
                       column.align === 'center' && "text-center",
                       column.align === 'right' && "text-right",
-                      column.sortable && "cursor-pointer hover:bg-muted/70 select-none",
-                      column.sticky === 'left' && "sticky left-0 bg-muted/50 z-10",
-                      column.sticky === 'right' && "sticky right-0 bg-muted/50 z-10"
+                      column.sortable && "cursor-pointer hover:bg-gradient-to-r hover:from-green-50/50 hover:to-teal-50/50 hover:text-slate-900 select-none transition-all duration-300",
+                      column.sticky === 'left' && "sticky left-0 bg-gradient-to-r from-slate-50 via-slate-100/50 to-slate-50 z-10",
+                      column.sticky === 'right' && "sticky right-0 bg-gradient-to-r from-slate-50 via-slate-100/50 to-slate-50 z-10"
                     )}
                     style={{
                       width: column.width,
@@ -743,8 +745,8 @@ export const DataTable = <T,>({
                 <tr
                   key={rowId}
                   className={cn(
-                    "border-b transition-colors hover:bg-muted/50",
-                    isSelected && "bg-muted",
+                    "border-b transition-all duration-300 hover:bg-gradient-to-r hover:from-green-50/30 hover:to-teal-50/30",
+                    isSelected && "bg-gradient-to-r from-green-100/50 to-teal-100/50",
                     onRowClick && "cursor-pointer"
                   )}
                   onClick={() => onRowClick?.(row)}
@@ -848,9 +850,9 @@ export const DataTable = <T,>({
       
       {/* Pagination */}
       {pagination && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between bg-gradient-to-r from-slate-50/50 via-white to-slate-50/50 rounded-lg p-4 border shadow-sm">
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-muted-foreground">Rows per page:</span>
+            <span className="text-sm font-medium text-slate-700">Rows per page:</span>
             <SearchableSelect
               options={[
                 { value: '10', label: '10' },
@@ -865,24 +867,16 @@ export const DataTable = <T,>({
           </div>
           
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm font-medium text-slate-700">
               Page {pagination.pageIndex + 1} of {pagination.pageCount}
             </span>
-            
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={pagination.pageIndex === 0}
-                onClick={() => pagination.onPageChange(0)}
-              >
-                First
-              </Button>
+            <div className="flex items-center space-x-1">
               <Button
                 variant="outline"
                 size="sm"
                 disabled={pagination.pageIndex === 0}
                 onClick={() => pagination.onPageChange(pagination.pageIndex - 1)}
+                className="hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 hover:text-green-700 hover:border-green-200 transition-all duration-300"
               >
                 Previous
               </Button>
@@ -891,16 +885,9 @@ export const DataTable = <T,>({
                 size="sm"
                 disabled={pagination.pageIndex >= pagination.pageCount - 1}
                 onClick={() => pagination.onPageChange(pagination.pageIndex + 1)}
+                className="hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 hover:text-green-700 hover:border-green-200 transition-all duration-300"
               >
                 Next
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={pagination.pageIndex >= pagination.pageCount - 1}
-                onClick={() => pagination.onPageChange(pagination.pageCount - 1)}
-              >
-                Last
               </Button>
             </div>
           </div>

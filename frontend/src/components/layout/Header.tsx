@@ -251,8 +251,8 @@ export const Header: React.FC<HeaderProps> = ({
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
       className={cn(
-        'sticky top-0 z-50 w-full border-b border-border/50 bg-gradient-to-r from-background via-background to-background/95',
-        'backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 shadow-lg shadow-primary/5',
+        'sticky top-0 z-50 w-full border-b border-border/50 bg-gradient-to-r from-slate-50 via-white to-slate-50/95',
+        'backdrop-blur-xl supports-[backdrop-filter]:bg-white/80 shadow-xl shadow-green/10',
         className
       )}
     >
@@ -267,8 +267,8 @@ export const Header: React.FC<HeaderProps> = ({
             size="sm"
             onClick={onSidebarToggle}
             className={cn(
-              'h-9 w-9 p-0 hover:bg-primary/10 hover:text-primary-600 transition-all duration-200',
-              'border border-transparent hover:border-primary/20 rounded-lg'
+              'h-9 w-9 p-0 hover:bg-gradient-to-r hover:from-green-100 hover:to-teal-100 hover:text-green-700 transition-all duration-200',
+              'border border-transparent hover:border-green/20 rounded-lg hover:shadow-md'
             )}
             aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
@@ -285,10 +285,10 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="hidden lg:flex items-center mr-6">
           <div className="flex items-center space-x-3">
             <div className="relative">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center shadow-md shadow-primary/25">
+              <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center shadow-md shadow-green/25">
                 <Gem className="h-4 w-4 text-white" />
               </div>
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary-400 rounded-full animate-pulse" />
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-teal-400 rounded-full animate-pulse" />
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-bold text-foreground leading-tight">
@@ -307,7 +307,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="relative">
               <Search className={cn(
                 'absolute top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors',
-                searchQuery && 'text-primary-500',
+                searchQuery && 'text-green-500',
                 isRTL ? 'right-3' : 'left-3'
               )} />
               <input
@@ -318,7 +318,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className={cn(
                   'w-full h-10 px-10 py-2 text-sm bg-background/50 border border-border rounded-xl',
                   'placeholder:text-muted-foreground backdrop-blur-sm',
-                  'focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30',
+                  'focus:outline-none focus:ring-2 focus:ring-green/20 focus:border-green/30',
                   'hover:bg-background/80 transition-all duration-200',
                   'shadow-sm hover:shadow-md',
                   isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3'
@@ -364,12 +364,12 @@ export const Header: React.FC<HeaderProps> = ({
                           href={result.href}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          className="flex items-center p-3 rounded-lg hover:bg-primary/5 transition-colors cursor-pointer group"
+                          className="flex items-center p-3 rounded-lg hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 transition-all duration-200 cursor-pointer group"
                           onClick={() => setShowSearchResults(false)}
                         >
                           <div className="flex-shrink-0 mr-3">
-                            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                              <Icon className="h-4 w-4 text-primary-600" />
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-100 to-teal-100 flex items-center justify-center group-hover:from-green-200 group-hover:to-teal-200 transition-all duration-200 shadow-sm">
+                              <Icon className="h-4 w-4 text-green-600" />
                             </div>
                           </div>
                           <div className="flex-1 min-w-0">
@@ -406,9 +406,9 @@ export const Header: React.FC<HeaderProps> = ({
               size="sm"
               onClick={() => setShowNotifications(!showNotifications)}
               className={cn(
-                'h-9 w-9 p-0 hover:bg-primary/10 hover:text-primary-600 transition-all duration-200',
-                'border border-transparent hover:border-primary/20 rounded-lg relative',
-                showNotifications && 'bg-primary/10 text-primary-600 border-primary/20'
+                'h-9 w-9 p-0 hover:bg-gradient-to-r hover:from-green-100 hover:to-teal-100 hover:text-green-700 transition-all duration-200',
+                'border border-transparent hover:border-green/20 rounded-lg relative hover:shadow-md',
+                showNotifications && 'bg-gradient-to-r from-green-100 to-teal-100 text-green-700 border-green/20 shadow-md'
               )}
               aria-label="Notifications"
             >
@@ -439,7 +439,7 @@ export const Header: React.FC<HeaderProps> = ({
                     isRTL ? 'left-0' : 'right-0'
                   )}
                 >
-                  <div className="p-4 border-b border-border bg-gradient-to-r from-primary/5 to-primary/10">
+                  <div className="p-4 border-b border-border bg-gradient-to-r from-green-50 via-teal-50 to-blue-50">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-semibold text-foreground">Notifications</h3>
                       {hasUnreadNotifications && (
@@ -459,7 +459,7 @@ export const Header: React.FC<HeaderProps> = ({
                             whileHover={{ backgroundColor: 'rgba(var(--primary), 0.02)' }}
                             className={cn(
                               'p-4 border-b border-border/50 cursor-pointer transition-colors',
-                              !notification.read && 'bg-primary/5'
+                              !notification.read && 'bg-gradient-to-r from-green-50/50 to-teal-50/50'
                             )}
                           >
                             <div className="flex items-start space-x-3">
@@ -472,7 +472,7 @@ export const Header: React.FC<HeaderProps> = ({
                                     {notification.title}
                                   </p>
                                   {!notification.read && (
-                                    <div className="w-2 h-2 bg-primary-500 rounded-full flex-shrink-0 ml-2" />
+                                    <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0 ml-2" />
                                   )}
                                 </div>
                                 <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
@@ -487,7 +487,7 @@ export const Header: React.FC<HeaderProps> = ({
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      className="h-6 px-2 text-xs text-primary-600 hover:text-primary-700"
+                                      className="h-6 px-2 text-xs text-green-600 hover:text-green-700"
                                     >
                                       View
                                     </Button>
@@ -510,7 +510,7 @@ export const Header: React.FC<HeaderProps> = ({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full text-xs text-primary-600 hover:text-primary-700"
+                        className="w-full text-xs text-green-600 hover:text-green-700"
                       >
                         View all notifications
                       </Button>
@@ -528,8 +528,8 @@ export const Header: React.FC<HeaderProps> = ({
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  'h-9 w-9 p-0 hover:bg-primary/10 hover:text-primary-600 transition-all duration-200',
-                  'border border-transparent hover:border-primary/20 rounded-lg'
+                  'h-9 w-9 p-0 hover:bg-gradient-to-r hover:from-green-100 hover:to-teal-100 hover:text-green-700 transition-all duration-200',
+                  'border border-transparent hover:border-green/20 rounded-lg hover:shadow-md'
                 )}
                 aria-label="Change language"
               >
@@ -545,24 +545,24 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => handleLanguageChange('en')}
                 className={cn(
                   'cursor-pointer transition-colors',
-                  language === 'en' && 'bg-primary/10 text-primary-700'
+                  language === 'en' && 'bg-gradient-to-r from-green-100 to-teal-100 text-green-700'
                 )}
               >
                 <div className="flex items-center justify-between w-full">
                   <span>English</span>
-                  {language === 'en' && <CheckCircle className="h-4 w-4 text-primary-600" />}
+                  {language === 'en' && <CheckCircle className="h-4 w-4 text-green-600" />}
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleLanguageChange('fa')}
                 className={cn(
                   'cursor-pointer transition-colors',
-                  language === 'fa' && 'bg-primary/10 text-primary-700'
+                  language === 'fa' && 'bg-gradient-to-r from-green-100 to-teal-100 text-green-700'
                 )}
               >
                 <div className="flex items-center justify-between w-full">
                   <span>فارسی</span>
-                  {language === 'fa' && <CheckCircle className="h-4 w-4 text-primary-600" />}
+                  {language === 'fa' && <CheckCircle className="h-4 w-4 text-green-600" />}
                 </div>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -574,14 +574,14 @@ export const Header: React.FC<HeaderProps> = ({
               <Button
                 variant="ghost"
                 className={cn(
-                  'relative h-9 w-9 rounded-full hover:bg-primary/10 transition-all duration-200',
-                  'border border-transparent hover:border-primary/20'
+                  'relative h-9 w-9 rounded-full hover:bg-gradient-to-r hover:from-green-100 hover:to-teal-100 transition-all duration-200',
+                  'border border-transparent hover:border-green/20 hover:shadow-md'
                 )}
                 aria-label="User menu"
               >
                 <Avatar className="h-8 w-8 ring-2 ring-primary/20 hover:ring-primary/40 transition-all">
                   <AvatarImage src="" alt={user?.username} />
-                  <AvatarFallback className="bg-gradient-to-br from-primary-500 to-primary-600 text-white font-semibold">
+                  <AvatarFallback className="bg-gradient-to-br from-green-500 to-teal-600 text-white font-semibold">
                     {getUserInitials(user?.username)}
                   </AvatarFallback>
                 </Avatar>
@@ -592,7 +592,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src="" alt={user?.username} />
-                    <AvatarFallback className="bg-gradient-to-br from-primary-500 to-primary-600 text-white font-semibold">
+                    <AvatarFallback className="bg-gradient-to-br from-green-500 to-teal-600 text-white font-semibold">
                       {getUserInitials(user?.username)}
                     </AvatarFallback>
                   </Avatar>
@@ -610,15 +610,15 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer hover:bg-primary/5 transition-colors">
+              <DropdownMenuItem className="cursor-pointer hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 transition-all duration-200">
                 <User className="mr-3 h-4 w-4 rtl:mr-0 rtl:ml-3 text-muted-foreground" />
                 <span>{t('common.profile') || 'Profile Settings'}</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer hover:bg-primary/5 transition-colors">
+              <DropdownMenuItem className="cursor-pointer hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 transition-all duration-200">
                 <Settings className="mr-3 h-4 w-4 rtl:mr-0 rtl:ml-3 text-muted-foreground" />
                 <span>Account Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer hover:bg-primary/5 transition-colors">
+              <DropdownMenuItem className="cursor-pointer hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 transition-all duration-200">
                 <HelpCircle className="mr-3 h-4 w-4 rtl:mr-0 rtl:ml-3 text-muted-foreground" />
                 <span>Help & Support</span>
               </DropdownMenuItem>

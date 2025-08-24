@@ -431,17 +431,22 @@ export const InventoryModern: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       >
-        <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Inventory Management
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your gold jewelry inventory with modern tools and insights
-          </p>
+        <div className="flex items-center gap-4">
+          <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+            <Package className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
+              Inventory Management
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Manage your gold jewelry inventory with modern tools and insights
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Button
-            variant="outline"
+            variant="outline-gradient-green"
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center gap-2"
           >
@@ -455,7 +460,7 @@ export const InventoryModern: React.FC = () => {
               </Badge>
             )}
           </Button>
-          <Button onClick={() => setShowForm(true)} className="flex items-center gap-2">
+          <Button variant="gradient-green" onClick={() => setShowForm(true)} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Add Item
           </Button>
@@ -463,12 +468,12 @@ export const InventoryModern: React.FC = () => {
       </motion.div>
 
       <Tabs defaultValue="inventory" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="inventory" className="flex items-center gap-2">
+        <TabsList variant="gradient-green" className="grid w-full grid-cols-2">
+          <TabsTrigger variant="gradient-green" value="inventory" className="flex items-center gap-2">
             <Package className="h-4 w-4" />
             Inventory Items
           </TabsTrigger>
-          <TabsTrigger value="categories" className="flex items-center gap-2">
+          <TabsTrigger variant="gradient-green" value="categories" className="flex items-center gap-2">
             <Layers className="h-4 w-4" />
             Categories
           </TabsTrigger>

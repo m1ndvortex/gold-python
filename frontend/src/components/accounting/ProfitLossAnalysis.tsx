@@ -3,9 +3,11 @@ import { useAccounting } from '../../hooks/useAccounting';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { RefreshCwIcon, TrendingUpIcon, TrendingDownIcon, BarChart3Icon } from 'lucide-react';
+import { RefreshCwIcon, TrendingUpIcon, TrendingDownIcon, BarChart3Icon, DollarSignIcon, PercentIcon, TrophyIcon } from 'lucide-react';
+import { cn } from '../../lib/utils';
 import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
 import { Bar, Pie } from 'react-chartjs-2';
+import { Badge } from '../ui/badge';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -160,18 +162,23 @@ export const ProfitLossAnalysis: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Date Range Selector */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BarChart3Icon className="h-5 w-5" />
-            Profit & Loss Analysis
-          </CardTitle>
+      {/* Enhanced Date Range Selector */}
+      <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-purple-50/20 to-white">
+        <CardHeader className="bg-gradient-to-r from-purple-50 via-violet-50 to-purple-50 border-b-2 border-purple-200">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
+              <BarChart3Icon className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-semibold text-purple-800">Profit & Loss Analysis</CardTitle>
+              <p className="text-sm text-purple-600">Comprehensive financial performance analysis</p>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">From:</label>
+              <label className="text-sm font-medium text-purple-800">From:</label>
               <Input
                 type="date"
                 value={startDate}
@@ -180,7 +187,7 @@ export const ProfitLossAnalysis: React.FC = () => {
               />
             </div>
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">To:</label>
+              <label className="text-sm font-medium text-purple-800">To:</label>
               <Input
                 type="date"
                 value={endDate}
@@ -189,18 +196,18 @@ export const ProfitLossAnalysis: React.FC = () => {
               />
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setQuickDateRange(7)}>
+              <Button variant="outline-gradient-purple" size="sm" onClick={() => setQuickDateRange(7)}>
                 Last 7 Days
               </Button>
-              <Button variant="outline" size="sm" onClick={() => setQuickDateRange(30)}>
+              <Button variant="outline-gradient-purple" size="sm" onClick={() => setQuickDateRange(30)}>
                 Last 30 Days
               </Button>
-              <Button variant="outline" size="sm" onClick={setCurrentMonth}>
+              <Button variant="outline-gradient-purple" size="sm" onClick={setCurrentMonth}>
                 This Month
               </Button>
             </div>
             <Button
-              variant="outline"
+              variant="gradient-purple"
               size="sm"
               onClick={() => refetch()}
               disabled={isLoading}
@@ -223,87 +230,171 @@ export const ProfitLossAnalysis: React.FC = () => {
         </Card>
       ) : profitLossData ? (
         <>
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <TrendingUpIcon className="h-4 w-4 text-green-600" />
-                  Total Revenue
-                </CardTitle>
+          {/* Enhanced Key Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-emerald-50 to-green-100/60">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <TrendingUpIcon className="h-5 w-5 text-emerald-600" />
+                    </div>
+                    <CardTitle className="text-sm font-semibold text-emerald-800">
+                      Total Revenue
+                    </CardTitle>
+                  </div>
+                  <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+                    Income
+                  </Badge>
+                </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">
+              <CardContent className="space-y-2">
+                <div className="text-2xl font-bold text-emerald-900">
                   {formatCurrency(profitLossData.total_revenue)}
                 </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 flex-1 bg-emerald-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 w-4/5 rounded-full"></div>
+                  </div>
+                  <span className="text-xs text-emerald-600">Target</span>
+                </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <TrendingDownIcon className="h-4 w-4 text-red-600" />
-                  Total Expenses
-                </CardTitle>
+            <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-red-50 to-rose-100/60">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <TrendingDownIcon className="h-5 w-5 text-red-600" />
+                    </div>
+                    <CardTitle className="text-sm font-semibold text-red-800">
+                      Total Expenses
+                    </CardTitle>
+                  </div>
+                  <Badge className="bg-red-100 text-red-700 hover:bg-red-100">
+                    Costs
+                  </Badge>
+                </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-red-600">
+              <CardContent className="space-y-2">
+                <div className="text-2xl font-bold text-red-900">
                   {formatCurrency(profitLossData.total_expenses)}
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Net Profit
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className={`text-2xl font-bold ${
-                  profitLossData.net_profit >= 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {formatCurrency(profitLossData.net_profit)}
+                <div className="flex items-center gap-2">
+                  <div className="h-2 flex-1 bg-red-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-red-500 w-3/5 rounded-full"></div>
+                  </div>
+                  <span className="text-xs text-red-600">Budget</span>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  Profit Margin
-                </CardTitle>
+            <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-blue-50 to-indigo-100/60">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <DollarSignIcon className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <CardTitle className="text-sm font-semibold text-blue-800">
+                      Net Profit
+                    </CardTitle>
+                  </div>
+                  <Badge 
+                    className={cn(
+                      "text-xs",
+                      profitLossData.net_profit >= 0 
+                        ? "bg-green-100 text-green-700 hover:bg-green-100" 
+                        : "bg-red-100 text-red-700 hover:bg-red-100"
+                    )}
+                  >
+                    {profitLossData.net_profit >= 0 ? "Profit" : "Loss"}
+                  </Badge>
+                </div>
               </CardHeader>
-              <CardContent>
-                <div className={`text-2xl font-bold ${
-                  profitLossData.profit_margin >= 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
+              <CardContent className="space-y-2">
+                <div className={cn(
+                  "text-2xl font-bold",
+                  profitLossData.net_profit >= 0 ? 'text-green-900' : 'text-red-900'
+                )}>
+                  {formatCurrency(profitLossData.net_profit)}
+                </div>
+                <div className="flex items-center justify-between text-xs text-blue-600">
+                  <span>Net Result</span>
+                  <DollarSignIcon className="h-3 w-3" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-purple-50 to-violet-100/60">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <PercentIcon className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <CardTitle className="text-sm font-semibold text-purple-800">
+                      Profit Margin
+                    </CardTitle>
+                  </div>
+                  <Badge 
+                    className={cn(
+                      "text-xs",
+                      profitLossData.profit_margin >= 0 
+                        ? "bg-green-100 text-green-700 hover:bg-green-100" 
+                        : "bg-red-100 text-red-700 hover:bg-red-100"
+                    )}
+                  >
+                    {profitLossData.profit_margin >= 0 ? "Positive" : "Negative"}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className={cn(
+                  "text-2xl font-bold",
+                  profitLossData.profit_margin >= 0 ? 'text-green-900' : 'text-red-900'
+                )}>
                   {formatPercentage(profitLossData.profit_margin)}
+                </div>
+                <div className="flex items-center justify-between text-xs text-purple-600">
+                  <span>Efficiency</span>
+                  <PercentIcon className="h-3 w-3" />
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Revenue vs Expenses Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Revenue vs Expenses Overview</CardTitle>
+          {/* Enhanced Revenue vs Expenses Chart */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50/30 to-white">
+            <CardHeader className="bg-gradient-to-r from-purple-50/50 to-violet-50/30 border-b border-purple-200">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-md">
+                  <BarChart3Icon className="h-4 w-4 text-white" />
+                </div>
+                <CardTitle className="text-lg font-semibold text-purple-800">Revenue vs Expenses Overview</CardTitle>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               <div className="h-80">
                 <Bar data={revenueExpenseChartData} options={chartOptions} />
               </div>
             </CardContent>
           </Card>
 
-          {/* Revenue and Expense Breakdown */}
+          {/* Enhanced Revenue and Expense Breakdown */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Revenue Breakdown */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Revenue Breakdown by Category</CardTitle>
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-50/30 to-white">
+              <CardHeader className="bg-gradient-to-r from-emerald-50/50 to-green-50/30 border-b border-emerald-200">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-md">
+                    <TrendingUpIcon className="h-4 w-4 text-white" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold text-emerald-800">Revenue Breakdown by Category</CardTitle>
+                </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 {Object.keys(profitLossData.revenue_breakdown).length > 0 ? (
                   <div className="h-80">
                     <Pie data={revenueBreakdownData} options={pieChartOptions} />
@@ -317,11 +408,16 @@ export const ProfitLossAnalysis: React.FC = () => {
             </Card>
 
             {/* Expense Breakdown */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Expense Breakdown by Category</CardTitle>
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50/30 to-white">
+              <CardHeader className="bg-gradient-to-r from-red-50/50 to-rose-50/30 border-b border-red-200">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-md">
+                    <TrendingDownIcon className="h-4 w-4 text-white" />
+                  </div>
+                  <CardTitle className="text-lg font-semibold text-red-800">Expense Breakdown by Category</CardTitle>
+                </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 {Object.keys(profitLossData.expense_breakdown).length > 0 ? (
                   <div className="h-80">
                     <Pie data={expenseBreakdownData} options={pieChartOptions} />
@@ -335,28 +431,35 @@ export const ProfitLossAnalysis: React.FC = () => {
             </Card>
           </div>
 
-          {/* Top Performing Categories */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Top Performing Categories</CardTitle>
+          {/* Enhanced Top Performing Categories */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50/30 to-white">
+            <CardHeader className="bg-gradient-to-r from-blue-50/50 to-indigo-50/30 border-b border-blue-200">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md">
+                  <TrophyIcon className="h-4 w-4 text-white" />
+                </div>
+                <CardTitle className="text-lg font-semibold text-blue-800">Top Performing Categories</CardTitle>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               {profitLossData.top_performing_categories.length > 0 ? (
                 <div className="space-y-4">
                   {profitLossData.top_performing_categories.map((category, index) => (
-                    <div key={category.category} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div key={category.category} className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/30 rounded-xl border-0 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
                           {index + 1}
                         </div>
                         <div>
-                          <div className="font-medium">{category.category}</div>
+                          <div className="font-semibold text-blue-800">{category.category}</div>
+                          <div className="text-xs text-blue-600">Performance Leader</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-green-600">
+                        <div className="font-bold text-emerald-700 text-lg">
                           {formatCurrency(category.revenue)}
                         </div>
+                        <div className="text-xs text-emerald-600">Revenue</div>
                       </div>
                     </div>
                   ))}

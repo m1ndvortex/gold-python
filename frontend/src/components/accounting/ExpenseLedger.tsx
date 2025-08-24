@@ -10,10 +10,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
-import { PlusIcon, FilterIcon, RefreshCwIcon } from 'lucide-react';
+import { PlusIcon, FilterIcon, RefreshCwIcon, TrendingDownIcon, BarChart3Icon, Activity, TagIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { LedgerFilters, ExpenseEntryCreate } from '../../types';
 import { useToast } from '../ui/use-toast';
+import { Badge } from '../ui/badge';
 
 export const ExpenseLedger: React.FC = () => {
   const { t } = useLanguage();
@@ -125,59 +126,111 @@ export const ExpenseLedger: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header with Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {t('accounting.total_expenses')}
-            </CardTitle>
+      {/* Enhanced Header with Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-red-50 to-rose-100/60">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <TrendingDownIcon className="h-5 w-5 text-red-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-red-800">
+                  {t('accounting.total_expenses')}
+                </CardTitle>
+              </div>
+              <Badge className="bg-red-100 text-red-700 hover:bg-red-100">
+                Expenses
+              </Badge>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold text-red-900">
               {formatCurrency(totalExpenses)}
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-{t('accounting.total_entries')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {expenseEntries?.length || 0}
+            <div className="flex items-center gap-2">
+              <div className="h-2 flex-1 bg-red-200 rounded-full overflow-hidden">
+                <div className="h-full bg-red-500 w-3/5 rounded-full"></div>
+              </div>
+              <span className="text-xs text-red-600">Budget</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-{t('accounting.categories')}
-            </CardTitle>
+        <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-blue-50 to-indigo-100/60">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <BarChart3Icon className="h-5 w-5 text-blue-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-blue-800">
+                  {t('accounting.total_entries')}
+                </CardTitle>
+              </div>
+              <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+                Count
+              </Badge>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold text-blue-900">
+              {expenseEntries?.length || 0}
+            </div>
+            <div className="flex items-center justify-between text-xs text-blue-600">
+              <span>This Period</span>
+              <Activity className="h-3 w-3" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-purple-50 to-violet-100/60">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <TagIcon className="h-5 w-5 text-purple-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-purple-800">
+                  {t('accounting.categories')}
+                </CardTitle>
+              </div>
+              <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100">
+                Types
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold text-purple-900">
               {Object.keys(expensesByCategory).length}
+            </div>
+            <div className="flex items-center justify-between text-xs text-purple-600">
+              <span>Active</span>
+              <TagIcon className="h-3 w-3" />
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Main Expense Ledger Card */}
-      <Card>
-        <CardHeader>
+      {/* Enhanced Main Expense Ledger Card */}
+      <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-red-50/20 to-white">
+        <CardHeader className="bg-gradient-to-r from-red-50 via-rose-50 to-red-50 border-b-2 border-red-200">
           <div className="flex items-center justify-between">
-            <CardTitle>{t('accounting.expense_ledger')}</CardTitle>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-lg">
+                <TrendingDownIcon className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-red-800">{t('accounting.expense_ledger')}</CardTitle>
+                <p className="text-sm text-red-600">Track all business expenses and categorization</p>
+              </div>
+            </div>
             <div className="flex items-center gap-2">
               <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                 <DialogTrigger asChild>
-                  <Button size="sm">
+                  <Button variant="gradient-red" size="sm">
                     <PlusIcon className="h-4 w-4 mr-2" />
-{t('accounting.add_expense')}
+                    {t('accounting.add_expense')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -247,32 +300,32 @@ export const ExpenseLedger: React.FC = () => {
                 </DialogContent>
               </Dialog>
               <Button
-                variant="outline"
+                variant="outline-gradient-red"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <FilterIcon className="h-4 w-4 mr-2" />
-{t('accounting.filters')}
+                {t('accounting.filters')}
               </Button>
               <Button
-                variant="outline"
+                variant="gradient-red"
                 size="sm"
                 onClick={() => refetch()}
                 disabled={isLoading}
               >
                 <RefreshCwIcon className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-{t('accounting.refresh')}
+                {t('accounting.refresh')}
               </Button>
             </div>
           </div>
         </CardHeader>
 
-        {/* Filters Panel */}
+        {/* Enhanced Filters Panel */}
         {showFilters && (
-          <CardContent className="border-b">
+          <CardContent className="border-b bg-gradient-to-r from-red-50/50 to-rose-50/30">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label className="text-sm font-medium mb-2 block">Start Date</label>
+                <label className="text-sm font-medium mb-2 block text-red-800">Start Date</label>
                 <Input
                   type="date"
                   value={filters.start_date || ''}
@@ -280,7 +333,7 @@ export const ExpenseLedger: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">End Date</label>
+                <label className="text-sm font-medium mb-2 block text-red-800">End Date</label>
                 <Input
                   type="date"
                   value={filters.end_date || ''}
@@ -288,7 +341,7 @@ export const ExpenseLedger: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Category</label>
+                <label className="text-sm font-medium mb-2 block text-red-800">Category</label>
                 <Select
                   value={filters.category || ''}
                   onValueChange={(value) => handleFilterChange('category', value)}
@@ -307,7 +360,7 @@ export const ExpenseLedger: React.FC = () => {
                 </Select>
               </div>
               <div className="flex items-end">
-                <Button variant="outline" onClick={clearFilters} className="w-full">
+                <Button variant="outline-gradient-red" onClick={clearFilters} className="w-full">
                   Clear Filters
                 </Button>
               </div>

@@ -145,13 +145,13 @@ export const InventoryIntelligenceDashboard: React.FC<InventoryIntelligenceDashb
 
   if (error) {
     return (
-      <Card className={className}>
+      <Card variant="gradient-orange" className={className}>
         <CardContent className="flex items-center justify-center h-96">
           <div className="text-center">
             <p className="text-destructive mb-2">Error loading inventory intelligence</p>
             <p className="text-sm text-muted-foreground">{error instanceof Error ? error.message : 'An unknown error occurred'}</p>
             <Button 
-              variant="outline" 
+              variant="gradient-blue" 
               onClick={() => refetch()} 
               className="mt-4"
             >
@@ -167,19 +167,24 @@ export const InventoryIntelligenceDashboard: React.FC<InventoryIntelligenceDashb
   return (
     <div className={cn("space-y-6", className)}>
       {/* Header Controls */}
-      <Card>
+      <Card variant="gradient-blue">
         <CardContent className="pt-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-bold">Inventory Intelligence Dashboard</h2>
-              <p className="text-muted-foreground">
-                Advanced inventory analytics, optimization, and forecasting
-              </p>
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+                <BarChart3 className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold">Inventory Intelligence Dashboard</h2>
+                <p className="text-muted-foreground">
+                  Advanced inventory analytics, optimization, and forecasting
+                </p>
+              </div>
             </div>
             
             <div className="flex items-center gap-2">
               <Button
-                variant="outline"
+                variant="outline-gradient-blue"
                 size="sm"
                 onClick={() => setShowExportDialog(true)}
               >
@@ -188,7 +193,7 @@ export const InventoryIntelligenceDashboard: React.FC<InventoryIntelligenceDashb
               </Button>
               
               <Button
-                variant="outline"
+                variant="gradient-blue"
                 size="sm"
                 onClick={() => refetch()}
                 disabled={isLoading}
@@ -206,7 +211,7 @@ export const InventoryIntelligenceDashboard: React.FC<InventoryIntelligenceDashb
                 {timePresets.map((preset) => (
                   <Button
                     key={preset.value}
-                    variant={selectedPeriod === preset.value ? "default" : "outline"}
+                    variant={selectedPeriod === preset.value ? "gradient-blue" : "outline-gradient-blue"}
                     size="sm"
                     onClick={() => setSelectedPeriod(preset.value)}
                   >
@@ -226,7 +231,7 @@ export const InventoryIntelligenceDashboard: React.FC<InventoryIntelligenceDashb
       {/* Overview Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {overviewMetrics.map((metric, index) => (
-          <Card key={index}>
+          <Card key={index} variant="professional">
             <CardContent className="p-6">
               <div className="flex items-center justify-between space-y-0 pb-2">
                 <div className="text-sm font-medium">{metric.title}</div>
@@ -263,10 +268,12 @@ export const InventoryIntelligenceDashboard: React.FC<InventoryIntelligenceDashb
       {/* Alerts and Warnings */}
       {dashboardData?.dashboard_data?.alerts_and_warnings && 
        dashboardData.dashboard_data.alerts_and_warnings.length > 0 && (
-        <Card>
+        <Card variant="gradient-orange">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-yellow-600" />
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center shadow-lg">
+                <AlertTriangle className="h-4 w-4 text-white" />
+              </div>
               Alerts & Recommendations
             </CardTitle>
           </CardHeader>
@@ -308,15 +315,15 @@ export const InventoryIntelligenceDashboard: React.FC<InventoryIntelligenceDashb
 
       {/* Main Analytics Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="turnover">Turnover</TabsTrigger>
-          <TabsTrigger value="optimization">Optimization</TabsTrigger>
-          <TabsTrigger value="forecasting">Forecasting</TabsTrigger>
-          <TabsTrigger value="seasonal">Seasonal</TabsTrigger>
+        <TabsList variant="gradient-blue" className="grid w-full grid-cols-5">
+          <TabsTrigger variant="gradient-blue" value="overview">Overview</TabsTrigger>
+          <TabsTrigger variant="gradient-blue" value="turnover">Turnover</TabsTrigger>
+          <TabsTrigger variant="gradient-blue" value="optimization">Optimization</TabsTrigger>
+          <TabsTrigger variant="gradient-blue" value="forecasting">Forecasting</TabsTrigger>
+          <TabsTrigger variant="gradient-blue" value="seasonal">Seasonal</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent variant="gradient-blue" value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <PerformanceMetricsChart 
               data={dashboardData?.dashboard_data?.overview_metrics} 
@@ -329,7 +336,7 @@ export const InventoryIntelligenceDashboard: React.FC<InventoryIntelligenceDashb
           </div>
         </TabsContent>
 
-        <TabsContent value="turnover" className="space-y-6">
+        <TabsContent variant="gradient-blue" value="turnover" className="space-y-6">
           <TurnoverAnalysisChart 
             data={dashboardData?.dashboard_data?.turnover_analysis || []}
             title="Detailed Turnover Analysis"
@@ -337,21 +344,21 @@ export const InventoryIntelligenceDashboard: React.FC<InventoryIntelligenceDashb
           />
         </TabsContent>
 
-        <TabsContent value="optimization" className="space-y-6">
+        <TabsContent variant="gradient-blue" value="optimization" className="space-y-6">
           <StockOptimizationChart 
             data={dashboardData?.dashboard_data?.stock_optimization || []}
             title="Stock Optimization Recommendations"
           />
         </TabsContent>
 
-        <TabsContent value="forecasting" className="space-y-6">
+        <TabsContent variant="gradient-blue" value="forecasting" className="space-y-6">
           <DemandForecastChart 
             data={dashboardData?.dashboard_data?.demand_forecasts || []}
             title="Demand Forecasting"
           />
         </TabsContent>
 
-        <TabsContent value="seasonal" className="space-y-6">
+        <TabsContent variant="gradient-blue" value="seasonal" className="space-y-6">
           <SeasonalAnalysisChart 
             data={dashboardData?.dashboard_data?.seasonal_insights || []}
             title="Seasonal Analysis"
@@ -363,7 +370,7 @@ export const InventoryIntelligenceDashboard: React.FC<InventoryIntelligenceDashb
       {isLoading && (
         <div className="space-y-6">
           {[1, 2].map((i) => (
-            <Card key={i}>
+            <Card key={i} variant="professional">
               <CardHeader>
                 <div className="h-6 w-48 bg-muted animate-pulse rounded" />
               </CardHeader>

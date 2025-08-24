@@ -9,16 +9,26 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: "border-input focus-visible:ring-ring",
-        floating: "border-input focus-visible:ring-ring peer",
-        success: "border-success-500 focus-visible:ring-success-500 text-success-700",
-        error: "border-error-500 focus-visible:ring-error-500 text-error-700",
-        warning: "border-warning-500 focus-visible:ring-warning-500 text-warning-700",
+        default: "border-input focus-visible:ring-ring hover:border-ring/50",
+        floating: "border-input focus-visible:ring-ring peer hover:border-ring/50",
+        success: "border-success-500 focus-visible:ring-success-500 text-success-700 hover:border-success-600",
+        error: "border-error-500 focus-visible:ring-error-500 text-error-700 hover:border-error-600",
+        warning: "border-warning-500 focus-visible:ring-warning-500 text-warning-700 hover:border-warning-600",
+        // Enhanced gradient focus variants matching reports/charts design
+        "gradient-green": "border-input focus-visible:ring-green-500/30 focus-visible:border-green-500 hover:border-green-400 focus-visible:shadow-lg focus-visible:shadow-green-500/10",
+        "gradient-teal": "border-input focus-visible:ring-teal-500/30 focus-visible:border-teal-500 hover:border-teal-400 focus-visible:shadow-lg focus-visible:shadow-teal-500/10",
+        "gradient-blue": "border-input focus-visible:ring-blue-500/30 focus-visible:border-blue-500 hover:border-blue-400 focus-visible:shadow-lg focus-visible:shadow-blue-500/10",
+        "gradient-purple": "border-input focus-visible:ring-purple-500/30 focus-visible:border-purple-500 hover:border-purple-400 focus-visible:shadow-lg focus-visible:shadow-purple-500/10",
+        "gradient-pink": "border-input focus-visible:ring-pink-500/30 focus-visible:border-pink-500 hover:border-pink-400 focus-visible:shadow-lg focus-visible:shadow-pink-500/10",
+        "gradient-orange": "border-input focus-visible:ring-orange-500/30 focus-visible:border-orange-500 hover:border-orange-400 focus-visible:shadow-lg focus-visible:shadow-orange-500/10",
+        // Professional variant with subtle gradient effect
+        professional: "border-input focus-visible:ring-slate-500/20 focus-visible:border-slate-500 hover:border-slate-400 focus-visible:shadow-lg focus-visible:shadow-slate-500/5",
       },
       size: {
         default: "h-10 px-3 py-2",
         sm: "h-8 px-2 py-1 text-xs",
         lg: "h-12 px-4 py-3 text-base",
+        xl: "h-14 px-5 py-4 text-lg",
       },
     },
     defaultVariants: {

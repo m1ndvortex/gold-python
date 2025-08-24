@@ -62,14 +62,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children, className }) =
         />
 
         {/* Breadcrumb Navigation */}
-        <div className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="border-b border-border bg-gradient-to-r from-slate-50/95 to-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
           <div className="px-4 py-3">
             <BreadcrumbNav />
           </div>
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto bg-gradient-to-br from-slate-50/30 to-white">
           <div className="container mx-auto p-6">
             {children}
           </div>

@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
-import { Separator } from '../components/ui/separator';
 import { Button } from '../components/ui/button';
 import { 
   CalculatorIcon, 
@@ -15,7 +14,6 @@ import {
   ScaleIcon, 
   BarChart3Icon, 
   AlertTriangleIcon,
-  DollarSign,
   Activity,
   RefreshCw,
   Download,
@@ -106,7 +104,7 @@ export const Accounting: React.FC = () => {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 flex items-center justify-center shadow-lg">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-green-500 via-teal-500 to-blue-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300">
               <CalculatorIcon className="h-6 w-6 text-white" />
             </div>
             <div>
@@ -120,11 +118,11 @@ export const Accounting: React.FC = () => {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline-gradient-green" size="sm" className="gap-2">
             <RefreshCw className="h-4 w-4" />
             Refresh Data
           </Button>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="gradient-green" size="sm" className="gap-2">
             <Download className="h-4 w-4" />
             Export Report
           </Button>
@@ -337,13 +335,13 @@ export const Accounting: React.FC = () => {
         </div>
       )}
 
-      {/* Enhanced Accounting Tabs */}
-      <Card className="border-0 shadow-xl overflow-hidden">
+      {/* Enhanced Accounting Tabs with Gradient Design */}
+      <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-green-50/20 to-white">
         <CardContent className="p-0">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            {/* Modern Tab Navigation */}
-            <div className="bg-gradient-to-r from-slate-50 via-slate-100 to-slate-50 border-b-2 border-slate-200">
-              <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 bg-transparent h-auto p-1 gap-1">
+            {/* Modern Gradient Tab Navigation */}
+            <div className="bg-gradient-to-r from-green-50 via-teal-50 to-blue-50 border-b-2 border-green-200">
+              <TabsList variant="gradient-green" className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
@@ -351,25 +349,20 @@ export const Accounting: React.FC = () => {
                     <TabsTrigger
                       key={tab.id}
                       value={tab.id}
-                      className={cn(
-                        "flex flex-col items-center gap-2 p-4 rounded-lg transition-all duration-300 group",
-                        "hover:bg-white hover:shadow-sm",
-                        "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2",
-                        isActive ? "data-[state=active]:border-primary-300" : "border-transparent"
-                      )}
+                      variant="gradient-green"
+                      className="flex flex-col items-center gap-2 p-4 group"
                     >
                       <div className={cn(
                         "h-8 w-8 rounded-full flex items-center justify-center transition-all group-hover:scale-110",
-                        isActive ? "bg-primary-100" : "bg-slate-200 group-hover:bg-slate-300"
+                        isActive 
+                          ? "bg-gradient-to-br from-green-500 to-teal-600 text-white shadow-lg" 
+                          : "bg-green-100 text-green-600 group-hover:bg-green-200"
                       )}>
-                        <Icon className={cn(
-                          "h-4 w-4 transition-colors",
-                          isActive ? "text-primary-600" : "text-slate-600 group-hover:text-slate-700"
-                        )} />
+                        <Icon className="h-4 w-4" />
                       </div>
                       <span className={cn(
                         "text-xs font-medium transition-colors",
-                        isActive ? "text-primary-700" : "text-slate-600 group-hover:text-slate-700"
+                        isActive ? "text-green-700" : "text-green-600 group-hover:text-green-700"
                       )}>
                         {tab.label}
                       </span>
@@ -379,55 +372,53 @@ export const Accounting: React.FC = () => {
               </TabsList>
             </div>
 
-            {/* Enhanced Tab Description */}
-            <div className="bg-gradient-to-r from-primary-50/50 to-primary-100/30 border-b px-6 py-4">
+            {/* Enhanced Tab Description with Gradient */}
+            <div className="bg-gradient-to-r from-green-50/50 to-teal-50/30 border-b px-6 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="h-2 w-2 rounded-full bg-primary-500 animate-pulse"></div>
-                  <p className="text-sm text-primary-800 font-medium">
+                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+                  <p className="text-sm text-green-800 font-medium">
                     {tabs.find(tab => tab.id === activeTab)?.description}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-primary-50 text-primary-700 border-primary-200">
+                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                     Real-time
                   </Badge>
-                  <Button variant="ghost" size="sm" className="h-7 px-2">
+                  <Button variant="ghost" size="sm" className="h-7 px-2 hover:bg-green-100">
                     <RefreshCw className="h-3 w-3" />
                   </Button>
                 </div>
               </div>
             </div>
 
-            {/* Enhanced Tab Content */}
+            {/* Enhanced Tab Content with Gradient Backgrounds */}
             {tabs.map((tab) => {
               const Component = tab.component;
               return (
-                <TabsContent key={tab.id} value={tab.id} className="p-0">
-                  <div className="p-6 space-y-6 bg-gradient-to-br from-slate-50/30 to-white min-h-[600px]">
-                    {/* Tab Header */}
-                    <div className="flex items-center justify-between pb-4 border-b border-slate-200">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
-                          <tab.icon className="h-5 w-5 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-semibold text-foreground">{tab.label}</h3>
-                          <p className="text-sm text-muted-foreground">Manage and track {tab.label.toLowerCase()}</p>
-                        </div>
+                <TabsContent key={tab.id} value={tab.id} variant="gradient-green" className="min-h-[600px]">
+                  {/* Tab Header with Gradient Icon */}
+                  <div className="flex items-center justify-between pb-4 border-b border-green-200">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+                        <tab.icon className="h-5 w-5 text-white" />
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
-                          <Download className="h-4 w-4 mr-2" />
-                          Export
-                        </Button>
+                      <div>
+                        <h3 className="text-xl font-semibold text-foreground">{tab.label}</h3>
+                        <p className="text-sm text-muted-foreground">Manage and track {tab.label.toLowerCase()}</p>
                       </div>
                     </div>
-                    
-                    {/* Component Content */}
-                    <div className="space-y-6">
-                      <Component />
+                    <div className="flex items-center gap-2">
+                      <Button variant="gradient-green" size="sm">
+                        <Download className="h-4 w-4 mr-2" />
+                        Export
+                      </Button>
                     </div>
+                  </div>
+                  
+                  {/* Component Content */}
+                  <div className="space-y-6">
+                    <Component />
                   </div>
                 </TabsContent>
               );
@@ -439,19 +430,42 @@ export const Accounting: React.FC = () => {
   );
 };
 
-// Individual route components
+// Individual route components with enhanced gradient styling
 const AccountingIncomeRoute: React.FC = () => {
   const { t } = useLanguage();
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center gap-3 mb-6">
-        <TrendingUpIcon className="h-8 w-8 text-green-600" />
-        <div>
-          <h1 className="text-3xl font-bold">{t('accounting.income_title')}</h1>
-          <p className="text-muted-foreground">{t('accounting.income_desc')}</p>
+    <div className="container mx-auto p-6 space-y-8 bg-gradient-to-br from-emerald-50/40 via-green-50/30 to-white min-h-screen">
+      {/* Enhanced Page Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <TrendingUpIcon className="h-7 w-7 text-white group-hover:scale-110 transition-transform" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-emerald-700 to-green-800 bg-clip-text text-transparent">
+                {t('accounting.income_title')}
+              </h1>
+              <p className="text-muted-foreground text-lg">{t('accounting.income_desc')}</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button variant="outline-gradient-green" size="sm" className="gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Refresh Data
+          </Button>
+          <Button variant="gradient-green" size="sm" className="gap-2">
+            <Download className="h-4 w-4" />
+            Export Report
+          </Button>
         </div>
       </div>
-      <IncomeLedger />
+      
+      {/* Enhanced Content Container */}
+      <div className="bg-gradient-to-br from-white to-green-50/20 rounded-2xl shadow-xl border-0 p-6">
+        <IncomeLedger />
+      </div>
     </div>
   );
 };
@@ -459,68 +473,183 @@ const AccountingIncomeRoute: React.FC = () => {
 const AccountingExpenseRoute: React.FC = () => {
   const { t } = useLanguage();
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center gap-3 mb-6">
-        <TrendingDownIcon className="h-8 w-8 text-red-600" />
-        <div>
-          <h1 className="text-3xl font-bold">{t('accounting.expense_ledger')}</h1>
-          <p className="text-muted-foreground">{t('accounting.expense_desc')}</p>
+    <div className="container mx-auto p-6 space-y-8 bg-gradient-to-br from-red-50/40 via-rose-50/30 to-white min-h-screen">
+      {/* Enhanced Page Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-red-500 via-rose-500 to-red-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <TrendingDownIcon className="h-7 w-7 text-white group-hover:scale-110 transition-transform" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-red-700 to-rose-800 bg-clip-text text-transparent">
+                {t('accounting.expense_ledger')}
+              </h1>
+              <p className="text-muted-foreground text-lg">{t('accounting.expense_desc')}</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button variant="outline-gradient-red" size="sm" className="gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Refresh Data
+          </Button>
+          <Button variant="gradient-red" size="sm" className="gap-2">
+            <Download className="h-4 w-4" />
+            Export Report
+          </Button>
         </div>
       </div>
-      <ExpenseLedger />
+      
+      {/* Enhanced Content Container */}
+      <div className="bg-gradient-to-br from-white to-red-50/20 rounded-2xl shadow-xl border-0 p-6">
+        <ExpenseLedger />
+      </div>
     </div>
   );
 };
 
 const AccountingCashBankRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    <div className="flex items-center gap-3 mb-6">
-      <CreditCardIcon className="h-8 w-8 text-blue-600" />
-      <div>
-        <h1 className="text-3xl font-bold">Cash & Bank</h1>
-        <p className="text-muted-foreground">Monitor cash flow and bank transactions</p>
+  <div className="container mx-auto p-6 space-y-8 bg-gradient-to-br from-blue-50/40 via-cyan-50/30 to-white min-h-screen">
+    {/* Enhanced Page Header */}
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+          <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-blue-500 via-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <CreditCardIcon className="h-7 w-7 text-white group-hover:scale-110 transition-transform" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-700 to-indigo-800 bg-clip-text text-transparent">
+              Cash & Bank
+            </h1>
+            <p className="text-muted-foreground text-lg">Monitor cash flow and bank transactions</p>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <Button variant="outline-gradient-blue" size="sm" className="gap-2">
+          <RefreshCw className="h-4 w-4" />
+          Refresh Data
+        </Button>
+        <Button variant="gradient-blue" size="sm" className="gap-2">
+          <Download className="h-4 w-4" />
+          Export Report
+        </Button>
       </div>
     </div>
-    <CashBankLedger />
+    
+    {/* Enhanced Content Container */}
+    <div className="bg-gradient-to-br from-white to-blue-50/20 rounded-2xl shadow-xl border-0 p-6">
+      <CashBankLedger />
+    </div>
   </div>
 );
 
 const AccountingGoldWeightRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    <div className="flex items-center gap-3 mb-6">
-      <ScaleIcon className="h-8 w-8 text-yellow-600" />
-      <div>
-        <h1 className="text-3xl font-bold">Gold Weight</h1>
-        <p className="text-muted-foreground">Track gold inventory valuation and weight</p>
+  <div className="container mx-auto p-6 space-y-8 bg-gradient-to-br from-amber-50/40 via-yellow-50/30 to-white min-h-screen">
+    {/* Enhanced Page Header */}
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+          <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-amber-500 via-yellow-500 to-orange-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <ScaleIcon className="h-7 w-7 text-white group-hover:scale-110 transition-transform" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-amber-700 to-yellow-800 bg-clip-text text-transparent">
+              Gold Weight
+            </h1>
+            <p className="text-muted-foreground text-lg">Track gold inventory valuation and weight</p>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <Button variant="outline-gradient-amber" size="sm" className="gap-2">
+          <RefreshCw className="h-4 w-4" />
+          Refresh Data
+        </Button>
+        <Button variant="gradient-amber" size="sm" className="gap-2">
+          <Download className="h-4 w-4" />
+          Export Report
+        </Button>
       </div>
     </div>
-    <GoldWeightLedger />
+    
+    {/* Enhanced Content Container */}
+    <div className="bg-gradient-to-br from-white to-amber-50/20 rounded-2xl shadow-xl border-0 p-6">
+      <GoldWeightLedger />
+    </div>
   </div>
 );
 
 const AccountingDebtRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    <div className="flex items-center gap-3 mb-6">
-      <AlertTriangleIcon className="h-8 w-8 text-orange-600" />
-      <div>
-        <h1 className="text-3xl font-bold">Debt Tracking</h1>
-        <p className="text-muted-foreground">Monitor customer debt and payment history</p>
+  <div className="container mx-auto p-6 space-y-8 bg-gradient-to-br from-orange-50/40 via-red-50/30 to-white min-h-screen">
+    {/* Enhanced Page Header */}
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+          <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-orange-500 via-red-500 to-red-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <AlertTriangleIcon className="h-7 w-7 text-white group-hover:scale-110 transition-transform" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-orange-700 to-red-800 bg-clip-text text-transparent">
+              Debt Tracking
+            </h1>
+            <p className="text-muted-foreground text-lg">Monitor customer debt and payment history</p>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <Button variant="outline-gradient-orange" size="sm" className="gap-2">
+          <RefreshCw className="h-4 w-4" />
+          Refresh Data
+        </Button>
+        <Button variant="gradient-orange" size="sm" className="gap-2">
+          <Download className="h-4 w-4" />
+          Export Report
+        </Button>
       </div>
     </div>
-    <DebtTracking />
+    
+    {/* Enhanced Content Container */}
+    <div className="bg-gradient-to-br from-white to-orange-50/20 rounded-2xl shadow-xl border-0 p-6">
+      <DebtTracking />
+    </div>
   </div>
 );
 
 const AccountingProfitLossRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    <div className="flex items-center gap-3 mb-6">
-      <BarChart3Icon className="h-8 w-8 text-purple-600" />
-      <div>
-        <h1 className="text-3xl font-bold">Profit & Loss</h1>
-        <p className="text-muted-foreground">Comprehensive profit and loss analysis</p>
+  <div className="container mx-auto p-6 space-y-8 bg-gradient-to-br from-purple-50/40 via-violet-50/30 to-white min-h-screen">
+    {/* Enhanced Page Header */}
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+          <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-purple-500 via-violet-500 to-indigo-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <BarChart3Icon className="h-7 w-7 text-white group-hover:scale-110 transition-transform" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-purple-700 to-violet-800 bg-clip-text text-transparent">
+              Profit & Loss
+            </h1>
+            <p className="text-muted-foreground text-lg">Comprehensive profit and loss analysis</p>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <Button variant="outline-gradient-purple" size="sm" className="gap-2">
+          <RefreshCw className="h-4 w-4" />
+          Refresh Data
+        </Button>
+        <Button variant="gradient-purple" size="sm" className="gap-2">
+          <Download className="h-4 w-4" />
+          Export Report
+        </Button>
       </div>
     </div>
-    <ProfitLossAnalysis />
+    
+    {/* Enhanced Content Container */}
+    <div className="bg-gradient-to-br from-white to-purple-50/20 rounded-2xl shadow-xl border-0 p-6">
+      <ProfitLossAnalysis />
+    </div>
   </div>
 );
 

@@ -49,34 +49,45 @@ interface ModernChartProps {
   customOptions?: Partial<ChartOptions<any>>;
 }
 
-// Gold shop color palette for charts
+// Enhanced Green-Teal-Blue spectrum with better visibility and balance
 const goldShopColors = {
   primary: [
-    designTokens.colors.primary[500], // Main gold
-    designTokens.colors.primary[400], // Bright gold
-    designTokens.colors.primary[600], // Dark gold
-    designTokens.colors.primary[300], // Medium gold
-    designTokens.colors.primary[700], // Darker gold
+    '#059669', // Emerald-600 (stronger green)
+    '#0891b2', // Sky-600 (vibrant teal)
+    '#2563eb', // Blue-600 (deeper blue)
+    '#7c3aed', // Violet-600 (rich purple)
+    '#dc2626', // Red-600 (accent red)
+    '#ea580c', // Orange-600 (warm accent)
   ],
   gradients: [
-    'rgba(245, 158, 11, 0.8)', // Gold with opacity
-    'rgba(59, 130, 246, 0.8)', // Blue
-    'rgba(16, 185, 129, 0.8)', // Green
-    'rgba(239, 68, 68, 0.8)',  // Red
-    'rgba(139, 92, 246, 0.8)', // Purple
-    'rgba(245, 101, 101, 0.8)', // Light red
-    'rgba(34, 197, 94, 0.8)',  // Light green
-    'rgba(168, 85, 247, 0.8)',  // Light purple
+    'rgba(5, 150, 105, 0.8)', // Strong emerald with higher opacity
+    'rgba(8, 145, 178, 0.8)', // Vibrant sky/teal
+    'rgba(37, 99, 235, 0.8)', // Rich blue
+    'rgba(124, 58, 237, 0.8)', // Deep violet
+    'rgba(220, 38, 38, 0.8)', // Accent red
+    'rgba(234, 88, 12, 0.8)', // Warm orange
+    'rgba(16, 185, 129, 0.8)', // Bright green
+    'rgba(168, 85, 247, 0.8)', // Bright violet
+  ],
+  lightGradients: [
+    'rgba(5, 150, 105, 0.25)', // Light emerald
+    'rgba(8, 145, 178, 0.25)', // Light sky/teal
+    'rgba(37, 99, 235, 0.25)', // Light blue
+    'rgba(124, 58, 237, 0.25)', // Light violet
+    'rgba(220, 38, 38, 0.25)', // Light red
+    'rgba(234, 88, 12, 0.25)', // Light orange
+    'rgba(16, 185, 129, 0.25)', // Light green
+    'rgba(168, 85, 247, 0.25)', // Light violet
   ],
   borders: [
-    designTokens.colors.primary[600],
-    designTokens.colors.semantic.info[600],
-    designTokens.colors.semantic.success[600],
-    designTokens.colors.semantic.error[600],
-    '#8b5cf6',
-    '#f87171',
-    '#22c55e',
-    '#a855f7',
+    '#059669', // Emerald-600
+    '#0891b2', // Sky-600
+    '#2563eb', // Blue-600
+    '#7c3aed', // Violet-600
+    '#dc2626', // Red-600
+    '#ea580c', // Orange-600
+    '#10b981', // Green-500
+    '#a855f7', // Violet-500
   ]
 };
 
@@ -131,14 +142,14 @@ export const ModernChart: React.FC<ModernChartProps> = ({
           },
         },
         tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          borderColor: designTokens.colors.primary[500],
-          borderWidth: 1,
-          cornerRadius: 8,
+          backgroundColor: 'rgba(255, 255, 255, 0.98)',
+          titleColor: '#1f2937',
+          bodyColor: '#374151',
+          borderColor: '#059669',
+          borderWidth: 2,
+          cornerRadius: 12,
           displayColors: true,
-          padding: 12,
+          padding: 16,
           titleFont: {
             family: designTokens.typography.fontFamily.sans.join(', '),
             size: 14,
@@ -148,6 +159,10 @@ export const ModernChart: React.FC<ModernChartProps> = ({
             family: designTokens.typography.fontFamily.sans.join(', '),
             size: 13,
           },
+          shadowOffsetX: 0,
+          shadowOffsetY: 4,
+          shadowBlur: 16,
+          shadowColor: 'rgba(5, 150, 105, 0.2)',
           callbacks: {
             label: function(context: any) {
               const value = context.parsed.y ?? context.parsed;
@@ -231,7 +246,7 @@ export const ModernChart: React.FC<ModernChartProps> = ({
     return { ...baseOptions, ...customOptions };
   };
 
-  // Apply gold theme colors to chart data
+  // Apply gold theme colors to chart data - Much brighter and more visible
   const getThemedData = (): ChartData<any> => {
     const themedData = { ...data };
     
@@ -239,14 +254,23 @@ export const ModernChart: React.FC<ModernChartProps> = ({
       ...dataset,
       backgroundColor: type === 'doughnut' 
         ? goldShopColors.gradients
-        : goldShopColors.gradients[index % goldShopColors.gradients.length],
-      borderColor: type === 'doughnut'
-        ? goldShopColors.borders
-        : goldShopColors.borders[index % goldShopColors.borders.length],
-      borderWidth: type === 'doughnut' ? 2 : 3,
+        : type === 'line' 
+          ? goldShopColors.lightGradients[index % goldShopColors.lightGradients.length]
+          : goldShopColors.gradients[index % goldShopColors.gradients.length],
+      borderColor: goldShopColors.borders[index % goldShopColors.borders.length],
+      borderWidth: type === 'doughnut' ? 3 : type === 'line' ? 4 : 2,
       ...(type === 'line' && {
         fill: true,
-        backgroundColor: `${goldShopColors.gradients[index % goldShopColors.gradients.length]}20`,
+        tension: 0.4,
+        pointBackgroundColor: goldShopColors.borders[index % goldShopColors.borders.length],
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+      }),
+      ...(type === 'bar' && {
+        borderRadius: 6,
+        borderSkipped: false,
       }),
     }));
 
@@ -297,13 +321,13 @@ export const ModernChart: React.FC<ModernChartProps> = ({
 
   if (isLoading) {
     return (
-      <Card className={`animate-pulse ${className}`}>
+      <Card className={`animate-pulse border-0 shadow-xl bg-gradient-to-br from-white via-emerald-50/30 to-sky-50/20 ${className}`}>
         <CardHeader>
-          <div className="h-6 bg-gray-200 rounded w-48"></div>
-          {description && <div className="h-4 bg-gray-200 rounded w-64"></div>}
+          <div className="h-6 bg-gradient-to-r from-emerald-300 to-sky-400 rounded-lg w-48"></div>
+          {description && <div className="h-4 bg-gradient-to-r from-emerald-300 to-sky-400 rounded-lg w-64 mt-2"></div>}
         </CardHeader>
         <CardContent>
-          <div className={`bg-gray-200 rounded`} style={{ height: `${height}px` }}></div>
+          <div className={`bg-gradient-to-br from-emerald-200 via-sky-200 to-blue-300 rounded-xl shadow-inner`} style={{ height: `${height}px` }}></div>
         </CardContent>
       </Card>
     );
@@ -312,7 +336,7 @@ export const ModernChart: React.FC<ModernChartProps> = ({
   return (
     <Card 
       className={`
-        transition-all duration-300 hover:shadow-lg
+        border-0 shadow-xl bg-gradient-to-br from-white via-emerald-50/30 to-sky-50/20 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]
         ${isFullscreen ? 'fixed inset-4 z-50 bg-white' : ''}
         ${className}
       `}
@@ -336,7 +360,7 @@ export const ModernChart: React.FC<ModernChartProps> = ({
               size="sm"
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 bg-gradient-to-r from-emerald-50 to-sky-50 border-emerald-200 hover:from-emerald-100 hover:to-sky-100 hover:border-emerald-300 transition-all duration-300"
               aria-label={t('dashboard.refresh_chart')}
               title={t('dashboard.refresh_chart')}
             >
@@ -349,7 +373,7 @@ export const ModernChart: React.FC<ModernChartProps> = ({
               variant="outline"
               size="sm"
               onClick={handleExport}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 bg-gradient-to-r from-sky-50 to-blue-50 border-sky-200 hover:from-sky-100 hover:to-blue-100 hover:border-sky-300 transition-all duration-300"
               aria-label={t('dashboard.export_chart')}
               title={t('dashboard.export_chart')}
             >
@@ -362,7 +386,7 @@ export const ModernChart: React.FC<ModernChartProps> = ({
               variant="outline"
               size="sm"
               onClick={toggleFullscreen}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 bg-gradient-to-r from-violet-50 to-purple-50 border-violet-200 hover:from-violet-100 hover:to-purple-100 hover:border-violet-300 transition-all duration-300"
               aria-label={isFullscreen ? t('dashboard.exit_fullscreen') : t('dashboard.fullscreen')}
               title={isFullscreen ? t('dashboard.exit_fullscreen') : t('dashboard.fullscreen')}
             >

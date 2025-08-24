@@ -243,45 +243,89 @@ export const ComprehensiveCustomerForm: React.FC<ComprehensiveCustomerFormProps>
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5 text-primary" />
-            {customer ? 'Edit Customer' : 'Add New Customer'}
-          </CardTitle>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
+      <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto border-0 shadow-2xl">
+        <CardHeader className="bg-gradient-to-r from-green-50 via-teal-50 to-blue-50 border-b-2 border-green-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+                <User className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl font-bold text-foreground">
+                  {customer ? 'Edit Customer' : 'Add New Customer'}
+                </CardTitle>
+                <p className="text-muted-foreground">
+                  {customer ? 'Update customer information and preferences' : 'Create a new customer profile with complete details'}
+                </p>
+              </div>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onClose}
+              className="text-muted-foreground hover:text-foreground hover:bg-white/50"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
         </CardHeader>
         
-        <CardContent>
+        <CardContent className="p-0">
           <form onSubmit={handleSubmit}>
             <Tabs defaultValue="basic" className="w-full">
-              <TabsList className="grid grid-cols-5 w-full">
-                <TabsTrigger value="basic" className="flex items-center gap-1">
-                  <User className="h-4 w-4" />
-                  Basic
-                </TabsTrigger>
-                <TabsTrigger value="address" className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  Address
-                </TabsTrigger>
-                <TabsTrigger value="personal" className="flex items-center gap-1">
-                  <Heart className="h-4 w-4" />
-                  Personal
-                </TabsTrigger>
-                <TabsTrigger value="business" className="flex items-center gap-1">
-                  <Building className="h-4 w-4" />
-                  Business
-                </TabsTrigger>
-                <TabsTrigger value="preferences" className="flex items-center gap-1">
-                  <Star className="h-4 w-4" />
-                  Preferences
-                </TabsTrigger>
-              </TabsList>
+              {/* Modern Tab Navigation */}
+              <div className="bg-gradient-to-r from-green-50 via-teal-50 to-blue-50 border-b-2 border-green-200">
+                <TabsList className="grid grid-cols-5 w-full bg-transparent h-auto p-1 gap-1">
+                  <TabsTrigger 
+                    value="basic" 
+                    className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-green-300"
+                  >
+                    <div className="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center">
+                      <User className="h-3 w-3 text-green-600" />
+                    </div>
+                    <span className="font-medium text-sm">Basic</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="address" 
+                    className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-teal-300"
+                  >
+                    <div className="h-6 w-6 rounded-full bg-teal-100 flex items-center justify-center">
+                      <MapPin className="h-3 w-3 text-teal-600" />
+                    </div>
+                    <span className="font-medium text-sm">Address</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="personal" 
+                    className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-blue-300"
+                  >
+                    <div className="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center">
+                      <Heart className="h-3 w-3 text-blue-600" />
+                    </div>
+                    <span className="font-medium text-sm">Personal</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="business" 
+                    className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300"
+                  >
+                    <div className="h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center">
+                      <Building className="h-3 w-3 text-purple-600" />
+                    </div>
+                    <span className="font-medium text-sm">Business</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="preferences" 
+                    className="flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-pink-300"
+                  >
+                    <div className="h-6 w-6 rounded-full bg-pink-100 flex items-center justify-center">
+                      <Star className="h-3 w-3 text-pink-600" />
+                    </div>
+                    <span className="font-medium text-sm">Preferences</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               {/* Basic Information Tab */}
-              <TabsContent value="basic" className="space-y-4">
+              <TabsContent value="basic" className="p-6 space-y-6 bg-gradient-to-br from-green-50/30 to-white">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="name">Customer Name *</Label>
@@ -374,7 +418,7 @@ export const ComprehensiveCustomerForm: React.FC<ComprehensiveCustomerFormProps>
               </TabsContent>
 
               {/* Address Information Tab */}
-              <TabsContent value="address" className="space-y-4">
+              <TabsContent value="address" className="p-6 space-y-6 bg-gradient-to-br from-teal-50/30 to-white">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
                     <Label htmlFor="street_address">Street Address</Label>
@@ -429,7 +473,7 @@ export const ComprehensiveCustomerForm: React.FC<ComprehensiveCustomerFormProps>
               </TabsContent>
 
               {/* Personal Information Tab */}
-              <TabsContent value="personal" className="space-y-4">
+              <TabsContent value="personal" className="p-6 space-y-6 bg-gradient-to-br from-blue-50/30 to-white">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="national_id">National ID / SSN</Label>
@@ -556,7 +600,7 @@ export const ComprehensiveCustomerForm: React.FC<ComprehensiveCustomerFormProps>
               </TabsContent>
 
               {/* Business Information Tab */}
-              <TabsContent value="business" className="space-y-4">
+              <TabsContent value="business" className="p-6 space-y-6 bg-gradient-to-br from-purple-50/30 to-white">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="credit_limit">Credit Limit ($)</Label>
@@ -626,7 +670,7 @@ export const ComprehensiveCustomerForm: React.FC<ComprehensiveCustomerFormProps>
               </TabsContent>
 
               {/* Preferences Tab */}
-              <TabsContent value="preferences" className="space-y-4">
+              <TabsContent value="preferences" className="p-6 space-y-6 bg-gradient-to-br from-pink-50/30 to-white">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="preferred_contact_method">Preferred Contact Method</Label>
@@ -699,24 +743,36 @@ export const ComprehensiveCustomerForm: React.FC<ComprehensiveCustomerFormProps>
               </TabsContent>
             </Tabs>
 
-            {/* Form Actions */}
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
-              <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    {customer ? 'Updating...' : 'Creating...'}
-                  </>
-                ) : (
-                  <>
-                    <Save className="h-4 w-4 mr-2" />
-                    {customer ? 'Update Customer' : 'Create Customer'}
-                  </>
-                )}
-              </Button>
+            {/* Enhanced Form Actions */}
+            <div className="bg-gradient-to-r from-slate-50 to-slate-100/80 border-t-2 border-slate-200 p-6">
+              <div className="flex justify-end gap-3">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={onClose} 
+                  disabled={isLoading}
+                  className="bg-white hover:bg-gray-50 border-gray-200"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      {customer ? 'Updating...' : 'Creating...'}
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4 mr-2" />
+                      {customer ? 'Update Customer' : 'Create Customer'}
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </form>
         </CardContent>

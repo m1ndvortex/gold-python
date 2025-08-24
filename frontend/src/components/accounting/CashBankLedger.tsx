@@ -6,7 +6,8 @@ import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Badge } from '../ui/badge';
-import { FilterIcon, RefreshCwIcon, TrendingUpIcon, TrendingDownIcon } from 'lucide-react';
+import { FilterIcon, RefreshCwIcon, TrendingUpIcon, TrendingDownIcon, CreditCardIcon, Wallet, BarChart3Icon, Activity } from 'lucide-react';
+import { cn } from '../../lib/utils';
 import { format } from 'date-fns';
 import { LedgerFilters } from '../../types';
 
@@ -93,69 +94,147 @@ export const CashBankLedger: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header with Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Cash Inflow
-            </CardTitle>
+      {/* Enhanced Header with Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-emerald-50 to-green-100/60">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <TrendingUpIcon className="h-5 w-5 text-emerald-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-emerald-800">
+                  Cash Inflow
+                </CardTitle>
+              </div>
+              <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+                Inflow
+              </Badge>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold text-emerald-900">
               {formatCurrency(cashInTotal)}
             </div>
+            <div className="flex items-center gap-2">
+              <div className="h-2 flex-1 bg-emerald-200 rounded-full overflow-hidden">
+                <div className="h-full bg-emerald-500 w-4/5 rounded-full"></div>
+              </div>
+              <span className="text-xs text-emerald-600">Target</span>
+            </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Cash Outflow
-            </CardTitle>
+        <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-red-50 to-rose-100/60">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <TrendingDownIcon className="h-5 w-5 text-red-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-red-800">
+                  Cash Outflow
+                </CardTitle>
+              </div>
+              <Badge className="bg-red-100 text-red-700 hover:bg-red-100">
+                Outflow
+              </Badge>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold text-red-900">
               {formatCurrency(cashOutTotal)}
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Net Cash Flow
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold ${netCashFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {formatCurrency(netCashFlow)}
+            <div className="flex items-center gap-2">
+              <div className="h-2 flex-1 bg-red-200 rounded-full overflow-hidden">
+                <div className="h-full bg-red-500 w-3/5 rounded-full"></div>
+              </div>
+              <span className="text-xs text-red-600">Budget</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Transactions
-            </CardTitle>
+        <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-blue-50 to-indigo-100/60">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Wallet className="h-5 w-5 text-blue-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-blue-800">
+                  Net Cash Flow
+                </CardTitle>
+              </div>
+              <Badge 
+                className={cn(
+                  "text-xs",
+                  netCashFlow >= 0 
+                    ? "bg-green-100 text-green-700 hover:bg-green-100" 
+                    : "bg-red-100 text-red-700 hover:bg-red-100"
+                )}
+              >
+                {netCashFlow >= 0 ? "Positive" : "Negative"}
+              </Badge>
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
+          <CardContent className="space-y-2">
+            <div className={cn(
+              "text-2xl font-bold",
+              netCashFlow >= 0 ? 'text-green-900' : 'text-red-900'
+            )}>
+              {formatCurrency(netCashFlow)}
+            </div>
+            <div className="flex items-center justify-between text-xs text-blue-600">
+              <span>Net Flow</span>
+              <Activity className="h-3 w-3" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-purple-50 to-violet-100/60">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <BarChart3Icon className="h-5 w-5 text-purple-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-purple-800">
+                  Total Transactions
+                </CardTitle>
+              </div>
+              <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100">
+                Count
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="text-2xl font-bold text-purple-900">
               {cashBankEntries?.length || 0}
+            </div>
+            <div className="flex items-center justify-between text-xs text-purple-600">
+              <span>This Period</span>
+              <Activity className="h-3 w-3" />
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Main Cash & Bank Ledger Card */}
-      <Card>
-        <CardHeader>
+      {/* Enhanced Main Cash & Bank Ledger Card */}
+      <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-blue-50/20 to-white">
+        <CardHeader className="bg-gradient-to-r from-blue-50 via-cyan-50 to-blue-50 border-b-2 border-blue-200">
           <div className="flex items-center justify-between">
-            <CardTitle>Cash & Bank Ledger</CardTitle>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg">
+                <CreditCardIcon className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-blue-800">Cash & Bank Ledger</CardTitle>
+                <p className="text-sm text-blue-600">Monitor cash flow and bank transactions</p>
+              </div>
+            </div>
             <div className="flex items-center gap-2">
               <Button
-                variant="outline"
+                variant="outline-gradient-blue"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
               >
@@ -163,7 +242,7 @@ export const CashBankLedger: React.FC = () => {
                 Filters
               </Button>
               <Button
-                variant="outline"
+                variant="gradient-blue"
                 size="sm"
                 onClick={() => refetch()}
                 disabled={isLoading}
@@ -175,12 +254,12 @@ export const CashBankLedger: React.FC = () => {
           </div>
         </CardHeader>
 
-        {/* Filters Panel */}
+        {/* Enhanced Filters Panel */}
         {showFilters && (
-          <CardContent className="border-b">
+          <CardContent className="border-b bg-gradient-to-r from-blue-50/50 to-cyan-50/30">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label className="text-sm font-medium mb-2 block">Start Date</label>
+                <label className="text-sm font-medium mb-2 block text-blue-800">Start Date</label>
                 <Input
                   type="date"
                   value={filters.start_date || ''}
@@ -188,7 +267,7 @@ export const CashBankLedger: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">End Date</label>
+                <label className="text-sm font-medium mb-2 block text-blue-800">End Date</label>
                 <Input
                   type="date"
                   value={filters.end_date || ''}
@@ -196,7 +275,7 @@ export const CashBankLedger: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Transaction Type</label>
+                <label className="text-sm font-medium mb-2 block text-blue-800">Transaction Type</label>
                 <Select
                   value={filters.transaction_type || 'all'}
                   onValueChange={(value) => handleFilterChange('transaction_type', value === 'all' ? '' : value)}
@@ -214,7 +293,7 @@ export const CashBankLedger: React.FC = () => {
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Payment Method</label>
+                <label className="text-sm font-medium mb-2 block text-blue-800">Payment Method</label>
                 <Select
                   value={filters.payment_method || 'all'}
                   onValueChange={(value) => handleFilterChange('payment_method', value === 'all' ? '' : value)}
@@ -233,7 +312,7 @@ export const CashBankLedger: React.FC = () => {
               </div>
             </div>
             <div className="flex justify-end mt-4">
-              <Button variant="outline" onClick={clearFilters}>
+              <Button variant="outline-gradient-blue" onClick={clearFilters}>
                 Clear Filters
               </Button>
             </div>

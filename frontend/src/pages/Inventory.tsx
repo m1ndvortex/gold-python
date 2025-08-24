@@ -314,7 +314,7 @@ export const Inventory: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.2, delay: index * 0.05 }}
             >
-              <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-primary/20">
+              <Card variant="gradient-green" className="group cursor-pointer hover:border-green-300/50 border-2 border-transparent">
                 <CardHeader className="pb-3">
                   <div className="aspect-square relative overflow-hidden rounded-lg bg-muted">
                     {item.image_url ? (
@@ -373,7 +373,7 @@ export const Inventory: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8"
+                        className="h-8 w-8 hover:bg-green-100"
                         onClick={(e) => {
                           e.stopPropagation();
                           setEditingItem(item);
@@ -385,7 +385,7 @@ export const Inventory: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-red-600 hover:text-red-700"
+                        className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
                         onClick={async (e) => {
                           e.stopPropagation();
                           if (window.confirm(`Are you sure you want to delete "${item.name}"?`)) {
@@ -413,10 +413,15 @@ export const Inventory: React.FC = () => {
   if (error) {
     return (
       <div className="container mx-auto p-6">
-        <Card>
+        <Card variant="professional">
           <CardContent className="p-6">
-            <div className="text-center text-red-600">
-              Failed to load inventory items. Please try again.
+            <div className="text-center space-y-4">
+              <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg mx-auto">
+                <AlertTriangle className="h-6 w-6 text-white" />
+              </div>
+              <div className="text-red-600 font-medium">
+                Failed to load inventory items. Please try again.
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -432,17 +437,22 @@ export const Inventory: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       >
-        <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Inventory Management
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your gold jewelry inventory with modern tools and insights
-          </p>
+        <div className="flex items-center gap-4">
+          <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+            <Package className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
+              Inventory Management
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Manage your gold jewelry inventory with modern tools and insights
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Button
-            variant="outline"
+            variant="outline-gradient-green"
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center gap-2"
           >
@@ -456,7 +466,7 @@ export const Inventory: React.FC = () => {
               </Badge>
             )}
           </Button>
-          <Button onClick={() => setShowForm(true)} className="flex items-center gap-2">
+          <Button variant="gradient-green" onClick={() => setShowForm(true)} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Add Item
           </Button>
@@ -464,18 +474,18 @@ export const Inventory: React.FC = () => {
       </motion.div>
 
       <Tabs defaultValue="inventory" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="inventory" className="flex items-center gap-2">
+        <TabsList variant="gradient-green" className="grid w-full grid-cols-2">
+          <TabsTrigger variant="gradient-green" value="inventory" className="flex items-center gap-2">
             <Package className="h-4 w-4" />
             Inventory Items
           </TabsTrigger>
-          <TabsTrigger value="categories" className="flex items-center gap-2">
+          <TabsTrigger variant="gradient-green" value="categories" className="flex items-center gap-2">
             <Layers className="h-4 w-4" />
             Categories
           </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="inventory" className="space-y-6">
+        <TabsContent variant="gradient-green" value="inventory" className="space-y-6">
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Advanced Filter Panel */}
             <AnimatePresence>
@@ -505,7 +515,7 @@ export const Inventory: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                <Card>
+                <Card variant="filter">
                   <CardContent className="p-4">
                     <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                       <div className="relative flex-1 max-w-md">
@@ -514,14 +524,14 @@ export const Inventory: React.FC = () => {
                           placeholder="Search inventory items..."
                           value={filters.search || ''}
                           onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                          className="pl-10"
+                          className="pl-10 border-0 bg-white/80 shadow-sm focus:shadow-md transition-all duration-300"
                         />
                       </div>
                       
                       <div className="flex items-center gap-2">
-                        <div className="flex items-center border rounded-lg p-1">
+                        <div className="flex items-center bg-white/80 rounded-lg p-1 shadow-sm">
                           <Button
-                            variant={viewMode === 'list' ? 'default' : 'ghost'}
+                            variant={viewMode === 'list' ? 'gradient-green' : 'ghost'}
                             size="sm"
                             onClick={() => setViewMode('list')}
                             className="h-8 w-8 p-0"
@@ -529,7 +539,7 @@ export const Inventory: React.FC = () => {
                             <List className="h-4 w-4" />
                           </Button>
                           <Button
-                            variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                            variant={viewMode === 'grid' ? 'gradient-green' : 'ghost'}
                             size="sm"
                             onClick={() => setViewMode('grid')}
                             className="h-8 w-8 p-0"
@@ -539,7 +549,7 @@ export const Inventory: React.FC = () => {
                         </div>
                         
                         {inventoryData && (
-                          <Badge variant="secondary" className="font-mono">
+                          <Badge variant="secondary" className="font-mono bg-white/80 shadow-sm">
                             {inventoryData.total} items
                           </Badge>
                         )}
@@ -579,26 +589,31 @@ export const Inventory: React.FC = () => {
                 transition={{ delay: 0.2 }}
               >
                 {isLoading ? (
-                  <Card>
+                  <Card variant="professional">
                     <CardContent className="p-8">
                       <div className="text-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                        <div className="relative mx-auto mb-4">
+                          <div className="animate-spin rounded-full h-8 w-8 border-2 border-transparent bg-gradient-to-r from-green-500 to-teal-600 bg-clip-border"></div>
+                          <div className="absolute inset-0 animate-spin rounded-full h-8 w-8 border-2 border-transparent border-t-green-500"></div>
+                        </div>
                         <p className="text-muted-foreground">Loading inventory items...</p>
                       </div>
                     </CardContent>
                   </Card>
                 ) : !inventoryData?.items.length ? (
-                  <Card>
+                  <Card variant="professional">
                     <CardContent className="p-8">
                       <div className="text-center space-y-4">
-                        <Package className="h-16 w-16 text-muted-foreground mx-auto" />
+                        <div className="h-16 w-16 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg mx-auto">
+                          <Package className="h-8 w-8 text-white" />
+                        </div>
                         <div>
                           <h3 className="text-lg font-semibold">No inventory items found</h3>
                           <p className="text-muted-foreground">
                             Add your first item to get started with inventory management.
                           </p>
                         </div>
-                        <Button onClick={() => setShowForm(true)} className="mt-4">
+                        <Button variant="gradient-green" onClick={() => setShowForm(true)} className="mt-4">
                           <Plus className="h-4 w-4 mr-2" />
                           Add First Item
                         </Button>
@@ -608,10 +623,12 @@ export const Inventory: React.FC = () => {
                 ) : viewMode === 'grid' ? (
                   <GridView />
                 ) : (
-                  <Card>
+                  <Card variant="professional">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Package className="h-5 w-5" />
+                      <CardTitle className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+                          <Package className="h-4 w-4 text-white" />
+                        </div>
                         Inventory Items
                       </CardTitle>
                     </CardHeader>
@@ -644,7 +661,7 @@ export const Inventory: React.FC = () => {
           </div>
         </TabsContent>
         
-        <TabsContent value="categories" className="space-y-6">
+        <TabsContent variant="gradient-green" value="categories" className="space-y-6">
           <CategoryManager onCategorySelect={(category) => console.log('Selected category:', category)} />
         </TabsContent>
       </Tabs>
@@ -667,27 +684,73 @@ export const Inventory: React.FC = () => {
 // Individual route components
 const ProductsRoute: React.FC = () => (
   <div className="container mx-auto p-6 space-y-6">
-    <div className="flex items-center gap-3 mb-6">
-      <Package className="h-8 w-8 text-blue-600" />
-      <div>
-        <h1 className="text-3xl font-bold">Product Management</h1>
-        <p className="text-muted-foreground">Manage your inventory items and product details</p>
+    {/* Header with gradient styling */}
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex items-center gap-4 mb-6"
+    >
+      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+        <Package className="h-6 w-6 text-white" />
       </div>
-    </div>
-    <InventoryList />
+      <div>
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          Product Management
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          Manage your inventory items and product details with modern tools
+        </p>
+      </div>
+    </motion.div>
+    
+    {/* Content with gradient card background */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 }}
+    >
+      <Card variant="gradient-blue" className="border-0 shadow-lg">
+        <CardContent className="p-6">
+          <InventoryList />
+        </CardContent>
+      </Card>
+    </motion.div>
   </div>
 );
 
 const CategoriesRoute: React.FC = () => (
   <div className="container mx-auto p-6 space-y-6">
-    <div className="flex items-center gap-3 mb-6">
-      <FolderTree className="h-8 w-8 text-green-600" />
-      <div>
-        <h1 className="text-3xl font-bold">Category Management</h1>
-        <p className="text-muted-foreground">Organize products with categories and subcategories</p>
+    {/* Header with gradient styling */}
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex items-center gap-4 mb-6"
+    >
+      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+        <FolderTree className="h-6 w-6 text-white" />
       </div>
-    </div>
-    <CategoryManager />
+      <div>
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
+          Category Management
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          Organize products with categories and subcategories using modern tools
+        </p>
+      </div>
+    </motion.div>
+    
+    {/* Content with gradient card background */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 }}
+    >
+      <Card variant="gradient-green" className="border-0 shadow-lg">
+        <CardContent className="p-6">
+          <CategoryManager />
+        </CardContent>
+      </Card>
+    </motion.div>
   </div>
 );
 
@@ -696,29 +759,84 @@ const BulkOperationsRoute: React.FC = () => {
   
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Edit className="h-8 w-8 text-purple-600" />
-        <div>
-          <h1 className="text-3xl font-bold">Bulk Operations</h1>
-          <p className="text-muted-foreground">Perform bulk operations on multiple inventory items</p>
+      {/* Header with gradient styling */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-center gap-4 mb-6"
+      >
+        <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
+          <Edit className="h-6 w-6 text-white" />
         </div>
-      </div>
-      <BulkInventoryOperations 
-        selectedItems={[]} 
-        categories={categories}
-        onBulkUpdate={async () => {}}
-        onBulkDelete={async () => {}}
-        onExport={async () => {}}
-        onSelectAll={() => {}}
-        onClearSelection={() => {}}
-        totalItems={0}
-      />
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
+            Bulk Operations
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Perform bulk operations on multiple inventory items efficiently
+          </p>
+        </div>
+      </motion.div>
+      
+      {/* Content with gradient card background */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <Card variant="gradient-purple" className="border-0 shadow-lg">
+          <CardContent className="p-6">
+            <BulkInventoryOperations 
+              selectedItems={[]} 
+              categories={categories}
+              onBulkUpdate={async () => {}}
+              onBulkDelete={async () => {}}
+              onExport={async () => {}}
+              onSelectAll={() => {}}
+              onClearSelection={() => {}}
+              totalItems={0}
+            />
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 };
 
 const ImagesRoute: React.FC = () => (
-  <ImageManagement />
+  <div className="container mx-auto p-6 space-y-6">
+    {/* Header with gradient styling */}
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex items-center gap-4 mb-6"
+    >
+      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg">
+        <Package className="h-6 w-6 text-white" />
+      </div>
+      <div>
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
+          Image Management
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          Manage product images and visual assets with modern tools
+        </p>
+      </div>
+    </motion.div>
+    
+    {/* Content with gradient card background */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 }}
+    >
+      <Card variant="gradient-purple" className="border-0 shadow-lg">
+        <CardContent className="p-6">
+          <ImageManagement />
+        </CardContent>
+      </Card>
+    </motion.div>
+  </div>
 );
 
 // Wrapper component to handle sub-routes
