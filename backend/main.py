@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database import engine, get_db
 import models
-from routers import auth, roles, inventory, customers, invoices, accounting, reports, settings, sms, analytics, profitability, customer_intelligence, inventory_intelligence, custom_reports, kpi_dashboard, analytics_data, chart_sharing, cost_analysis, category_intelligence, alerts, cache_management, backup_management, disaster_recovery
+from routers import auth, roles, inventory, customers, invoices, accounting, reports, settings, sms, analytics, profitability, customer_intelligence, inventory_intelligence, custom_reports, kpi_dashboard, analytics_data, chart_sharing, cost_analysis, category_intelligence, alerts, cache_management, backup_management, disaster_recovery, image_management
 
 # Create database tables safely
 try:
@@ -58,6 +58,7 @@ app.include_router(alerts.router)
 app.include_router(cache_management.router)
 app.include_router(backup_management.router)
 app.include_router(disaster_recovery.router)
+app.include_router(image_management.router)
 
 @app.get("/")
 async def root():

@@ -31,6 +31,7 @@ import { BulkInventoryOperations } from '../components/inventory/BulkInventoryOp
 import { useInventoryItems, useCategories, useDeleteInventoryItem } from '../hooks/useInventory';
 import { cn } from '../lib/utils';
 import type { InventoryItem, Category } from '../types';
+import ImageManagement from './ImageManagement';
 
 type ViewMode = 'grid' | 'list';
 
@@ -716,6 +717,10 @@ const BulkOperationsRoute: React.FC = () => {
   );
 };
 
+const ImagesRoute: React.FC = () => (
+  <ImageManagement />
+);
+
 // Wrapper component to handle sub-routes
 export const InventoryWithRouting: React.FC = () => {
   return (
@@ -723,6 +728,7 @@ export const InventoryWithRouting: React.FC = () => {
       <Route path="/products" element={<ProductsRoute />} />
       <Route path="/categories" element={<CategoriesRoute />} />
       <Route path="/bulk" element={<BulkOperationsRoute />} />
+      <Route path="/images" element={<ImagesRoute />} />
       <Route path="/*" element={<Inventory />} />
     </Routes>
   );

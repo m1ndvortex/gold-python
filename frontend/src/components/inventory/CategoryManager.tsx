@@ -6,7 +6,8 @@ import {
   FileText,
   Move,
   ToggleLeft,
-  ToggleRight
+  ToggleRight,
+  ImageIcon
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
@@ -16,6 +17,7 @@ import { CategoryTreeView } from './CategoryTreeView';
 import { CategoryForm } from './CategoryForm';
 import { CategoryTemplateManager } from './CategoryTemplateManager';
 import { CategoryBulkOperations } from './CategoryBulkOperations';
+import { CategoryImageManager } from '../image-management/CategoryImageManager';
 import { 
   useCategoryTree,
   useCategoryTemplates,
@@ -239,10 +241,14 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="tree" className="flex items-center gap-2">
                 <FolderTree className="h-4 w-4" />
                 Category Tree
+              </TabsTrigger>
+              <TabsTrigger value="images" className="flex items-center gap-2">
+                <ImageIcon className="h-4 w-4" />
+                Images
               </TabsTrigger>
               <TabsTrigger value="templates" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
@@ -269,6 +275,23 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
                 onDrop={handleDropCategory}
                 isDragMode={isDragMode}
               />
+            </TabsContent>
+
+            <TabsContent value="images" className="mt-4">
+              {selectedCategory ? (
+                <CategoryImageManager
+                  categoryId={selectedCategory}
+                  categoryName={categoryTree.find(c => c.id === selectedCategory)?.name || 'Category'}
+                />
+              ) : (
+                <div className="text-center py-12">
+                  <ImageIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Select a Category</h3>
+                  <p className="text-muted-foreground">
+                    Choose a category from the tree to manage its images and icons.
+                  </p>
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="templates" className="mt-4">

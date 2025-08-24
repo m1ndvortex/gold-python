@@ -26,7 +26,10 @@ import {
   TrendingUp,
   Zap,
   Target,
-  Activity
+  Activity,
+  Image,
+  ImageIcon,
+  Upload
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -86,6 +89,13 @@ const navigationItems: NavigationItem[] = [
         icon: Plus,
         href: '/inventory/bulk',
         permission: 'edit_inventory',
+      },
+      {
+        key: 'Images',
+        icon: ImageIcon,
+        href: '/inventory/images',
+        permission: 'view_inventory',
+        badge: 'New',
       },
     ],
   },

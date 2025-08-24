@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Edit, Phone, Mail, MapPin, DollarSign, Calendar, CreditCard, History, User, TrendingUp, AlertTriangle } from 'lucide-react';
+import { X, Edit, Phone, Mail, MapPin, DollarSign, Calendar, CreditCard, History, User, TrendingUp, AlertTriangle, ImageIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { useCustomer, useCustomerDebtHistory, useCustomerPayments } from '../../hooks/useCustomers';
 import { ComprehensiveCustomerForm } from './ComprehensiveCustomerForm';
 import { PaymentForm } from './PaymentForm';
+import { ImageGallery } from '../image-management/ImageGallery';
 import type { Customer } from '../../types';
 
 interface CustomerProfileProps {
@@ -308,10 +309,14 @@ export const CustomerProfile: React.FC<CustomerProfileProps> = ({
 
           {/* Tabs for detailed information */}
           <Tabs defaultValue="payments" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="payments">Payment History</TabsTrigger>
               <TabsTrigger value="debt-history">Debt History</TabsTrigger>
               <TabsTrigger value="invoices">Invoices</TabsTrigger>
+              <TabsTrigger value="images" className="flex items-center gap-2">
+                <ImageIcon className="h-4 w-4" />
+                Images
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="payments" className="space-y-4">
@@ -441,6 +446,32 @@ export const CustomerProfile: React.FC<CustomerProfileProps> = ({
                   <p className="text-muted-foreground text-center py-4">
                     Invoice history will be available when invoice management is implemented.
                   </p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="images" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <ImageIcon className="h-5 w-5" />
+                    Customer Images
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Manage images and documents related to this customer
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <ImageGallery
+                    entityType="customer"
+                    entityId={displayCustomer.id}
+                    viewMode="grid"
+                    enableReorder={true}
+                    enableZoom={true}
+                    enableFullscreen={true}
+                    maxImages={20}
+                    className="mt-4"
+                  />
                 </CardContent>
               </Card>
             </TabsContent>
