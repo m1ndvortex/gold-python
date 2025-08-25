@@ -227,20 +227,20 @@ export const UserManagementComponent: React.FC = () => {
   const confirmPassword = watchPassword('confirm_password');
 
   return (
-    <Card className="shadow-lg border-0">
-      <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 border-b">
+    <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-blue-50/30 hover:shadow-2xl transition-all duration-300">
+      <CardHeader className="bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 border-b-2 border-blue-200/50">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
-                <Users className="h-5 w-5 text-white" />
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300">
+                <Users className="h-6 w-6 text-white" />
               </div>
               <div>
                 <CardTitle className="text-2xl font-bold tracking-tight text-foreground">
-                  User Management
+                  {t('settings.user_management')}
                 </CardTitle>
                 <CardDescription className="text-base">
-                  Manage system users and their access permissions
+                  {t('settings.user_management_desc')}
                 </CardDescription>
               </div>
             </div>
@@ -248,25 +248,25 @@ export const UserManagementComponent: React.FC = () => {
           <Button 
             onClick={handleCreateUser}
             size="lg"
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <Plus className="h-5 w-5 mr-2" />
-            Add New User
+            {t('settings.add_new_user')}
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6 bg-gradient-to-br from-blue-50/20 via-white to-indigo-50/10">
         <div className="space-y-4">
           {/* Users Table */}
           <div className="border rounded-lg overflow-hidden shadow-sm bg-white">
             <Table>
               <TableHeader>
                 <TableRow className="bg-slate-50 border-b">
-                  <TableHead className="font-semibold text-slate-700">User</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Role</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Status</TableHead>
-                  <TableHead className="font-semibold text-slate-700">Created</TableHead>
-                  <TableHead className="text-right font-semibold text-slate-700">Actions</TableHead>
+                  <TableHead className="font-semibold text-slate-700">{t('settings.user')}</TableHead>
+                  <TableHead className="font-semibold text-slate-700">{t('settings.role')}</TableHead>
+                  <TableHead className="font-semibold text-slate-700">{t('common.status')}</TableHead>
+                  <TableHead className="font-semibold text-slate-700">{t('settings.created')}</TableHead>
+                  <TableHead className="text-right font-semibold text-slate-700">{t('common.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -297,7 +297,7 @@ export const UserManagementComponent: React.FC = () => {
                           {user.role.name}
                         </Badge>
                       ) : (
-                        <Badge variant="secondary" className="bg-gray-500 text-white border-gray-600 shadow-sm">No Role</Badge>
+                        <Badge variant="secondary" className="bg-gray-500 text-white border-gray-600 shadow-sm">{t('settings.no_role')}</Badge>
                       )}
                     </TableCell>
                     <TableCell>
@@ -311,18 +311,18 @@ export const UserManagementComponent: React.FC = () => {
                           {user.is_active ? (
                             <>
                               <UserCheck className="h-3 w-3 mr-1" />
-                              Active
+                              {t('common.active')}
                             </>
                           ) : (
                             <>
                               <UserX className="h-3 w-3 mr-1" />
-                              Inactive
+                              {t('common.inactive')}
                             </>
                           )}
                         </Badge>
                         {currentUser?.id === user.id && (
                           <Badge variant="outline" className="text-xs bg-blue-500 text-white border-blue-600 shadow-sm font-medium">
-                            You
+                            {t('settings.you')}
                           </Badge>
                         )}
                       </div>
@@ -372,7 +372,11 @@ export const UserManagementComponent: React.FC = () => {
           {usersData && usersData.total > 20 && (
             <div className="flex items-center justify-between">
               <div className="text-sm text-muted-foreground">
-                Showing {((currentPage - 1) * 20) + 1} to {Math.min(currentPage * 20, usersData.total)} of {usersData.total} users
+                {t('settings.showing_users', {
+                  start: ((currentPage - 1) * 20) + 1,
+                  end: Math.min(currentPage * 20, usersData.total),
+                  total: usersData.total
+                })}
               </div>
               <div className="flex gap-2">
                 <Button
@@ -381,7 +385,7 @@ export const UserManagementComponent: React.FC = () => {
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                 >
-                  Previous
+                  {t('settings.previous')}
                 </Button>
                 <Button
                   variant="outline"
@@ -389,7 +393,7 @@ export const UserManagementComponent: React.FC = () => {
                   onClick={() => setCurrentPage(p => p + 1)}
                   disabled={currentPage * 20 >= usersData.total}
                 >
-                  Next
+                  {t('settings.next')}
                 </Button>
               </div>
             </div>
@@ -405,9 +409,9 @@ export const UserManagementComponent: React.FC = () => {
                   <Plus className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <DialogTitle className="text-xl font-semibold">Create New User</DialogTitle>
+                  <DialogTitle className="text-xl font-semibold">{t('settings.create_new_user')}</DialogTitle>
                   <DialogDescription className="text-base text-muted-foreground">
-                    Add a new user to the system with appropriate permissions
+                    {t('settings.add_user_desc')}
                   </DialogDescription>
                 </div>
               </div>
@@ -416,11 +420,11 @@ export const UserManagementComponent: React.FC = () => {
             <form onSubmit={handleSubmitUser(onSubmitCreate)} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="username">{t('settings.username')}</Label>
                   <Input
                     id="username"
-                    {...registerUser('username', { required: 'Username is required' })}
-                    placeholder="Enter username"
+                    {...registerUser('username', { required: t('settings.username_required') })}
+                    placeholder={t('settings.enter_username')}
                   />
                   {userErrors.username && (
                     <p className="text-sm text-destructive">{userErrors.username.message}</p>
@@ -428,18 +432,18 @@ export const UserManagementComponent: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('settings.email')}</Label>
                   <Input
                     id="email"
                     type="email"
                     {...registerUser('email', { 
-                      required: 'Email is required',
+                      required: t('settings.email_required'),
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: 'Invalid email address'
+                        message: t('settings.invalid_email')
                       }
                     })}
-                    placeholder="Enter email"
+                    placeholder={t('settings.enter_email')}
                   />
                   {userErrors.email && (
                     <p className="text-sm text-destructive">{userErrors.email.message}</p>
@@ -448,15 +452,15 @@ export const UserManagementComponent: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('settings.password')}</Label>
                 <Input
                   id="password"
                   type="password"
                   {...registerUser('password', { 
-                    required: 'Password is required',
-                    minLength: { value: 6, message: 'Password must be at least 6 characters' }
+                    required: t('settings.password_required'),
+                    minLength: { value: 6, message: t('settings.password_min_length') }
                   })}
-                  placeholder="Enter password"
+                  placeholder={t('settings.enter_password')}
                 />
                 {userErrors.password && (
                   <p className="text-sm text-destructive">{userErrors.password.message}</p>
@@ -464,10 +468,10 @@ export const UserManagementComponent: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="role">Role</Label>
+                <Label htmlFor="role">{t('settings.role')}</Label>
                 <Select onValueChange={(value) => setUserValue('role_id', value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a role" />
+                    <SelectValue placeholder={t('settings.select_role')} />
                   </SelectTrigger>
                   <SelectContent>
                     {roles?.map((role) => (
@@ -486,7 +490,7 @@ export const UserManagementComponent: React.FC = () => {
                   onClick={() => setIsCreateDialogOpen(false)}
                   className="hover:bg-gray-50 transition-colors"
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
                 <Button 
                   type="submit" 
@@ -496,12 +500,12 @@ export const UserManagementComponent: React.FC = () => {
                   {createUser.isPending ? (
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      Creating...
+                      {t('settings.creating')}
                     </div>
                   ) : (
                     <>
                       <Plus className="h-4 w-4 mr-2" />
-                      Create User
+                      {t('settings.create_user')}
                     </>
                   )}
                 </Button>

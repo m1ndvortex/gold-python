@@ -17,6 +17,7 @@ import {
   Layers,
   MoreHorizontal
 } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -73,6 +74,7 @@ const defaultFilters: InventoryFilters = {
 };
 
 export const InventoryModern: React.FC = () => {
+  const { t } = useLanguage();
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [filters, setFilters] = useState<InventoryFilters>(defaultFilters);
   const [showFilters, setShowFilters] = useState(false);
@@ -105,18 +107,18 @@ export const InventoryModern: React.FC = () => {
   // Get stock status
   const getStockStatus = (item: InventoryItem) => {
     if (item.stock_quantity <= 0) {
-      return { status: 'out-of-stock', label: 'Out of Stock', variant: 'destructive' as const, color: 'text-red-600' };
+      return { status: 'out-of-stock', label: t('inventory.out_of_stock_label'), variant: 'destructive' as const, color: 'text-red-600' };
     } else if (item.stock_quantity <= item.min_stock_level) {
-      return { status: 'low-stock', label: 'Low Stock', variant: 'secondary' as const, color: 'text-yellow-600' };
+      return { status: 'low-stock', label: t('inventory.low_stock_label'), variant: 'secondary' as const, color: 'text-yellow-600' };
     }
-    return { status: 'in-stock', label: 'In Stock', variant: 'default' as const, color: 'text-green-600' };
+    return { status: 'in-stock', label: t('inventory.in_stock_label'), variant: 'default' as const, color: 'text-green-600' };
   };
 
   // Table columns
   const columns: DataTableColumn<InventoryItem>[] = [
     {
       id: 'item',
-      header: 'Item',
+      header: t('inventory.item'),
       accessorKey: 'name',
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
@@ -147,13 +149,13 @@ export const InventoryModern: React.FC = () => {
     },
     {
       id: 'category',
-      header: 'Category',
+      header: t('inventory.category'),
       accessorKey: 'category_id',
       cell: ({ row }) => {
         const category = categoryMap[row.category_id];
         return (
           <Badge variant="outline" className="font-medium">
-            {category?.name || 'Uncategorized'}
+            {category?.name || t('inventory.uncategorized')}
           </Badge>
         );
       },
@@ -164,7 +166,7 @@ export const InventoryModern: React.FC = () => {
     },
     {
       id: 'weight',
-      header: 'Weight',
+      header: t('inventory.weight'),
       accessorKey: 'weight_grams',
       cell: ({ row }) => (
         <div className="flex items-center gap-1 font-mono">
@@ -179,7 +181,7 @@ export const InventoryModern: React.FC = () => {
     },
     {
       id: 'purchase_price',
-      header: 'Purchase Price',
+      header: t('inventory.purchase_price'),
       accessorKey: 'purchase_price',
       cell: ({ row }) => (
         <div className="flex items-center gap-1 font-mono">
@@ -194,7 +196,7 @@ export const InventoryModern: React.FC = () => {
     },
     {
       id: 'sell_price',
-      header: 'Sell Price',
+      header: t('inventory.sell_price'),
       accessorKey: 'sell_price',
       cell: ({ row }) => (
         <div className="flex items-center gap-1 font-mono font-semibold">
@@ -209,7 +211,7 @@ export const InventoryModern: React.FC = () => {
     },
     {
       id: 'stock',
-      header: 'Stock',
+      header: t('inventory.stock'),
       accessorKey: 'stock_quantity',
       cell: ({ row }) => {
         const stockStatus = getStockStatus(row);
@@ -229,7 +231,7 @@ export const InventoryModern: React.FC = () => {
     },
     {
       id: 'status',
-      header: 'Status',
+      header: t('inventory.status'),
       accessorFn: (row) => getStockStatus(row).status,
       cell: ({ row }) => {
         const stockStatus = getStockStatus(row);
@@ -243,9 +245,9 @@ export const InventoryModern: React.FC = () => {
       filterable: true,
       filterType: 'select',
       filterOptions: [
-        { label: 'In Stock', value: 'in-stock' },
-        { label: 'Low Stock', value: 'low-stock' },
-        { label: 'Out of Stock', value: 'out-of-stock' },
+        { label: t('inventory.in_stock_label'), value: 'in-stock' },
+        { label: t('inventory.low_stock_label'), value: 'low-stock' },
+        { label: t('inventory.out_of_stock_label'), value: 'out-of-stock' },
       ],
     },
   ];
@@ -254,7 +256,7 @@ export const InventoryModern: React.FC = () => {
   const actions: DataTableAction<InventoryItem>[] = [
     {
       id: 'view',
-      label: 'View',
+      label: t('inventory.view'),
       icon: <Eye className="h-4 w-4" />,
       onClick: (item) => {
         // Handle view action
@@ -263,7 +265,7 @@ export const InventoryModern: React.FC = () => {
     },
     {
       id: 'edit',
-      label: 'Edit',
+      label: t('inventory.edit'),
       icon: <Edit className="h-4 w-4" />,
       onClick: (item) => {
         setEditingItem(item);
@@ -272,11 +274,11 @@ export const InventoryModern: React.FC = () => {
     },
     {
       id: 'delete',
-      label: 'Delete',
+      label: t('inventory.delete'),
       icon: <Trash2 className="h-4 w-4" />,
       variant: 'destructive',
       onClick: async (item) => {
-        if (window.confirm(`Are you sure you want to delete "${item.name}"?`)) {
+        if (window.confirm(t('inventory.delete_confirm', { name: item.name }))) {
           try {
             await deleteItemMutation.mutateAsync(item.id);
           } catch (error) {
@@ -345,24 +347,24 @@ export const InventoryModern: React.FC = () => {
                   </div>
                   
                   <div className="flex items-center justify-between text-sm">
-                    <Badge variant="outline">{category?.name || 'Uncategorized'}</Badge>
+                    <Badge variant="outline">{category?.name || t('inventory.uncategorized')}</Badge>
                     <span className="font-mono text-muted-foreground">{item.weight_grams}g</span>
                   </div>
                   
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
-                      <div className="text-sm text-muted-foreground">Purchase</div>
+                      <div className="text-sm text-muted-foreground">{t('inventory.purchase')}</div>
                       <div className="font-mono font-semibold">${item.purchase_price.toFixed(2)}</div>
                     </div>
                     <div className="space-y-1 text-right">
-                      <div className="text-sm text-muted-foreground">Sell</div>
+                      <div className="text-sm text-muted-foreground">{t('inventory.sell')}</div>
                       <div className="font-mono font-bold text-primary">${item.sell_price.toFixed(2)}</div>
                     </div>
                   </div>
                   
                   <div className="flex items-center justify-between pt-2 border-t">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">Stock:</span>
+                      <span className="text-sm text-muted-foreground">{t('inventory.stock_label')}</span>
                       <span className="font-mono font-semibold">{item.stock_quantity}</span>
                       {stockStatus.status !== 'in-stock' && (
                         <AlertTriangle className={cn("h-4 w-4", stockStatus.color)} />
@@ -387,7 +389,7 @@ export const InventoryModern: React.FC = () => {
                         className="h-8 w-8 text-red-600 hover:text-red-700"
                         onClick={async (e) => {
                           e.stopPropagation();
-                          if (window.confirm(`Are you sure you want to delete "${item.name}"?`)) {
+                          if (window.confirm(t('inventory.delete_confirm', { name: item.name }))) {
                             try {
                               await deleteItemMutation.mutateAsync(item.id);
                             } catch (error) {
@@ -415,7 +417,7 @@ export const InventoryModern: React.FC = () => {
         <Card>
           <CardContent className="p-6">
             <div className="text-center text-red-600">
-              Failed to load inventory items. Please try again.
+              {t('inventory.failed_to_load')}
             </div>
           </CardContent>
         </Card>
@@ -437,10 +439,10 @@ export const InventoryModern: React.FC = () => {
           </div>
           <div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
-              Inventory Management
+              {t('inventory.management_title')}
             </h1>
             <p className="text-muted-foreground mt-1">
-              Manage your gold jewelry inventory with modern tools and insights
+              {t('inventory.management_description')}
             </p>
           </div>
         </div>
@@ -451,18 +453,18 @@ export const InventoryModern: React.FC = () => {
             className="flex items-center gap-2"
           >
             <SlidersHorizontal className="h-4 w-4" />
-            Filters
+            {t('inventory.filters')}
             {Object.values(filters).some(v => 
               Array.isArray(v) ? v.length > 0 : v !== undefined && v !== ''
             ) && (
               <Badge variant="secondary" className="ml-1">
-                Active
+                {t('inventory.active')}
               </Badge>
             )}
           </Button>
           <Button variant="gradient-green" onClick={() => setShowForm(true)} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            Add Item
+            {t('inventory.add_item')}
           </Button>
         </div>
       </motion.div>
@@ -471,11 +473,11 @@ export const InventoryModern: React.FC = () => {
         <TabsList variant="gradient-green" className="grid w-full grid-cols-2">
           <TabsTrigger variant="gradient-green" value="inventory" className="flex items-center gap-2">
             <Package className="h-4 w-4" />
-            Inventory Items
+            {t('inventory.inventory_items')}
           </TabsTrigger>
           <TabsTrigger variant="gradient-green" value="categories" className="flex items-center gap-2">
             <Layers className="h-4 w-4" />
-            Categories
+            {t('inventory.categories')}
           </TabsTrigger>
         </TabsList>
         
@@ -515,7 +517,7 @@ export const InventoryModern: React.FC = () => {
                       <div className="relative flex-1 max-w-md">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
-                          placeholder="Search inventory items..."
+                          placeholder={t('inventory.search_placeholder')}
                           value={filters.search || ''}
                           onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                           className="pl-10"
@@ -544,7 +546,7 @@ export const InventoryModern: React.FC = () => {
                         
                         {inventoryData && (
                           <Badge variant="secondary" className="font-mono">
-                            {inventoryData.total} items
+                            {t('inventory.total_items', { count: inventoryData.total })}
                           </Badge>
                         )}
                       </div>
@@ -587,7 +589,7 @@ export const InventoryModern: React.FC = () => {
                     <CardContent className="p-8">
                       <div className="text-center">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                        <p className="text-muted-foreground">Loading inventory items...</p>
+                        <p className="text-muted-foreground">{t('inventory.loading')}</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -597,14 +599,14 @@ export const InventoryModern: React.FC = () => {
                       <div className="text-center space-y-4">
                         <Package className="h-16 w-16 text-muted-foreground mx-auto" />
                         <div>
-                          <h3 className="text-lg font-semibold">No inventory items found</h3>
+                          <h3 className="text-lg font-semibold">{t('inventory.no_items_found')}</h3>
                           <p className="text-muted-foreground">
-                            Add your first item to get started with inventory management.
+                            {t('inventory.add_first_message')}
                           </p>
                         </div>
                         <Button onClick={() => setShowForm(true)} className="mt-4">
                           <Plus className="h-4 w-4 mr-2" />
-                          Add First Item
+                          {t('inventory.add_first_item')}
                         </Button>
                       </div>
                     </CardContent>
@@ -616,7 +618,7 @@ export const InventoryModern: React.FC = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Package className="h-5 w-5" />
-                        Inventory Items
+                        {t('inventory.inventory_items')}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>

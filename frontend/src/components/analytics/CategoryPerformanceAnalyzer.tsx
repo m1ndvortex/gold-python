@@ -133,14 +133,19 @@ const CategoryPerformanceAnalyzer: React.FC<CategoryPerformanceAnalyzerProps> = 
 
   if (loading) {
     return (
-      <Card>
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50">
         <CardHeader>
-          <CardTitle>Category Performance Analyzer</CardTitle>
+          <CardTitle className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+              <BarChart3 className="h-4 w-4 text-white" />
+            </div>
+            <span>Category Performance Analyzer</span>
+          </CardTitle>
           <CardDescription>Analyzing category performance...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gradient-to-r from-blue-500 to-indigo-600"></div>
           </div>
         </CardContent>
       </Card>
@@ -149,15 +154,20 @@ const CategoryPerformanceAnalyzer: React.FC<CategoryPerformanceAnalyzerProps> = 
 
   if (error) {
     return (
-      <Card>
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-pink-100/50">
         <CardHeader>
-          <CardTitle>Category Performance Analyzer</CardTitle>
+          <CardTitle className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg">
+              <BarChart3 className="h-4 w-4 text-white" />
+            </div>
+            <span>Category Performance Analyzer</span>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Alert>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
-          <Button onClick={fetchCategoryPerformance} className="mt-4">
+          <Button onClick={fetchCategoryPerformance} className="mt-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl">
             Retry
           </Button>
         </CardContent>
@@ -169,10 +179,12 @@ const CategoryPerformanceAnalyzer: React.FC<CategoryPerformanceAnalyzerProps> = 
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50 hover:shadow-xl transition-all duration-300">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Package className="h-5 w-5 text-blue-600" />
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+                <Package className="h-5 w-5 text-white" />
+              </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Categories</p>
                 <p className="text-2xl font-bold">{performanceSummary.totalCategories}</p>
@@ -181,10 +193,12 @@ const CategoryPerformanceAnalyzer: React.FC<CategoryPerformanceAnalyzerProps> = 
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-teal-100/50 hover:shadow-xl transition-all duration-300">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <TrendingUp className="h-5 w-5 text-green-600" />
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+                <TrendingUp className="h-5 w-5 text-white" />
+              </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Fast Movers</p>
                 <p className="text-2xl font-bold text-green-600">{performanceSummary.fastMovers}</p>
@@ -193,10 +207,12 @@ const CategoryPerformanceAnalyzer: React.FC<CategoryPerformanceAnalyzerProps> = 
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-pink-100/50 hover:shadow-xl transition-all duration-300">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <TrendingDown className="h-5 w-5 text-red-600" />
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg">
+                <TrendingDown className="h-5 w-5 text-white" />
+              </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Dead Stock</p>
                 <p className="text-2xl font-bold text-red-600">{performanceSummary.deadStock}</p>
@@ -205,10 +221,12 @@ const CategoryPerformanceAnalyzer: React.FC<CategoryPerformanceAnalyzerProps> = 
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50 hover:shadow-xl transition-all duration-300">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <DollarSign className="h-5 w-5 text-blue-600" />
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+                <DollarSign className="h-5 w-5 text-white" />
+              </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                 <p className="text-2xl font-bold">{formatCurrency(performanceSummary.totalRevenue)}</p>
@@ -219,12 +237,14 @@ const CategoryPerformanceAnalyzer: React.FC<CategoryPerformanceAnalyzerProps> = 
       </div>
 
       {/* Main Analysis Card */}
-      <Card>
+      <Card className="border-0 shadow-lg bg-white hover:shadow-xl transition-all duration-300">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="flex items-center space-x-2">
-                <BarChart3 className="h-5 w-5" />
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                  <BarChart3 className="h-4 w-4 text-white" />
+                </div>
                 <span>Category Performance Analysis</span>
               </CardTitle>
               <CardDescription>
@@ -265,7 +285,7 @@ const CategoryPerformanceAnalyzer: React.FC<CategoryPerformanceAnalyzerProps> = 
             {sortedAndFilteredPerformances.map((performance) => (
               <div
                 key={performance.category_id}
-                className="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                className="border-0 rounded-lg p-4 bg-gradient-to-r from-slate-50 to-slate-100/80 hover:shadow-lg cursor-pointer transition-all duration-300"
                 onClick={() => onCategorySelect?.(performance.category_id)}
               >
                 <div className="flex items-center justify-between mb-3">
@@ -313,7 +333,7 @@ const CategoryPerformanceAnalyzer: React.FC<CategoryPerformanceAnalyzerProps> = 
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
                     <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                      className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${Math.min(performance.velocity_score * 100, 100)}%` }}
                     ></div>
                   </div>

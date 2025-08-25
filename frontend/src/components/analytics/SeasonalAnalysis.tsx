@@ -114,14 +114,19 @@ const SeasonalAnalysis: React.FC<SeasonalAnalysisProps> = ({
 
   if (loading) {
     return (
-      <Card>
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50">
         <CardHeader>
-          <CardTitle>Seasonal Analysis</CardTitle>
+          <CardTitle className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+              <Calendar className="h-4 w-4 text-white" />
+            </div>
+            <span>Seasonal Analysis</span>
+          </CardTitle>
           <CardDescription>Analyzing seasonal patterns...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gradient-to-r from-blue-500 to-indigo-600"></div>
           </div>
         </CardContent>
       </Card>
@@ -130,15 +135,20 @@ const SeasonalAnalysis: React.FC<SeasonalAnalysisProps> = ({
 
   if (error) {
     return (
-      <Card>
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-pink-100/50">
         <CardHeader>
-          <CardTitle>Seasonal Analysis</CardTitle>
+          <CardTitle className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg">
+              <Calendar className="h-4 w-4 text-white" />
+            </div>
+            <span>Seasonal Analysis</span>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Alert>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
-          <Button onClick={fetchSeasonalPatterns} className="mt-4">
+          <Button onClick={fetchSeasonalPatterns} className="mt-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl">
             Retry
           </Button>
         </CardContent>
@@ -151,12 +161,14 @@ const SeasonalAnalysis: React.FC<SeasonalAnalysisProps> = ({
   return (
     <div className="space-y-6">
       {/* Controls */}
-      <Card>
+      <Card className="border-0 shadow-lg bg-gradient-to-r from-slate-50 to-slate-100/80 hover:shadow-xl transition-all duration-300">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="flex items-center space-x-2">
-                <Calendar className="h-5 w-5" />
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                  <Calendar className="h-4 w-4 text-white" />
+                </div>
                 <span>Seasonal Pattern Analysis</span>
               </CardTitle>
               <CardDescription>
@@ -180,7 +192,7 @@ const SeasonalAnalysis: React.FC<SeasonalAnalysisProps> = ({
       </Card>
 
       {patterns.length === 0 ? (
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-yellow-50 to-orange-100/50">
           <CardContent className="text-center py-8">
             <p className="text-gray-500">No seasonal patterns found. Need at least 12 months of data.</p>
           </CardContent>
@@ -188,7 +200,7 @@ const SeasonalAnalysis: React.FC<SeasonalAnalysisProps> = ({
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Category List */}
-          <Card>
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-teal-100/50 hover:shadow-xl transition-all duration-300">
             <CardHeader>
               <CardTitle className="text-lg">Categories</CardTitle>
               <CardDescription>Select a category to analyze</CardDescription>
@@ -198,10 +210,10 @@ const SeasonalAnalysis: React.FC<SeasonalAnalysisProps> = ({
                 {patterns.map((pattern) => (
                   <div
                     key={pattern.category_id}
-                    className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                    className={`p-3 rounded-lg border-0 cursor-pointer transition-all duration-300 ${
                       selectedPattern?.category_id === pattern.category_id
-                        ? 'bg-blue-50 border-blue-200'
-                        : 'hover:bg-gray-50'
+                        ? 'bg-gradient-to-r from-blue-100 to-indigo-100 shadow-md'
+                        : 'bg-white hover:shadow-lg hover:bg-gradient-to-r hover:from-slate-50 hover:to-slate-100'
                     }`}
                     onClick={() => setSelectedPattern(pattern)}
                   >
@@ -222,7 +234,7 @@ const SeasonalAnalysis: React.FC<SeasonalAnalysisProps> = ({
           </Card>
 
           {/* Seasonal Chart */}
-          <Card className="lg:col-span-2">
+          <Card className="lg:col-span-2 border-0 shadow-lg bg-white hover:shadow-xl transition-all duration-300">
             <CardHeader>
               <CardTitle>
                 {selectedPattern ? `${selectedPattern.category_name} - Seasonal Index` : 'Select a Category'}
@@ -307,25 +319,30 @@ const SeasonalAnalysis: React.FC<SeasonalAnalysisProps> = ({
 
       {/* Summary Insights */}
       {patterns.length > 0 && (
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50 hover:shadow-xl transition-all duration-300">
           <CardHeader>
-            <CardTitle>Seasonal Insights Summary</CardTitle>
+            <CardTitle className="flex items-center space-x-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
+                <Calendar className="h-4 w-4 text-white" />
+              </div>
+              <span>Seasonal Insights Summary</span>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="text-center">
+              <div className="text-center p-4 bg-white rounded-lg shadow-sm">
                 <p className="text-2xl font-bold text-blue-600">
                   {patterns.length}
                 </p>
                 <p className="text-sm text-gray-600">Categories Analyzed</p>
               </div>
-              <div className="text-center">
+              <div className="text-center p-4 bg-white rounded-lg shadow-sm">
                 <p className="text-2xl font-bold text-red-600">
                   {patterns.filter(p => p.seasonality_strength > 0.7).length}
                 </p>
                 <p className="text-sm text-gray-600">Highly Seasonal</p>
               </div>
-              <div className="text-center">
+              <div className="text-center p-4 bg-white rounded-lg shadow-sm">
                 <p className="text-2xl font-bold text-green-600">
                   {patterns.reduce((sum, p) => sum + p.forecast_next_month, 0).toLocaleString('en-US', {
                     style: 'currency',
@@ -335,7 +352,7 @@ const SeasonalAnalysis: React.FC<SeasonalAnalysisProps> = ({
                 </p>
                 <p className="text-sm text-gray-600">Total Forecast</p>
               </div>
-              <div className="text-center">
+              <div className="text-center p-4 bg-white rounded-lg shadow-sm">
                 <p className="text-2xl font-bold text-purple-600">
                   {(patterns.reduce((sum, p) => sum + p.seasonality_strength, 0) / patterns.length * 100).toFixed(1)}%
                 </p>

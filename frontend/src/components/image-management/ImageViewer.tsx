@@ -269,20 +269,20 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
       )}
     >
       {/* Header Controls */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent p-4">
+      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/90 via-black/60 to-transparent p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-semibold truncate">
               {currentImage.alt_text || currentImage.original_filename}
             </h3>
             {currentImage.is_primary && (
-              <Badge variant="secondary">
+              <Badge className="bg-gradient-to-r from-yellow-500 to-amber-600 text-white shadow-lg">
                 <Star className="h-3 w-3 mr-1" />
                 Primary
               </Badge>
             )}
             {hasMultipleImages && (
-              <Badge variant="outline">
+              <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg">
                 {currentIndex + 1} of {images.length}
               </Badge>
             )}
@@ -436,7 +436,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 
         {/* Metadata Panel */}
         {showMetadataPanel && (
-          <div className="w-80 bg-gray-900 border-l border-gray-700 flex flex-col">
+          <div className="w-80 bg-gradient-to-b from-gray-900 to-gray-800 border-l border-gray-600 flex flex-col shadow-xl">
             <div className="p-4 border-b border-gray-700">
               <h4 className="font-semibold mb-2">Image Details</h4>
             </div>
@@ -444,7 +444,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
             <ScrollArea className="flex-1 p-4">
               <div className="space-y-4">
                 {/* Basic Info */}
-                <Card className="bg-gray-800 border-gray-700">
+                <Card className="bg-gradient-to-br from-gray-800 to-gray-700 border-gray-600 shadow-lg">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm">Basic Information</CardTitle>
                   </CardHeader>
@@ -473,7 +473,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                 </Card>
 
                 {/* Dimensions */}
-                <Card className="bg-gray-800 border-gray-700">
+                <Card className="bg-gradient-to-br from-gray-800 to-gray-700 border-gray-600 shadow-lg">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm">Dimensions</CardTitle>
                   </CardHeader>
@@ -499,7 +499,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 
                 {/* Optimization */}
                 {currentImage.optimization_applied && (
-                  <Card className="bg-gray-800 border-gray-700">
+                  <Card className="bg-gradient-to-br from-gray-800 to-gray-700 border-gray-600 shadow-lg">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm">Optimization</CardTitle>
                     </CardHeader>
@@ -522,7 +522,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 
                 {/* Alt Text & Caption */}
                 {(currentImage.alt_text || currentImage.caption) && (
-                  <Card className="bg-gray-800 border-gray-700">
+                  <Card className="bg-gradient-to-br from-gray-800 to-gray-700 border-gray-600 shadow-lg">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm">Description</CardTitle>
                     </CardHeader>
@@ -545,7 +545,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 
                 {/* Thumbnails */}
                 {currentImage.thumbnails && Object.keys(currentImage.thumbnails).length > 0 && (
-                  <Card className="bg-gray-800 border-gray-700">
+                  <Card className="bg-gradient-to-br from-gray-800 to-gray-700 border-gray-600 shadow-lg">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm">Available Sizes</CardTitle>
                     </CardHeader>

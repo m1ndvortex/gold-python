@@ -6,6 +6,7 @@ interface SparklineChartProps {
   width?: number;
   height?: number;
   color?: string;
+  gradientColors?: { from: string; to: string };
   strokeWidth?: number;
   className?: string;
   showDots?: boolean;
@@ -18,6 +19,7 @@ export const SparklineChart: React.FC<SparklineChartProps> = ({
   width = 100,
   height = 30,
   color = '#10b981',
+  gradientColors = { from: '#10b981', to: '#0d9488' },
   strokeWidth = 2,
   className,
   showDots = false,
@@ -76,6 +78,9 @@ export const SparklineChart: React.FC<SparklineChartProps> = ({
     );
   }
 
+  const gradientId = `sparkline-gradient-${Math.random().toString(36).substr(2, 9)}`;
+  const areaGradientId = `sparkline-area-gradient-${Math.random().toString(36).substr(2, 9)}`;
+
   return (
     <div className={cn('relative', className)}>
       <svg
@@ -84,12 +89,25 @@ export const SparklineChart: React.FC<SparklineChartProps> = ({
         viewBox={`0 0 ${width} ${height}`}
         className="overflow-visible"
       >
+        <defs>
+          {/* Line gradient */}
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor={gradientColors.from} />
+            <stop offset="100%" stopColor={gradientColors.to} />
+          </linearGradient>
+          
+          {/* Area gradient */}
+          <linearGradient id={areaGradientId} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor={gradientColors.from} stopOpacity="0.3" />
+            <stop offset="100%" stopColor={gradientColors.to} stopOpacity="0.05" />
+          </linearGradient>
+        </defs>
+
         {/* Area fill */}
         {showArea && areaPathData && (
           <path
             d={areaPathData}
-            fill={color}
-            fillOpacity={0.1}
+            fill={`url(#${areaGradientId})`}
             className={animated ? 'animate-in fade-in-0 duration-1000' : ''}
           />
         )}
@@ -98,13 +116,13 @@ export const SparklineChart: React.FC<SparklineChartProps> = ({
         <path
           d={pathData}
           fill="none"
-          stroke={color}
+          stroke={`url(#${gradientId})`}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeLinejoin="round"
           className={cn(
             animated ? 'animate-in slide-in-from-left-full duration-1500' : '',
-            'transition-all duration-300'
+            'transition-all duration-300 drop-shadow-sm'
           )}
           style={{
             strokeDasharray: animated ? '1000' : 'none',
@@ -120,9 +138,9 @@ export const SparklineChart: React.FC<SparklineChartProps> = ({
             cx={dot.x}
             cy={dot.y}
             r={2}
-            fill={color}
+            fill={`url(#${gradientId})`}
             className={cn(
-              'transition-all duration-300 hover:r-3',
+              'transition-all duration-300 hover:r-3 drop-shadow-sm',
               animated ? 'animate-in zoom-in-0 duration-500' : ''
             )}
             style={{
@@ -152,6 +170,7 @@ interface MultiSparklineProps {
     label: string;
     data: number[];
     color: string;
+    gradientColors?: { from: string; to: string };
   }>;
   width?: number;
   height?: number;
@@ -177,6 +196,20 @@ export const MultiSparkline: React.FC<MultiSparklineProps> = ({
         viewBox={`0 0 ${width} ${height}`}
         className="overflow-visible"
       >
+        <defs>
+          {datasets.map((dataset, datasetIndex) => {
+            const gradientId = `multi-sparkline-gradient-${datasetIndex}`;
+            const gradientColors = dataset.gradientColors || { from: dataset.color, to: dataset.color };
+            
+            return (
+              <linearGradient key={gradientId} id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor={gradientColors.from} />
+                <stop offset="100%" stopColor={gradientColors.to} />
+              </linearGradient>
+            );
+          })}
+        </defs>
+
         {datasets.map((dataset, datasetIndex) => {
           const pathData = dataset.data.map((value, index) => {
             const x = (index / (dataset.data.length - 1)) * width;
@@ -189,17 +222,19 @@ export const MultiSparkline: React.FC<MultiSparklineProps> = ({
             return `${command} ${point.x} ${point.y}`;
           });
 
+          const gradientId = `multi-sparkline-gradient-${datasetIndex}`;
+
           return (
             <path
               key={datasetIndex}
               d={pathCommands.join(' ')}
               fill="none"
-              stroke={dataset.color}
-              strokeWidth={1.5}
+              stroke={`url(#${gradientId})`}
+              strokeWidth={2}
               strokeLinecap="round"
               strokeLinejoin="round"
               opacity={0.8}
-              className="transition-all duration-300 hover:opacity-100"
+              className="transition-all duration-300 hover:opacity-100 drop-shadow-sm"
             />
           );
         })}
@@ -208,12 +243,16 @@ export const MultiSparkline: React.FC<MultiSparklineProps> = ({
       {/* Legend */}
       <div className="absolute -bottom-6 left-0 flex gap-2 text-xs">
         {datasets.map((dataset, index) => (
-          <div key={index} className="flex items-center gap-1">
+          <div key={index} className="flex items-center gap-1 px-2 py-1 rounded-md bg-gradient-to-r from-gray-50 to-gray-100 shadow-sm">
             <div 
-              className="w-2 h-2 rounded-full" 
-              style={{ backgroundColor: dataset.color }}
+              className="w-2 h-2 rounded-full shadow-sm" 
+              style={{ 
+                background: dataset.gradientColors 
+                  ? `linear-gradient(to right, ${dataset.gradientColors.from}, ${dataset.gradientColors.to})`
+                  : dataset.color 
+              }}
             />
-            <span className="text-muted-foreground">{dataset.label}</span>
+            <span className="text-gray-600 font-medium">{dataset.label}</span>
           </div>
         ))}
       </div>

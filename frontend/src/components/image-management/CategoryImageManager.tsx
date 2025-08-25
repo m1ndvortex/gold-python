@@ -219,8 +219,10 @@ export const CategoryImageManager: React.FC<CategoryImageManagerProps> = ({
   if (loading) {
     return (
       <div className={cn("flex items-center justify-center p-8", className)}>
-        <RefreshCw className="h-6 w-6 animate-spin mr-2" />
-        Loading category images...
+        <div className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-0 shadow-lg">
+          <RefreshCw className="h-6 w-6 animate-spin text-blue-600" />
+          <span className="text-blue-800 font-medium">Loading category images...</span>
+        </div>
       </div>
     );
   }
@@ -253,11 +255,12 @@ export const CategoryImageManager: React.FC<CategoryImageManagerProps> = ({
 
         <div className="flex items-center gap-2">
           {/* View Mode Toggle */}
-          <div className="flex items-center border rounded-md">
+          <div className="flex items-center bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg border-0 shadow-md p-1">
             <Button
               variant={viewMode === 'grid' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewMode('grid')}
+              className={viewMode === 'grid' ? 'bg-white shadow-md border-2 border-blue-300 text-blue-700' : 'hover:bg-white/50'}
             >
               <Grid3X3 className="h-4 w-4" />
             </Button>
@@ -265,12 +268,16 @@ export const CategoryImageManager: React.FC<CategoryImageManagerProps> = ({
               variant={viewMode === 'list' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewMode('list')}
+              className={viewMode === 'list' ? 'bg-white shadow-md border-2 border-blue-300 text-blue-700' : 'hover:bg-white/50'}
             >
               <List className="h-4 w-4" />
             </Button>
           </div>
 
-          <Button onClick={() => setShowUpload(true)}>
+          <Button 
+            onClick={() => setShowUpload(true)}
+            className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+          >
             <Plus className="h-4 w-4 mr-2" />
             Upload Images
           </Button>
@@ -279,13 +286,13 @@ export const CategoryImageManager: React.FC<CategoryImageManagerProps> = ({
 
       {/* Error Display */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="text-red-800">{error}</div>
+        <div className="bg-gradient-to-r from-red-50 to-rose-50 border-0 rounded-lg p-4 shadow-lg">
+          <div className="text-red-800 font-medium">{error}</div>
           <Button 
             variant="outline" 
             size="sm" 
             onClick={loadImages}
-            className="mt-2"
+            className="mt-3 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
             Retry
@@ -295,12 +302,18 @@ export const CategoryImageManager: React.FC<CategoryImageManagerProps> = ({
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'images' | 'icons')}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="images" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-green-50 via-teal-50 to-blue-50 p-1 rounded-lg border-0 shadow-lg">
+          <TabsTrigger 
+            value="images" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-green-300 data-[state=active]:text-green-700"
+          >
             <ImageIcon className="h-4 w-4" />
             Images ({images.length})
           </TabsTrigger>
-          <TabsTrigger value="icons" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="icons" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-blue-300 data-[state=active]:text-blue-700"
+          >
             <Shapes className="h-4 w-4" />
             Icon Presets
           </TabsTrigger>
@@ -321,19 +334,28 @@ export const CategoryImageManager: React.FC<CategoryImageManagerProps> = ({
               onImageDelete={() => loadImages()}
             />
           ) : (
-            <Card>
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-teal-100/50 hover:shadow-xl transition-all duration-300">
               <CardContent className="p-8 text-center">
-                <ImageIcon className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                <h4 className="text-lg font-semibold mb-2">No Images</h4>
-                <p className="text-muted-foreground mb-4">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+                  <ImageIcon className="h-8 w-8 text-white" />
+                </div>
+                <h4 className="text-lg font-semibold mb-2 text-green-800">No Images</h4>
+                <p className="text-green-700/80 mb-4">
                   Upload images or select an icon preset to represent this category
                 </p>
-                <div className="flex items-center justify-center gap-2">
-                  <Button onClick={() => setShowUpload(true)}>
+                <div className="flex items-center justify-center gap-3">
+                  <Button 
+                    onClick={() => setShowUpload(true)}
+                    className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
                     <Upload className="h-4 w-4 mr-2" />
                     Upload Images
                   </Button>
-                  <Button variant="outline" onClick={() => setActiveTab('icons')}>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setActiveTab('icons')}
+                    className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
                     <Shapes className="h-4 w-4 mr-2" />
                     Choose Icon
                   </Button>
@@ -350,10 +372,12 @@ export const CategoryImageManager: React.FC<CategoryImageManagerProps> = ({
           </div>
 
           {Object.entries(iconsByCategory).map(([category, icons]) => (
-            <Card key={category}>
+            <Card key={category} className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50 hover:shadow-xl transition-all duration-300">
               <CardHeader>
-                <CardTitle className="text-base capitalize flex items-center gap-2">
-                  <Palette className="h-4 w-4" />
+                <CardTitle className="text-base capitalize flex items-center gap-2 text-purple-800">
+                  <div className="w-6 h-6 rounded bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md">
+                    <Palette className="h-3 w-3 text-white" />
+                  </div>
                   {category} Icons
                 </CardTitle>
               </CardHeader>
@@ -389,18 +413,23 @@ export const CategoryImageManager: React.FC<CategoryImageManagerProps> = ({
           ))}
 
           {/* Custom Icon Upload */}
-          <Card>
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-50 to-amber-100/50 hover:shadow-xl transition-all duration-300">
             <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Upload className="h-4 w-4" />
+              <CardTitle className="text-base flex items-center gap-2 text-orange-800">
+                <div className="w-6 h-6 rounded bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-md">
+                  <Upload className="h-3 w-3 text-white" />
+                </div>
                 Custom Icon
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm text-orange-700/80 mb-4">
                 Upload your own icon or image to represent this category.
               </p>
-              <Button onClick={() => setShowUpload(true)} variant="outline">
+              <Button 
+                onClick={() => setShowUpload(true)} 
+                className="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
                 <Upload className="h-4 w-4 mr-2" />
                 Upload Custom Icon
               </Button>

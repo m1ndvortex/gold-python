@@ -38,45 +38,57 @@ export const TrendIndicator: React.FC<TrendIndicatorProps> = ({
   className
 }) => {
   const getDirectionColor = (dir: string, sig: string = 'medium') => {
-    const intensity = sig === 'high' ? '600' : sig === 'medium' ? '500' : '400';
-    
     switch (dir) {
       case 'up':
-        return `text-green-${intensity}`;
+        return sig === 'high' ? 'bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent' :
+               sig === 'medium' ? 'bg-gradient-to-r from-green-500 to-teal-500 bg-clip-text text-transparent' :
+               'bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent';
       case 'down':
-        return `text-red-${intensity}`;
+        return sig === 'high' ? 'bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent' :
+               sig === 'medium' ? 'bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent' :
+               'bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent';
       case 'stable':
-        return `text-gray-${intensity}`;
+        return sig === 'high' ? 'bg-gradient-to-r from-gray-600 to-slate-600 bg-clip-text text-transparent' :
+               sig === 'medium' ? 'bg-gradient-to-r from-gray-500 to-slate-500 bg-clip-text text-transparent' :
+               'bg-gradient-to-r from-gray-400 to-slate-400 bg-clip-text text-transparent';
       default:
         return 'text-gray-400';
     }
   };
 
   const getBackgroundColor = (dir: string, sig: string = 'medium') => {
-    const intensity = sig === 'high' ? '100' : sig === 'medium' ? '50' : '25';
-    
     switch (dir) {
       case 'up':
-        return `bg-green-${intensity}`;
+        return sig === 'high' ? 'bg-gradient-to-br from-green-100 to-teal-100' :
+               sig === 'medium' ? 'bg-gradient-to-br from-green-50 to-teal-50' :
+               'bg-gradient-to-br from-green-25 to-teal-25';
       case 'down':
-        return `bg-red-${intensity}`;
+        return sig === 'high' ? 'bg-gradient-to-br from-red-100 to-pink-100' :
+               sig === 'medium' ? 'bg-gradient-to-br from-red-50 to-pink-50' :
+               'bg-gradient-to-br from-red-25 to-pink-25';
       case 'stable':
-        return `bg-gray-${intensity}`;
+        return sig === 'high' ? 'bg-gradient-to-br from-gray-100 to-slate-100' :
+               sig === 'medium' ? 'bg-gradient-to-br from-gray-50 to-slate-50' :
+               'bg-gradient-to-br from-gray-25 to-slate-25';
       default:
         return 'bg-gray-25';
     }
   };
 
   const getBorderColor = (dir: string, sig: string = 'medium') => {
-    const intensity = sig === 'high' ? '300' : sig === 'medium' ? '200' : '100';
-    
     switch (dir) {
       case 'up':
-        return `border-green-${intensity}`;
+        return sig === 'high' ? 'border-green-300 shadow-green-100' :
+               sig === 'medium' ? 'border-green-200 shadow-green-50' :
+               'border-green-100 shadow-green-25';
       case 'down':
-        return `border-red-${intensity}`;
+        return sig === 'high' ? 'border-red-300 shadow-red-100' :
+               sig === 'medium' ? 'border-red-200 shadow-red-50' :
+               'border-red-100 shadow-red-25';
       case 'stable':
-        return `border-gray-${intensity}`;
+        return sig === 'high' ? 'border-gray-300 shadow-gray-100' :
+               sig === 'medium' ? 'border-gray-200 shadow-gray-50' :
+               'border-gray-100 shadow-gray-25';
       default:
         return 'border-gray-100';
     }
@@ -163,16 +175,21 @@ export const TrendIndicator: React.FC<TrendIndicatorProps> = ({
     case 'badge':
       return (
         <div className={cn(
-          'inline-flex items-center gap-1 rounded-full border',
+          'inline-flex items-center gap-1 rounded-full border shadow-lg hover:shadow-xl transition-all duration-300',
           sizeClasses[size],
-          getDirectionColor(direction, significance),
           getBackgroundColor(direction, significance),
           getBorderColor(direction, significance),
           className
         )}>
-          {showIcon && getIcon()}
-          {showPercentage && <span className="font-medium">{formatPercentage(percentage)}</span>}
-          {showPeriod && period && <span className="opacity-75">({period})</span>}
+          {showIcon && (
+            <div className="h-5 w-5 rounded-full bg-gradient-to-br from-white to-gray-100 flex items-center justify-center shadow-sm">
+              <div className={getDirectionColor(direction, significance)}>
+                {getIcon()}
+              </div>
+            </div>
+          )}
+          {showPercentage && <span className={cn("font-medium", getDirectionColor(direction, significance))}>{formatPercentage(percentage)}</span>}
+          {showPeriod && period && <span className="opacity-75 text-gray-600">({period})</span>}
         </div>
       );
 
@@ -194,26 +211,27 @@ export const TrendIndicator: React.FC<TrendIndicatorProps> = ({
       return (
         <div className={cn(
           'flex items-center gap-1.5',
-          getDirectionColor(direction, significance),
           textSizes[size],
           className
         )}>
           {showIcon && (
             <div className={cn(
-              'flex items-center justify-center rounded-full p-1',
+              'flex items-center justify-center rounded-full p-1.5 shadow-lg',
               getBackgroundColor(direction, significance)
             )}>
-              {getIcon()}
+              <div className={getDirectionColor(direction, significance)}>
+                {getIcon()}
+              </div>
             </div>
           )}
           <div className="flex items-center gap-1">
             {showPercentage && (
-              <span className="font-medium">
+              <span className={cn("font-medium", getDirectionColor(direction, significance))}>
                 {formatPercentage(percentage)}
               </span>
             )}
             {showPeriod && period && (
-              <span className="text-muted-foreground">
+              <span className="text-gray-600">
                 {period}
               </span>
             )}

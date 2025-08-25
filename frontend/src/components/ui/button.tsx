@@ -31,10 +31,15 @@ const buttonVariants = cva(
         "gradient-purple": "bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl",
         "gradient-pink": "bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-lg hover:shadow-xl",
         "gradient-orange": "bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl",
+        "gradient-red": "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl",
+        "gradient-amber": "bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-lg hover:shadow-xl",
         // Outline gradient variants
         "outline-gradient-green": "border-2 border-transparent bg-gradient-to-r from-green-500 to-teal-600 bg-clip-border text-green-600 hover:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-600 hover:shadow-lg",
         "outline-gradient-blue": "border-2 border-transparent bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-border text-blue-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:shadow-lg",
         "outline-gradient-purple": "border-2 border-transparent bg-gradient-to-r from-purple-500 to-violet-600 bg-clip-border text-purple-600 hover:text-white hover:bg-gradient-to-r hover:from-purple-500 hover:to-violet-600 hover:shadow-lg",
+        "outline-gradient-orange": "border-2 border-transparent bg-gradient-to-r from-orange-500 to-red-600 bg-clip-border text-orange-600 hover:text-white hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-600 hover:shadow-lg",
+        "outline-gradient-red": "border-2 border-transparent bg-gradient-to-r from-red-500 to-red-600 bg-clip-border text-red-600 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-red-600 hover:shadow-lg",
+        "outline-gradient-amber": "border-2 border-transparent bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-border text-amber-600 hover:text-white hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-600 hover:shadow-lg",
         // Icon container variants
         "icon-gradient-green": "h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg hover:shadow-xl text-white",
         "icon-gradient-teal": "h-10 w-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-lg hover:shadow-xl text-white",

@@ -40,6 +40,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.12",
+    "glob": "^10.4.5",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
@@ -68,8 +69,8 @@
     "zod": "^3.23.8"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "craco start",
+    "build": "craco build",
     "test": "react-scripts test --watchAll=false",
     "test:watch": "react-scripts test",
     "test:docker": "cross-env REACT_APP_API_URL=http://localhost:8000 react-scripts test --watchAll=false --testTimeout=120000",

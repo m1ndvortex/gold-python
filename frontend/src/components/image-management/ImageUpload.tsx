@@ -312,33 +312,43 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh]">
+      <DialogContent className="max-w-4xl max-h-[90vh] bg-gradient-to-br from-green-50/30 to-white border-0 shadow-xl">
         <DialogHeader>
-          <DialogTitle>Upload Images</DialogTitle>
+          <DialogTitle className="text-green-800 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+              <Upload className="h-4 w-4 text-white" />
+            </div>
+            Upload Images
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Upload Area */}
           <div
             className={cn(
-              "border-2 border-dashed rounded-lg p-8 text-center transition-colors",
+              "border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300",
               isDragOver 
-                ? "border-primary bg-primary/5" 
-                : "border-muted-foreground/25 hover:border-muted-foreground/50"
+                ? "border-green-400 bg-gradient-to-br from-green-50 to-teal-50 shadow-lg" 
+                : "border-green-200 bg-gradient-to-br from-green-50/50 to-teal-50/30 hover:border-green-300 hover:shadow-md"
             )}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
           >
-            <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">
+            <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+              <Upload className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2 text-green-800">
               {isDragOver ? 'Drop files here' : 'Upload Images'}
             </h3>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-green-700/80 mb-4">
               Drag and drop images here, or click to select files
             </p>
-            <Button onClick={() => fileInputRef.current?.click()}>
+            <Button 
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Select Files
             </Button>
@@ -376,7 +386,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
               <div className="max-h-96 overflow-y-auto space-y-3">
                 {uploadFiles.map((uploadFile) => (
-                  <Card key={uploadFile.id} className="p-4">
+                  <Card key={uploadFile.id} className="p-4 border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50 hover:shadow-xl transition-all duration-300">
                     <div className="flex items-start gap-4">
                       {/* Preview */}
                       <div className="w-16 h-16 flex-shrink-0 relative">
@@ -509,11 +519,20 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose} disabled={isUploading}>
+          <Button 
+            variant="outline" 
+            onClick={handleClose} 
+            disabled={isUploading}
+            className="bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 border-0 shadow-md hover:shadow-lg transition-all duration-300"
+          >
             {allUploaded ? 'Close' : 'Cancel'}
           </Button>
           {canUpload && (
-            <Button onClick={handleUpload} disabled={isUploading}>
+            <Button 
+              onClick={handleUpload} 
+              disabled={isUploading}
+              className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+            >
               {isUploading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />

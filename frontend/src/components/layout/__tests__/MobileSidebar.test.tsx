@@ -78,6 +78,17 @@ const defaultLanguageMock = {
     return translations[key] || key;
   }),
   setLanguage: jest.fn(),
+  isRTL: false,
+  isLTR: true,
+  getLayoutClasses: jest.fn(() => 'ltr'),
+  getTextAlignClass: jest.fn(() => 'text-left'),
+  getFlexDirectionClass: jest.fn(() => 'flex-row'),
+  getMarginClass: jest.fn((margin: string) => margin),
+  getPaddingClass: jest.fn((padding: string) => padding),
+  getBorderClass: jest.fn((border: string) => border),
+  formatNumber: jest.fn((num: number) => num.toString()),
+  formatDate: jest.fn((date: Date) => date.toLocaleDateString()),
+  formatCurrency: jest.fn((amount: number) => `$${amount}`),
 };
 
 const renderMobileSidebar = (props = {}) => {

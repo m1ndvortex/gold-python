@@ -358,17 +358,19 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
 
       {/* Overall Performance Score */}
       {kpiData?.overall_performance && (
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-teal-100/50 hover:shadow-xl transition-all duration-300">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+                <Activity className="h-5 w-5 text-white" />
+              </div>
               Overall Performance
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="text-3xl font-bold">
+                <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
                   {kpiData.overall_performance.overall_score}%
                 </div>
                 <Badge className={getPerformanceLevelColor(kpiData.overall_performance.performance_level)}>
@@ -377,23 +379,23 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
               </div>
               
               <div className="flex gap-4 text-sm">
-                <div className="text-center">
-                  <div className="font-semibold text-blue-600">
+                <div className="text-center p-3 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-100/50 border-0 shadow-sm">
+                  <div className="font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                     {kpiData.overall_performance.component_scores.financial}%
                   </div>
-                  <div className="text-gray-500">Financial</div>
+                  <div className="text-gray-600">Financial</div>
                 </div>
-                <div className="text-center">
-                  <div className="font-semibold text-green-600">
+                <div className="text-center p-3 rounded-lg bg-gradient-to-br from-green-50 to-teal-100/50 border-0 shadow-sm">
+                  <div className="font-semibold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
                     {kpiData.overall_performance.component_scores.operational}%
                   </div>
-                  <div className="text-gray-500">Operational</div>
+                  <div className="text-gray-600">Operational</div>
                 </div>
-                <div className="text-center">
-                  <div className="font-semibold text-purple-600">
+                <div className="text-center p-3 rounded-lg bg-gradient-to-br from-purple-50 to-violet-100/50 border-0 shadow-sm">
+                  <div className="font-semibold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
                     {kpiData.overall_performance.component_scores.customer}%
                   </div>
-                  <div className="text-gray-500">Customer</div>
+                  <div className="text-gray-600">Customer</div>
                 </div>
               </div>
             </div>
@@ -418,21 +420,29 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
 
       {/* KPI Tabs */}
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
+        <TabsList className="grid w-full grid-cols-4 bg-gradient-to-r from-green-50 via-teal-50 to-blue-50 border-0 shadow-lg p-1">
+          <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-green-300">
+            <div className="h-6 w-6 rounded-md bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+              <BarChart3 className="h-3 w-3 text-white" />
+            </div>
             Overview
           </TabsTrigger>
-          <TabsTrigger value="financial" className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4" />
+          <TabsTrigger value="financial" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-blue-300">
+            <div className="h-6 w-6 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+              <DollarSign className="h-3 w-3 text-white" />
+            </div>
             Financial
           </TabsTrigger>
-          <TabsTrigger value="operational" className="flex items-center gap-2">
-            <Package className="h-4 w-4" />
+          <TabsTrigger value="operational" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-teal-300">
+            <div className="h-6 w-6 rounded-md bg-gradient-to-br from-teal-500 to-green-600 flex items-center justify-center">
+              <Package className="h-3 w-3 text-white" />
+            </div>
             Operational
           </TabsTrigger>
-          <TabsTrigger value="customer" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
+          <TabsTrigger value="customer" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300">
+            <div className="h-6 w-6 rounded-md bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+              <Users className="h-3 w-3 text-white" />
+            </div>
             Customer
           </TabsTrigger>
         </TabsList>
@@ -445,11 +455,11 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
           )}>
             {isLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <Card key={i} className="animate-pulse">
+                <Card key={i} className="animate-pulse border-0 shadow-lg bg-gradient-to-br from-green-50 to-teal-100/50">
                   <CardContent className="p-6">
-                    <div className="h-4 bg-gray-200 rounded mb-2" />
-                    <div className="h-8 bg-gray-200 rounded mb-2" />
-                    <div className="h-3 bg-gray-200 rounded" />
+                    <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
                   </CardContent>
                 </Card>
               ))
@@ -474,11 +484,11 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
           )}>
             {isLoading ? (
               Array.from({ length: 3 }).map((_, i) => (
-                <Card key={i} className="animate-pulse">
+                <Card key={i} className="animate-pulse border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50">
                   <CardContent className="p-6">
-                    <div className="h-4 bg-gray-200 rounded mb-2" />
-                    <div className="h-8 bg-gray-200 rounded mb-2" />
-                    <div className="h-3 bg-gray-200 rounded" />
+                    <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
                   </CardContent>
                 </Card>
               ))
@@ -503,11 +513,11 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
           )}>
             {isLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <Card key={i} className="animate-pulse">
+                <Card key={i} className="animate-pulse border-0 shadow-lg bg-gradient-to-br from-teal-50 to-green-100/50">
                   <CardContent className="p-6">
-                    <div className="h-4 bg-gray-200 rounded mb-2" />
-                    <div className="h-8 bg-gray-200 rounded mb-2" />
-                    <div className="h-3 bg-gray-200 rounded" />
+                    <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
                   </CardContent>
                 </Card>
               ))
@@ -532,11 +542,11 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
           )}>
             {isLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <Card key={i} className="animate-pulse">
+                <Card key={i} className="animate-pulse border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50">
                   <CardContent className="p-6">
-                    <div className="h-4 bg-gray-200 rounded mb-2" />
-                    <div className="h-8 bg-gray-200 rounded mb-2" />
-                    <div className="h-3 bg-gray-200 rounded" />
+                    <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
                   </CardContent>
                 </Card>
               ))

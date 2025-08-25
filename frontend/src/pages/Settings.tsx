@@ -49,9 +49,9 @@ export const Settings: React.FC = () => {
         <Card>
           <CardContent className="p-6 text-center">
             <SettingsIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
+            <h2 className="text-xl font-semibold mb-2">{t('settings.access_denied')}</h2>
             <p className="text-muted-foreground">
-              You don't have permission to view system settings.
+              {t('settings.access_denied_message')}
             </p>
           </CardContent>
         </Card>
@@ -65,80 +65,80 @@ export const Settings: React.FC = () => {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-slate-600 via-slate-700 to-slate-800 flex items-center justify-center shadow-lg">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300">
               <Cog className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold tracking-tight text-foreground">System Settings</h1>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">{t('settings.title')}</h1>
               <p className="text-muted-foreground text-lg">
-                Configure your gold shop management system settings and preferences
+                {t('settings.description')}
               </p>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 gap-1">
+          <Badge variant="outline" className="bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border-green-200 gap-1 shadow-sm">
             <CheckCircle className="h-3 w-3" />
-            All Systems Online
+            {t('settings.all_systems_online')}
           </Badge>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline" size="sm" className="gap-2 hover:bg-gradient-to-r hover:from-slate-50 hover:to-gray-50 transition-all duration-300">
             <RefreshCw className="h-4 w-4" />
-            Refresh Status
+            {t('settings.refresh_status')}
           </Button>
-          <Button variant="default" size="sm" className="gap-2 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800">
+          <Button variant="default" size="sm" className="gap-2 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 shadow-lg hover:shadow-xl transition-all duration-300">
             <Save className="h-4 w-4" />
-            Save All Changes
+            {t('settings.save_all_changes')}
           </Button>
         </div>
       </div>
 
       {/* Enhanced Settings Tabs */}
-      <Card className="border-0 shadow-xl overflow-hidden">
+      <Card className="border-0 shadow-xl overflow-hidden bg-gradient-to-br from-white to-slate-50/30">
         <CardContent className="p-0">
           <Tabs defaultValue="company" className="w-full">
             {/* Modern Tab Navigation */}
-            <div className="bg-gradient-to-r from-slate-50 via-gray-50 to-slate-50 border-b-2 border-slate-200">
-              <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 bg-transparent h-auto p-1 gap-1">
+            <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-b-2 border-blue-200/50">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 bg-transparent h-auto p-2 gap-1">
                 <TabsTrigger 
                   value="company" 
                   className={cn(
                     "flex flex-col items-center gap-2 p-4 rounded-lg transition-all duration-300 group",
-                    "hover:bg-white hover:shadow-sm",
-                    "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-blue-300"
+                    "hover:bg-white hover:shadow-lg hover:scale-105",
+                    "data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-blue-300 data-[state=active]:scale-105"
                   )}
                 >
-                  <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Building2 className="h-4 w-4 text-blue-600" />
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                    <Building2 className="h-4 w-4 text-white" />
                   </div>
-                  <span className="text-xs font-medium">Company</span>
+                  <span className="text-xs font-medium">{t('settings.tab_company')}</span>
                 </TabsTrigger>
                 
                 <TabsTrigger 
                   value="gold-price" 
                   className={cn(
                     "flex flex-col items-center gap-2 p-4 rounded-lg transition-all duration-300 group",
-                    "hover:bg-white hover:shadow-sm",
-                    "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-amber-300"
+                    "hover:bg-white hover:shadow-lg hover:scale-105",
+                    "data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-amber-300 data-[state=active]:scale-105"
                   )}
                 >
-                  <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <TrendingUp className="h-4 w-4 text-amber-600" />
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                    <TrendingUp className="h-4 w-4 text-white" />
                   </div>
-                  <span className="text-xs font-medium">Gold Price</span>
+                  <span className="text-xs font-medium">{t('settings.tab_gold_price')}</span>
                 </TabsTrigger>
                 
                 <TabsTrigger 
                   value="invoice-template" 
                   className={cn(
                     "flex flex-col items-center gap-2 p-4 rounded-lg transition-all duration-300 group",
-                    "hover:bg-white hover:shadow-sm",
-                    "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300"
+                    "hover:bg-white hover:shadow-lg hover:scale-105",
+                    "data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-purple-300 data-[state=active]:scale-105"
                   )}
                 >
-                  <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <FileText className="h-4 w-4 text-purple-600" />
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                    <FileText className="h-4 w-4 text-white" />
                   </div>
-                  <span className="text-xs font-medium">Templates</span>
+                  <span className="text-xs font-medium">{t('settings.tab_templates')}</span>
                 </TabsTrigger>
                 
                 {canManageRoles && (
@@ -146,14 +146,14 @@ export const Settings: React.FC = () => {
                     value="roles" 
                     className={cn(
                       "flex flex-col items-center gap-2 p-4 rounded-lg transition-all duration-300 group",
-                      "hover:bg-white hover:shadow-sm",
-                      "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-green-300"
+                      "hover:bg-white hover:shadow-lg hover:scale-105",
+                      "data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-green-300 data-[state=active]:scale-105"
                     )}
                   >
-                    <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Shield className="h-4 w-4 text-green-600" />
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                      <Shield className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-xs font-medium">Roles</span>
+                    <span className="text-xs font-medium">{t('settings.tab_roles')}</span>
                   </TabsTrigger>
                 )}
                 
@@ -162,14 +162,14 @@ export const Settings: React.FC = () => {
                     value="users" 
                     className={cn(
                       "flex flex-col items-center gap-2 p-4 rounded-lg transition-all duration-300 group",
-                      "hover:bg-white hover:shadow-sm",
-                      "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-indigo-300"
+                      "hover:bg-white hover:shadow-lg hover:scale-105",
+                      "data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-indigo-300 data-[state=active]:scale-105"
                     )}
                   >
-                    <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Users className="h-4 w-4 text-indigo-600" />
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                      <Users className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-xs font-medium">Users</span>
+                    <span className="text-xs font-medium">{t('settings.tab_users')}</span>
                   </TabsTrigger>
                 )}
                 
@@ -177,34 +177,34 @@ export const Settings: React.FC = () => {
                   value="disaster-recovery" 
                   className={cn(
                     "flex flex-col items-center gap-2 p-4 rounded-lg transition-all duration-300 group",
-                    "hover:bg-white hover:shadow-sm",
-                    "data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-red-300"
+                    "hover:bg-white hover:shadow-lg hover:scale-105",
+                    "data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-red-300 data-[state=active]:scale-105"
                   )}
                 >
-                  <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Shield className="h-4 w-4 text-red-600" />
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                    <Database className="h-4 w-4 text-white" />
                   </div>
-                  <span className="text-xs font-medium">Disaster Recovery</span>
+                  <span className="text-xs font-medium">{t('settings.tab_disaster_recovery')}</span>
                 </TabsTrigger>
               </TabsList>
             </div>
 
             {/* Enhanced Tab Content */}
             <TabsContent value="company" className="p-0">
-              <div className="p-6 space-y-6 bg-gradient-to-br from-blue-50/30 to-white">
-                <div className="flex items-center justify-between pb-4 border-b border-blue-200">
+              <div className="p-6 space-y-6 bg-gradient-to-br from-blue-50/40 via-white to-indigo-50/20">
+                <div className="flex items-center justify-between pb-4 border-b border-blue-200/50">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
                       <Building2 className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-foreground">Company Settings</h3>
-                      <p className="text-sm text-muted-foreground">Configure your company details and business information</p>
+                      <h3 className="text-xl font-semibold text-foreground">{t('settings.company_title')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('settings.company_description')}</p>
                     </div>
                   </div>
-                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                  <Badge variant="outline" className="bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 border-blue-200 shadow-sm">
                     <Activity className="h-3 w-3 mr-1" />
-                    Active
+                    {t('common.active')}
                   </Badge>
                 </div>
                 <CompanySettingsForm />
@@ -212,20 +212,20 @@ export const Settings: React.FC = () => {
             </TabsContent>
 
             <TabsContent value="gold-price" className="p-0">
-              <div className="p-6 space-y-6 bg-gradient-to-br from-amber-50/30 to-white">
-                <div className="flex items-center justify-between pb-4 border-b border-amber-200">
+              <div className="p-6 space-y-6 bg-gradient-to-br from-amber-50/40 via-white to-orange-50/20">
+                <div className="flex items-center justify-between pb-4 border-b border-amber-200/50">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
                       <TrendingUp className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-foreground">Gold Price Configuration</h3>
-                      <p className="text-sm text-muted-foreground">Manage gold pricing and automatic updates</p>
+                      <h3 className="text-xl font-semibold text-foreground">{t('settings.gold_price_title')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('settings.gold_price_description')}</p>
                     </div>
                   </div>
-                  <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                  <Badge variant="outline" className="bg-gradient-to-r from-amber-50 to-orange-100 text-amber-700 border-amber-200 shadow-sm">
                     <Zap className="h-3 w-3 mr-1" />
-                    Auto-Update
+                    {t('common.auto_update')}
                   </Badge>
                 </div>
                 <GoldPriceConfig />
@@ -233,20 +233,20 @@ export const Settings: React.FC = () => {
             </TabsContent>
 
             <TabsContent value="invoice-template" className="p-0">
-              <div className="p-6 space-y-6 bg-gradient-to-br from-purple-50/30 to-white">
-                <div className="flex items-center justify-between pb-4 border-b border-purple-200">
+              <div className="p-6 space-y-6 bg-gradient-to-br from-purple-50/40 via-white to-violet-50/20">
+                <div className="flex items-center justify-between pb-4 border-b border-purple-200/50">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
                       <FileText className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-foreground">Invoice Template Designer</h3>
-                      <p className="text-sm text-muted-foreground">Customize invoice layouts and branding</p>
+                      <h3 className="text-xl font-semibold text-foreground">{t('settings.invoice_template_title')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('settings.invoice_template_description')}</p>
                     </div>
                   </div>
-                  <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                  <Badge variant="outline" className="bg-gradient-to-r from-purple-50 to-violet-100 text-purple-700 border-purple-200 shadow-sm">
                     <CheckCircle className="h-3 w-3 mr-1" />
-                    Customizable
+                    {t('common.customizable')}
                   </Badge>
                 </div>
                 <InvoiceTemplateDesigner />
@@ -255,20 +255,20 @@ export const Settings: React.FC = () => {
 
             {canManageRoles && (
               <TabsContent value="roles" className="p-0">
-                <div className="p-6 space-y-6 bg-gradient-to-br from-green-50/30 to-white">
-                  <div className="flex items-center justify-between pb-4 border-b border-green-200">
+                <div className="p-6 space-y-6 bg-gradient-to-br from-green-50/40 via-white to-emerald-50/20">
+                  <div className="flex items-center justify-between pb-4 border-b border-green-200/50">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+                      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
                         <Shield className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold text-foreground">Role & Permission Management</h3>
-                        <p className="text-sm text-muted-foreground">Define user roles and system permissions</p>
+                        <h3 className="text-xl font-semibold text-foreground">{t('settings.roles_title')}</h3>
+                        <p className="text-sm text-muted-foreground">{t('settings.roles_description')}</p>
                       </div>
                     </div>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                    <Badge variant="outline" className="bg-gradient-to-r from-green-50 to-emerald-100 text-green-700 border-green-200 shadow-sm">
                       <Shield className="h-3 w-3 mr-1" />
-                      Secure
+                      {t('common.secure')}
                     </Badge>
                   </div>
                   <RolePermissionManager />
@@ -278,20 +278,20 @@ export const Settings: React.FC = () => {
 
             {canManageUsers && (
               <TabsContent value="users" className="p-0">
-                <div className="p-6 space-y-6 bg-gradient-to-br from-indigo-50/30 to-white">
-                  <div className="flex items-center justify-between pb-4 border-b border-indigo-200">
+                <div className="p-6 space-y-6 bg-gradient-to-br from-indigo-50/40 via-white to-blue-50/20">
+                  <div className="flex items-center justify-between pb-4 border-b border-indigo-200/50">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center">
+                      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-lg">
                         <Users className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold text-foreground">User Management</h3>
-                        <p className="text-sm text-muted-foreground">Add, edit, and manage system users</p>
+                        <h3 className="text-xl font-semibold text-foreground">{t('settings.users_title')}</h3>
+                        <p className="text-sm text-muted-foreground">{t('settings.users_description')}</p>
                       </div>
                     </div>
-                    <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
+                    <Badge variant="outline" className="bg-gradient-to-r from-indigo-50 to-blue-100 text-indigo-700 border-indigo-200 shadow-sm">
                       <Users className="h-3 w-3 mr-1" />
-                      Multi-User
+                      {t('common.multi_user')}
                     </Badge>
                   </div>
                   <UserManagementComponent />
@@ -300,7 +300,22 @@ export const Settings: React.FC = () => {
             )}
 
             <TabsContent value="disaster-recovery" className="p-0">
-              <div className="p-6 space-y-6 bg-gradient-to-br from-red-50/30 to-white">
+              <div className="p-6 space-y-6 bg-gradient-to-br from-red-50/40 via-white to-rose-50/20">
+                <div className="flex items-center justify-between pb-4 border-b border-red-200/50">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-lg">
+                      <Database className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">{t('settings.disaster_recovery_title')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('settings.disaster_recovery_description')}</p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="bg-gradient-to-r from-red-50 to-rose-100 text-red-700 border-red-200 shadow-sm">
+                    <Shield className="h-3 w-3 mr-1" />
+                    {t('settings.protected')}
+                  </Badge>
+                </div>
                 <DisasterRecoveryDashboard />
               </div>
             </TabsContent>
@@ -311,109 +326,109 @@ export const Settings: React.FC = () => {
       {/* Enhanced System Status & Overview */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-foreground">System Overview</h2>
+          <h2 className="text-2xl font-semibold text-foreground">{t('settings.system_overview')}</h2>
           <Button variant="outline" size="sm" className="gap-2">
             <RefreshCw className="h-4 w-4" />
-            Check Status
+            {t('settings.check_status')}
           </Button>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* System Health Card */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-100/60">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-100/60 hover:shadow-xl transition-all duration-300">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                    <Database className="h-4 w-4 text-green-600" />
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-md">
+                    <Database className="h-4 w-4 text-white" />
                   </div>
-                  <CardTitle className="text-sm font-semibold text-green-800">Database</CardTitle>
+                  <CardTitle className="text-sm font-semibold text-green-800">{t('settings.database')}</CardTitle>
                 </div>
-                <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                <Badge className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 hover:bg-green-100 shadow-sm">
                   <CheckCircle className="h-3 w-3 mr-1" />
-                  Online
+                  {t('settings.online')}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="text-lg font-bold text-green-900">99.9% Uptime</div>
               <div className="flex items-center justify-between text-xs text-green-600">
-                <span>Connection: Stable</span>
+                <span>{t('settings.connection_stable')}</span>
                 <Activity className="h-3 w-3" />
               </div>
             </CardContent>
           </Card>
 
           {/* API Status Card */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100/60">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/60 hover:shadow-xl transition-all duration-300">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <Cloud className="h-4 w-4 text-blue-600" />
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md">
+                    <Cloud className="h-4 w-4 text-white" />
                   </div>
-                  <CardTitle className="text-sm font-semibold text-blue-800">API Services</CardTitle>
+                  <CardTitle className="text-sm font-semibold text-blue-800">{t('settings.api_services')}</CardTitle>
                 </div>
-                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+                <Badge className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 hover:bg-blue-100 shadow-sm">
                   <Zap className="h-3 w-3 mr-1" />
-                  Active
+                  {t('common.active')}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="text-lg font-bold text-blue-900">All Services</div>
+              <div className="text-lg font-bold text-blue-900">{t('settings.all_services')}</div>
               <div className="flex items-center justify-between text-xs text-blue-600">
-                <span>Response: 45ms</span>
+                <span>{t('settings.response_time')}</span>
                 <Activity className="h-3 w-3" />
               </div>
             </CardContent>
           </Card>
 
           {/* Security Status Card */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-purple-100/60">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/60 hover:shadow-xl transition-all duration-300">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
-                    <Shield className="h-4 w-4 text-purple-600" />
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-md">
+                    <Shield className="h-4 w-4 text-white" />
                   </div>
-                  <CardTitle className="text-sm font-semibold text-purple-800">Security</CardTitle>
+                  <CardTitle className="text-sm font-semibold text-purple-800">{t('settings.security')}</CardTitle>
                 </div>
-                <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100">
+                <Badge className="bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 hover:bg-purple-100 shadow-sm">
                   <Shield className="h-3 w-3 mr-1" />
-                  Secure
+                  {t('common.secure')}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="text-lg font-bold text-purple-900">Protected</div>
+              <div className="text-lg font-bold text-purple-900">{t('settings.protected')}</div>
               <div className="flex items-center justify-between text-xs text-purple-600">
-                <span>SSL: Enabled</span>
+                <span>{t('settings.ssl_enabled')}</span>
                 <CheckCircle className="h-3 w-3" />
               </div>
             </CardContent>
           </Card>
 
           {/* Backup Status Card */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-amber-50 to-amber-100/60">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-amber-50 to-orange-100/60 hover:shadow-xl transition-all duration-300">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center">
-                    <Save className="h-4 w-4 text-amber-600" />
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-md">
+                    <Save className="h-4 w-4 text-white" />
                   </div>
-                  <CardTitle className="text-sm font-semibold text-amber-800">Backup</CardTitle>
+                  <CardTitle className="text-sm font-semibold text-amber-800">{t('settings.backup')}</CardTitle>
                 </div>
-                <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">
+                <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 hover:bg-amber-100 shadow-sm">
                   <CheckCircle className="h-3 w-3 mr-1" />
-                  Current
+                  {t('settings.current')}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="text-lg font-bold text-amber-900">2 Hours Ago</div>
+              <div className="text-lg font-bold text-amber-900">{t('settings.hours_ago')}</div>
               <div className="flex items-center justify-between text-xs text-amber-600">
-                <span>Next: Scheduled</span>
+                <span>{t('settings.next_scheduled')}</span>
                 <RefreshCw className="h-3 w-3" />
               </div>
             </CardContent>
@@ -421,54 +436,56 @@ export const Settings: React.FC = () => {
         </div>
 
         {/* Additional System Information */}
-        <Card className="border-0 shadow-lg bg-gradient-to-r from-slate-50 to-gray-100/80">
+        <Card className="border-0 shadow-lg bg-gradient-to-r from-slate-50 via-gray-50 to-slate-100/80 hover:shadow-xl transition-all duration-300">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <SettingsIcon className="h-5 w-5" />
-              System Information
+              <div className="h-6 w-6 rounded-md bg-gradient-to-br from-slate-500 to-gray-600 flex items-center justify-center">
+                <SettingsIcon className="h-3 w-3 text-white" />
+              </div>
+              {t('settings.system_information')}
             </CardTitle>
-            <CardDescription>Current system configuration and status details</CardDescription>
+            <CardDescription>{t('settings.system_information_desc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <h4 className="font-medium text-sm text-muted-foreground">Application</h4>
+                <h4 className="font-medium text-sm text-muted-foreground">{t('settings.application')}</h4>
                 <div className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span>Version:</span>
+                    <span>{t('settings.version')}</span>
                     <span className="font-medium">v2.1.0</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>Environment:</span>
-                    <Badge variant="outline" className="text-xs">Production</Badge>
+                    <span>{t('settings.environment')}</span>
+                    <Badge variant="outline" className="text-xs">{t('settings.production')}</Badge>
                   </div>
                 </div>
               </div>
               
               <div className="space-y-2">
-                <h4 className="font-medium text-sm text-muted-foreground">Resources</h4>
+                <h4 className="font-medium text-sm text-muted-foreground">{t('settings.resources')}</h4>
                 <div className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span>CPU Usage:</span>
+                    <span>{t('settings.cpu_usage')}</span>
                     <span className="font-medium">12%</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>Memory:</span>
+                    <span>{t('settings.memory')}</span>
                     <span className="font-medium">2.1 GB</span>
                   </div>
                 </div>
               </div>
               
               <div className="space-y-2">
-                <h4 className="font-medium text-sm text-muted-foreground">Activity</h4>
+                <h4 className="font-medium text-sm text-muted-foreground">{t('settings.activity')}</h4>
                 <div className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span>Active Users:</span>
+                    <span>{t('settings.active_users')}</span>
                     <span className="font-medium">5</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>Last Activity:</span>
-                    <span className="font-medium">Just now</span>
+                    <span>{t('settings.last_activity')}</span>
+                    <span className="font-medium">{t('settings.just_now')}</span>
                   </div>
                 </div>
               </div>

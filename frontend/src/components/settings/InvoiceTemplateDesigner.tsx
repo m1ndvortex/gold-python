@@ -220,22 +220,27 @@ export const InvoiceTemplateDesigner: React.FC = () => {
   );
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-purple-50/30 hover:shadow-2xl transition-all duration-300">
+      <CardHeader className="bg-gradient-to-r from-purple-50 via-violet-50 to-purple-50 border-b-2 border-purple-200/50">
         <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5" />
-              Invoice Template Designer
-            </CardTitle>
-            <CardDescription>
-              Customize your invoice template design and layout
-            </CardDescription>
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300">
+              <FileText className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-bold text-foreground">
+                Invoice Template Designer
+              </CardTitle>
+              <CardDescription className="text-base text-muted-foreground">
+                Customize your invoice template design and layout
+              </CardDescription>
+            </div>
           </div>
           <div className="flex gap-2">
             <Button
               variant="outline"
               onClick={() => setPreviewMode(!previewMode)}
+              className="bg-gradient-to-r from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 border-purple-200 hover:border-purple-300 text-purple-700 hover:text-purple-800 shadow-md hover:shadow-lg transition-all duration-300"
             >
               <Eye className="h-4 w-4 mr-2" />
               {previewMode ? 'Edit' : 'Preview'}
@@ -243,6 +248,7 @@ export const InvoiceTemplateDesigner: React.FC = () => {
             <Button
               variant="outline"
               onClick={resetToDefault}
+              className="bg-gradient-to-r from-gray-50 to-slate-50 hover:from-gray-100 hover:to-slate-100 border-gray-200 hover:border-gray-300 text-gray-700 hover:text-gray-800 shadow-md hover:shadow-lg transition-all duration-300"
             >
               <RotateCcw className="h-4 w-4 mr-2" />
               Reset
@@ -250,7 +256,7 @@ export const InvoiceTemplateDesigner: React.FC = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6 bg-gradient-to-br from-purple-50/20 via-white to-violet-50/10">
         {previewMode ? (
           <div className="space-y-4">
             <div className="text-center">
@@ -260,20 +266,51 @@ export const InvoiceTemplateDesigner: React.FC = () => {
               </div>
             </div>
             <div className="flex justify-center">
-              <Button onClick={handleSubmit(onSubmit)} disabled={!isDirty || updateTemplate.isPending}>
+              <Button 
+                onClick={handleSubmit(onSubmit)} 
+                disabled={!isDirty || updateTemplate.isPending}
+                className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+              >
                 <Save className="h-4 w-4 mr-2" />
-                {updateTemplate.isPending ? 'Saving...' : 'Save Template'}
+                {updateTemplate.isPending ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    Saving...
+                  </div>
+                ) : (
+                  'Save Template'
+                )}
               </Button>
             </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <Tabs defaultValue="general" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="general">General</TabsTrigger>
-                <TabsTrigger value="layout">Layout</TabsTrigger>
-                <TabsTrigger value="styling">Styling</TabsTrigger>
-              </TabsList>
+              <div className="bg-gradient-to-r from-purple-50 via-violet-50 to-purple-50 border-b-2 border-purple-200/50 rounded-t-lg p-1">
+                <TabsList className="grid w-full grid-cols-3 bg-transparent h-auto p-1 gap-1">
+                  <TabsTrigger 
+                    value="general"
+                    className="flex items-center gap-2 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-lg data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-purple-300 font-medium"
+                  >
+                    <FileText className="h-4 w-4" />
+                    General
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="layout"
+                    className="flex items-center gap-2 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-lg data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-purple-300 font-medium"
+                  >
+                    <Layout className="h-4 w-4" />
+                    Layout
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="styling"
+                    className="flex items-center gap-2 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-lg data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-purple-300 font-medium"
+                  >
+                    <Palette className="h-4 w-4" />
+                    Styling
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value="general" className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -470,9 +507,17 @@ export const InvoiceTemplateDesigner: React.FC = () => {
               <Button
                 type="submit"
                 disabled={!isDirty || updateTemplate.isPending}
+                className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <Save className="h-4 w-4 mr-2" />
-                {updateTemplate.isPending ? 'Saving...' : 'Save Template'}
+                {updateTemplate.isPending ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                    Saving...
+                  </div>
+                ) : (
+                  'Save Template'
+                )}
               </Button>
             </div>
           </form>

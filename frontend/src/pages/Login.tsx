@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -120,12 +120,14 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-amber-50 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Design Elements */}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Enhanced Background Design Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary-200/30 to-primary-300/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-amber-200/30 to-amber-300/20 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary-100/20 to-amber-100/20 rounded-full blur-3xl"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-green-200/30 to-teal-300/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-200/30 to-indigo-300/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-teal-100/20 to-blue-100/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-purple-200/20 to-pink-300/15 rounded-full blur-2xl animate-bounce"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-br from-cyan-200/20 to-blue-300/15 rounded-full blur-2xl animate-bounce"></div>
       </div>
 
       <div className="max-w-md w-full space-y-8 relative z-10">
@@ -133,21 +135,26 @@ export const Login: React.FC = () => {
         <div className="text-center space-y-6">
           <div className="flex items-center justify-center">
             <div className="relative">
-              <div className="h-16 w-16 bg-gradient-to-br from-primary-500 via-primary-600 to-amber-600 rounded-2xl flex items-center justify-center shadow-xl shadow-primary-500/25 mb-6">
-                <span className="text-white font-bold text-2xl">طلا</span>
+              <div className="h-20 w-20 bg-gradient-to-br from-green-500 via-teal-600 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-green-500/25 mb-6 transform hover:scale-105 transition-all duration-300">
+                <span className="text-white font-bold text-3xl">طلا</span>
               </div>
-              {/* Floating ring animation */}
-              <div className="absolute inset-0 h-16 w-16 rounded-2xl bg-gradient-to-br from-primary-400 to-amber-500 opacity-20 animate-ping"></div>
+              {/* Enhanced floating ring animations */}
+              <div className="absolute inset-0 h-20 w-20 rounded-3xl bg-gradient-to-br from-green-400 to-teal-500 opacity-20 animate-ping"></div>
+              <div className="absolute inset-2 h-16 w-16 rounded-2xl bg-gradient-to-br from-teal-400 to-blue-500 opacity-15 animate-pulse"></div>
             </div>
           </div>
           
-          <div className="space-y-2">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-primary-600 via-primary-700 to-amber-600 bg-clip-text text-transparent">
+          <div className="space-y-3">
+            <h2 className="text-5xl font-bold bg-gradient-to-r from-green-600 via-teal-700 to-blue-600 bg-clip-text text-transparent">
               {t('app.title')}
             </h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-slate-600 text-xl font-medium">
               {language === 'en' ? 'Welcome back to your gold shop management system' : 'به سیستم مدیریت طلافروشی خود خوش آمدید'}
             </p>
+            <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>{language === 'en' ? 'Secure • Professional • Reliable' : 'امن • حرفه‌ای • قابل اعتماد'}</span>
+            </div>
           </div>
           
           <div className="flex items-center justify-center">
@@ -155,7 +162,7 @@ export const Login: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={toggleLanguage}
-              className="bg-white/50 backdrop-blur-sm border-primary-200 hover:bg-white/80 transition-all duration-300"
+              className="bg-white/70 backdrop-blur-sm border-green-200 hover:bg-white/90 hover:border-green-300 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               <span className="mr-2">{language === 'en' ? '🇮🇷' : '🇺🇸'}</span>
               {language === 'en' ? 'فارسی' : 'English'}
@@ -164,24 +171,24 @@ export const Login: React.FC = () => {
         </div>
 
         {/* Enhanced Login Form */}
-        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
-          <CardHeader className="space-y-4 pb-6">
-            <div className="text-center space-y-2">
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-amber-600 bg-clip-text text-transparent">
+        <Card className="shadow-2xl border-0 bg-white/98 backdrop-blur-md hover:shadow-3xl transition-all duration-500">
+          <CardHeader className="space-y-6 pb-8">
+            <div className="text-center space-y-3">
+              <CardTitle className="text-4xl font-bold bg-gradient-to-r from-green-600 via-teal-600 to-blue-600 bg-clip-text text-transparent">
                 {t('auth.login')}
               </CardTitle>
-              <CardDescription className="text-base text-muted-foreground">
+              <CardDescription className="text-lg text-slate-600 font-medium">
                 {language === 'en' 
                   ? 'Enter your credentials to access the management system' 
                   : 'اطلاعات ورود خود را برای دسترسی به سیستم وارد کنید'
                 }
               </CardDescription>
             </div>
-            {/* Security Badge */}
+            {/* Enhanced Security Badge */}
             <div className="flex items-center justify-center">
-              <div className="flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>{language === 'en' ? 'Secure Connection' : 'اتصال امن'}</span>
+              <div className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 text-green-700 rounded-full text-sm font-medium shadow-sm">
+                <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-full animate-pulse"></div>
+                <span>{language === 'en' ? '🔒 Secure Connection' : '🔒 اتصال امن'}</span>
               </div>
             </div>
           </CardHeader>
@@ -307,18 +314,20 @@ export const Login: React.FC = () => {
               <Button
                 type="submit"
                 disabled={isLoggingIn || !isValid}
-                className="w-full h-12 bg-gradient-to-r from-primary-500 via-primary-600 to-amber-600 hover:from-primary-600 hover:via-primary-700 hover:to-amber-700 text-white font-semibold text-lg rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:shadow-primary-500/25 transform hover:scale-[1.02] active:scale-[0.98]"
+                variant="gradient-green"
+                size="lg"
+                className="w-full h-14 text-white font-semibold text-lg rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl hover:shadow-green-500/25 transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isLoggingIn ? (
                   <div className="flex items-center justify-center space-x-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    <div className="animate-spin rounded-full h-6 w-6 border-3 border-white border-t-transparent"></div>
                     <span>{language === 'en' ? 'Signing in...' : 'در حال ورود...'}</span>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center justify-center gap-3">
                     <span>{t('auth.login')}</span>
-                    <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                      <div className="w-3 h-3 bg-white rounded-full"></div>
                     </div>
                   </div>
                 )}
@@ -326,52 +335,71 @@ export const Login: React.FC = () => {
             </form>
 
             {/* Enhanced Demo Credentials */}
-            <div className="mt-8 p-6 bg-gradient-to-r from-slate-50 to-primary-50/30 rounded-2xl border border-primary-100">
-              <div className="text-center mb-4">
-                <h4 className="text-sm font-semibold text-primary-700 mb-1">
+            <div className="mt-8 p-6 bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 rounded-2xl border border-green-200 shadow-lg">
+              <div className="text-center mb-6">
+                <h4 className="text-lg font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent mb-2">
                   {language === 'en' ? '🎯 Demo Access' : '🎯 دسترسی نمونه'}
                 </h4>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-slate-600 font-medium">
                   {language === 'en' ? 'Use these credentials to explore the system' : 'از این اطلاعات برای کاوش سیستم استفاده کنید'}
                 </p>
               </div>
               
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-primary-100">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-                      <span className="text-blue-600 text-xs font-bold">👑</span>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-md border border-blue-200 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                      <span className="text-white text-sm font-bold">👑</span>
                     </div>
-                    <span className="text-sm font-medium text-blue-700">
+                    <span className="text-base font-semibold text-blue-700">
                       {language === 'en' ? 'Owner' : 'مالک'}
                     </span>
                   </div>
-                  <span className="text-sm font-mono bg-blue-50 px-2 py-1 rounded text-blue-800">admin / admin123</span>
+                  <span className="text-sm font-mono bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-2 rounded-lg text-blue-800 border border-blue-200">admin / admin123</span>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-primary-100">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-                      <span className="text-green-600 text-xs font-bold">⚡</span>
+                <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-md border border-green-200 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+                      <span className="text-white text-sm font-bold">⚡</span>
                     </div>
-                    <span className="text-sm font-medium text-green-700">
+                    <span className="text-base font-semibold text-green-700">
                       {language === 'en' ? 'Manager' : 'مدیر'}
                     </span>
                   </div>
-                  <span className="text-sm font-mono bg-green-50 px-2 py-1 rounded text-green-800">manager / manager123</span>
+                  <span className="text-sm font-mono bg-gradient-to-r from-green-50 to-teal-50 px-3 py-2 rounded-lg text-green-800 border border-green-200">manager / manager123</span>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border border-primary-100">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
-                      <span className="text-amber-600 text-xs font-bold">💰</span>
+                <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-md border border-amber-200 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
+                      <span className="text-white text-sm font-bold">💰</span>
                     </div>
-                    <span className="text-sm font-medium text-amber-700">
+                    <span className="text-base font-semibold text-amber-700">
                       {language === 'en' ? 'Cashier' : 'صندوقدار'}
                     </span>
                   </div>
-                  <span className="text-sm font-mono bg-amber-50 px-2 py-1 rounded text-amber-800">cashier / cashier123</span>
+                  <span className="text-sm font-mono bg-gradient-to-r from-amber-50 to-orange-50 px-3 py-2 rounded-lg text-amber-800 border border-amber-200">cashier / cashier123</span>
                 </div>
+              </div>
+            </div>
+
+            {/* Additional Authentication Links */}
+            <div className="text-center pt-6 border-t border-gray-200 space-y-4">
+              <div className="flex items-center justify-center gap-6">
+                <Link 
+                  to="/register" 
+                  className="text-sm font-medium text-green-600 hover:text-green-700 transition-colors flex items-center gap-1"
+                >
+                  <span>{language === 'en' ? 'Create Account' : 'ایجاد حساب کاربری'}</span>
+                </Link>
+                <div className="w-px h-4 bg-gray-300"></div>
+                <Link 
+                  to="/forgot-password" 
+                  className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1"
+                >
+                  <span>{language === 'en' ? 'Forgot Password?' : 'فراموشی رمز عبور؟'}</span>
+                </Link>
               </div>
             </div>
           </CardContent>

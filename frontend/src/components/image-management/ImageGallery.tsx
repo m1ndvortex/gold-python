@@ -21,7 +21,8 @@ import {
   Filter,
   SortAsc,
   SortDesc,
-  RefreshCw
+  RefreshCw,
+  FileImage
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -315,8 +316,10 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
   if (loading) {
     return (
       <div className={cn("flex items-center justify-center p-8", className)}>
-        <RefreshCw className="h-6 w-6 animate-spin mr-2" />
-        Loading images...
+        <div className="flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-0 shadow-lg">
+          <RefreshCw className="h-6 w-6 animate-spin text-blue-600" />
+          <span className="text-blue-800 font-medium">Loading images...</span>
+        </div>
       </div>
     );
   }
@@ -324,11 +327,16 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
   if (error) {
     return (
       <div className={cn("text-center p-8", className)}>
-        <div className="text-red-600 mb-4">{error}</div>
-        <Button onClick={loadImages} variant="outline">
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Retry
-        </Button>
+        <div className="bg-gradient-to-r from-red-50 to-rose-50 border-0 rounded-lg p-6 shadow-lg">
+          <div className="text-red-800 font-medium mb-4">{error}</div>
+          <Button 
+            onClick={loadImages} 
+            className="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Retry
+          </Button>
+        </div>
       </div>
     );
   }
@@ -339,7 +347,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold">Images</h3>
-          <Badge variant="secondary">
+          <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg">
             {filteredAndSortedImages.length} of {images.length}
           </Badge>
         </div>
@@ -359,7 +367,11 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
           {/* Sort */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
                 <Filter className="h-4 w-4 mr-2" />
                 Sort
                 {sortOrder === 'asc' ? <SortAsc className="h-4 w-4 ml-2" /> : <SortDesc className="h-4 w-4 ml-2" />}
@@ -408,11 +420,12 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
           </DropdownMenu>
 
           {/* View Mode */}
-          <div className="flex items-center border rounded-md">
+          <div className="flex items-center bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg border-0 shadow-md p-1">
             <Button
               variant={viewMode === 'grid' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewMode('grid')}
+              className={viewMode === 'grid' ? 'bg-white shadow-md border-2 border-blue-300 text-blue-700' : 'hover:bg-white/50'}
             >
               <Grid3X3 className="h-4 w-4" />
             </Button>
@@ -420,13 +433,17 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
               variant={viewMode === 'list' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => setViewMode('list')}
+              className={viewMode === 'list' ? 'bg-white shadow-md border-2 border-blue-300 text-blue-700' : 'hover:bg-white/50'}
             >
               <List className="h-4 w-4" />
             </Button>
           </div>
 
           {/* Upload Button */}
-          <Button onClick={() => setShowUpload(true)}>
+          <Button 
+            onClick={() => setShowUpload(true)}
+            className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+          >
             Upload Images
           </Button>
         </div>
@@ -434,13 +451,19 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
 
       {/* Images Display */}
       {filteredAndSortedImages.length === 0 ? (
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-gray-50 to-slate-100/50 hover:shadow-xl transition-all duration-300">
           <CardContent className="p-8 text-center">
-            <div className="text-muted-foreground mb-4">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-gradient-to-br from-gray-500 to-gray-600 flex items-center justify-center shadow-lg">
+              <FileImage className="h-8 w-8 text-white" />
+            </div>
+            <div className="text-gray-700 font-medium mb-4">
               {searchQuery ? 'No images match your search' : 'No images uploaded'}
             </div>
             {!searchQuery && (
-              <Button onClick={() => setShowUpload(true)}>
+              <Button 
+                onClick={() => setShowUpload(true)}
+                className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+              >
                 Upload Images
               </Button>
             )}
@@ -452,9 +475,9 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
             <Card 
               key={image.id}
               className={cn(
-                "relative group cursor-pointer transition-all hover:shadow-md",
+                "relative group cursor-pointer transition-all hover:shadow-xl border-0 shadow-lg bg-gradient-to-br from-white to-gray-50/50",
                 enableReorder && "cursor-move",
-                selectedImage?.id === image.id && "ring-2 ring-primary"
+                selectedImage?.id === image.id && "ring-2 ring-blue-400 shadow-xl"
               )}
               draggable={enableReorder}
               onDragStart={(e) => handleDragStart(e, image)}
@@ -473,7 +496,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
                   
                   {/* Primary Badge */}
                   {image.is_primary && (
-                    <Badge className="absolute top-2 left-2 text-xs">
+                    <Badge className="absolute top-2 left-2 text-xs bg-gradient-to-r from-yellow-500 to-amber-600 text-white shadow-lg">
                       <Star className="h-3 w-3 mr-1" />
                       Primary
                     </Badge>
@@ -544,8 +567,8 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
             <Card 
               key={image.id}
               className={cn(
-                "transition-all hover:shadow-sm",
-                selectedImage?.id === image.id && "ring-2 ring-primary"
+                "transition-all hover:shadow-xl border-0 shadow-lg bg-gradient-to-br from-white to-gray-50/50",
+                selectedImage?.id === image.id && "ring-2 ring-blue-400 shadow-xl"
               )}
             >
               <CardContent className="p-4">

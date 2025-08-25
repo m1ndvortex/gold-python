@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useLanguage } from '../hooks/useLanguage';
 import { 
   MessageSquare, 
   BookTemplate, 
@@ -30,6 +31,7 @@ import { useSMSDashboardData } from '../hooks/useSMS';
 import { cn } from '../lib/utils';
 
 const SMSOverview: React.FC = () => {
+  const { t } = useLanguage();
   const { overallStats, recentCampaigns, recentHistory, isLoading } = useSMSDashboardData();
 
   if (isLoading) {
@@ -55,33 +57,33 @@ const SMSOverview: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Campaigns</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('sms.total_campaigns')}</CardTitle>
             <Send className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{overallStats?.total_campaigns || 0}</div>
             <p className="text-xs text-muted-foreground">
-              {recentCampaigns.filter(c => c.status === 'pending').length} pending
+              {recentCampaigns.filter(c => c.status === 'pending').length} {t('sms.pending')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Messages Sent</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('sms.messages_sent')}</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{overallStats?.total_messages_sent || 0}</div>
             <p className="text-xs text-muted-foreground">
-              {overallStats?.total_messages_delivered || 0} delivered
+              {overallStats?.total_messages_delivered || 0} {t('sms.delivered')}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('sms.success_rate')}</CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -97,7 +99,7 @@ const SMSOverview: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Delivery Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('sms.delivery_rate')}</CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -119,9 +121,9 @@ const SMSOverview: React.FC = () => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Send className="h-5 w-5" />
-              <span>Recent Campaigns</span>
+              <span>{t('sms.recent_campaigns')}</span>
             </CardTitle>
-            <CardDescription>Latest SMS campaigns and their status</CardDescription>
+            <CardDescription>{t('sms.recent_campaigns_desc')}</CardDescription>
           </CardHeader>
           <CardContent>
             {recentCampaigns.length > 0 ? (
@@ -131,7 +133,7 @@ const SMSOverview: React.FC = () => {
                     <div className="flex-1">
                       <div className="font-medium">{campaign.name}</div>
                       <div className="text-sm text-muted-foreground">
-                        {campaign.total_recipients} recipients • {new Date(campaign.created_at).toLocaleDateString()}
+                        {campaign.total_recipients} {t('sms.recipients')} • {new Date(campaign.created_at).toLocaleDateString()}
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -142,7 +144,7 @@ const SMSOverview: React.FC = () => {
                           campaign.status === 'sending' ? 'secondary' : 'outline'
                         }
                       >
-                        {campaign.status}
+                        {t(`sms.${campaign.status}`)}
                       </Badge>
                       <div className="text-sm text-muted-foreground">
                         {campaign.sent_count}/{campaign.total_recipients}
@@ -154,7 +156,7 @@ const SMSOverview: React.FC = () => {
             ) : (
               <div className="text-center py-6 text-muted-foreground">
                 <Send className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p>No recent campaigns</p>
+                <p>{t('sms.no_recent_campaigns')}</p>
               </div>
             )}
           </CardContent>
@@ -165,9 +167,9 @@ const SMSOverview: React.FC = () => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <History className="h-5 w-5" />
-              <span>Recent Messages</span>
+              <span>{t('sms.recent_messages')}</span>
             </CardTitle>
-            <CardDescription>Latest SMS message activity</CardDescription>
+            <CardDescription>{t('sms.message_history_desc')}</CardDescription>
           </CardHeader>
           <CardContent>
             {recentHistory.length > 0 ? (
@@ -187,7 +189,7 @@ const SMSOverview: React.FC = () => {
                           message.status === 'failed' ? 'destructive' : 'secondary'
                         }
                       >
-                        {message.status}
+                        {t(`sms.${message.status}`)}
                       </Badge>
                       {message.delivery_status && (
                         <Badge variant="outline">
@@ -201,7 +203,7 @@ const SMSOverview: React.FC = () => {
             ) : (
               <div className="text-center py-6 text-muted-foreground">
                 <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p>No recent messages</p>
+                <p>{t('sms.no_recent_messages')}</p>
               </div>
             )}
           </CardContent>
@@ -212,6 +214,7 @@ const SMSOverview: React.FC = () => {
 };
 
 export const SMS: React.FC = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('overview');
 
   return (
@@ -224,9 +227,9 @@ export const SMS: React.FC = () => {
               <Smartphone className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold tracking-tight text-foreground">SMS Management</h1>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">{t('sms.title')}</h1>
               <p className="text-muted-foreground text-lg">
-                Send promotional messages and debt reminders to customers with ease
+                {t('sms.description')}
               </p>
             </div>
           </div>
@@ -234,11 +237,11 @@ export const SMS: React.FC = () => {
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 gap-1">
             <Bell className="h-3 w-3" />
-            SMS Ready
+            {t('sms.status_ready')}
           </Badge>
           <Button variant="default" size="sm" className="gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700">
             <Send className="h-4 w-4" />
-            Quick Send
+            {t('sms.quick_send')}
           </Button>
         </div>
       </div>
@@ -262,8 +265,8 @@ export const SMS: React.FC = () => {
                     <BarChart3 className="h-4 w-4 text-emerald-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-medium text-sm">Overview</div>
-                    <div className="text-xs text-muted-foreground">Analytics & Stats</div>
+                    <div className="font-medium text-sm">{t('sms.tab_overview')}</div>
+                    <div className="text-xs text-muted-foreground">{t('sms.tab_overview_desc')}</div>
                   </div>
                 </TabsTrigger>
                 
@@ -279,8 +282,8 @@ export const SMS: React.FC = () => {
                     <BookTemplate className="h-4 w-4 text-teal-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-medium text-sm">Templates</div>
-                    <div className="text-xs text-muted-foreground">Message Library</div>
+                    <div className="font-medium text-sm">{t('sms.tab_templates')}</div>
+                    <div className="text-xs text-muted-foreground">{t('sms.tab_templates_desc')}</div>
                   </div>
                 </TabsTrigger>
                 
@@ -296,8 +299,8 @@ export const SMS: React.FC = () => {
                     <Send className="h-4 w-4 text-cyan-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-medium text-sm">Campaigns</div>
-                    <div className="text-xs text-muted-foreground">Bulk Messaging</div>
+                    <div className="font-medium text-sm">{t('sms.tab_campaigns')}</div>
+                    <div className="text-xs text-muted-foreground">{t('sms.tab_campaigns_desc')}</div>
                   </div>
                 </TabsTrigger>
                 
@@ -313,8 +316,8 @@ export const SMS: React.FC = () => {
                     <History className="h-4 w-4 text-indigo-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-medium text-sm">History</div>
-                    <div className="text-xs text-muted-foreground">Message Logs</div>
+                    <div className="font-medium text-sm">{t('sms.tab_history')}</div>
+                    <div className="text-xs text-muted-foreground">{t('sms.tab_history_desc')}</div>
                   </div>
                 </TabsTrigger>
               </TabsList>
@@ -329,13 +332,13 @@ export const SMS: React.FC = () => {
                       <BarChart3 className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-foreground">SMS Analytics</h3>
-                      <p className="text-sm text-muted-foreground">Monitor SMS campaign performance and delivery metrics</p>
+                      <h3 className="text-xl font-semibold text-foreground">{t('sms.analytics_title')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('sms.analytics_description')}</p>
                     </div>
                   </div>
                   <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
                     <Activity className="h-3 w-3 mr-1" />
-                    Real-time
+                    {t('common.real_time')}
                   </Badge>
                 </div>
                 <SMSOverview />
@@ -350,13 +353,13 @@ export const SMS: React.FC = () => {
                       <BookTemplate className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-foreground">Message Templates</h3>
-                      <p className="text-sm text-muted-foreground">Create and manage reusable SMS templates</p>
+                      <h3 className="text-xl font-semibold text-foreground">{t('sms.templates_title')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('sms.templates_description')}</p>
                     </div>
                   </div>
                   <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200">
                     <Target className="h-3 w-3 mr-1" />
-                    Optimized
+                    {t('common.optimized')}
                   </Badge>
                 </div>
                 <SMSTemplateManager />
@@ -371,13 +374,13 @@ export const SMS: React.FC = () => {
                       <Send className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-foreground">SMS Campaigns</h3>
-                      <p className="text-sm text-muted-foreground">Launch and manage bulk SMS marketing campaigns</p>
+                      <h3 className="text-xl font-semibold text-foreground">{t('sms.campaigns_title')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('sms.campaigns_description')}</p>
                     </div>
                   </div>
                   <Badge variant="outline" className="bg-cyan-50 text-cyan-700 border-cyan-200">
                     <Zap className="h-3 w-3 mr-1" />
-                    Automated
+                    {t('common.automated')}
                   </Badge>
                 </div>
                 <SMSCampaignManager />
@@ -392,13 +395,13 @@ export const SMS: React.FC = () => {
                       <History className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-foreground">Message History</h3>
-                      <p className="text-sm text-muted-foreground">View sent messages and delivery status</p>
+                      <h3 className="text-xl font-semibold text-foreground">{t('sms.message_history')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('sms.message_history_desc')}</p>
                     </div>
                   </div>
                   <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
                     <CheckCircle className="h-3 w-3 mr-1" />
-                    Tracked
+                    {t('common.tracked')}
                   </Badge>
                 </div>
                 <SMSHistoryTracker />
@@ -412,44 +415,53 @@ export const SMS: React.FC = () => {
 };
 
 // Individual route components
-const SMSTemplatesRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    <div className="flex items-center gap-3 mb-6">
-      <BookTemplate className="h-8 w-8 text-blue-600" />
-      <div>
-        <h1 className="text-3xl font-bold">SMS Templates</h1>
-        <p className="text-muted-foreground">Manage and customize SMS message templates</p>
+const SMSTemplatesRoute: React.FC = () => {
+  const { t } = useLanguage();
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center gap-3 mb-6">
+        <BookTemplate className="h-8 w-8 text-blue-600" />
+        <div>
+          <h1 className="text-3xl font-bold">{t('sms.templates')}</h1>
+          <p className="text-muted-foreground">{t('sms.templates_description')}</p>
+        </div>
       </div>
+      <SMSTemplateManager />
     </div>
-    <SMSTemplateManager />
-  </div>
-);
+  );
+};
 
-const SMSCampaignsRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    <div className="flex items-center gap-3 mb-6">
-      <Send className="h-8 w-8 text-green-600" />
-      <div>
-        <h1 className="text-3xl font-bold">SMS Campaigns</h1>
-        <p className="text-muted-foreground">Create and manage SMS marketing campaigns</p>
+const SMSCampaignsRoute: React.FC = () => {
+  const { t } = useLanguage();
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center gap-3 mb-6">
+        <Send className="h-8 w-8 text-green-600" />
+        <div>
+          <h1 className="text-3xl font-bold">{t('sms.campaigns')}</h1>
+          <p className="text-muted-foreground">{t('sms.campaigns_description')}</p>
+        </div>
       </div>
+      <SMSCampaignManager />
     </div>
-    <SMSCampaignManager />
-  </div>
-);
+  );
+};
 
-const SMSHistoryRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    <div className="flex items-center gap-3 mb-6">
-      <History className="h-8 w-8 text-purple-600" />
-      <div>
-        <h1 className="text-3xl font-bold">SMS History</h1>
-        <p className="text-muted-foreground">View sent messages and delivery status</p>
+const SMSHistoryRoute: React.FC = () => {
+  const { t } = useLanguage();
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center gap-3 mb-6">
+        <History className="h-8 w-8 text-purple-600" />
+        <div>
+          <h1 className="text-3xl font-bold">{t('sms.history')}</h1>
+          <p className="text-muted-foreground">{t('sms.message_history_desc')}</p>
+        </div>
       </div>
+      <SMSHistoryTracker />
     </div>
-    <SMSHistoryTracker />
-  </div>
-);
+  );
+};
 
 // Wrapper component to handle sub-routes
 export const SMSWithRouting: React.FC = () => {

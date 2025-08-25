@@ -44,6 +44,18 @@ export interface LanguageContextType {
   direction: Direction;
   t: (key: string, params?: Record<string, string | number>) => string;
   setLanguage: (lang: Language) => void;
+  // New additions for complete language separation
+  isRTL: boolean;
+  isLTR: boolean;
+  getLayoutClasses: () => string;
+  getTextAlignClass: () => string;
+  getFlexDirectionClass: () => string;
+  getMarginClass: (margin: string) => string;
+  getPaddingClass: (padding: string) => string;
+  getBorderClass: (border: string) => string;
+  formatNumber: (num: number) => string;
+  formatDate: (date: Date) => string;
+  formatCurrency: (amount: number) => string;
 }
 
 // Inventory Types

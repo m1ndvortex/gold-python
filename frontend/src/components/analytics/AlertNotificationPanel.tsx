@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, AlertTriangle, CheckCircle, X, Clock, User } from 'lucide-react';
+import { Bell, AlertTriangle, CheckCircle, Clock, User } from 'lucide-react';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Badge } from '../ui/badge';
 
 interface AlertNotification {
   id: string;
@@ -254,24 +255,31 @@ const AlertNotificationPanel: React.FC<AlertNotificationPanelProps> = ({ classNa
   }
 
   return (
-    <Card className={className}>
-      <CardHeader>
+    <Card className={`${className} border-0 shadow-xl overflow-hidden`}>
+      <CardHeader className="bg-gradient-to-r from-red-50 via-orange-50 to-yellow-50 border-b-2 border-red-200">
         <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Bell className="h-5 w-5" />
-            Alert Notifications
-            {alertSummary && alertSummary.unacknowledged_alerts > 0 && (
-              <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                {alertSummary.unacknowledged_alerts}
-              </span>
-            )}
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center">
+              <Bell className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-semibold text-foreground">Alert Notifications</span>
+                {alertSummary && alertSummary.unacknowledged_alerts > 0 && (
+                  <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white">
+                    {alertSummary.unacknowledged_alerts}
+                  </Badge>
+                )}
+              </div>
+              <p className="text-muted-foreground text-sm">Real-time system alerts and notifications</p>
+            </div>
           </div>
           <div className="flex gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={evaluateAlerts}
-              className="text-xs"
+              className="text-xs bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl"
             >
               Check Now
             </Button>
@@ -279,16 +287,16 @@ const AlertNotificationPanel: React.FC<AlertNotificationPanelProps> = ({ classNa
               variant="outline"
               size="sm"
               onClick={() => setShowCreateRule(!showCreateRule)}
-              className="text-xs"
+              className="text-xs bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl"
             >
               Rules ({alertRules.length})
             </Button>
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="bg-gradient-to-br from-red-50/30 to-white">
         {error && (
-          <Alert className="mb-4">
+          <Alert className="mb-4 border-0 shadow-lg bg-gradient-to-r from-red-50 to-red-100/50">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
@@ -297,40 +305,41 @@ const AlertNotificationPanel: React.FC<AlertNotificationPanelProps> = ({ classNa
         {/* Alert Summary */}
         {alertSummary && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="text-center">
+            <Card className="border-0 shadow-md bg-gradient-to-br from-blue-50 to-blue-100/50 text-center p-4">
               <div className="text-2xl font-bold text-blue-600">{alertSummary.total_alerts}</div>
               <div className="text-xs text-gray-500">Total Alerts</div>
-            </div>
-            <div className="text-center">
+            </Card>
+            <Card className="border-0 shadow-md bg-gradient-to-br from-red-50 to-red-100/50 text-center p-4">
               <div className="text-2xl font-bold text-red-600">{alertSummary.unacknowledged_alerts}</div>
               <div className="text-xs text-gray-500">Unacknowledged</div>
-            </div>
-            <div className="text-center">
+            </Card>
+            <Card className="border-0 shadow-md bg-gradient-to-br from-green-50 to-green-100/50 text-center p-4">
               <div className="text-2xl font-bold text-green-600">{alertSummary.acknowledged_alerts}</div>
               <div className="text-xs text-gray-500">Acknowledged</div>
-            </div>
-            <div className="text-center">
+            </Card>
+            <Card className="border-0 shadow-md bg-gradient-to-br from-purple-50 to-purple-100/50 text-center p-4">
               <div className="text-2xl font-bold text-purple-600">{alertSummary.active_rules}</div>
               <div className="text-xs text-gray-500">Active Rules</div>
-            </div>
+            </Card>
           </div>
         )}
 
         {/* Alert List */}
         <div className="space-y-3 max-h-96 overflow-y-auto">
           {alerts.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Bell className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No alerts to display</p>
-            </div>
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-gray-50 to-gray-100/50 text-center py-8">
+              <Bell className="h-12 w-12 mx-auto mb-4 opacity-50 text-gray-400" />
+              <p className="text-gray-500">No alerts to display</p>
+            </Card>
           ) : (
             alerts.map((alert) => (
-              <div
+              <Card
                 key={alert.id}
-                className={`p-3 rounded-lg border ${getSeverityColor(alert.alert_level)} ${
+                className={`border-0 shadow-md hover:shadow-lg transition-all duration-300 ${getSeverityColor(alert.alert_level)} ${
                   alert.acknowledged ? 'opacity-60' : ''
                 }`}
               >
+                <CardContent className="p-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3 flex-1">
                     {getSeverityIcon(alert.alert_level)}
@@ -367,38 +376,45 @@ const AlertNotificationPanel: React.FC<AlertNotificationPanelProps> = ({ classNa
                         variant="ghost"
                         size="sm"
                         onClick={() => acknowledgeAlert(alert.id)}
-                        className="text-xs px-2 py-1 h-auto"
+                        className="text-xs px-2 py-1 h-auto bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl"
                       >
                         Acknowledge
                       </Button>
                     )}
                   </div>
                 </div>
-              </div>
+                </CardContent>
+              </Card>
             ))
           )}
         </div>
 
         {/* Alert Rules Section */}
         {showCreateRule && (
-          <div className="mt-6 pt-6 border-t">
-            <h4 className="font-medium mb-3">Active Alert Rules</h4>
-            <div className="space-y-2 max-h-48 overflow-y-auto">
-              {alertRules.map((rule) => (
-                <div key={rule.id} className="p-2 bg-gray-50 rounded text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{rule.rule_name}</span>
-                    <span className="text-xs px-2 py-1 bg-white rounded">
-                      {rule.severity.toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    Type: {rule.rule_type} | Cooldown: {rule.cooldown_minutes}min
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <Card className="mt-6 border-0 shadow-lg bg-gradient-to-br from-purple-50 to-indigo-100/50">
+            <CardHeader>
+              <CardTitle className="text-lg font-medium">Active Alert Rules</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {alertRules.map((rule) => (
+                  <Card key={rule.id} className="border-0 shadow-sm bg-white/70 hover:bg-white transition-colors">
+                    <CardContent className="p-3">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">{rule.rule_name}</span>
+                        <Badge className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+                          {rule.severity.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">
+                        Type: {rule.rule_type} | Cooldown: {rule.cooldown_minutes}min
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         )}
       </CardContent>
     </Card>

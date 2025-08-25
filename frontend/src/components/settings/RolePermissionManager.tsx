@@ -193,28 +193,35 @@ export const RolePermissionManager: React.FC = () => {
   );
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-green-50/30 hover:shadow-2xl transition-all duration-300">
+      <CardHeader className="bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 border-b-2 border-green-200/50">
         <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              Role & Permission Management
-            </CardTitle>
-            <CardDescription>
-              Manage user roles and their permissions
-            </CardDescription>
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300">
+              <Shield className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-bold text-foreground">
+                {t('settings.role_permission_management')}
+              </CardTitle>
+              <CardDescription className="text-base text-muted-foreground">
+                {t('settings.role_permission_desc')}
+              </CardDescription>
+            </div>
           </div>
-          <Button onClick={handleCreateRole}>
+          <Button 
+            onClick={handleCreateRole}
+            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+          >
             <Plus className="h-4 w-4 mr-2" />
-            Create Role
+            {t('settings.create_role')}
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6 bg-gradient-to-br from-green-50/20 via-white to-emerald-50/10">
         <div className="space-y-4">
           {roles?.map((role) => (
-            <div key={role.id} className="border rounded-lg p-4">
+            <div key={role.id} className="border-0 rounded-lg p-4 bg-gradient-to-br from-white to-green-50/20 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <h3 className="font-medium">{role.name}</h3>
@@ -225,12 +232,13 @@ export const RolePermissionManager: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <Badge variant="outline" className="flex items-center gap-1">
                     <Users className="h-3 w-3" />
-                    {role.users.length} users
+                    {t('settings.users_count', { count: role.users.length })}
                   </Badge>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handleEditRole(role)}
+                    className="hover:bg-amber-50 hover:border-amber-300 hover:text-amber-700 transition-colors"
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -239,6 +247,7 @@ export const RolePermissionManager: React.FC = () => {
                     size="sm"
                     onClick={() => handleDeleteRole(role)}
                     disabled={role.users.length > 0}
+                    className={`transition-colors ${role.users.length > 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-50 hover:border-red-300 hover:text-red-700'}`}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -247,7 +256,7 @@ export const RolePermissionManager: React.FC = () => {
 
               {/* Permission Summary */}
               <div className="space-y-2">
-                <Label className="text-xs font-medium text-muted-foreground">PERMISSIONS</Label>
+                <Label className="text-xs font-medium text-muted-foreground">{t('settings.permissions')}</Label>
                 <div className="flex flex-wrap gap-1">
                   {Object.entries(role.permissions || {})
                     .filter(([_, enabled]) => enabled)
@@ -262,7 +271,7 @@ export const RolePermissionManager: React.FC = () => {
               {/* Assigned Users */}
               {role.users.length > 0 && (
                 <div className="mt-3 pt-3 border-t">
-                  <Label className="text-xs font-medium text-muted-foreground">ASSIGNED USERS</Label>
+                  <Label className="text-xs font-medium text-muted-foreground">{t('settings.assigned_users')}</Label>
                   <div className="flex flex-wrap gap-2 mt-1">
                     {role.users.map((user) => (
                       <Badge key={user.id} variant="outline" className="flex items-center gap-1">
@@ -281,20 +290,20 @@ export const RolePermissionManager: React.FC = () => {
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Create New Role</DialogTitle>
+              <DialogTitle>{t('settings.create_new_role')}</DialogTitle>
               <DialogDescription>
-                Define a new role with specific permissions
+                {t('settings.create_role_desc')}
               </DialogDescription>
             </DialogHeader>
             
             <form onSubmit={handleSubmit(onSubmitCreate)} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Role Name</Label>
+                  <Label htmlFor="name">{t('settings.role_name')}</Label>
                   <Input
                     id="name"
-                    {...register('name', { required: 'Role name is required' })}
-                    placeholder="e.g., Sales Manager"
+                    {...register('name', { required: t('settings.role_name_required') })}
+                    placeholder={t('settings.role_name_placeholder')}
                   />
                   {errors.name && (
                     <p className="text-sm text-destructive">{errors.name.message}</p>
@@ -302,11 +311,11 @@ export const RolePermissionManager: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">{t('settings.description')}</Label>
                   <Input
                     id="description"
                     {...register('description')}
-                    placeholder="Brief description of the role"
+                    placeholder={t('settings.role_description_placeholder')}
                   />
                 </div>
               </div>
@@ -324,10 +333,10 @@ export const RolePermissionManager: React.FC = () => {
                   variant="outline"
                   onClick={() => setIsCreateDialogOpen(false)}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
                 <Button type="submit" disabled={createRole.isPending}>
-                  {createRole.isPending ? 'Creating...' : 'Create Role'}
+                  {createRole.isPending ? t('settings.creating_role') : t('settings.create_role')}
                 </Button>
               </div>
             </form>

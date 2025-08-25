@@ -218,6 +218,72 @@ module.exports = {
         'xs': '475px',
         '3xl': '1600px',
       },
+      
+      // Gradient Background Utilities
+      backgroundImage: {
+        // Primary Gradients
+        'gradient-green': 'linear-gradient(to right, rgb(34, 197, 94), rgb(20, 184, 166))',
+        'gradient-green-hover': 'linear-gradient(to right, rgb(22, 163, 74), rgb(17, 94, 89))',
+        'gradient-teal': 'linear-gradient(to right, rgb(20, 184, 166), rgb(59, 130, 246))',
+        'gradient-teal-hover': 'linear-gradient(to right, rgb(17, 94, 89), rgb(37, 99, 235))',
+        'gradient-blue': 'linear-gradient(to right, rgb(59, 130, 246), rgb(99, 102, 241))',
+        'gradient-blue-hover': 'linear-gradient(to right, rgb(37, 99, 235), rgb(79, 70, 229))',
+        'gradient-indigo': 'linear-gradient(to right, rgb(99, 102, 241), rgb(139, 92, 246))',
+        'gradient-indigo-hover': 'linear-gradient(to right, rgb(79, 70, 229), rgb(124, 58, 237))',
+        'gradient-purple': 'linear-gradient(to right, rgb(139, 92, 246), rgb(168, 85, 247))',
+        'gradient-purple-hover': 'linear-gradient(to right, rgb(124, 58, 237), rgb(147, 51, 234))',
+        'gradient-violet': 'linear-gradient(to right, rgb(168, 85, 247), rgb(236, 72, 153))',
+        'gradient-violet-hover': 'linear-gradient(to right, rgb(147, 51, 234), rgb(219, 39, 119))',
+        'gradient-pink': 'linear-gradient(to right, rgb(236, 72, 153), rgb(244, 63, 94))',
+        'gradient-pink-hover': 'linear-gradient(to right, rgb(219, 39, 119), rgb(225, 29, 72))',
+        'gradient-rose': 'linear-gradient(to right, rgb(244, 63, 94), rgb(239, 68, 68))',
+        'gradient-rose-hover': 'linear-gradient(to right, rgb(225, 29, 72), rgb(220, 38, 38))',
+        'gradient-orange': 'linear-gradient(to right, rgb(249, 115, 22), rgb(239, 68, 68))',
+        'gradient-orange-hover': 'linear-gradient(to right, rgb(234, 88, 12), rgb(220, 38, 38))',
+        'gradient-cyan': 'linear-gradient(to right, rgb(6, 182, 212), rgb(59, 130, 246))',
+        'gradient-cyan-hover': 'linear-gradient(to right, rgb(8, 145, 178), rgb(37, 99, 235))',
+        
+        // Card Background Gradients
+        'gradient-card-green': 'linear-gradient(to bottom right, rgb(240, 253, 244), rgb(220, 252, 231))',
+        'gradient-card-teal': 'linear-gradient(to bottom right, rgb(240, 253, 250), rgb(204, 251, 241))',
+        'gradient-card-blue': 'linear-gradient(to bottom right, rgb(239, 246, 255), rgb(219, 234, 254))',
+        'gradient-card-indigo': 'linear-gradient(to bottom right, rgb(238, 242, 255), rgb(224, 231, 255))',
+        'gradient-card-purple': 'linear-gradient(to bottom right, rgb(250, 245, 255), rgb(243, 232, 255))',
+        'gradient-card-violet': 'linear-gradient(to bottom right, rgb(245, 243, 255), rgb(237, 233, 254))',
+        'gradient-card-pink': 'linear-gradient(to bottom right, rgb(253, 242, 248), rgb(252, 231, 243))',
+        'gradient-card-rose': 'linear-gradient(to bottom right, rgb(255, 241, 242), rgb(254, 226, 226))',
+        'gradient-card-orange': 'linear-gradient(to bottom right, rgb(255, 247, 237), rgb(254, 215, 170))',
+        'gradient-card-cyan': 'linear-gradient(to bottom right, rgb(236, 254, 255), rgb(207, 250, 254))',
+        
+        // Tab Navigation Gradients
+        'gradient-tab-green': 'linear-gradient(to right, rgb(240, 253, 244), rgb(220, 252, 231), rgb(219, 234, 254))',
+        'gradient-tab-blue': 'linear-gradient(to right, rgb(239, 246, 255), rgb(219, 234, 254), rgb(224, 231, 255))',
+        'gradient-tab-purple': 'linear-gradient(to right, rgb(250, 245, 255), rgb(243, 232, 255), rgb(237, 233, 254))',
+        'gradient-tab-pink': 'linear-gradient(to right, rgb(253, 242, 248), rgb(252, 231, 243), rgb(254, 226, 226))',
+        
+        // Light Background Gradients
+        'gradient-light-green': 'linear-gradient(to right, rgb(240, 253, 244), rgb(255, 255, 255))',
+        'gradient-light-teal': 'linear-gradient(to right, rgb(240, 253, 250), rgb(255, 255, 255))',
+        'gradient-light-blue': 'linear-gradient(to right, rgb(239, 246, 255), rgb(255, 255, 255))',
+        'gradient-light-purple': 'linear-gradient(to right, rgb(250, 245, 255), rgb(255, 255, 255))',
+        'gradient-light-pink': 'linear-gradient(to right, rgb(253, 242, 248), rgb(255, 255, 255))',
+      },
+      
+      // Enhanced Box Shadow with Gradient Colors
+      boxShadow: {
+        'gold-sm': '0 1px 2px 0 rgb(245 158 11 / 0.05)',
+        'gold': '0 1px 3px 0 rgb(245 158 11 / 0.1), 0 1px 2px -1px rgb(245 158 11 / 0.1)',
+        'gold-md': '0 4px 6px -1px rgb(245 158 11 / 0.1), 0 2px 4px -2px rgb(245 158 11 / 0.1)',
+        'gold-lg': '0 10px 15px -3px rgb(245 158 11 / 0.1), 0 4px 6px -4px rgb(245 158 11 / 0.1)',
+        'gold-xl': '0 20px 25px -5px rgb(245 158 11 / 0.1), 0 8px 10px -6px rgb(245 158 11 / 0.1)',
+        'professional': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+        'elegant': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+        'gradient-green': '0 10px 25px -5px rgb(34 197 94 / 0.1), 0 8px 10px -6px rgb(34 197 94 / 0.1)',
+        'gradient-blue': '0 10px 25px -5px rgb(59 130 246 / 0.1), 0 8px 10px -6px rgb(59 130 246 / 0.1)',
+        'gradient-purple': '0 10px 25px -5px rgb(139 92 246 / 0.1), 0 8px 10px -6px rgb(139 92 246 / 0.1)',
+        'gradient-pink': '0 10px 25px -5px rgb(236 72 153 / 0.1), 0 8px 10px -6px rgb(236 72 153 / 0.1)',
+        'gradient-lg': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+      },
     },
   },
   plugins: [
@@ -225,5 +291,38 @@ module.exports = {
     require("@tailwindcss/forms"),
     require("@tailwindcss/typography"),
     require("tailwindcss-rtl"),
+    // Custom plugin for additional gradient utilities
+    function({ addUtilities }) {
+      const newUtilities = {
+        '.hover-lift': {
+          '&:hover': {
+            transform: 'translateY(-2px)',
+          },
+        },
+        '.transition-all-smooth': {
+          transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+        },
+        '.transition-colors-smooth': {
+          transition: 'color 300ms cubic-bezier(0.4, 0, 0.2, 1), background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), border-color 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+        },
+        '.transition-shadow-smooth': {
+          transition: 'box-shadow 300ms cubic-bezier(0.23, 1, 0.32, 1)',
+        },
+        '.backdrop-blur-professional': {
+          'backdrop-filter': 'blur(12px)',
+          '-webkit-backdrop-filter': 'blur(12px)',
+        },
+        '.scrollbar-thin': {
+          'scrollbar-width': 'thin',
+        },
+        '.scrollbar-thumb-green\\/20': {
+          'scrollbar-color': 'rgb(34 197 94 / 0.2) transparent',
+        },
+        '.scrollbar-track-transparent': {
+          'scrollbar-track-color': 'transparent',
+        },
+      }
+      addUtilities(newUtilities)
+    },
   ],
 }

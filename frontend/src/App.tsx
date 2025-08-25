@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { LanguageContext, useLanguageProvider } from './hooks/useLanguage';
 import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
+import { Register } from './pages/Register';
+import { ForgotPassword } from './pages/ForgotPassword';
+import { ResetPassword } from './pages/ResetPassword';
 import { InventoryWithRouting as Inventory } from './pages/Inventory';
 import { Customers } from './pages/Customers';
 import { Invoices } from './pages/Invoices';
@@ -40,6 +43,9 @@ const AppContent: React.FC = () => {
       <div className="App min-h-screen bg-background">
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route
             path="/"
             element={

@@ -11,8 +11,7 @@ import {
   Upload, 
   Grid3X3, 
   List, 
-  Search, 
-  Filter,
+  Search,
   FolderOpen,
   Package,
   Building,
@@ -34,7 +33,6 @@ import {
 import { ImageGallery, ImageUpload, CategoryImageManager } from '../components/image-management';
 import { useCategories, useInventoryItems } from '../hooks/useInventory';
 import { useCustomers } from '../hooks/useCustomers';
-import { cn } from '../lib/utils';
 
 type EntityType = 'product' | 'category' | 'company' | 'customer';
 type ViewMode = 'grid' | 'list';
@@ -57,9 +55,9 @@ export const ImageManagement: React.FC = () => {
   const [selectedEntity, setSelectedEntity] = useState<{ type: EntityType; id: string; name: string } | null>(null);
 
   // Fetch data for entity selection
-  const { data: categories = [] } = useCategories();
-  const { data: inventoryData } = useInventoryItems({ limit: 100 });
-  const { data: customers = [] } = useCustomers();
+  const { data: categories = [], isLoading: categoriesLoading } = useCategories();
+  const { data: inventoryData, isLoading: inventoryLoading } = useInventoryItems({ limit: 100 });
+  const { data: customers = [], isLoading: customersLoading } = useCustomers();
 
   const handleEntitySelect = (type: EntityType, id: string, name: string) => {
     setSelectedEntity({ type, id, name });
@@ -82,20 +80,24 @@ export const ImageManagement: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       >
-        <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Image Management
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Manage images for products, categories, and company assets
-          </p>
+        <div className="flex items-center gap-4">
+          <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
+            <ImageIcon className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
+              Image Management
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Manage images for products, categories, and company assets
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Button
-            variant="outline"
             onClick={() => setShowUpload(true)}
             disabled={!selectedEntity}
-            className="flex items-center gap-2"
+            className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
           >
             <Upload className="h-4 w-4" />
             Upload Images
@@ -104,20 +106,32 @@ export const ImageManagement: React.FC = () => {
       </motion.div>
 
       <Tabs defaultValue="gallery" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="gallery" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-4 bg-gradient-to-r from-purple-50 via-violet-50 to-purple-50 p-1 rounded-xl shadow-lg border-0">
+          <TabsTrigger 
+            value="gallery" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300 transition-all duration-300"
+          >
             <ImageIcon className="h-4 w-4" />
             Image Gallery
           </TabsTrigger>
-          <TabsTrigger value="categories" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="categories" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300 transition-all duration-300"
+          >
             <FolderOpen className="h-4 w-4" />
             Category Images
           </TabsTrigger>
-          <TabsTrigger value="products" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="products" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300 transition-all duration-300"
+          >
             <Package className="h-4 w-4" />
             Product Images
           </TabsTrigger>
-          <TabsTrigger value="customers" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="customers" 
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300 transition-all duration-300"
+          >
             <Users className="h-4 w-4" />
             Customer Images
           </TabsTrigger>
@@ -130,10 +144,12 @@ export const ImageManagement: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card>
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50 hover:shadow-xl transition-all duration-300">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <ImageIcon className="h-5 w-5" />
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+                    <ImageIcon className="h-4 w-4 text-white" />
+                  </div>
                   Image Gallery
                 </CardTitle>
               </CardHeader>
@@ -230,11 +246,12 @@ export const ImageManagement: React.FC = () => {
                   )}
 
                   <div className="flex items-center gap-2 ml-auto">
-                    <div className="flex items-center border rounded-md">
+                    <div className="flex items-center border rounded-lg bg-white shadow-sm">
                       <Button
                         variant={filters.viewMode === 'grid' ? 'default' : 'ghost'}
                         size="sm"
                         onClick={() => setFilters(prev => ({ ...prev, viewMode: 'grid' }))}
+                        className={filters.viewMode === 'grid' ? 'bg-gradient-to-r from-purple-500 to-violet-600 text-white shadow-md' : ''}
                       >
                         <Grid3X3 className="h-4 w-4" />
                       </Button>
@@ -242,6 +259,7 @@ export const ImageManagement: React.FC = () => {
                         variant={filters.viewMode === 'list' ? 'default' : 'ghost'}
                         size="sm"
                         onClick={() => setFilters(prev => ({ ...prev, viewMode: 'list' }))}
+                        className={filters.viewMode === 'list' ? 'bg-gradient-to-r from-purple-500 to-violet-600 text-white shadow-md' : ''}
                       >
                         <List className="h-4 w-4" />
                       </Button>
@@ -251,15 +269,20 @@ export const ImageManagement: React.FC = () => {
 
                 {/* Selected Entity Display */}
                 {selectedEntity && (
-                  <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
-                    <Badge variant="secondary" className="flex items-center gap-1">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="flex items-center gap-2 p-3 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg border border-purple-200 shadow-sm"
+                  >
+                    <Badge className="flex items-center gap-1 bg-gradient-to-r from-purple-500 to-violet-600 text-white">
                       {selectedEntity.type === 'product' && <Package className="h-3 w-3" />}
                       {selectedEntity.type === 'category' && <FolderOpen className="h-3 w-3" />}
                       {selectedEntity.type === 'company' && <Building className="h-3 w-3" />}
+                      {selectedEntity.type === 'customer' && <Users className="h-3 w-3" />}
                       {selectedEntity.type}
                     </Badge>
                     <span className="font-medium">{selectedEntity.name}</span>
-                  </div>
+                  </motion.div>
                 )}
 
                 {/* Image Gallery */}
@@ -294,34 +317,73 @@ export const ImageManagement: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card>
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50 hover:shadow-xl transition-all duration-300">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FolderOpen className="h-5 w-5" />
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+                    <FolderOpen className="h-4 w-4 text-white" />
+                  </div>
                   Category Image Management
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {categories.map((category) => (
-                    <Card key={category.id} className="border-2 hover:border-primary/20 transition-colors">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{category.name}</CardTitle>
-                        {category.description && (
-                          <p className="text-sm text-muted-foreground">{category.description}</p>
-                        )}
-                      </CardHeader>
-                      <CardContent>
-                        <CategoryImageManager
-                          categoryId={category.id}
-                          categoryName={category.name}
-                        />
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                {!categoriesLoading && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {categories.map((category) => (
+                    <motion.div
+                      key={category.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                    >
+                      <Card className="border-0 shadow-lg bg-white hover:shadow-xl transition-all duration-300 hover:scale-105">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-base flex items-center gap-2">
+                            <div className="h-6 w-6 rounded bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                              <FolderOpen className="h-3 w-3 text-white" />
+                            </div>
+                            {category.name}
+                          </CardTitle>
+                          {category.description && (
+                            <p className="text-sm text-muted-foreground">{category.description}</p>
+                          )}
+                        </CardHeader>
+                        <CardContent>
+                          <CategoryImageManager
+                            categoryId={category.id}
+                            categoryName={category.name}
+                          />
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                    ))}
+                  </div>
+                )}
                 
-                {categories.length === 0 && (
+                {categoriesLoading && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {[...Array(6)].map((_, i) => (
+                      <div key={i} className="animate-pulse">
+                        <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/30">
+                          <CardHeader className="pb-3">
+                            <div className="flex items-center gap-2">
+                              <div className="h-6 w-6 rounded bg-gradient-to-br from-purple-200 to-purple-300"></div>
+                              <div className="h-4 bg-gradient-to-r from-purple-200 to-purple-300 rounded w-24"></div>
+                            </div>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-3">
+                              <div className="h-32 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg"></div>
+                              <div className="h-4 bg-gradient-to-r from-purple-200 to-purple-300 rounded w-full"></div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {!categoriesLoading && categories.length === 0 && (
                   <div className="text-center py-12">
                     <FolderOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-semibold mb-2">No Categories Found</h3>
@@ -342,10 +404,12 @@ export const ImageManagement: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card>
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50 hover:shadow-xl transition-all duration-300">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Package className="h-5 w-5" />
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+                    <Package className="h-4 w-4 text-white" />
+                  </div>
                   Product Image Management
                 </CardTitle>
               </CardHeader>
@@ -363,53 +427,85 @@ export const ImageManagement: React.FC = () => {
                   </div>
 
                   {/* Product List */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {inventoryData?.items
+                  {!inventoryLoading && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {inventoryData?.items
                       .filter(product => 
                         !filters.search || 
                         product.name.toLowerCase().includes(filters.search.toLowerCase())
                       )
                       .map((product) => (
-                      <Card key={product.id} className="border-2 hover:border-primary/20 transition-colors">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center gap-3">
-                            {product.image_url ? (
-                              <img
-                                src={product.image_url}
-                                alt={product.name}
-                                className="w-12 h-12 rounded-lg object-cover border"
-                              />
-                            ) : (
-                              <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center border">
-                                <Package className="h-6 w-6 text-muted-foreground" />
-                              </div>
-                            )}
-                            <div>
-                              <CardTitle className="text-base">{product.name}</CardTitle>
+                      <motion.div
+                        key={product.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                      >
+                        <Card className="border-0 shadow-lg bg-white hover:shadow-xl transition-all duration-300 hover:scale-105">
+                          <CardHeader className="pb-3">
+                            <div className="flex items-center gap-3">
+                              {product.image_url ? (
+                                <img
+                                  src={product.image_url}
+                                  alt={product.name}
+                                  className="w-12 h-12 rounded-lg object-cover border shadow-sm"
+                                />
+                              ) : (
+                                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center border shadow-sm">
+                                  <Package className="h-6 w-6 text-purple-600" />
+                                </div>
+                              )}
+                              <div>
+                                <CardTitle className="text-base">{product.name}</CardTitle>
                               {product.description && (
                                 <p className="text-sm text-muted-foreground line-clamp-1">
                                   {product.description}
                                 </p>
                               )}
+                              </div>
                             </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <ImageGallery
-                            entityType="product"
-                            entityId={product.id}
-                            viewMode="grid"
-                            enableReorder={true}
-                            enableZoom={true}
-                            enableFullscreen={true}
-                            maxImages={10}
-                          />
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                          </CardHeader>
+                          <CardContent>
+                            <ImageGallery
+                              entityType="product"
+                              entityId={product.id}
+                              viewMode="grid"
+                              enableReorder={true}
+                              enableZoom={true}
+                              enableFullscreen={true}
+                              maxImages={10}
+                            />
+                          </CardContent>
+                        </Card>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
 
-                  {(!inventoryData?.items || inventoryData.items.length === 0) && (
+                  {inventoryLoading && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {[...Array(6)].map((_, i) => (
+                        <div key={i} className="animate-pulse">
+                          <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/30">
+                            <CardHeader className="pb-3">
+                              <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-200 to-purple-300"></div>
+                                <div className="space-y-2">
+                                  <div className="h-4 bg-gradient-to-r from-purple-200 to-purple-300 rounded w-32"></div>
+                                  <div className="h-3 bg-gradient-to-r from-purple-100 to-purple-200 rounded w-24"></div>
+                                </div>
+                              </div>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="h-32 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg"></div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {!inventoryLoading && (!inventoryData?.items || inventoryData.items.length === 0) && (
                     <div className="text-center py-12">
                       <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                       <h3 className="text-lg font-semibold mb-2">No Products Found</h3>
@@ -431,10 +527,12 @@ export const ImageManagement: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card>
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50 hover:shadow-xl transition-all duration-300">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+                    <Users className="h-4 w-4 text-white" />
+                  </div>
                   Customer Image Management
                 </CardTitle>
               </CardHeader>
@@ -452,43 +550,75 @@ export const ImageManagement: React.FC = () => {
                   </div>
 
                   {/* Customer List */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {customers
+                  {!customersLoading && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {customers
                       .filter(customer => 
                         !filters.search || 
                         customer.name.toLowerCase().includes(filters.search.toLowerCase())
                       )
                       .map((customer) => (
-                      <Card key={customer.id} className="border-2 hover:border-primary/20 transition-colors">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
-                              <Users className="h-6 w-6 text-primary-600" />
+                      <motion.div
+                        key={customer.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                      >
+                        <Card className="border-0 shadow-lg bg-white hover:shadow-xl transition-all duration-300 hover:scale-105">
+                          <CardHeader className="pb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center shadow-sm">
+                                <Users className="h-6 w-6 text-purple-600" />
+                              </div>
+                              <div>
+                                <CardTitle className="text-base">{customer.name}</CardTitle>
+                                <p className="text-sm text-muted-foreground">
+                                  {customer.phone || customer.email || 'No contact info'}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <CardTitle className="text-base">{customer.name}</CardTitle>
-                              <p className="text-sm text-muted-foreground">
-                                {customer.phone || customer.email || 'No contact info'}
-                              </p>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <ImageGallery
-                            entityType="customer"
-                            entityId={customer.id}
-                            viewMode="grid"
-                            enableReorder={true}
-                            enableZoom={true}
-                            enableFullscreen={true}
-                            maxImages={10}
-                          />
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                          </CardHeader>
+                          <CardContent>
+                            <ImageGallery
+                              entityType="customer"
+                              entityId={customer.id}
+                              viewMode="grid"
+                              enableReorder={true}
+                              enableZoom={true}
+                              enableFullscreen={true}
+                              maxImages={10}
+                            />
+                          </CardContent>
+                        </Card>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
 
-                  {customers.length === 0 && (
+                  {customersLoading && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {[...Array(6)].map((_, i) => (
+                        <div key={i} className="animate-pulse">
+                          <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/30">
+                            <CardHeader className="pb-3">
+                              <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 bg-gradient-to-br from-purple-200 to-purple-300 rounded-full"></div>
+                                <div className="space-y-2">
+                                  <div className="h-4 bg-gradient-to-r from-purple-200 to-purple-300 rounded w-32"></div>
+                                  <div className="h-3 bg-gradient-to-r from-purple-100 to-purple-200 rounded w-24"></div>
+                                </div>
+                              </div>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="h-32 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg"></div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {!customersLoading && customers.length === 0 && (
                     <div className="text-center py-12">
                       <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                       <h3 className="text-lg font-semibold mb-2">No Customers Found</h3>

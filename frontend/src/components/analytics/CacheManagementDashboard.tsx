@@ -261,14 +261,25 @@ export const CacheManagementDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Cache Management</h1>
-          <p className="text-muted-foreground">
-            Monitor and manage analytics caching system performance
-          </p>
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-500 via-violet-500 to-indigo-500 flex items-center justify-center shadow-lg">
+              <Database className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">Cache Management</h1>
+              <p className="text-muted-foreground text-lg">
+                Monitor and manage analytics caching system performance
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 gap-1">
+            <Activity className="h-3 w-3" />
+            Real-time Monitoring
+          </Badge>
           <Button
             variant="outline"
             size="sm"
@@ -278,6 +289,10 @@ export const CacheManagementDashboard: React.FC = () => {
           >
             <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
             Refresh
+          </Button>
+          <Button variant="default" size="sm" className="gap-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700">
+            <Settings className="h-4 w-4" />
+            Configure
           </Button>
         </div>
       </div>
@@ -292,14 +307,21 @@ export const CacheManagementDashboard: React.FC = () => {
 
       {/* Health Status */}
       {cacheHealth && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
-              Cache Health Status
-            </CardTitle>
+        <Card className="border-0 shadow-lg bg-gradient-to-r from-slate-50 to-slate-100/80">
+          <CardHeader className="pb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                  <Activity className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-semibold text-foreground">Cache Health Status</CardTitle>
+                  <p className="text-muted-foreground">Real-time system monitoring</p>
+                </div>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="bg-white rounded-lg shadow-sm border">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="flex items-center gap-3">
                 <div className={cn("p-2 rounded-lg border", getHealthStatusColor(cacheHealth.status))}>
@@ -348,200 +370,252 @@ export const CacheManagementDashboard: React.FC = () => {
       )}
 
       {/* Main Content Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="keys">Keys</TabsTrigger>
-          <TabsTrigger value="config">Configuration</TabsTrigger>
-        </TabsList>
-
-        {/* Overview Tab */}
-        <TabsContent value="overview" className="space-y-6">
-          {cacheStats && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">Hit Rate</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-green-600">
-                    {(cacheStats.hit_rate * 100).toFixed(1)}%
+      <Card className="border-0 shadow-xl overflow-hidden">
+        <CardContent className="p-0">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            {/* Tab Navigation */}
+            <div className="bg-gradient-to-r from-purple-50 via-violet-50 to-indigo-50 border-b-2 border-purple-200">
+              <TabsList className="grid w-full grid-cols-4 bg-transparent h-auto p-1 gap-1">
+                <TabsTrigger 
+                  value="overview" 
+                  className="flex items-center gap-3 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300"
+                >
+                  <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                    <BarChart3 className="h-4 w-4 text-purple-600" />
                   </div>
-                  <Progress value={cacheStats.hit_rate * 100} className="mt-2" />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {cacheStats.total_hits.toLocaleString()} hits
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">Total Keys</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {cacheStats.total_keys.toLocaleString()}
+                  <div className="text-left">
+                    <div className="font-medium text-sm">Overview</div>
+                    <div className="text-xs text-muted-foreground">Statistics</div>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Active cache entries
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">Memory Usage</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {(cacheStats.memory_usage / 1024 / 1024).toFixed(1)} MB
+                </TabsTrigger>
+                
+                <TabsTrigger 
+                  value="performance" 
+                  className="flex items-center gap-3 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-violet-300"
+                >
+                  <div className="h-8 w-8 rounded-full bg-violet-100 flex items-center justify-center">
+                    <Gauge className="h-4 w-4 text-violet-600" />
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Cache memory consumption
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">Evicted Keys</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-orange-600">
-                    {cacheStats.evicted_keys.toLocaleString()}
+                  <div className="text-left">
+                    <div className="font-medium text-sm">Performance</div>
+                    <div className="text-xs text-muted-foreground">Testing</div>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Keys removed by LRU
-                  </p>
-                </CardContent>
-              </Card>
+                </TabsTrigger>
+                
+                <TabsTrigger 
+                  value="keys" 
+                  className="flex items-center gap-3 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-indigo-300"
+                >
+                  <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <Key className="h-4 w-4 text-indigo-600" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium text-sm">Keys</div>
+                    <div className="text-xs text-muted-foreground">Management</div>
+                  </div>
+                </TabsTrigger>
+                
+                <TabsTrigger 
+                  value="config" 
+                  className="flex items-center gap-3 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-sm data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-blue-300"
+                >
+                  <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <Settings className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium text-sm">Configuration</div>
+                    <div className="text-xs text-muted-foreground">Settings</div>
+                  </div>
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            {/* Overview Tab */}
+            <TabsContent value="overview" className="p-6 space-y-6 bg-gradient-to-br from-purple-50/30 to-white">
+              {cacheStats && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Card className="border-0 shadow-md bg-gradient-to-br from-green-50 to-green-100/50">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium">Hit Rate</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-green-600">
+                        {(cacheStats.hit_rate * 100).toFixed(1)}%
+                      </div>
+                      <Progress value={cacheStats.hit_rate * 100} className="mt-2" />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {cacheStats.total_hits.toLocaleString()} hits
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md bg-gradient-to-br from-blue-50 to-blue-100/50">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium">Total Keys</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">
+                        {cacheStats.total_keys.toLocaleString()}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Active cache entries
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md bg-gradient-to-br from-purple-50 to-purple-100/50">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium">Memory Usage</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold">
+                        {(cacheStats.memory_usage / 1024 / 1024).toFixed(1)} MB
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Cache memory consumption
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-md bg-gradient-to-br from-orange-50 to-orange-100/50">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium">Evicted Keys</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-orange-600">
+                        {cacheStats.evicted_keys.toLocaleString()}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Keys removed by LRU
+                      </p>
+                    </CardContent>
+                  </Card>
             </div>
           )}
 
-          {/* Cache Operations */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Cache Operations</CardTitle>
-              <CardDescription>
-                Manage cache lifecycle and performance
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Button
-                  onClick={() => invalidateCache('analytics:*')}
-                  variant="outline"
-                  className="gap-2"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Clear Analytics Cache
-                </Button>
-                
-                <Button
-                  onClick={warmCache}
-                  variant="outline"
-                  className="gap-2"
-                >
-                  <Zap className="h-4 w-4" />
-                  Warm Cache
-                </Button>
-                
-                <Button
-                  onClick={cleanupCache}
-                  variant="outline"
-                  className="gap-2"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                  Cleanup Expired
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              {/* Cache Operations */}
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-violet-50 to-indigo-100/50 hover:shadow-xl transition-all duration-300">
+                <CardHeader>
+                  <CardTitle>Cache Operations</CardTitle>
+                  <CardDescription>
+                    Manage cache lifecycle and performance
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Button
+                      onClick={() => invalidateCache('analytics:*')}
+                      variant="outline"
+                      className="gap-2 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white shadow-lg hover:shadow-xl"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Clear Analytics Cache
+                    </Button>
+                    
+                    <Button
+                      onClick={warmCache}
+                      variant="outline"
+                      className="gap-2 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white shadow-lg hover:shadow-xl"
+                    >
+                      <Zap className="h-4 w-4" />
+                      Warm Cache
+                    </Button>
+                    
+                    <Button
+                      onClick={cleanupCache}
+                      variant="outline"
+                      className="gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl"
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                      Cleanup Expired
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-        {/* Performance Tab */}
-        <TabsContent value="performance" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Performance Testing</CardTitle>
-                <CardDescription>
-                  Run cache performance and stress tests
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Button
-                  onClick={runPerformanceTest}
-                  variant="outline"
-                  className="w-full gap-2"
-                >
-                  <BarChart3 className="h-4 w-4" />
-                  Run Performance Test
-                </Button>
-                
-                <Button
-                  onClick={runStressTest}
-                  disabled={stressTestRunning}
-                  variant="outline"
-                  className="w-full gap-2"
-                >
-                  <Play className={cn("h-4 w-4", stressTestRunning && "animate-spin")} />
-                  {stressTestRunning ? 'Running Stress Test...' : 'Run Stress Test'}
-                </Button>
-              </CardContent>
-            </Card>
+            {/* Performance Tab */}
+            <TabsContent value="performance" className="p-6 space-y-6 bg-gradient-to-br from-violet-50/30 to-white">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card className="border-0 shadow-lg bg-gradient-to-br from-violet-50 to-purple-100/50 hover:shadow-xl transition-all duration-300">
+                  <CardHeader>
+                    <CardTitle>Performance Testing</CardTitle>
+                    <CardDescription>
+                      Run cache performance and stress tests
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button
+                      onClick={runPerformanceTest}
+                      variant="outline"
+                      className="w-full gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl"
+                    >
+                      <BarChart3 className="h-4 w-4" />
+                      Run Performance Test
+                    </Button>
+                    
+                    <Button
+                      onClick={runStressTest}
+                      disabled={stressTestRunning}
+                      variant="outline"
+                      className="w-full gap-2 bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl"
+                    >
+                      <Play className={cn("h-4 w-4", stressTestRunning && "animate-spin")} />
+                      {stressTestRunning ? 'Running Stress Test...' : 'Run Stress Test'}
+                    </Button>
+                  </CardContent>
+                </Card>
 
-            {/* Performance History */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Performance Tests</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {performanceHistory.slice(0, 5).map((test) => (
-                    <div key={test.test_id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="text-sm font-medium">
-                          Hit Rate: {(test.cache_hit_rate * 100).toFixed(1)}%
+                {/* Performance History */}
+                <Card className="border-0 shadow-lg bg-gradient-to-br from-indigo-50 to-blue-100/50 hover:shadow-xl transition-all duration-300">
+                  <CardHeader>
+                    <CardTitle>Recent Performance Tests</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {performanceHistory?.slice(0, 5).map((test) => (
+                        <div key={test.test_id} className="flex items-center justify-between p-3 border rounded-lg bg-white/70 hover:bg-white transition-colors">
+                          <div>
+                            <p className="text-sm font-medium">
+                              Hit Rate: {(test.cache_hit_rate * 100).toFixed(1)}%
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(test.timestamp).toLocaleString()}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-medium">
+                              {test.average_response_time.toFixed(1)}ms
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {test.total_operations} ops
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                      {(!performanceHistory || performanceHistory.length === 0) && (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                          No performance tests run yet
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(test.timestamp).toLocaleString()}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium">
-                          {test.average_response_time.toFixed(1)}ms
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {test.total_operations} ops
-                        </p>
-                      </div>
+                      )}
                     </div>
-                  ))}
-                  {performanceHistory.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-4">
-                      No performance tests run yet
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
 
-        {/* Keys Tab */}
-        <TabsContent value="keys" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Key className="h-5 w-5" />
-                Cache Keys
-              </CardTitle>
-              <CardDescription>
-                Browse and manage individual cache keys
-              </CardDescription>
-            </CardHeader>
+            {/* Keys Tab */}
+            <TabsContent value="keys" className="p-6 space-y-6 bg-gradient-to-br from-indigo-50/30 to-white">
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-indigo-50 to-blue-100/50 hover:shadow-xl transition-all duration-300">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Key className="h-5 w-5" />
+                    Cache Keys
+                  </CardTitle>
+                  <CardDescription>
+                    Browse and manage individual cache keys
+                  </CardDescription>
+                </CardHeader>
             <CardContent>
               <div className="flex gap-2 mb-4">
                 <input
@@ -595,19 +669,19 @@ export const CacheManagementDashboard: React.FC = () => {
           </Card>
         </TabsContent>
 
-        {/* Configuration Tab */}
-        <TabsContent value="config" className="space-y-6">
-          {cacheConfig && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  Cache Configuration
-                </CardTitle>
-                <CardDescription>
-                  TTL strategies and cache type settings
-                </CardDescription>
-              </CardHeader>
+            {/* Configuration Tab */}
+            <TabsContent value="config" className="p-6 space-y-6 bg-gradient-to-br from-blue-50/30 to-white">
+              {cacheConfig && (
+                <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50 hover:shadow-xl transition-all duration-300">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Settings className="h-5 w-5" />
+                      Cache Configuration
+                    </CardTitle>
+                    <CardDescription>
+                      TTL strategies and cache type settings
+                    </CardDescription>
+                  </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div>
@@ -638,8 +712,10 @@ export const CacheManagementDashboard: React.FC = () => {
               </CardContent>
             </Card>
           )}
-        </TabsContent>
-      </Tabs>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 };

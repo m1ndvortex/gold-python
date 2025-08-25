@@ -123,7 +123,7 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
   // Load annotations from service
   const loadAnnotations = () => {
     const loadedAnnotations = chartExportService.getAnnotations(chartId);
-    setAnnotations(loadedAnnotations);
+    setAnnotations(loadedAnnotations || []);
   };
 
   // Handle chart click for annotation creation
@@ -288,6 +288,10 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
             size="sm"
             onClick={() => setIsAnnotationMode(!isAnnotationMode)}
             disabled={readOnly}
+            className={isAnnotationMode ? 
+              "bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300" : 
+              "border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+            }
           >
             <Plus className="h-4 w-4 mr-2" />
             {isAnnotationMode ? 'Cancel' : 'Add Annotation'}
@@ -297,12 +301,16 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
             variant={showAnnotations ? 'default' : 'outline'}
             size="sm"
             onClick={() => setShowAnnotations(!showAnnotations)}
+            className={showAnnotations ? 
+              "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300" : 
+              "border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+            }
           >
             {showAnnotations ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
             <span className="ml-2">{showAnnotations ? 'Hide' : 'Show'}</span>
           </Button>
 
-          <Badge variant="secondary" className="text-xs">
+          <Badge variant="secondary" className="text-xs bg-gradient-to-r from-slate-100 to-slate-200 border-0 shadow-lg">
             {annotations.length} annotation{annotations.length !== 1 ? 's' : ''}
           </Badge>
         </div>
@@ -346,7 +354,7 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
                         variant="outline"
                         size="sm"
                         className={cn(
-                          'h-6 w-6 p-0 rounded-full border-2 shadow-lg',
+                          'h-6 w-6 p-0 rounded-full border-2 shadow-lg hover:shadow-xl transition-all duration-300',
                           annotation.isResolved && 'opacity-50'
                         )}
                         style={{
@@ -386,9 +394,14 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
 
         {/* Create Annotation Dialog */}
         <Dialog open={isCreating} onOpenChange={setIsCreating}>
-          <DialogContent>
+          <DialogContent className="border-0 shadow-xl bg-gradient-to-br from-green-50 to-teal-100/50">
             <DialogHeader>
-              <DialogTitle>Add Annotation</DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+                  <MessageSquare className="h-4 w-4 text-white" />
+                </div>
+                Add Annotation
+              </DialogTitle>
               <DialogDescription>
                 Add a note, highlight, or question to this chart.
               </DialogDescription>
@@ -408,6 +421,10 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
                       variant={newAnnotation.type === type ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setNewAnnotation(prev => ({ ...prev, type: type as any }))}
+                      className={newAnnotation.type === type ? 
+                        "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300" : 
+                        "border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                      }
                     >
                       <Icon className="h-4 w-4 mr-2" />
                       {label}
@@ -449,10 +466,10 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
             </div>
 
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsCreating(false)}>
+              <Button variant="outline" onClick={() => setIsCreating(false)} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                 Cancel
               </Button>
-              <Button onClick={createAnnotation} disabled={!newAnnotation.text.trim()}>
+              <Button onClick={createAnnotation} disabled={!newAnnotation.text.trim()} className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                 Create Annotation
               </Button>
             </DialogFooter>
@@ -461,7 +478,7 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
 
         {/* Annotation Details Dialog */}
         <Dialog open={!!selectedAnnotation} onOpenChange={() => setSelectedAnnotation(null)}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md border-0 shadow-xl bg-gradient-to-br from-blue-50 to-indigo-100/50">
             {selectedAnnotation && (
               <>
                 <DialogHeader>
@@ -522,7 +539,7 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
                   </div>
 
                   {/* Annotation text */}
-                  <div className="p-3 bg-muted rounded-lg">
+                  <div className="p-3 bg-gradient-to-r from-slate-50 to-slate-100/80 rounded-lg border-0 shadow-lg">
                     <p className="text-sm">{selectedAnnotation.text}</p>
                   </div>
 
@@ -531,7 +548,7 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Replies</Label>
                       {selectedAnnotation.replies.map((reply) => (
-                        <div key={reply.id} className="flex gap-2 p-2 bg-muted/50 rounded">
+                        <div key={reply.id} className="flex gap-2 p-2 bg-gradient-to-r from-slate-50/50 to-slate-100/30 rounded border-0 shadow-lg">
                           <Avatar className="h-5 w-5">
                             <AvatarImage src={reply.authorAvatar} />
                             <AvatarFallback className="text-xs">
@@ -568,6 +585,7 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
                           size="sm"
                           onClick={() => addReply(selectedAnnotation)}
                           disabled={!replyText.trim()}
+                          className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                         >
                           Reply
                         </Button>
@@ -582,7 +600,7 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
 
         {/* Edit Annotation Dialog */}
         <Dialog open={!!editingAnnotation} onOpenChange={() => setEditingAnnotation(null)}>
-          <DialogContent>
+          <DialogContent className="border-0 shadow-xl bg-gradient-to-br from-purple-50 to-violet-100/50">
             {editingAnnotation && (
               <>
                 <DialogHeader>
@@ -613,6 +631,10 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
                           variant={editingAnnotation.type === type ? 'default' : 'outline'}
                           size="sm"
                           onClick={() => setEditingAnnotation(prev => prev ? { ...prev, type: type as any } : null)}
+                          className={editingAnnotation.type === type ? 
+                            "bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300" : 
+                            "border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                          }
                         >
                           <Icon className="h-4 w-4 mr-2" />
                           {label}
@@ -623,10 +645,10 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
                 </div>
 
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setEditingAnnotation(null)}>
+                  <Button variant="outline" onClick={() => setEditingAnnotation(null)} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                     Cancel
                   </Button>
-                  <Button onClick={() => updateAnnotation(editingAnnotation)}>
+                  <Button onClick={() => updateAnnotation(editingAnnotation)} className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                     Save Changes
                   </Button>
                 </DialogFooter>
@@ -637,16 +659,21 @@ export const ChartAnnotations: React.FC<ChartAnnotationsProps> = ({
 
         {/* Annotation List */}
         {annotations.length > 0 && (
-          <Card className="mt-4">
+          <Card className="mt-4 border-0 shadow-xl bg-gradient-to-br from-slate-50 to-slate-100/50">
             <CardHeader>
-              <CardTitle className="text-sm">Annotations ({annotations.length})</CardTitle>
+              <CardTitle className="text-sm flex items-center gap-2">
+                <div className="h-6 w-6 rounded-lg bg-gradient-to-br from-slate-500 to-slate-600 flex items-center justify-center shadow-lg">
+                  <MessageSquare className="h-3 w-3 text-white" />
+                </div>
+                Annotations ({annotations.length})
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {annotations.map((annotation) => (
                 <div
                   key={annotation.id}
                   className={cn(
-                    'flex items-start gap-2 p-2 rounded border cursor-pointer hover:bg-muted/50',
+                    'flex items-start gap-2 p-2 rounded border-0 shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 bg-white hover:bg-gradient-to-r hover:from-white hover:to-slate-50',
                     annotation.isResolved && 'opacity-50'
                   )}
                   onClick={() => setSelectedAnnotation(annotation)}

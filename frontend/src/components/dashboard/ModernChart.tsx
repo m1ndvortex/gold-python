@@ -410,8 +410,8 @@ export const ModernChart: React.FC<ModernChartProps> = ({
           ) : (
             <div className="flex items-center justify-center h-full text-gray-500">
               <div className="text-center">
-                <div className="text-lg font-medium mb-2">No data available</div>
-                <div className="text-sm">Chart data will appear here when available</div>
+                <div className="text-lg font-medium mb-2">{t('charts.no_data')}</div>
+                <div className="text-sm">{t('charts.loading')}</div>
               </div>
             </div>
           )}

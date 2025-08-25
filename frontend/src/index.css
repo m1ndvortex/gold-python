@@ -1093,6 +1093,287 @@
     background: linear-gradient(to right, rgb(var(--gradient-cyan-hover-from)), rgb(var(--gradient-cyan-hover-to)));
   }
 
+  /* Enhanced Gradient Card Backgrounds */
+  .bg-gradient-card-green {
+    background: linear-gradient(to bottom right, rgb(var(--gradient-light-green-from)), rgb(var(--gradient-light-green-to)));
+  }
+
+  .bg-gradient-card-teal {
+    background: linear-gradient(to bottom right, rgb(var(--gradient-light-teal-from)), rgb(var(--gradient-light-teal-to)));
+  }
+
+  .bg-gradient-card-blue {
+    background: linear-gradient(to bottom right, rgb(var(--gradient-light-blue-from)), rgb(var(--gradient-light-blue-to)));
+  }
+
+  .bg-gradient-card-indigo {
+    background: linear-gradient(to bottom right, #eef2ff, #e0e7ff);
+  }
+
+  .bg-gradient-card-purple {
+    background: linear-gradient(to bottom right, rgb(var(--gradient-light-purple-from)), rgb(var(--gradient-light-purple-to)));
+  }
+
+  .bg-gradient-card-violet {
+    background: linear-gradient(to bottom right, #f5f3ff, #ede9fe);
+  }
+
+  .bg-gradient-card-pink {
+    background: linear-gradient(to bottom right, rgb(var(--gradient-light-pink-from)), rgb(var(--gradient-light-pink-to)));
+  }
+
+  .bg-gradient-card-rose {
+    background: linear-gradient(to bottom right, #fff1f2, #ffe4e6);
+  }
+
+  .bg-gradient-card-orange {
+    background: linear-gradient(to bottom right, #fff7ed, #ffedd5);
+  }
+
+  .bg-gradient-card-cyan {
+    background: linear-gradient(to bottom right, #ecfeff, #cffafe);
+  }
+
+  /* Tab Navigation Gradients */
+  .bg-gradient-tab-green {
+    background: linear-gradient(to right, #f0fdf4, #dcfce7, #bbf7d0);
+  }
+
+  .bg-gradient-tab-blue {
+    background: linear-gradient(to right, #eff6ff, #dbeafe, #bfdbfe);
+  }
+
+  .bg-gradient-tab-purple {
+    background: linear-gradient(to right, #faf5ff, #f3e8ff, #e9d5ff);
+  }
+
+  .bg-gradient-tab-pink {
+    background: linear-gradient(to right, #fdf2f8, #fce7f3, #fbcfe8);
+  }
+
+  /* Enhanced Shadow Utilities */
+  .shadow-professional {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .shadow-elegant {
+    box-shadow: var(--shadow-xl);
+  }
+
+  .shadow-gradient {
+    box-shadow: var(--shadow-2xl);
+  }
+
+  .shadow-gradient-green {
+    box-shadow: var(--shadow-gradient-green);
+  }
+
+  .shadow-gradient-blue {
+    box-shadow: var(--shadow-gradient-blue);
+  }
+
+  .shadow-gradient-purple {
+    box-shadow: var(--shadow-gradient-purple);
+  }
+
+  .shadow-gradient-pink {
+    box-shadow: var(--shadow-gradient-pink);
+  }
+
+  .shadow-gradient-lg {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Enhanced Transition Utilities */
+  .transition-all-smooth {
+    transition: var(--transition-all);
+  }
+
+  .transition-colors-smooth {
+    transition: var(--transition-colors);
+  }
+
+  .transition-shadow-smooth {
+    transition: var(--transition-shadow);
+  }
+
+  .transition-transform-smooth {
+    transition: var(--transition-transform);
+  }
+
+  /* Enhanced Hover Effects */
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+
+  .hover-glow-green:hover {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+  }
+
+  .hover-glow-blue:hover {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+
+  .hover-glow-purple:hover {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+
+  .hover-glow-pink:hover {
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+  }
+
+  /* Backdrop Blur Utilities */
+  .backdrop-blur-professional {
+    backdrop-filter: blur(8px);
+  }
+
+  .backdrop-blur-elegant {
+    backdrop-filter: blur(12px);
+  }
+
+  /* Animation Utilities */
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-bounce-gentle {
+    animation: bounceGentle 0.6s ease-out;
+  }
+}
+
+/* Enhanced Keyframe Animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceGentle {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Loading Animation Keyframes */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+/* Enhanced Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-break-before {
+    page-break-before: always;
+  }
+  
+  .print-break-after {
+    page-break-after: always;
+  }
+  
+  .print-break-inside-avoid {
+    page-break-inside: avoid;
+  }
+}gradient-pink {
+    background: linear-gradient(to right, rgb(var(--gradient-pink-from)), rgb(var(--gradient-pink-to)));
+  }
+
+  .bg-gradient-pink-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-pink-hover-from)), rgb(var(--gradient-pink-hover-to)));
+  }
+
+  .bg-gradient-rose {
+    background: linear-gradient(to right, rgb(var(--gradient-rose-from)), rgb(var(--gradient-rose-to)));
+  }
+
+  .bg-gradient-rose-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-rose-hover-from)), rgb(var(--gradient-rose-hover-to)));
+  }
+
+  .bg-gradient-orange {
+    background: linear-gradient(to right, rgb(var(--gradient-orange-from)), rgb(var(--gradient-orange-to)));
+  }
+
+  .bg-gradient-orange-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-orange-hover-from)), rgb(var(--gradient-orange-hover-to)));
+  }
+
+  .bg-gradient-cyan {
+    background: linear-gradient(to right, rgb(var(--gradient-cyan-from)), rgb(var(--gradient-cyan-to)));
+  }
+
+  .bg-gradient-cyan-hover:hover {
+    background: linear-gradient(to right, rgb(var(--gradient-cyan-hover-from)), rgb(var(--gradient-cyan-hover-to)));
+  }
+
   /* Light Background Gradients */
   .bg-gradient-green-light {
     background: linear-gradient(to bottom right, rgb(var(--gradient-light-green-from)), rgb(var(--gradient-light-green-to)));
@@ -1471,7 +1752,6 @@
       background: linear-gradient(135deg, rgb(var(--gradient-pink-from)), rgb(var(--gradient-pink-to)), rgb(var(--gradient-rose-from)));
     }
   }
-}
 
 /* Enhanced Keyframe Animations */
 @keyframes fadeIn {
@@ -1564,4 +1844,519 @@
   50% {
     transform: translateY(-6px);
   }
+}
+
+/* ========================================
+   COMPREHENSIVE RTL/LTR LAYOUT SYSTEM
+   ======================================== */
+
+/* Complete RTL Layout Transformation */
+.rtl-layout {
+  direction: rtl;
+  text-align: right;
+}
+
+.rtl-layout * {
+  direction: rtl;
+}
+
+/* Complete LTR Layout Transformation */
+.ltr-layout {
+  direction: ltr;
+  text-align: left;
+}
+
+.ltr-layout * {
+  direction: ltr;
+}
+
+/* Sidebar Positioning for RTL/LTR */
+.rtl-layout .sidebar {
+  right: 0;
+  left: auto;
+  border-left: 1px solid hsl(var(--border));
+  border-right: none;
+}
+
+.ltr-layout .sidebar {
+  left: 0;
+  right: auto;
+  border-right: 1px solid hsl(var(--border));
+  border-left: none;
+}
+
+/* Main Content Margins for RTL/LTR */
+.rtl-layout .main-content {
+  margin-right: 16rem;
+  margin-left: 0;
+}
+
+.ltr-layout .main-content {
+  margin-left: 16rem;
+  margin-right: 0;
+}
+
+/* Flex Direction for RTL/LTR */
+.rtl-layout .flex-row {
+  flex-direction: row-reverse;
+}
+
+.ltr-layout .flex-row {
+  flex-direction: row;
+}
+
+/* Text Alignment Classes */
+.rtl-layout .text-left {
+  text-align: right;
+}
+
+.rtl-layout .text-right {
+  text-align: left;
+}
+
+.ltr-layout .text-left {
+  text-align: left;
+}
+
+.ltr-layout .text-right {
+  text-align: right;
+}
+
+/* Margin Classes for RTL/LTR */
+.rtl-layout .ml-auto {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+.rtl-layout .mr-auto {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.ltr-layout .ml-auto {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.ltr-layout .mr-auto {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+/* Padding Classes for RTL/LTR */
+.rtl-layout .pl-4 {
+  padding-right: 1rem;
+  padding-left: 0;
+}
+
+.rtl-layout .pr-4 {
+  padding-left: 1rem;
+  padding-right: 0;
+}
+
+.ltr-layout .pl-4 {
+  padding-left: 1rem;
+  padding-right: 0;
+}
+
+.ltr-layout .pr-4 {
+  padding-right: 1rem;
+  padding-left: 0;
+}
+
+/* Icon Mirroring for RTL */
+.rtl-layout .icon-arrow-right {
+  transform: scaleX(-1);
+}
+
+.rtl-layout .icon-chevron-right {
+  transform: rotate(180deg);
+}
+
+.rtl-layout .icon-arrow-left {
+  transform: scaleX(-1);
+}
+
+.rtl-layout .icon-chevron-left {
+  transform: rotate(180deg);
+}
+
+/* Form Layout for RTL/LTR */
+.rtl-layout .form-field {
+  text-align: right;
+}
+
+.rtl-layout .form-label {
+  text-align: right;
+}
+
+.ltr-layout .form-field {
+  text-align: left;
+}
+
+.ltr-layout .form-label {
+  text-align: left;
+}
+
+/* Table Layout for RTL/LTR */
+.rtl-layout .table-header {
+  text-align: right;
+}
+
+.rtl-layout .table-cell {
+  text-align: right;
+}
+
+.ltr-layout .table-header {
+  text-align: left;
+}
+
+.ltr-layout .table-cell {
+  text-align: left;
+}
+
+/* Navigation Layout for RTL/LTR */
+.rtl-layout .nav-item {
+  text-align: right;
+}
+
+.rtl-layout .breadcrumb {
+  flex-direction: row-reverse;
+}
+
+.ltr-layout .nav-item {
+  text-align: left;
+}
+
+.ltr-layout .breadcrumb {
+  flex-direction: row;
+}
+
+/* Card Layout for RTL/LTR */
+.rtl-layout .card-header {
+  text-align: right;
+}
+
+.rtl-layout .card-content {
+  text-align: right;
+}
+
+.ltr-layout .card-header {
+  text-align: left;
+}
+
+.ltr-layout .card-content {
+  text-align: left;
+}
+
+/* Modal and Dialog Layout for RTL/LTR */
+.rtl-layout .modal-header {
+  text-align: right;
+}
+
+.rtl-layout .modal-content {
+  text-align: right;
+}
+
+.ltr-layout .modal-header {
+  text-align: left;
+}
+
+.ltr-layout .modal-content {
+  text-align: left;
+}
+
+/* Button Group Layout for RTL/LTR */
+.rtl-layout .button-group {
+  flex-direction: row-reverse;
+}
+
+.ltr-layout .button-group {
+  flex-direction: row;
+}
+
+/* Dropdown Menu Layout for RTL/LTR */
+.rtl-layout .dropdown-menu {
+  right: 0;
+  left: auto;
+}
+
+.ltr-layout .dropdown-menu {
+  left: 0;
+  right: auto;
+}
+
+/* Tooltip Layout for RTL/LTR */
+.rtl-layout .tooltip {
+  text-align: right;
+}
+
+.ltr-layout .tooltip {
+  text-align: left;
+}
+
+/* Progress Bar Layout for RTL/LTR */
+.rtl-layout .progress-bar {
+  transform: scaleX(-1);
+}
+
+.ltr-layout .progress-bar {
+  transform: scaleX(1);
+}
+
+/* Tab Navigation Layout for RTL/LTR */
+.rtl-layout .tab-list {
+  flex-direction: row-reverse;
+}
+
+.ltr-layout .tab-list {
+  flex-direction: row;
+}
+
+/* Search Input Layout for RTL/LTR */
+.rtl-layout .search-input {
+  text-align: right;
+  padding-right: 2.5rem;
+  padding-left: 1rem;
+}
+
+.ltr-layout .search-input {
+  text-align: left;
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+}
+
+/* Badge and Status Layout for RTL/LTR */
+.rtl-layout .badge {
+  text-align: right;
+}
+
+.ltr-layout .badge {
+  text-align: left;
+}
+
+/* Responsive RTL/LTR Adjustments */
+@media (max-width: 768px) {
+  .rtl-layout .main-content {
+    margin-right: 0;
+    margin-left: 0;
+  }
+  
+  .ltr-layout .main-content {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  .rtl-layout .sidebar {
+    right: -100%;
+    left: auto;
+  }
+  
+  .ltr-layout .sidebar {
+    left: -100%;
+    right: auto;
+  }
+  
+  .rtl-layout .sidebar.open {
+    right: 0;
+  }
+  
+  .ltr-layout .sidebar.open {
+    left: 0;
+  }
+}
+
+/* Chart and Data Visualization RTL/LTR */
+.rtl-layout .chart-legend {
+  text-align: right;
+}
+
+.rtl-layout .chart-tooltip {
+  text-align: right;
+}
+
+.ltr-layout .chart-legend {
+  text-align: left;
+}
+
+.ltr-layout .chart-tooltip {
+  text-align: left;
+}
+
+/* List and Grid Layout for RTL/LTR */
+.rtl-layout .list-item {
+  text-align: right;
+}
+
+.rtl-layout .grid-item {
+  text-align: right;
+}
+
+.ltr-layout .list-item {
+  text-align: left;
+}
+
+.ltr-layout .grid-item {
+  text-align: left;
+}
+
+/* Notification Layout for RTL/LTR */
+.rtl-layout .notification {
+  right: 1rem;
+  left: auto;
+}
+
+.ltr-layout .notification {
+  left: 1rem;
+  right: auto;
+}
+
+/* Pagination Layout for RTL/LTR */
+.rtl-layout .pagination {
+  flex-direction: row-reverse;
+}
+
+.ltr-layout .pagination {
+  flex-direction: row;
+}
+
+/* Stepper Layout for RTL/LTR */
+.rtl-layout .stepper {
+  flex-direction: row-reverse;
+}
+
+.ltr-layout .stepper {
+  flex-direction: row;
+}
+
+/* Accordion Layout for RTL/LTR */
+.rtl-layout .accordion-header {
+  text-align: right;
+}
+
+.rtl-layout .accordion-content {
+  text-align: right;
+}
+
+.ltr-layout .accordion-header {
+  text-align: left;
+}
+
+.ltr-layout .accordion-content {
+  text-align: left;
+}
+
+/* Calendar Layout for RTL/LTR */
+.rtl-layout .calendar {
+  direction: rtl;
+}
+
+.rtl-layout .calendar-day {
+  text-align: right;
+}
+
+.ltr-layout .calendar {
+  direction: ltr;
+}
+
+.ltr-layout .calendar-day {
+  text-align: left;
+}
+
+/* Data Table Specific RTL/LTR */
+.rtl-layout .data-table th {
+  text-align: right;
+}
+
+.rtl-layout .data-table td {
+  text-align: right;
+}
+
+.ltr-layout .data-table th {
+  text-align: left;
+}
+
+.ltr-layout .data-table td {
+  text-align: left;
+}
+
+/* Action Button Layout for RTL/LTR */
+.rtl-layout .action-buttons {
+  flex-direction: row-reverse;
+}
+
+.ltr-layout .action-buttons {
+  flex-direction: row;
+}
+
+/* Filter Panel Layout for RTL/LTR */
+.rtl-layout .filter-panel {
+  text-align: right;
+}
+
+.ltr-layout .filter-panel {
+  text-align: left;
+}
+
+/* Status Indicator Layout for RTL/LTR */
+.rtl-layout .status-indicator {
+  text-align: right;
+}
+
+.ltr-layout .status-indicator {
+  text-align: left;
+}
+
+/* Loading Spinner Layout for RTL/LTR */
+.rtl-layout .loading-text {
+  text-align: right;
+}
+
+.ltr-layout .loading-text {
+  text-align: left;
+}
+
+/* Empty State Layout for RTL/LTR */
+.rtl-layout .empty-state {
+  text-align: right;
+}
+
+.ltr-layout .empty-state {
+  text-align: left;
+}
+
+/* Error Message Layout for RTL/LTR */
+.rtl-layout .error-message {
+  text-align: right;
+}
+
+.ltr-layout .error-message {
+  text-align: left;
+}
+
+/* Success Message Layout for RTL/LTR */
+.rtl-layout .success-message {
+  text-align: right;
+}
+
+.ltr-layout .success-message {
+  text-align: left;
+}
+
+/* Warning Message Layout for RTL/LTR */
+.rtl-layout .warning-message {
+  text-align: right;
+}
+
+.ltr-layout .warning-message {
+  text-align: left;
+}
+
+/* Info Message Layout for RTL/LTR */
+.rtl-layout .info-message {
+  text-align: right;
+}
+
+.ltr-layout .info-message {
+  text-align: left;
 }

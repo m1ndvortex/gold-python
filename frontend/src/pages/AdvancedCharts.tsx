@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { useLanguage } from '../hooks/useLanguage';
 import { 
   BarChart3, 
   LineChart, 
@@ -23,6 +24,7 @@ import { HeatmapChart } from '../components/analytics/charts/HeatmapChart';
 import { ChartExportMenu } from '../components/analytics/charts/ChartExportMenu';
 
 const AdvancedChartsPage: React.FC = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('interactive');
 
   // Sample data for charts
@@ -81,9 +83,9 @@ const AdvancedChartsPage: React.FC = () => {
               <BarChart3 className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold tracking-tight text-foreground">Advanced Charts</h1>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">{t('reports.advanced_charts')}</h1>
               <p className="text-muted-foreground text-lg">
-                Interactive data visualizations with advanced features
+                {t('reports.interactive_data_visualizations')}
               </p>
             </div>
           </div>
@@ -91,19 +93,19 @@ const AdvancedChartsPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 gap-1">
             <Activity className="h-3 w-3" />
-            Real-time
+            {t('reports.real_time')}
           </Badge>
           <Button variant="outline" size="sm" className="gap-2">
             <Settings className="h-4 w-4" />
-            Configure
+            {t('reports.configure')}
           </Button>
           <Button variant="outline" size="sm" className="gap-2">
             <Download className="h-4 w-4" />
-            Export All
+            {t('reports.export_all')}
           </Button>
           <Button variant="default" size="sm" className="gap-2 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700">
             <Share className="h-4 w-4" />
-            Share
+            {t('reports.share')}
           </Button>
         </div>
       </div>
@@ -116,12 +118,12 @@ const AdvancedChartsPage: React.FC = () => {
               <div className="h-8 w-8 rounded-lg bg-green-500 flex items-center justify-center">
                 <LineChart className="h-4 w-4 text-white" />
               </div>
-              <CardTitle className="text-lg">Interactive</CardTitle>
+              <CardTitle className="text-lg">{t('reports.interactive')}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              Drill-down, zoom, and filter capabilities
+              {t('reports.interactive_desc')}
             </CardDescription>
           </CardContent>
         </Card>
@@ -132,12 +134,12 @@ const AdvancedChartsPage: React.FC = () => {
               <div className="h-8 w-8 rounded-lg bg-teal-500 flex items-center justify-center">
                 <TrendingUp className="h-4 w-4 text-white" />
               </div>
-              <CardTitle className="text-lg">Trend Analysis</CardTitle>
+              <CardTitle className="text-lg">{t('reports.trend_analysis_title')}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              Real-time trend detection and forecasting
+              {t('reports.trend_analysis_chart_desc')}
             </CardDescription>
           </CardContent>
         </Card>
@@ -148,12 +150,12 @@ const AdvancedChartsPage: React.FC = () => {
               <div className="h-8 w-8 rounded-lg bg-blue-500 flex items-center justify-center">
                 <Activity className="h-4 w-4 text-white" />
               </div>
-              <CardTitle className="text-lg">Heatmaps</CardTitle>
+              <CardTitle className="text-lg">{t('reports.heatmaps')}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              Pattern visualization and correlation analysis
+              {t('reports.heatmaps_desc')}
             </CardDescription>
           </CardContent>
         </Card>
@@ -164,12 +166,12 @@ const AdvancedChartsPage: React.FC = () => {
               <div className="h-8 w-8 rounded-lg bg-purple-500 flex items-center justify-center">
                 <Zap className="h-4 w-4 text-white" />
               </div>
-              <CardTitle className="text-lg">Export & Share</CardTitle>
+              <CardTitle className="text-lg">{t('reports.export_share_charts')}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              Multiple export formats and sharing options
+              {t('reports.export_share_charts_desc')}
             </CardDescription>
           </CardContent>
         </Card>

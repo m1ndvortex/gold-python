@@ -16,6 +16,7 @@ import {
   Layers,
   FolderTree
 } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -74,6 +75,7 @@ const defaultFilters: InventoryFilters = {
 };
 
 export const Inventory: React.FC = () => {
+  const { t } = useLanguage();
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [filters, setFilters] = useState<InventoryFilters>(defaultFilters);
   const [showFilters, setShowFilters] = useState(false);
@@ -106,18 +108,18 @@ export const Inventory: React.FC = () => {
   // Get stock status
   const getStockStatus = (item: InventoryItem) => {
     if (item.stock_quantity <= 0) {
-      return { status: 'out-of-stock', label: 'Out of Stock', variant: 'destructive' as const, color: 'text-red-600' };
+      return { status: 'out-of-stock', label: t('inventory.out_of_stock_label'), variant: 'destructive' as const, color: 'text-red-600' };
     } else if (item.stock_quantity <= item.min_stock_level) {
-      return { status: 'low-stock', label: 'Low Stock', variant: 'secondary' as const, color: 'text-yellow-600' };
+      return { status: 'low-stock', label: t('inventory.low_stock_label'), variant: 'secondary' as const, color: 'text-yellow-600' };
     }
-    return { status: 'in-stock', label: 'In Stock', variant: 'default' as const, color: 'text-green-600' };
+    return { status: 'in-stock', label: t('inventory.in_stock_label'), variant: 'default' as const, color: 'text-green-600' };
   };
 
   // Table columns
   const columns: DataTableColumn<InventoryItem>[] = [
     {
       id: 'item',
-      header: 'Item',
+      header: t('inventory.item'),
       accessorKey: 'name',
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
@@ -148,13 +150,13 @@ export const Inventory: React.FC = () => {
     },
     {
       id: 'category',
-      header: 'Category',
+      header: t('inventory.category'),
       accessorKey: 'category_id',
       cell: ({ row }) => {
         const category = categoryMap[row.category_id];
         return (
           <Badge variant="outline" className="font-medium">
-            {category?.name || 'Uncategorized'}
+            {category?.name || t('inventory.uncategorized')}
           </Badge>
         );
       },
@@ -165,7 +167,7 @@ export const Inventory: React.FC = () => {
     },
     {
       id: 'weight',
-      header: 'Weight',
+      header: t('inventory.weight'),
       accessorKey: 'weight_grams',
       cell: ({ row }) => (
         <div className="flex items-center gap-1 font-mono">
@@ -180,7 +182,7 @@ export const Inventory: React.FC = () => {
     },
     {
       id: 'purchase_price',
-      header: 'Purchase Price',
+      header: t('inventory.purchase_price'),
       accessorKey: 'purchase_price',
       cell: ({ row }) => (
         <div className="flex items-center gap-1 font-mono">
@@ -195,7 +197,7 @@ export const Inventory: React.FC = () => {
     },
     {
       id: 'sell_price',
-      header: 'Sell Price',
+      header: t('inventory.sell_price'),
       accessorKey: 'sell_price',
       cell: ({ row }) => (
         <div className="flex items-center gap-1 font-mono font-semibold">
@@ -210,7 +212,7 @@ export const Inventory: React.FC = () => {
     },
     {
       id: 'stock',
-      header: 'Stock',
+      header: t('inventory.stock'),
       accessorKey: 'stock_quantity',
       cell: ({ row }) => {
         const stockStatus = getStockStatus(row);
@@ -230,7 +232,7 @@ export const Inventory: React.FC = () => {
     },
     {
       id: 'status',
-      header: 'Status',
+      header: t('inventory.status'),
       accessorFn: (row) => getStockStatus(row).status,
       cell: ({ row }) => {
         const stockStatus = getStockStatus(row);
@@ -255,7 +257,7 @@ export const Inventory: React.FC = () => {
   const actions: DataTableAction<InventoryItem>[] = [
     {
       id: 'view',
-      label: 'View',
+      label: t('inventory.view'),
       icon: <Eye className="h-4 w-4" />,
       onClick: (item) => {
         // Handle view action
@@ -264,7 +266,7 @@ export const Inventory: React.FC = () => {
     },
     {
       id: 'edit',
-      label: 'Edit',
+      label: t('inventory.edit'),
       icon: <Edit className="h-4 w-4" />,
       onClick: (item) => {
         setEditingItem(item);
@@ -273,11 +275,11 @@ export const Inventory: React.FC = () => {
     },
     {
       id: 'delete',
-      label: 'Delete',
+      label: t('inventory.delete'),
       icon: <Trash2 className="h-4 w-4" />,
       variant: 'destructive',
       onClick: async (item) => {
-        if (window.confirm(`Are you sure you want to delete "${item.name}"?`)) {
+        if (window.confirm(t('inventory.delete_confirm', { name: item.name }))) {
           try {
             await deleteItemMutation.mutateAsync(item.id);
           } catch (error) {
@@ -346,24 +348,24 @@ export const Inventory: React.FC = () => {
                   </div>
                   
                   <div className="flex items-center justify-between text-sm">
-                    <Badge variant="outline">{category?.name || 'Uncategorized'}</Badge>
+                    <Badge variant="outline">{category?.name || t('inventory.uncategorized')}</Badge>
                     <span className="font-mono text-muted-foreground">{item.weight_grams}g</span>
                   </div>
                   
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
-                      <div className="text-sm text-muted-foreground">Purchase</div>
+                      <div className="text-sm text-muted-foreground">{t('inventory.purchase')}</div>
                       <div className="font-mono font-semibold">${item.purchase_price.toFixed(2)}</div>
                     </div>
                     <div className="space-y-1 text-right">
-                      <div className="text-sm text-muted-foreground">Sell</div>
+                      <div className="text-sm text-muted-foreground">{t('inventory.sell')}</div>
                       <div className="font-mono font-bold text-primary">${item.sell_price.toFixed(2)}</div>
                     </div>
                   </div>
                   
                   <div className="flex items-center justify-between pt-2 border-t">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">Stock:</span>
+                      <span className="text-sm text-muted-foreground">{t('inventory.stock_label')}</span>
                       <span className="font-mono font-semibold">{item.stock_quantity}</span>
                       {stockStatus.status !== 'in-stock' && (
                         <AlertTriangle className={cn("h-4 w-4", stockStatus.color)} />
@@ -388,7 +390,7 @@ export const Inventory: React.FC = () => {
                         className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
                         onClick={async (e) => {
                           e.stopPropagation();
-                          if (window.confirm(`Are you sure you want to delete "${item.name}"?`)) {
+                          if (window.confirm(t('inventory.delete_confirm', { name: item.name }))) {
                             try {
                               await deleteItemMutation.mutateAsync(item.id);
                             } catch (error) {
@@ -420,7 +422,7 @@ export const Inventory: React.FC = () => {
                 <AlertTriangle className="h-6 w-6 text-white" />
               </div>
               <div className="text-red-600 font-medium">
-                Failed to load inventory items. Please try again.
+                {t('inventory.failed_to_load')}
               </div>
             </div>
           </CardContent>
@@ -443,10 +445,10 @@ export const Inventory: React.FC = () => {
           </div>
           <div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
-              Inventory Management
+              {t('inventory.management_title')}
             </h1>
             <p className="text-muted-foreground mt-1">
-              Manage your gold jewelry inventory with modern tools and insights
+              {t('inventory.management_description')}
             </p>
           </div>
         </div>
@@ -457,18 +459,18 @@ export const Inventory: React.FC = () => {
             className="flex items-center gap-2"
           >
             <SlidersHorizontal className="h-4 w-4" />
-            Filters
+            {t('inventory.filters')}
             {Object.values(filters).some(v => 
               Array.isArray(v) ? v.length > 0 : v !== undefined && v !== ''
             ) && (
               <Badge variant="secondary" className="ml-1">
-                Active
+                {t('inventory.active')}
               </Badge>
             )}
           </Button>
           <Button variant="gradient-green" onClick={() => setShowForm(true)} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            Add Item
+            {t('inventory.add_item')}
           </Button>
         </div>
       </motion.div>
@@ -477,11 +479,11 @@ export const Inventory: React.FC = () => {
         <TabsList variant="gradient-green" className="grid w-full grid-cols-2">
           <TabsTrigger variant="gradient-green" value="inventory" className="flex items-center gap-2">
             <Package className="h-4 w-4" />
-            Inventory Items
+            {t('inventory.inventory_items')}
           </TabsTrigger>
           <TabsTrigger variant="gradient-green" value="categories" className="flex items-center gap-2">
             <Layers className="h-4 w-4" />
-            Categories
+            {t('inventory.categories')}
           </TabsTrigger>
         </TabsList>
         
@@ -521,7 +523,7 @@ export const Inventory: React.FC = () => {
                       <div className="relative flex-1 max-w-md">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
-                          placeholder="Search inventory items..."
+                          placeholder={t('inventory.search_placeholder')}
                           value={filters.search || ''}
                           onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                           className="pl-10 border-0 bg-white/80 shadow-sm focus:shadow-md transition-all duration-300"
@@ -550,7 +552,7 @@ export const Inventory: React.FC = () => {
                         
                         {inventoryData && (
                           <Badge variant="secondary" className="font-mono bg-white/80 shadow-sm">
-                            {inventoryData.total} items
+                            {t('inventory.total_items', { count: inventoryData.total })}
                           </Badge>
                         )}
                       </div>
@@ -596,7 +598,7 @@ export const Inventory: React.FC = () => {
                           <div className="animate-spin rounded-full h-8 w-8 border-2 border-transparent bg-gradient-to-r from-green-500 to-teal-600 bg-clip-border"></div>
                           <div className="absolute inset-0 animate-spin rounded-full h-8 w-8 border-2 border-transparent border-t-green-500"></div>
                         </div>
-                        <p className="text-muted-foreground">Loading inventory items...</p>
+                        <p className="text-muted-foreground">{t('inventory.loading')}</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -608,14 +610,14 @@ export const Inventory: React.FC = () => {
                           <Package className="h-8 w-8 text-white" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold">No inventory items found</h3>
+                          <h3 className="text-lg font-semibold">{t('inventory.no_items_found')}</h3>
                           <p className="text-muted-foreground">
-                            Add your first item to get started with inventory management.
+                            {t('inventory.add_first_message')}
                           </p>
                         </div>
                         <Button variant="gradient-green" onClick={() => setShowForm(true)} className="mt-4">
                           <Plus className="h-4 w-4 mr-2" />
-                          Add First Item
+                          {t('inventory.add_first_item')}
                         </Button>
                       </div>
                     </CardContent>
@@ -629,7 +631,7 @@ export const Inventory: React.FC = () => {
                         <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
                           <Package className="h-4 w-4 text-white" />
                         </div>
-                        Inventory Items
+                        {t('inventory.inventory_items')}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -682,26 +684,29 @@ export const Inventory: React.FC = () => {
 
 
 // Individual route components
-const ProductsRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    {/* Header with gradient styling */}
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-4 mb-6"
-    >
-      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
-        <Package className="h-6 w-6 text-white" />
-      </div>
-      <div>
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-          Product Management
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Manage your inventory items and product details with modern tools
-        </p>
-      </div>
-    </motion.div>
+const ProductsRoute: React.FC = () => {
+  const { t } = useLanguage();
+  
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      {/* Header with gradient styling */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-center gap-4 mb-6"
+      >
+        <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+          <Package className="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            {t('inventory.product_management')}
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            {t('inventory.manage_products')}
+          </p>
+        </div>
+      </motion.div>
     
     {/* Content with gradient card background */}
     <motion.div
@@ -716,28 +721,32 @@ const ProductsRoute: React.FC = () => (
       </Card>
     </motion.div>
   </div>
-);
+  );
+};
 
-const CategoriesRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    {/* Header with gradient styling */}
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-4 mb-6"
-    >
-      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
-        <FolderTree className="h-6 w-6 text-white" />
-      </div>
-      <div>
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
-          Category Management
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Organize products with categories and subcategories using modern tools
-        </p>
-      </div>
-    </motion.div>
+const CategoriesRoute: React.FC = () => {
+  const { t } = useLanguage();
+  
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      {/* Header with gradient styling */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-center gap-4 mb-6"
+      >
+        <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+          <FolderTree className="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
+            {t('inventory.category_management')}
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            {t('inventory.organize_categories')}
+          </p>
+        </div>
+      </motion.div>
     
     {/* Content with gradient card background */}
     <motion.div
@@ -752,9 +761,11 @@ const CategoriesRoute: React.FC = () => (
       </Card>
     </motion.div>
   </div>
-);
+  );
+};
 
 const BulkOperationsRoute: React.FC = () => {
+  const { t } = useLanguage();
   const { data: categories = [] } = useCategories();
   
   return (
@@ -770,10 +781,10 @@ const BulkOperationsRoute: React.FC = () => {
         </div>
         <div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
-            Bulk Operations
+            {t('inventory.bulk_operations')}
           </h1>
           <p className="text-muted-foreground mt-1">
-            Perform bulk operations on multiple inventory items efficiently
+            {t('inventory.perform_bulk')}
           </p>
         </div>
       </motion.div>
@@ -803,26 +814,29 @@ const BulkOperationsRoute: React.FC = () => {
   );
 };
 
-const ImagesRoute: React.FC = () => (
-  <div className="container mx-auto p-6 space-y-6">
-    {/* Header with gradient styling */}
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-4 mb-6"
-    >
-      <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg">
-        <Package className="h-6 w-6 text-white" />
-      </div>
-      <div>
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
-          Image Management
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Manage product images and visual assets with modern tools
-        </p>
-      </div>
-    </motion.div>
+const ImagesRoute: React.FC = () => {
+  const { t } = useLanguage();
+  
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      {/* Header with gradient styling */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-center gap-4 mb-6"
+      >
+        <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg">
+          <Package className="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
+            {t('inventory.image_management')}
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            {t('inventory.manage_images')}
+          </p>
+        </div>
+      </motion.div>
     
     {/* Content with gradient card background */}
     <motion.div
@@ -837,7 +851,8 @@ const ImagesRoute: React.FC = () => (
       </Card>
     </motion.div>
   </div>
-);
+  );
+};
 
 // Wrapper component to handle sub-routes
 export const InventoryWithRouting: React.FC = () => {

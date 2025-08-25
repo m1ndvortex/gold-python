@@ -3,6 +3,7 @@ import { ReportBuilder } from '../components/reports/ReportBuilder';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
+import { useLanguage } from '../hooks/useLanguage';
 import { 
   Wrench, 
   Layers, 
@@ -15,6 +16,8 @@ import {
 } from 'lucide-react';
 
 const ReportBuilderPage: React.FC = () => {
+  const { t } = useLanguage();
+  
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
@@ -25,9 +28,9 @@ const ReportBuilderPage: React.FC = () => {
               <Wrench className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold tracking-tight text-foreground">Report Builder</h1>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">{t('reports.report_builder')}</h1>
               <p className="text-muted-foreground text-lg">
-                Create custom reports with drag-and-drop interface
+                {t('reports.drag_drop_report_creation')}
               </p>
             </div>
           </div>
@@ -35,19 +38,19 @@ const ReportBuilderPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 gap-1">
             <Layers className="h-3 w-3" />
-            Visual Builder
+            {t('reports.visual_builder')}
           </Badge>
           <Button variant="outline" size="sm" className="gap-2">
             <Eye className="h-4 w-4" />
-            Preview
+            {t('reports.preview')}
           </Button>
           <Button variant="outline" size="sm" className="gap-2">
             <Save className="h-4 w-4" />
-            Save Report
+            {t('reports.save_report')}
           </Button>
           <Button variant="default" size="sm" className="gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700">
             <Play className="h-4 w-4" />
-            Generate
+            {t('reports.generate')}
           </Button>
         </div>
       </div>
@@ -60,12 +63,12 @@ const ReportBuilderPage: React.FC = () => {
               <div className="h-8 w-8 rounded-lg bg-blue-500 flex items-center justify-center">
                 <Layers className="h-4 w-4 text-white" />
               </div>
-              <CardTitle className="text-lg">Drag & Drop</CardTitle>
+              <CardTitle className="text-lg">{t('reports.drag_drop')}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              Easily build reports by dragging fields and components into your canvas
+              {t('reports.drag_drop_desc')}
             </CardDescription>
           </CardContent>
         </Card>
@@ -76,12 +79,12 @@ const ReportBuilderPage: React.FC = () => {
               <div className="h-8 w-8 rounded-lg bg-indigo-500 flex items-center justify-center">
                 <Palette className="h-4 w-4 text-white" />
               </div>
-              <CardTitle className="text-lg">Visual Design</CardTitle>
+              <CardTitle className="text-lg">{t('reports.visual_design')}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              Customize charts, layouts, and styling with intuitive visual controls
+              {t('reports.visual_design_desc')}
             </CardDescription>
           </CardContent>
         </Card>
@@ -92,12 +95,12 @@ const ReportBuilderPage: React.FC = () => {
               <div className="h-8 w-8 rounded-lg bg-purple-500 flex items-center justify-center">
                 <Share className="h-4 w-4 text-white" />
               </div>
-              <CardTitle className="text-lg">Export & Share</CardTitle>
+              <CardTitle className="text-lg">{t('reports.export_share')}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              Export reports to PDF, Excel, or share with team members
+              {t('reports.export_share_desc')}
             </CardDescription>
           </CardContent>
         </Card>

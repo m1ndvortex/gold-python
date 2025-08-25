@@ -83,7 +83,7 @@ export const Dashboard: React.FC = () => {
           </div>
           <div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{t('nav.dashboard')}</h1>
-            <p className="text-base text-gray-600 mt-2 font-medium">Welcome back! Here's your business overview</p>
+            <p className="text-base text-gray-600 mt-2 font-medium">{t('dashboard.welcome_message')}</p>
           </div>
         </div>
         <Button 

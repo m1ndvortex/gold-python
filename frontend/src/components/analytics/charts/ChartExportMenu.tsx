@@ -215,10 +215,12 @@ export const ChartExportMenu: React.FC<ChartExportMenuProps> = ({
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
           >
-            <Card className="w-80">
+            <Card className="w-80 border-0 shadow-xl bg-gradient-to-br from-green-50 to-teal-100/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+                    <Loader2 className="h-4 w-4 animate-spin text-white" />
+                  </div>
                   Exporting Chart
                 </CardTitle>
               </CardHeader>
@@ -236,11 +238,11 @@ export const ChartExportMenu: React.FC<ChartExportMenuProps> = ({
       {/* Main Export Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+          <Button variant="outline" size="sm" className="h-8 w-8 p-0 border-0 shadow-lg bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white hover:shadow-xl transition-all duration-300">
             <Download className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuContent align="end" className="w-56 border-0 shadow-xl bg-gradient-to-br from-slate-50 to-slate-100/80">
           <DropdownMenuLabel>Export Options</DropdownMenuLabel>
           <DropdownMenuSeparator />
           
@@ -273,9 +275,14 @@ export const ChartExportMenu: React.FC<ChartExportMenuProps> = ({
                 Share & Embed
               </DropdownMenuItem>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto border-0 shadow-xl bg-gradient-to-br from-green-50 to-teal-100/50">
               <DialogHeader>
-                <DialogTitle>Share & Embed Chart</DialogTitle>
+                <DialogTitle className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+                    <Share2 className="h-4 w-4 text-white" />
+                  </div>
+                  Share & Embed Chart
+                </DialogTitle>
                 <DialogDescription>
                   Share your chart with others or embed it in websites and applications.
                 </DialogDescription>
@@ -366,19 +373,20 @@ export const ChartExportMenu: React.FC<ChartExportMenuProps> = ({
                       />
                     </div>
 
-                    <Button onClick={handleShare} className="w-full">
+                    <Button onClick={handleShare} className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                       <Link className="h-4 w-4 mr-2" />
                       Generate Share Link
                     </Button>
 
                     {shareUrl && (
-                      <div className="p-3 bg-muted rounded-lg">
+                      <div className="p-3 bg-gradient-to-r from-slate-50 to-slate-100/80 rounded-lg border-0 shadow-lg">
                         <Label className="text-sm font-medium">Share URL</Label>
                         <div className="flex gap-2 mt-1">
-                          <Input value={shareUrl} readOnly className="text-sm" />
+                          <Input value={shareUrl} readOnly className="text-sm border-0 shadow-lg" />
                           <Button
                             size="sm"
                             onClick={() => copyToClipboard(shareUrl, 'Share link')}
+                            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                           >
                             <Copy className="h-4 w-4" />
                           </Button>
@@ -457,24 +465,24 @@ export const ChartExportMenu: React.FC<ChartExportMenuProps> = ({
                       />
                     </div>
 
-                    <Button onClick={generateEmbedCode} className="w-full">
+                    <Button onClick={generateEmbedCode} className="w-full bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                       <Code className="h-4 w-4 mr-2" />
                       Generate Embed Code
                     </Button>
 
                     {embedCode && (
-                      <div className="p-3 bg-muted rounded-lg">
+                      <div className="p-3 bg-gradient-to-r from-slate-50 to-slate-100/80 rounded-lg border-0 shadow-lg">
                         <Label className="text-sm font-medium">Embed Code</Label>
                         <div className="mt-1">
                           <Textarea
                             value={embedCode}
                             readOnly
                             rows={6}
-                            className="text-xs font-mono"
+                            className="text-xs font-mono border-0 shadow-lg"
                           />
                           <Button
                             size="sm"
-                            className="mt-2 w-full"
+                            className="mt-2 w-full bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                             onClick={() => copyToClipboard(embedCode, 'Embed code')}
                           >
                             <Copy className="h-4 w-4 mr-2" />

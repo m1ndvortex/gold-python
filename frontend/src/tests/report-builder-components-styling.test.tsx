@@ -16,9 +16,9 @@ const mockDataSources: DataSource[] = [
     name: 'Sales Data',
     type: 'table',
     fields: [
-      { id: 'date', name: 'date', displayName: 'Date', type: 'date', aggregatable: false },
-      { id: 'amount', name: 'amount', displayName: 'Amount', type: 'number', aggregatable: true },
-      { id: 'category', name: 'category', displayName: 'Category', type: 'string', aggregatable: false }
+      { id: 'date', name: 'date', displayName: 'Date', dataType: 'date', aggregatable: false, filterable: true, sortable: true },
+      { id: 'amount', name: 'amount', displayName: 'Amount', dataType: 'number', aggregatable: true, filterable: true, sortable: true },
+      { id: 'category', name: 'category', displayName: 'Category', dataType: 'string', aggregatable: false, filterable: true, sortable: true }
     ],
     relationships: []
   }

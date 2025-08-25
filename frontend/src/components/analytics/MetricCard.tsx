@@ -130,15 +130,15 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'success':
-        return 'border-l-green-500 bg-green-50/50';
+        return 'border-0 shadow-lg bg-gradient-to-br from-green-50 to-teal-100/50 hover:shadow-xl transition-all duration-300';
       case 'warning':
-        return 'border-l-yellow-500 bg-yellow-50/50';
+        return 'border-0 shadow-lg bg-gradient-to-br from-yellow-50 to-orange-100/50 hover:shadow-xl transition-all duration-300';
       case 'danger':
-        return 'border-l-red-500 bg-red-50/50';
+        return 'border-0 shadow-lg bg-gradient-to-br from-red-50 to-pink-100/50 hover:shadow-xl transition-all duration-300';
       case 'info':
-        return 'border-l-blue-500 bg-blue-50/50';
+        return 'border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50 hover:shadow-xl transition-all duration-300';
       default:
-        return 'border-l-gray-300 bg-gray-50/50';
+        return 'border-0 shadow-lg bg-gradient-to-br from-gray-50 to-slate-100/50 hover:shadow-xl transition-all duration-300';
     }
   };
 
@@ -185,7 +185,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   return (
     <Card 
       className={cn(
-        'border-l-4 transition-all duration-300 hover:shadow-md cursor-pointer',
+        'cursor-pointer',
         getStatusColor(data.status),
         isVisible && animated ? 'animate-in fade-in-0 slide-in-from-left-4' : '',
         className
@@ -199,14 +199,24 @@ export const MetricCard: React.FC<MetricCardProps> = ({
           layout === 'horizontal' ? 'flex-col items-start space-y-1' : ''
         )}>
           <div className="flex items-center gap-2">
-            {showIcon && (data.icon || getStatusIcon(data.status))}
-            <h3 className={cn('font-medium text-muted-foreground', sizeClasses[size].title)}>
+            {showIcon && (
+              data.icon ? (
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+                  {data.icon}
+                </div>
+              ) : (
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                  {getStatusIcon(data.status)}
+                </div>
+              )
+            )}
+            <h3 className={cn('font-medium text-gray-700', sizeClasses[size].title)}>
               {data.title}
             </h3>
           </div>
           
           {showStatus && (
-            <Badge variant={getStatusBadgeVariant(data.status)} className="text-xs">
+            <Badge variant={getStatusBadgeVariant(data.status)} className="text-xs shadow-sm">
               {data.status.toUpperCase()}
             </Badge>
           )}
@@ -218,20 +228,20 @@ export const MetricCard: React.FC<MetricCardProps> = ({
           layout === 'horizontal' ? 'text-right' : ''
         )}>
           <div className={cn(
-            'font-bold tracking-tight transition-all duration-300',
+            'font-bold tracking-tight transition-all duration-300 bg-gradient-to-r from-gray-800 to-gray-900 bg-clip-text text-transparent',
             sizeClasses[size].value,
             animated ? 'transform' : ''
           )}>
             {formatValue(displayValue)}
             {data.unit && (
-              <span className="text-sm font-normal text-muted-foreground ml-1">
+              <span className="text-sm font-normal text-gray-600 ml-1">
                 {data.unit}
               </span>
             )}
           </div>
 
           {data.subtitle && (
-            <p className={cn('text-muted-foreground', sizeClasses[size].subtitle)}>
+            <p className={cn('text-gray-600', sizeClasses[size].subtitle)}>
               {data.subtitle}
             </p>
           )}
@@ -239,7 +249,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
 
         {/* Trend and Additional Info */}
         {(showTrend && data.trend) || data.target || data.lastUpdated ? (
-          <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+          <div className="flex items-center justify-between pt-2 border-t border-gray-200/50">
             {showTrend && data.trend && (
               <TrendIndicator
                 direction={data.trend.direction}
@@ -249,17 +259,21 @@ export const MetricCard: React.FC<MetricCardProps> = ({
               />
             )}
 
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs text-gray-600">
               {data.target && (
-                <div className="flex items-center gap-1">
-                  <Target className="h-3 w-3" />
+                <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-gradient-to-r from-gray-50 to-gray-100 shadow-sm">
+                  <div className="h-4 w-4 rounded bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                    <Target className="h-2 w-2 text-white" />
+                  </div>
                   <span>Target: {formatValue(data.target)}</span>
                 </div>
               )}
               
               {data.lastUpdated && (
-                <div className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
+                <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-gradient-to-r from-gray-50 to-gray-100 shadow-sm">
+                  <div className="h-4 w-4 rounded bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
+                    <Clock className="h-2 w-2 text-white" />
+                  </div>
                   <span>{new Date(data.lastUpdated).toLocaleTimeString()}</span>
                 </div>
               )}
@@ -270,17 +284,17 @@ export const MetricCard: React.FC<MetricCardProps> = ({
         {/* Achievement Progress (if target is set) */}
         {data.target && (
           <div className="mt-2">
-            <div className="flex justify-between text-xs text-muted-foreground mb-1">
+            <div className="flex justify-between text-xs text-gray-600 mb-1">
               <span>Achievement</span>
-              <span>{((data.value / data.target) * 100).toFixed(1)}%</span>
+              <span className="font-medium">{((data.value / data.target) * 100).toFixed(1)}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-1.5">
+            <div className="w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded-full h-2 shadow-inner">
               <div 
                 className={cn(
-                  'h-1.5 rounded-full transition-all duration-1000',
-                  data.status === 'success' ? 'bg-green-500' :
-                  data.status === 'warning' ? 'bg-yellow-500' :
-                  data.status === 'danger' ? 'bg-red-500' : 'bg-blue-500'
+                  'h-2 rounded-full transition-all duration-1000 shadow-sm',
+                  data.status === 'success' ? 'bg-gradient-to-r from-green-500 to-teal-600' :
+                  data.status === 'warning' ? 'bg-gradient-to-r from-yellow-500 to-orange-600' :
+                  data.status === 'danger' ? 'bg-gradient-to-r from-red-500 to-pink-600' : 'bg-gradient-to-r from-blue-500 to-indigo-600'
                 )}
                 style={{ 
                   width: `${Math.min((data.value / data.target) * 100, 100)}%` 

@@ -94,27 +94,33 @@ export const CompanySettingsForm: React.FC = () => {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Building2 className="h-5 w-5" />
-          Company Information
-        </CardTitle>
-        <CardDescription>
-          Configure your company details and default business settings
-        </CardDescription>
+    <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-blue-50/30 hover:shadow-2xl transition-all duration-300">
+      <CardHeader className="bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 border-b-2 border-blue-200/50">
+        <div className="flex items-center gap-3">
+          <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300">
+            <Building2 className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <CardTitle className="text-2xl font-bold text-foreground">
+              {t('settings.company_information')}
+            </CardTitle>
+            <CardDescription className="text-base text-muted-foreground">
+              {t('settings.company_details_desc')}
+            </CardDescription>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6 bg-gradient-to-br from-blue-50/20 via-white to-indigo-50/10">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Company Logo */}
           <div className="space-y-2">
-            <Label htmlFor="logo">Company Logo</Label>
+            <Label htmlFor="logo">{t('settings.company_logo')}</Label>
             <div className="flex items-center gap-4">
               {logoPreview && (
                 <div className="w-20 h-20 border rounded-lg overflow-hidden bg-muted">
                   <img
                     src={logoPreview}
-                    alt="Company Logo"
+                    alt={t('settings.company_logo')}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -128,7 +134,7 @@ export const CompanySettingsForm: React.FC = () => {
                   className="cursor-pointer"
                 />
                 <p className="text-sm text-muted-foreground mt-1">
-                  Upload a logo image (PNG, JPG, or SVG)
+                  {t('settings.upload_logo_desc')}
                 </p>
               </div>
             </div>
@@ -139,13 +145,13 @@ export const CompanySettingsForm: React.FC = () => {
           {/* Company Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="company_name">Company Name</Label>
+              <Label htmlFor="company_name">{t('settings.company_name')}</Label>
               <Input
                 id="company_name"
                 {...register('company_name', {
-                  required: 'Company name is required',
+                  required: t('settings.company_name_required'),
                 })}
-                placeholder="Enter company name"
+                placeholder={t('settings.enter_company_name')}
               />
               {errors.company_name && (
                 <p className="text-sm text-destructive">{errors.company_name.message}</p>
@@ -153,11 +159,11 @@ export const CompanySettingsForm: React.FC = () => {
             </div>
 
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="company_address">Company Address</Label>
+              <Label htmlFor="company_address">{t('settings.company_address')}</Label>
               <Textarea
                 id="company_address"
                 {...register('company_address')}
-                placeholder="Enter company address"
+                placeholder={t('settings.enter_company_address')}
                 rows={3}
               />
             </div>
@@ -169,19 +175,19 @@ export const CompanySettingsForm: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <DollarSign className="h-4 w-4" />
-              <h3 className="text-lg font-medium">Default Pricing Settings</h3>
+              <h3 className="text-lg font-medium">{t('settings.default_pricing_settings')}</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="default_gold_price">Gold Price (per gram)</Label>
+                <Label htmlFor="default_gold_price">{t('settings.gold_price_per_gram')}</Label>
                 <Input
                   id="default_gold_price"
                   type="number"
                   step="0.01"
                   {...register('default_gold_price', {
-                    required: 'Gold price is required',
-                    min: { value: 0, message: 'Price must be positive' },
+                    required: t('settings.gold_price_required'),
+                    min: { value: 0, message: t('settings.price_positive') },
                   })}
                   placeholder="50.00"
                 />
@@ -191,16 +197,16 @@ export const CompanySettingsForm: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="default_labor_percentage">Labor Cost (%)</Label>
+                <Label htmlFor="default_labor_percentage">{t('settings.labor_cost_percent')}</Label>
                 <div className="relative">
                   <Input
                     id="default_labor_percentage"
                     type="number"
                     step="0.1"
                     {...register('default_labor_percentage', {
-                      required: 'Labor percentage is required',
-                      min: { value: 0, message: 'Percentage must be positive' },
-                      max: { value: 100, message: 'Percentage cannot exceed 100' },
+                      required: t('settings.labor_required'),
+                      min: { value: 0, message: t('settings.percentage_positive') },
+                      max: { value: 100, message: t('settings.percentage_max') },
                     })}
                     placeholder="10.0"
                   />
@@ -212,16 +218,16 @@ export const CompanySettingsForm: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="default_profit_percentage">Profit Margin (%)</Label>
+                <Label htmlFor="default_profit_percentage">{t('settings.profit_margin_percent')}</Label>
                 <div className="relative">
                   <Input
                     id="default_profit_percentage"
                     type="number"
                     step="0.1"
                     {...register('default_profit_percentage', {
-                      required: 'Profit percentage is required',
-                      min: { value: 0, message: 'Percentage must be positive' },
-                      max: { value: 100, message: 'Percentage cannot exceed 100' },
+                      required: t('settings.profit_required'),
+                      min: { value: 0, message: t('settings.percentage_positive') },
+                      max: { value: 100, message: t('settings.percentage_max') },
                     })}
                     placeholder="15.0"
                   />
@@ -233,16 +239,16 @@ export const CompanySettingsForm: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="default_vat_percentage">VAT Rate (%)</Label>
+                <Label htmlFor="default_vat_percentage">{t('settings.vat_rate_percent')}</Label>
                 <div className="relative">
                   <Input
                     id="default_vat_percentage"
                     type="number"
                     step="0.1"
                     {...register('default_vat_percentage', {
-                      required: 'VAT percentage is required',
-                      min: { value: 0, message: 'Percentage must be positive' },
-                      max: { value: 100, message: 'Percentage cannot exceed 100' },
+                      required: t('settings.vat_required'),
+                      min: { value: 0, message: t('settings.percentage_positive') },
+                      max: { value: 100, message: t('settings.percentage_max') },
                     })}
                     placeholder="5.0"
                   />
@@ -260,9 +266,16 @@ export const CompanySettingsForm: React.FC = () => {
             <Button
               type="submit"
               disabled={!isDirty || updateSettings.isPending}
-              className="min-w-32"
+              className="min-w-32 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              {updateSettings.isPending ? 'Saving...' : 'Save Changes'}
+              {updateSettings.isPending ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  {t('settings.saving')}
+                </div>
+              ) : (
+                t('settings.save_changes')
+              )}
             </Button>
           </div>
         </form>

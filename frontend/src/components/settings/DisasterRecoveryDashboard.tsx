@@ -284,38 +284,48 @@ export const DisasterRecoveryDashboard: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
-            <Shield className="h-5 w-5 text-white" />
+    <Card className="border-0 shadow-xl bg-gradient-to-br from-white to-red-50/30 hover:shadow-2xl transition-all duration-300">
+      <CardHeader className="bg-gradient-to-r from-red-50 via-orange-50 to-red-50 border-b-2 border-red-200/50">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300">
+              <Shield className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-bold text-foreground">
+                Disaster Recovery Management
+              </CardTitle>
+              <CardDescription className="text-base text-muted-foreground">
+                Monitor and manage backup systems, recovery procedures, and business continuity
+              </CardDescription>
+            </div>
           </div>
-          <div>
-            <h3 className="text-xl font-semibold">Disaster Recovery Management</h3>
-            <p className="text-sm text-muted-foreground">
-              Monitor and manage backup systems, recovery procedures, and business continuity
-            </p>
+          <div className="flex items-center gap-2">
+            <Badge 
+              variant="outline" 
+              className={cn("gap-1 shadow-md", getStatusColor(systemStatus?.system_health || 'unknown'))}
+            >
+              {systemStatus?.system_health === 'healthy' ? (
+                <CheckCircle className="h-3 w-3" />
+              ) : (
+                <AlertTriangle className="h-3 w-3" />
+              )}
+              {systemStatus?.system_health || 'Unknown'}
+            </Badge>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={refreshData} 
+              className="gap-2 bg-gradient-to-r from-red-50 to-orange-50 hover:from-red-100 hover:to-orange-100 border-red-200 hover:border-red-300 text-red-700 hover:text-red-800 shadow-md hover:shadow-lg transition-all duration-300"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </Button>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge 
-            variant="outline" 
-            className={cn("gap-1", getStatusColor(systemStatus?.system_health || 'unknown'))}
-          >
-            {systemStatus?.system_health === 'healthy' ? (
-              <CheckCircle className="h-3 w-3" />
-            ) : (
-              <AlertTriangle className="h-3 w-3" />
-            )}
-            {systemStatus?.system_health || 'Unknown'}
-          </Badge>
-          <Button variant="outline" size="sm" onClick={refreshData} className="gap-2">
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </Button>
-        </div>
-      </div>
+      </CardHeader>
+      <CardContent className="p-6 bg-gradient-to-br from-red-50/20 via-white to-orange-50/10">
+        <div className="space-y-6">
 
       {/* System Status Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -407,30 +417,47 @@ export const DisasterRecoveryDashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* Main Content Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview" className="gap-2">
-            <BarChart3 className="h-4 w-4" />
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="backups" className="gap-2">
-            <Database className="h-4 w-4" />
-            Backups
-          </TabsTrigger>
-          <TabsTrigger value="procedures" className="gap-2">
-            <Settings className="h-4 w-4" />
-            Procedures
-          </TabsTrigger>
-          <TabsTrigger value="storage" className="gap-2">
-            <Cloud className="h-4 w-4" />
-            Off-site Storage
-          </TabsTrigger>
-          <TabsTrigger value="settings" className="gap-2">
-            <Zap className="h-4 w-4" />
-            Settings
-          </TabsTrigger>
-        </TabsList>
+        {/* Main Content Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+          <div className="bg-gradient-to-r from-red-50 via-orange-50 to-red-50 border-b-2 border-red-200/50 rounded-t-lg p-1">
+            <TabsList className="grid w-full grid-cols-5 bg-transparent h-auto p-1 gap-1">
+              <TabsTrigger 
+                value="overview" 
+                className="flex items-center gap-2 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-lg data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-red-300 font-medium"
+              >
+                <BarChart3 className="h-4 w-4" />
+                Overview
+              </TabsTrigger>
+              <TabsTrigger 
+                value="backups" 
+                className="flex items-center gap-2 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-lg data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-red-300 font-medium"
+              >
+                <Database className="h-4 w-4" />
+                Backups
+              </TabsTrigger>
+              <TabsTrigger 
+                value="procedures" 
+                className="flex items-center gap-2 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-lg data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-red-300 font-medium"
+              >
+                <Settings className="h-4 w-4" />
+                Procedures
+              </TabsTrigger>
+              <TabsTrigger 
+                value="storage" 
+                className="flex items-center gap-2 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-lg data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-red-300 font-medium"
+              >
+                <Cloud className="h-4 w-4" />
+                Storage
+              </TabsTrigger>
+              <TabsTrigger 
+                value="settings" 
+                className="flex items-center gap-2 p-4 rounded-lg transition-all duration-300 hover:bg-white hover:shadow-lg data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-red-300 font-medium"
+              >
+                <Zap className="h-4 w-4" />
+                Settings
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -907,7 +934,9 @@ export const DisasterRecoveryDashboard: React.FC = () => {
             </CardContent>
           </Card>
         </TabsContent>
-      </Tabs>
-    </div>
+        </Tabs>
+        </div>
+      </CardContent>
+    </Card>
   );
 };

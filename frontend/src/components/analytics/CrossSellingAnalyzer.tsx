@@ -135,14 +135,19 @@ const CrossSellingAnalyzer: React.FC<CrossSellingAnalyzerProps> = ({
 
   if (loading) {
     return (
-      <Card>
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50">
         <CardHeader>
-          <CardTitle>Cross-Selling Analyzer</CardTitle>
+          <CardTitle className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+              <ShoppingCart className="h-4 w-4 text-white" />
+            </div>
+            <span>Cross-Selling Analyzer</span>
+          </CardTitle>
           <CardDescription>Analyzing cross-selling opportunities...</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gradient-to-r from-blue-500 to-indigo-600"></div>
           </div>
         </CardContent>
       </Card>
@@ -151,15 +156,20 @@ const CrossSellingAnalyzer: React.FC<CrossSellingAnalyzerProps> = ({
 
   if (error) {
     return (
-      <Card>
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-pink-100/50">
         <CardHeader>
-          <CardTitle>Cross-Selling Analyzer</CardTitle>
+          <CardTitle className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg">
+              <ShoppingCart className="h-4 w-4 text-white" />
+            </div>
+            <span>Cross-Selling Analyzer</span>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Alert>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
-          <Button onClick={fetchCrossSellingOpportunities} className="mt-4">
+          <Button onClick={fetchCrossSellingOpportunities} className="mt-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl">
             Retry
           </Button>
         </CardContent>
@@ -171,10 +181,12 @@ const CrossSellingAnalyzer: React.FC<CrossSellingAnalyzerProps> = ({
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50 hover:shadow-xl transition-all duration-300">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Lightbulb className="h-5 w-5 text-blue-600" />
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+                <Lightbulb className="h-5 w-5 text-white" />
+              </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Opportunities</p>
                 <p className="text-2xl font-bold">{opportunitySummary.totalOpportunities}</p>
@@ -183,10 +195,12 @@ const CrossSellingAnalyzer: React.FC<CrossSellingAnalyzerProps> = ({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-teal-100/50 hover:shadow-xl transition-all duration-300">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Target className="h-5 w-5 text-green-600" />
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
+                <Target className="h-5 w-5 text-white" />
+              </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">High Confidence</p>
                 <p className="text-2xl font-bold text-green-600">{opportunitySummary.highConfidence}</p>
@@ -195,10 +209,12 @@ const CrossSellingAnalyzer: React.FC<CrossSellingAnalyzerProps> = ({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50 hover:shadow-xl transition-all duration-300">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <TrendingUp className="h-5 w-5 text-purple-600" />
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+                <TrendingUp className="h-5 w-5 text-white" />
+              </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">High Lift</p>
                 <p className="text-2xl font-bold text-purple-600">{opportunitySummary.highLift}</p>
@@ -207,10 +223,12 @@ const CrossSellingAnalyzer: React.FC<CrossSellingAnalyzerProps> = ({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-cyan-50 to-blue-100/50 hover:shadow-xl transition-all duration-300">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <DollarSign className="h-5 w-5 text-blue-600" />
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center shadow-lg">
+                <DollarSign className="h-5 w-5 text-white" />
+              </div>
               <div>
                 <p className="text-sm font-medium text-gray-600">Potential Revenue</p>
                 <p className="text-2xl font-bold">{formatCurrency(opportunitySummary.totalPotentialRevenue)}</p>
@@ -221,10 +239,12 @@ const CrossSellingAnalyzer: React.FC<CrossSellingAnalyzerProps> = ({
       </div>
 
       {/* Controls */}
-      <Card>
+      <Card className="border-0 shadow-lg bg-gradient-to-r from-slate-50 to-slate-100/80 hover:shadow-xl transition-all duration-300">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <ShoppingCart className="h-5 w-5" />
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+              <ShoppingCart className="h-4 w-4 text-white" />
+            </div>
             <span>Cross-Selling Analysis Controls</span>
           </CardTitle>
         </CardHeader>
@@ -283,9 +303,14 @@ const CrossSellingAnalyzer: React.FC<CrossSellingAnalyzerProps> = ({
       </Card>
 
       {/* Visualization */}
-      <Card>
+      <Card className="border-0 shadow-lg bg-white hover:shadow-xl transition-all duration-300">
         <CardHeader>
-          <CardTitle>Opportunity Visualization</CardTitle>
+          <CardTitle className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
+              <Target className="h-4 w-4 text-white" />
+            </div>
+            <span>Opportunity Visualization</span>
+          </CardTitle>
           <CardDescription>
             Confidence vs Lift Ratio (bubble size = expected revenue)
           </CardDescription>
@@ -332,9 +357,14 @@ const CrossSellingAnalyzer: React.FC<CrossSellingAnalyzerProps> = ({
       </Card>
 
       {/* Opportunities List */}
-      <Card>
+      <Card className="border-0 shadow-lg bg-white hover:shadow-xl transition-all duration-300">
         <CardHeader>
-          <CardTitle>Cross-Selling Opportunities</CardTitle>
+          <CardTitle className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+              <ShoppingCart className="h-4 w-4 text-white" />
+            </div>
+            <span>Cross-Selling Opportunities</span>
+          </CardTitle>
           <CardDescription>
             Product bundle recommendations with market basket analysis
           </CardDescription>
@@ -344,7 +374,7 @@ const CrossSellingAnalyzer: React.FC<CrossSellingAnalyzerProps> = ({
             {sortedOpportunities.map((opportunity, index) => (
               <div
                 key={`${opportunity.primary_category_id}-${opportunity.recommended_category_id}`}
-                className="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                className="border-0 rounded-lg p-4 bg-gradient-to-r from-slate-50 to-slate-100/80 hover:shadow-lg cursor-pointer transition-all duration-300"
                 onClick={() => onOpportunitySelect?.(opportunity)}
               >
                 <div className="flex items-center justify-between mb-3">
@@ -395,7 +425,7 @@ const CrossSellingAnalyzer: React.FC<CrossSellingAnalyzerProps> = ({
                   </div>
                 </div>
 
-                <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                <div className="mt-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-gradient-to-b from-blue-500 to-indigo-600">
                   <p className="text-sm text-blue-800">
                     <strong>Insight:</strong> Customers who buy {opportunity.primary_category_name} are{' '}
                     <strong>{opportunity.lift_ratio.toFixed(1)}x more likely</strong> to also buy{' '}

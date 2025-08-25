@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useLanguage } from '../hooks/useLanguage';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -42,6 +43,7 @@ import ForecastingAnalyticsPage from './ForecastingAnalytics';
 
 const Reports: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('sales');
   const [globalFilters, setGlobalFilters] = useState({
     start_date: '',
@@ -88,9 +90,9 @@ const Reports: React.FC = () => {
               <BarChart3 className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold tracking-tight text-foreground">Reports & Analytics</h1>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">{t('reports.title')}</h1>
               <p className="text-muted-foreground text-lg">
-                Comprehensive insights into sales, inventory, and customer performance
+                {t('reports.comprehensive_insights')}
               </p>
             </div>
           </div>
@@ -98,19 +100,19 @@ const Reports: React.FC = () => {
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 gap-1">
             <Activity className="h-3 w-3" />
-            Live Data
+            {t('reports.live_data')}
           </Badge>
           <Button onClick={handleRefreshTab} variant="outline" size="sm" className="gap-2">
             <RefreshCw className="h-4 w-4" />
-            Refresh Current
+            {t('reports.refresh_current')}
           </Button>
           <Button onClick={handleRefreshAll} variant="outline" size="sm" className="gap-2">
             <Zap className="h-4 w-4" />
-            Refresh All
+            {t('reports.refresh_all')}
           </Button>
           <Button variant="default" size="sm" className="gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700">
             <Share className="h-4 w-4" />
-            Export
+            {t('reports.export')}
           </Button>
         </div>
       </div>
@@ -124,16 +126,16 @@ const Reports: React.FC = () => {
                 <Filter className="h-5 w-5 text-white" />
               </div>
               <div>
-                <CardTitle className="text-xl font-semibold text-foreground">Global Filters</CardTitle>
+                <CardTitle className="text-xl font-semibold text-foreground">{t('reports.global_filters')}</CardTitle>
                 <CardDescription className="text-muted-foreground">
-                  Configure filters applied across all report sections
+                  {t('reports.global_filters_desc')}
                 </CardDescription>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                 <Calendar className="h-3 w-3 mr-1" />
-                Smart Filtering
+                {t('reports.smart_filtering')}
               </Badge>
               <Button variant="ghost" size="sm">
                 <Eye className="h-4 w-4" />
@@ -168,8 +170,8 @@ const Reports: React.FC = () => {
                     <LineChart className="h-4 w-4 text-indigo-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-medium text-sm">Sales Reports</div>
-                    <div className="text-xs text-muted-foreground">Revenue & Performance</div>
+                    <div className="font-medium text-sm">{t('reports.sales')}</div>
+                    <div className="text-xs text-muted-foreground">{t('reports.sales_analytics_desc')}</div>
                   </div>
                 </TabsTrigger>
                 
@@ -185,8 +187,8 @@ const Reports: React.FC = () => {
                     <Package className="h-4 w-4 text-purple-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-medium text-sm">Inventory Reports</div>
-                    <div className="text-xs text-muted-foreground">Stock & Valuation</div>
+                    <div className="font-medium text-sm">{t('reports.inventory')}</div>
+                    <div className="text-xs text-muted-foreground">{t('reports.inventory_analytics_desc')}</div>
                   </div>
                 </TabsTrigger>
                 
@@ -202,8 +204,8 @@ const Reports: React.FC = () => {
                     <Users className="h-4 w-4 text-pink-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-medium text-sm">Customer Reports</div>
-                    <div className="text-xs text-muted-foreground">Behavior & Analytics</div>
+                    <div className="font-medium text-sm">{t('reports.customers')}</div>
+                    <div className="text-xs text-muted-foreground">{t('reports.customer_analytics_desc')}</div>
                   </div>
                 </TabsTrigger>
               </TabsList>
@@ -219,8 +221,8 @@ const Reports: React.FC = () => {
                       <LineChart className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-foreground">Sales Analytics</h3>
-                      <p className="text-sm text-muted-foreground">Track revenue trends and sales performance</p>
+                      <h3 className="text-xl font-semibold text-foreground">{t('reports.sales_analytics')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('reports.sales_analytics_desc')}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -230,7 +232,7 @@ const Reports: React.FC = () => {
                     </Badge>
                     <Button variant="outline" size="sm">
                       <Download className="h-4 w-4 mr-2" />
-                      Export Sales Data
+                      {t('reports.export_sales_data')}
                     </Button>
                   </div>
                 </div>
@@ -247,18 +249,18 @@ const Reports: React.FC = () => {
                       <Package className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-foreground">Inventory Analytics</h3>
-                      <p className="text-sm text-muted-foreground">Monitor stock levels and inventory valuation</p>
+                      <h3 className="text-xl font-semibold text-foreground">{t('reports.inventory_analytics')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('reports.inventory_analytics_desc')}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
                       <Target className="h-3 w-3 mr-1" />
-                      85% Efficiency
+                      85% {t('reports.efficiency')}
                     </Badge>
                     <Button variant="outline" size="sm">
                       <Download className="h-4 w-4 mr-2" />
-                      Export Inventory
+                      {t('reports.export_inventory')}
                     </Button>
                   </div>
                 </div>
@@ -275,18 +277,18 @@ const Reports: React.FC = () => {
                       <Users className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-foreground">Customer Analytics</h3>
-                      <p className="text-sm text-muted-foreground">Analyze customer behavior and engagement</p>
+                      <h3 className="text-xl font-semibold text-foreground">{t('reports.customer_analytics')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('reports.customer_analytics_desc')}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className="bg-pink-50 text-pink-700 border-pink-200">
                       <Activity className="h-3 w-3 mr-1" />
-                      92% Satisfaction
+                      92% {t('reports.satisfaction')}
                     </Badge>
                     <Button variant="outline" size="sm">
                       <Download className="h-4 w-4 mr-2" />
-                      Export Customer Data
+                      {t('reports.export_customer_data')}
                     </Button>
                   </div>
                 </div>
@@ -300,8 +302,8 @@ const Reports: React.FC = () => {
       {/* Advanced Analytics Features Section */}
       <div className="space-y-6">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-2">Advanced Analytics Suite</h2>
-          <p className="text-muted-foreground">Powerful analytics tools for comprehensive business intelligence</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">{t('reports.advanced_analytics_suite')}</h2>
+          <p className="text-muted-foreground">{t('reports.powerful_analytics_tools')}</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -312,27 +314,27 @@ const Reports: React.FC = () => {
                   <Wrench className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-semibold">Report Builder</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{t('reports.report_builder')}</CardTitle>
                   <CardDescription className="text-base">
-                    Drag-and-drop report creation
+                    {t('reports.drag_drop_report_creation')}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-blue-100 text-blue-700">Drag & Drop</Badge>
-                <Badge variant="secondary" className="bg-indigo-100 text-indigo-700">Visual Builder</Badge>
+                <Badge variant="secondary" className="bg-blue-100 text-blue-700">{t('reports.drag_drop')}</Badge>
+                <Badge variant="secondary" className="bg-indigo-100 text-indigo-700">{t('reports.visual_builder')}</Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                Build sophisticated reports with intuitive drag-and-drop interface and real-time preview.
+                {t('reports.report_builder_desc')}
               </p>
               <Button 
                 className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
                 onClick={() => navigate('/reports/builder')}
               >
                 <Wrench className="h-4 w-4 mr-2" />
-                Open Report Builder
+                {t('reports.report_builder')}
               </Button>
             </CardContent>
           </Card>
@@ -344,27 +346,27 @@ const Reports: React.FC = () => {
                   <BarChart3 className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-semibold">Advanced Charts</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{t('reports.advanced_charts')}</CardTitle>
                   <CardDescription className="text-base">
-                    Interactive data visualizations
+                    {t('reports.interactive_data_visualizations')}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-green-100 text-green-700">Interactive</Badge>
-                <Badge variant="secondary" className="bg-teal-100 text-teal-700">Heatmaps</Badge>
+                <Badge variant="secondary" className="bg-green-100 text-green-700">{t('reports.interactive')}</Badge>
+                <Badge variant="secondary" className="bg-teal-100 text-teal-700">{t('reports.heatmaps')}</Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                Explore data with interactive charts, heatmaps, and real-time visualizations.
+                {t('reports.advanced_charts_desc')}
               </p>
               <Button 
                 className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700"
                 onClick={() => navigate('/reports/charts')}
               >
                 <BarChart3 className="h-4 w-4 mr-2" />
-                Explore Charts
+                {t('reports.advanced_charts')}
               </Button>
             </CardContent>
           </Card>
@@ -376,27 +378,27 @@ const Reports: React.FC = () => {
                   <TrendingUp className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-semibold">Forecasting Analytics</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{t('reports.forecasting_analytics')}</CardTitle>
                   <CardDescription className="text-base">
-                    AI-powered demand predictions
+                    {t('reports.ai_powered_demand_prediction')}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-purple-100 text-purple-700">AI Powered</Badge>
-                <Badge variant="secondary" className="bg-violet-100 text-violet-700">Predictions</Badge>
+                <Badge variant="secondary" className="bg-purple-100 text-purple-700">{t('reports.ai_optimized')}</Badge>
+                <Badge variant="secondary" className="bg-violet-100 text-violet-700">{t('reports.predictions_trends')}</Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                Advanced demand forecasting with machine learning algorithms and confidence intervals.
+                {t('reports.forecasting_analytics_description')}
               </p>
               <Button 
                 className="w-full bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700"
                 onClick={() => navigate('/reports/forecasting')}
               >
                 <TrendingUp className="h-4 w-4 mr-2" />
-                View Forecasts
+                {t('reports.forecasting_analytics')}
               </Button>
             </CardContent>
           </Card>
@@ -408,27 +410,27 @@ const Reports: React.FC = () => {
                   <Package className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-semibold">Stock Optimization</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{t('reports.stock_optimization')}</CardTitle>
                   <CardDescription className="text-base">
-                    Inventory optimization engine
+                    {t('reports.intelligent_inventory_management')}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-orange-100 text-orange-700">Optimization</Badge>
-                <Badge variant="secondary" className="bg-red-100 text-red-700">Recommendations</Badge>
+                <Badge variant="secondary" className="bg-orange-100 text-orange-700">{t('reports.optimization_filters')}</Badge>
+                <Badge variant="secondary" className="bg-red-100 text-red-700">{t('reports.recommendations')}</Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                AI-powered inventory optimization with reorder recommendations and cost analysis.
+                {t('reports.stock_optimization_description')}
               </p>
               <Button 
                 className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
                 onClick={() => navigate('/reports/stock-optimization')}
               >
                 <Package className="h-4 w-4 mr-2" />
-                Optimize Stock
+                {t('reports.stock_optimization')}
               </Button>
             </CardContent>
           </Card>
@@ -440,27 +442,27 @@ const Reports: React.FC = () => {
                   <Zap className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-semibold">Cache Management</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{t('reports.cache_management')}</CardTitle>
                   <CardDescription className="text-base">
-                    Performance monitoring
+                    {t('reports.monitor_manage_analytics_caching')}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-cyan-100 text-cyan-700">Performance</Badge>
-                <Badge variant="secondary" className="bg-blue-100 text-blue-700">Monitoring</Badge>
+                <Badge variant="secondary" className="bg-cyan-100 text-cyan-700">{t('reports.performance')}</Badge>
+                <Badge variant="secondary" className="bg-blue-100 text-blue-700">{t('reports.overview')}</Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                Monitor Redis cache performance, hit rates, and optimize system performance.
+                {t('reports.cache_management_description')}
               </p>
               <Button 
                 className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
                 onClick={() => navigate('/reports/cache-management')}
               >
                 <Zap className="h-4 w-4 mr-2" />
-                Manage Cache
+                {t('reports.cache_management')}
               </Button>
             </CardContent>
           </Card>
@@ -472,27 +474,27 @@ const Reports: React.FC = () => {
                   <Target className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-semibold">KPI Dashboard</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{t('reports.kpi_dashboard')}</CardTitle>
                   <CardDescription className="text-base">
-                    Real-time business metrics
+                    {t('reports.kpi_dashboard_desc')}
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">Real-time</Badge>
+                <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">{t('reports.real_time')}</Badge>
                 <Badge variant="secondary" className="bg-green-100 text-green-700">KPIs</Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                Monitor key performance indicators with real-time updates and trend analysis.
+                {t('reports.kpi_dashboard_desc')}
               </p>
               <Button 
                 className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700"
                 onClick={() => navigate('/dashboard')}
               >
                 <Target className="h-4 w-4 mr-2" />
-                View KPIs
+                {t('reports.kpi_dashboard')}
               </Button>
             </CardContent>
           </Card>
@@ -504,6 +506,7 @@ const Reports: React.FC = () => {
 
 // Individual route components
 const SalesReportsRoute: React.FC = () => {
+  const { t } = useLanguage();
   const [globalFilters, setGlobalFilters] = useState({
     start_date: '',
     end_date: '',
@@ -511,26 +514,62 @@ const SalesReportsRoute: React.FC = () => {
   });
 
   return (
-    <div className="container mx-auto p-6 space-y-6" dir="rtl">
-      <div className="flex items-center gap-3 mb-6">
-        <BarChart3 className="h-8 w-8 text-blue-600" />
-        <div>
-          <h1 className="text-3xl font-bold">گزارشات فروش</h1>
-          <p className="text-muted-foreground">تحلیل و بررسی فروش محصولات</p>
+    <div className="container mx-auto p-6 space-y-8">
+      {/* Enhanced Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+              <BarChart3 className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">{t('reports.sales_reports')}</h1>
+              <p className="text-muted-foreground text-lg">
+                {t('reports.sales_reports_description')}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 gap-1">
+            <Activity className="h-3 w-3" />
+            داده‌های زنده
+          </Badge>
+          <Button variant="outline" size="sm" className="gap-2">
+            <RefreshCw className="h-4 w-4" />
+            بروزرسانی
+          </Button>
+          <Button variant="default" size="sm" className="gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700">
+            <Download className="h-4 w-4" />
+            خروجی
+          </Button>
         </div>
       </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            فیلترهای گزارش
-          </CardTitle>
-          <CardDescription>
-            فیلترهای اعمال شده به گزارشات فروش
-          </CardDescription>
+
+      {/* Enhanced Global Filters */}
+      <Card className="border-0 shadow-lg bg-gradient-to-r from-indigo-50/80 to-purple-50/80">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center">
+                <Filter className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-foreground">فیلترهای گزارش</CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  تنظیمات فیلتر برای گزارشات فروش
+                </CardDescription>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
+                <Calendar className="h-3 w-3 mr-1" />
+                فیلتر هوشمند
+              </Badge>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="bg-white rounded-lg shadow-sm border">
           <ReportFilters
             filters={globalFilters}
             onFiltersChange={setGlobalFilters}
@@ -538,12 +577,16 @@ const SalesReportsRoute: React.FC = () => {
         </CardContent>
       </Card>
 
-      <SalesReports filters={globalFilters} />
+      {/* Sales Reports with Enhanced Background */}
+      <div className="bg-gradient-to-br from-indigo-50/30 to-white rounded-xl p-6 shadow-sm">
+        <SalesReports filters={globalFilters} />
+      </div>
     </div>
   );
 };
 
 const InventoryReportsRoute: React.FC = () => {
+  const { t } = useLanguage();
   const [globalFilters, setGlobalFilters] = useState({
     start_date: '',
     end_date: '',
@@ -551,26 +594,62 @@ const InventoryReportsRoute: React.FC = () => {
   });
 
   return (
-    <div className="container mx-auto p-6 space-y-6" dir="rtl">
-      <div className="flex items-center gap-3 mb-6">
-        <Package className="h-8 w-8 text-green-600" />
-        <div>
-          <h1 className="text-3xl font-bold">گزارشات موجودی</h1>
-          <p className="text-muted-foreground">تحلیل و بررسی موجودی انبار</p>
+    <div className="container mx-auto p-6 space-y-8">
+      {/* Enhanced Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-green-500 via-teal-500 to-emerald-500 flex items-center justify-center shadow-lg">
+              <Package className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">{t('reports.inventory_reports')}</h1>
+              <p className="text-muted-foreground text-lg">
+                {t('reports.inventory_reports_description')}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 gap-1">
+            <Activity className="h-3 w-3" />
+            داده‌های زنده
+          </Badge>
+          <Button variant="outline" size="sm" className="gap-2">
+            <RefreshCw className="h-4 w-4" />
+            بروزرسانی
+          </Button>
+          <Button variant="default" size="sm" className="gap-2 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700">
+            <Download className="h-4 w-4" />
+            خروجی
+          </Button>
         </div>
       </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            فیلترهای گزارش
-          </CardTitle>
-          <CardDescription>
-            فیلترهای اعمال شده به گزارشات موجودی
-          </CardDescription>
+
+      {/* Enhanced Global Filters */}
+      <Card className="border-0 shadow-lg bg-gradient-to-r from-green-50/80 to-teal-50/80">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+                <Filter className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-foreground">{t('reports.report_filters')}</CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  {t('reports.inventory_filters_description')}
+                </CardDescription>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                <Calendar className="h-3 w-3 mr-1" />
+                فیلتر هوشمند
+              </Badge>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="bg-white rounded-lg shadow-sm border">
           <ReportFilters
             filters={globalFilters}
             onFiltersChange={setGlobalFilters}
@@ -578,12 +657,16 @@ const InventoryReportsRoute: React.FC = () => {
         </CardContent>
       </Card>
 
-      <InventoryReports filters={globalFilters} />
+      {/* Inventory Reports with Enhanced Background */}
+      <div className="bg-gradient-to-br from-green-50/30 to-white rounded-xl p-6 shadow-sm">
+        <InventoryReports filters={globalFilters} />
+      </div>
     </div>
   );
 };
 
 const CustomerReportsRoute: React.FC = () => {
+  const { t } = useLanguage();
   const [globalFilters, setGlobalFilters] = useState({
     start_date: '',
     end_date: '',
@@ -591,26 +674,62 @@ const CustomerReportsRoute: React.FC = () => {
   });
 
   return (
-    <div className="container mx-auto p-6 space-y-6" dir="rtl">
-      <div className="flex items-center gap-3 mb-6">
-        <Users className="h-8 w-8 text-purple-600" />
-        <div>
-          <h1 className="text-3xl font-bold">گزارشات مشتریان</h1>
-          <p className="text-muted-foreground">تحلیل و بررسی رفتار مشتریان</p>
+    <div className="container mx-auto p-6 space-y-8">
+      {/* Enhanced Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 flex items-center justify-center shadow-lg">
+              <Users className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight text-foreground">{t('reports.customer_reports')}</h1>
+              <p className="text-muted-foreground text-lg">
+                {t('reports.customer_reports_description')}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 gap-1">
+            <Activity className="h-3 w-3" />
+            داده‌های زنده
+          </Badge>
+          <Button variant="outline" size="sm" className="gap-2">
+            <RefreshCw className="h-4 w-4" />
+            بروزرسانی
+          </Button>
+          <Button variant="default" size="sm" className="gap-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700">
+            <Download className="h-4 w-4" />
+            خروجی
+          </Button>
         </div>
       </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            فیلترهای گزارش
-          </CardTitle>
-          <CardDescription>
-            فیلترهای اعمال شده به گزارشات مشتریان
-          </CardDescription>
+
+      {/* Enhanced Global Filters */}
+      <Card className="border-0 shadow-lg bg-gradient-to-r from-purple-50/80 to-pink-50/80">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                <Filter className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-foreground">{t('reports.report_filters')}</CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  {t('reports.customer_filters_description')}
+                </CardDescription>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                <Calendar className="h-3 w-3 mr-1" />
+                فیلتر هوشمند
+              </Badge>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="bg-white rounded-lg shadow-sm border">
           <ReportFilters
             filters={globalFilters}
             onFiltersChange={setGlobalFilters}
@@ -618,7 +737,10 @@ const CustomerReportsRoute: React.FC = () => {
         </CardContent>
       </Card>
 
-      <CustomerReports filters={globalFilters} />
+      {/* Customer Reports with Enhanced Background */}
+      <div className="bg-gradient-to-br from-purple-50/30 to-white rounded-xl p-6 shadow-sm">
+        <CustomerReports filters={globalFilters} />
+      </div>
     </div>
   );
 };
