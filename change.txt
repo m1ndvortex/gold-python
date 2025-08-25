@@ -1,0 +1,67 @@
+Security (Go Full OAuth2)
+
+Adopt full OAuth2 using a standard provider/library (e.g., Auth0, Keycloak, OAuthlib).
+
+Access Token: short-lived JWT (5–15 minutes).
+
+Refresh Token: long-lived, used to obtain new access tokens.
+
+Implement revocation, rotation, scopes/roles/permissions, and (if applicable) user consent flows.
+
+Maintain audit logs for token events (issuance, rotation, revocation, failed refresh).
+
+Inventory & Categories — Professional Enhancements
+
+Keep unlimited nested subcategories.
+
+Add attributes & tags (e.g., “Material: Gold”, “Size: Large”, “Vendor: X”) for filtering/searching and reporting.
+
+Add unique identifiers for every item (SKU/Barcode/QR) to support large-scale operations and fast lookups.
+
+Ensure attributes are schema-driven (define attribute types: text/number/date/enum) and assignable per category.
+
+Invoice Logic — Professional Enhancements
+
+Keep auto inventory deduction on invoice create and automatic restore on invoice delete/void.
+
+Keep manual price entry, but add:
+
+Default pricing with override: invoice pre-fills item price from inventory; user can override.
+
+Cost vs. Sale Price tracking: store both for margin/profit analytics.
+
+Support draft → approved workflow (optional): only approved invoices affect stock and accounting.
+
+Gold-Specific Invoices (سود و اجرت)
+
+Continue conditional fields for gold invoices: سود and اجرت appear only when invoice type = Gold.
+
+Display these fields on the invoice, and keep final price entered manually.
+
+Also store سود & اجرت as separate accounting values so they appear in journals/reports (not just on the printed invoice).
+
+Accounting Expansion — Professional Enhancements
+
+Implement/ensure double-entry accounting: every business event posts balanced debit/credit lines.
+
+Include:
+
+حساب‌های تفصیلی و دفتر معین
+
+مدیریت کامل چک‌ها و حساب‌ها و تاریخ معاملات
+
+بهبود حساب‌های اقساطی و ...
+
+Add reconciliation features (match invoices with checks/bank deposits).
+
+Ensure multi-period closing/locking and edit history/audit trail for all postings.
+
+Comprehensive Testing — Professional Enhancements
+
+Create end-to-end tests for all tabs, sub-tabs, sub-sections, and routes covering calculations and side effects.
+
+Add automated test coverage reports (e.g., pytest + coverage) with target thresholds.
+
+Add load tests for invoices & accounting (simulate ≥100 concurrent users).
+
+Include regression test suites for inventory movements, pricing overrides, and gold-specific logic.

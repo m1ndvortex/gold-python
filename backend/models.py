@@ -19,6 +19,8 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     role = relationship("Role", back_populates="users")
+    oauth2_tokens = relationship("OAuth2Token", back_populates="user")
+    audit_logs = relationship("OAuth2AuditLog", back_populates="user")
 
 class Role(Base):
     __tablename__ = "roles"
@@ -30,6 +32,54 @@ class Role(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     users = relationship("User", back_populates="role")
+
+class OAuth2Token(Base):
+    __tablename__ = "oauth2_tokens"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    access_token_hash = Column(String(255), nullable=False)
+    refresh_token_hash = Column(String(255), nullable=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    refresh_expires_at = Column(DateTime(timezone=True), nullable=False)
+    scopes = Column(JSONB, nullable=False, default=[])
+    revoked = Column(Boolean, default=False)
+    revoked_at = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    user = relationship("User", back_populates="oauth2_tokens")
+    
+    __table_args__ = (
+        Index('idx_oauth2_tokens_user', 'user_id'),
+        Index('idx_oauth2_tokens_access_hash', 'access_token_hash'),
+        Index('idx_oauth2_tokens_refresh_hash', 'refresh_token_hash'),
+        Index('idx_oauth2_tokens_expires', 'expires_at'),
+        Index('idx_oauth2_tokens_revoked', 'revoked'),
+    )
+
+class OAuth2AuditLog(Base):
+    __tablename__ = "oauth2_audit_logs"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"))
+    event_type = Column(String(50), nullable=False)
+    event_category = Column(String(50), nullable=False)  # token, security, authentication
+    details = Column(JSONB, default={})
+    ip_address = Column(String(45))  # IPv6 compatible
+    user_agent = Column(Text)
+    severity = Column(String(20), default="info")  # info, warning, high, critical
+    timestamp = Column(DateTime(timezone=True), server_default=func.now())
+    
+    user = relationship("User", back_populates="audit_logs")
+    
+    __table_args__ = (
+        Index('idx_oauth2_audit_user', 'user_id'),
+        Index('idx_oauth2_audit_event_type', 'event_type'),
+        Index('idx_oauth2_audit_category', 'event_category'),
+        Index('idx_oauth2_audit_timestamp', 'timestamp'),
+        Index('idx_oauth2_audit_severity', 'severity'),
+        Index('idx_oauth2_audit_ip', 'ip_address'),
+    )
 
 class Category(Base):
     __tablename__ = "categories"

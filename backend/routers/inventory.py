@@ -1,15 +1,18 @@
-from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
+from typing import List, Optional, Dict, Any
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form, Query
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import and_, or_, func
 from database import get_db
 import models
 import schemas
+from schemas_inventory_universal import *
 from auth import get_current_active_user
+from services.inventory_service import UniversalInventoryService
 import os
 import uuid
 from pathlib import Path
 import json
+from datetime import datetime
 
 router = APIRouter(prefix="/inventory", tags=["inventory"])
 
@@ -420,7 +423,388 @@ async def create_category_from_template(
     
     return db_category
 
-# Inventory Item Management Endpoints
+# Universal Inventory Management Endpoints
+
+@router.post("/universal/items", response_model=UniversalInventoryItemWithCategory)
+async def create_universal_inventory_item(
+    item: UniversalInventoryItemCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Create a new universal inventory item with enhanced features"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        db_item = service.create_inventory_item(
+            item_data=item.model_dump(),
+            user_id=str(current_user.id)
+        )
+        
+        # Load with category for response
+        from models_universal import InventoryItem as UniversalInventoryItemModel, Category as UniversalCategoryModel
+        db_item = db.query(UniversalInventoryItemModel).options(
+            joinedload(UniversalInventoryItemModel.category)
+        ).filter(UniversalInventoryItemModel.id == db_item.id).first()
+        
+        return db_item
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.put("/universal/items/{item_id}", response_model=UniversalInventoryItemWithCategory)
+async def update_universal_inventory_item(
+    item_id: str,
+    item_update: UniversalInventoryItemUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Update a universal inventory item"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        db_item = service.update_inventory_item(
+            item_id=item_id,
+            update_data=item_update.model_dump(exclude_unset=True),
+            user_id=str(current_user.id)
+        )
+        
+        # Load with category for response
+        from models_universal import InventoryItem as UniversalInventoryItemModel
+        db_item = db.query(UniversalInventoryItemModel).options(
+            joinedload(UniversalInventoryItemModel.category)
+        ).filter(UniversalInventoryItemModel.id == item_id).first()
+        
+        return db_item
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.post("/universal/search", response_model=InventorySearchResponse)
+async def search_universal_inventory(
+    search_request: InventorySearchRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Advanced search for inventory items with filtering and pagination"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        items, total_count = service.search_inventory_items(
+            query=search_request.filters.query,
+            category_ids=[str(cid) for cid in search_request.filters.category_ids] if search_request.filters.category_ids else None,
+            attributes_filter=search_request.filters.attributes_filter,
+            tags_filter=search_request.filters.tags_filter,
+            sku_filter=search_request.filters.sku_filter,
+            barcode_filter=search_request.filters.barcode_filter,
+            stock_level_filter={
+                "min_stock": search_request.filters.min_stock,
+                "max_stock": search_request.filters.max_stock,
+                "low_stock_only": search_request.filters.low_stock_only
+            },
+            price_range={
+                "min_price": search_request.filters.min_cost_price,
+                "max_price": search_request.filters.max_cost_price
+            },
+            business_type=search_request.filters.business_type,
+            include_inactive=search_request.filters.include_inactive,
+            sort_by=search_request.sort_by,
+            sort_order=search_request.sort_order,
+            limit=search_request.limit,
+            offset=search_request.offset
+        )
+        
+        return InventorySearchResponse(
+            items=items,
+            total_count=total_count,
+            page_info={
+                "page": (search_request.offset // search_request.limit) + 1,
+                "per_page": search_request.limit,
+                "total_pages": (total_count + search_request.limit - 1) // search_request.limit,
+                "has_next": search_request.offset + search_request.limit < total_count,
+                "has_prev": search_request.offset > 0
+            },
+            filters_applied=search_request.filters
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.get("/universal/alerts/low-stock", response_model=StockAlertsResponse)
+async def get_universal_low_stock_alerts(
+    threshold_multiplier: float = Query(default=1.0, ge=0.1, le=5.0),
+    category_ids: Optional[List[str]] = Query(default=None),
+    business_type: Optional[str] = Query(default=None),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Get low stock alerts with enhanced filtering"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        alerts = service.get_low_stock_alerts(
+            threshold_multiplier=threshold_multiplier,
+            category_ids=category_ids,
+            business_type=business_type
+        )
+        
+        # Calculate summary
+        total_alerts = len(alerts)
+        critical_alerts = len([a for a in alerts if a['urgency_score'] >= 0.8])
+        warning_alerts = len([a for a in alerts if 0.5 <= a['urgency_score'] < 0.8])
+        total_potential_loss = sum(a['potential_lost_sales'] for a in alerts)
+        
+        return StockAlertsResponse(
+            alerts=[LowStockAlert(**alert) for alert in alerts],
+            summary={
+                "total_alerts": total_alerts,
+                "critical_alerts": critical_alerts,
+                "warning_alerts": warning_alerts,
+                "total_potential_loss": total_potential_loss,
+                "threshold_multiplier": threshold_multiplier
+            },
+            threshold_multiplier=threshold_multiplier
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.get("/universal/categories/tree", response_model=List[CategoryWithStats])
+async def get_universal_category_tree(
+    business_type: Optional[str] = Query(default=None),
+    include_stats: bool = Query(default=True),
+    max_depth: Optional[int] = Query(default=None, ge=1, le=10),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Get category tree with universal business support"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        tree = service.get_category_tree(
+            business_type=business_type,
+            include_stats=include_stats,
+            max_depth=max_depth
+        )
+        
+        return tree
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.post("/universal/categories", response_model=UniversalCategory)
+async def create_universal_category(
+    category: UniversalCategoryCreate,
+    business_type: Optional[str] = Query(default=None),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Create a new universal category with hierarchical support"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        db_category = service.create_category(
+            category_data=category,
+            user_id=str(current_user.id),
+            business_type=business_type
+        )
+        
+        return db_category
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.put("/universal/categories/{category_id}/hierarchy")
+async def update_category_hierarchy(
+    category_id: str,
+    hierarchy_update: CategoryHierarchyMove,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Update category hierarchy (move category to different parent)"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        updated_category = service.update_category_hierarchy(
+            category_id=category_id,
+            new_parent_id=str(hierarchy_update.new_parent_id) if hierarchy_update.new_parent_id else None,
+            user_id=str(current_user.id)
+        )
+        
+        return {"message": "Category hierarchy updated successfully", "category": updated_category}
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.get("/universal/movements", response_model=List[InventoryMovementWithDetails])
+async def get_inventory_movements(
+    item_id: Optional[str] = Query(default=None),
+    movement_types: Optional[List[str]] = Query(default=None),
+    date_from: Optional[datetime] = Query(default=None),
+    date_to: Optional[datetime] = Query(default=None),
+    limit: int = Query(default=100, ge=1, le=1000),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Get inventory movements with filtering"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        movements, total_count = service.get_inventory_movements(
+            item_id=item_id,
+            movement_types=movement_types,
+            date_from=date_from,
+            date_to=date_to,
+            limit=limit,
+            offset=offset
+        )
+        
+        return movements
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.post("/universal/units/convert", response_model=UnitConversionResponse)
+async def convert_units(
+    conversion_request: UnitConversionRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Convert quantity between different units of measure"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        converted_quantity = service.convert_units(
+            item_id=str(conversion_request.item_id),
+            from_unit=conversion_request.from_unit,
+            to_unit=conversion_request.to_unit,
+            quantity=conversion_request.quantity
+        )
+        
+        conversion_factor = converted_quantity / conversion_request.quantity if conversion_request.quantity != 0 else 1
+        
+        return UnitConversionResponse(
+            original_quantity=conversion_request.quantity,
+            original_unit=conversion_request.from_unit,
+            converted_quantity=converted_quantity,
+            converted_unit=conversion_request.to_unit,
+            conversion_factor=conversion_factor
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.get("/universal/analytics", response_model=InventoryAnalytics)
+async def get_inventory_analytics(
+    business_type: Optional[str] = Query(default=None),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Get comprehensive inventory analytics"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        summary = service.get_stock_alerts_summary(business_type=business_type)
+        
+        # Get additional analytics
+        from models_universal import InventoryItem as UniversalInventoryItemModel, Category as UniversalCategoryModel
+        total_items = db.query(UniversalInventoryItemModel).filter(
+            UniversalInventoryItemModel.is_active == True
+        ).count()
+        
+        total_categories = db.query(UniversalCategoryModel).filter(
+            UniversalCategoryModel.is_active == True
+        ).count()
+        
+        return InventoryAnalytics(
+            total_items=total_items,
+            total_categories=total_categories,
+            total_inventory_value=summary['total_inventory_value'],
+            low_stock_items=summary['low_stock_items'],
+            out_of_stock_items=summary['out_of_stock_items'],
+            top_categories_by_value=[],  # TODO: Implement
+            top_items_by_value=[],  # TODO: Implement
+            last_updated=datetime.utcnow()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.post("/universal/validate/sku", response_model=SKUValidationResponse)
+async def validate_sku(
+    validation_request: SKUValidationRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Validate SKU uniqueness and format"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        is_unique = not service._sku_exists(
+            validation_request.sku,
+            exclude_id=str(validation_request.exclude_item_id) if validation_request.exclude_item_id else None
+        )
+        
+        errors = []
+        if not validation_request.sku:
+            errors.append("SKU cannot be empty")
+        elif len(validation_request.sku) > 100:
+            errors.append("SKU cannot exceed 100 characters")
+        
+        if not is_unique:
+            errors.append("SKU already exists")
+        
+        return SKUValidationResponse(
+            is_valid=len(errors) == 0,
+            is_unique=is_unique,
+            suggested_sku=service._generate_sku() if not is_unique else None,
+            errors=errors
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.post("/universal/validate/barcode", response_model=BarcodeValidationResponse)
+async def validate_barcode(
+    validation_request: BarcodeValidationRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Validate barcode uniqueness and format"""
+    service = UniversalInventoryService(db)
+    
+    try:
+        is_unique = not service._barcode_exists(
+            validation_request.barcode,
+            exclude_id=str(validation_request.exclude_item_id) if validation_request.exclude_item_id else None
+        )
+        
+        errors = []
+        if not validation_request.barcode:
+            errors.append("Barcode cannot be empty")
+        elif len(validation_request.barcode) > 100:
+            errors.append("Barcode cannot exceed 100 characters")
+        
+        if not is_unique:
+            errors.append("Barcode already exists")
+        
+        # Basic format detection
+        format_detected = None
+        if validation_request.barcode.isdigit():
+            if len(validation_request.barcode) == 13:
+                format_detected = "EAN13"
+            elif len(validation_request.barcode) == 12:
+                format_detected = "UPC"
+        
+        return BarcodeValidationResponse(
+            is_valid=len(errors) == 0,
+            is_unique=is_unique,
+            format_detected=format_detected,
+            errors=errors
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+# Legacy Inventory Item Management Endpoints (for backward compatibility)
 
 @router.post("/items", response_model=schemas.InventoryItemWithCategory)
 async def create_inventory_item(

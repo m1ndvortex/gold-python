@@ -3,7 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database import engine, get_db
 import models
-from routers import auth, roles, inventory, customers, invoices, accounting, reports, settings, sms, analytics, profitability, customer_intelligence, inventory_intelligence, custom_reports, kpi_dashboard, analytics_data, chart_sharing, cost_analysis, category_intelligence, alerts, cache_management, backup_management, disaster_recovery, image_management
+from routers import auth, oauth2_auth, roles, inventory, customers, invoices, reports, settings, sms, analytics, profitability, customer_intelligence, inventory_intelligence, custom_reports, kpi_dashboard, analytics_data, chart_sharing, cost_analysis, category_intelligence, alerts, cache_management, backup_management, disaster_recovery, image_management, business_config
+try:
+    from routers import accounting
+    ACCOUNTING_AVAILABLE = True
+except ImportError:
+    ACCOUNTING_AVAILABLE = False
 
 # Create database tables safely
 try:
@@ -36,6 +41,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth.router)
+app.include_router(oauth2_auth.router)
 app.include_router(roles.router)
 app.include_router(inventory.router)
 app.include_router(customers.router)
@@ -59,6 +65,11 @@ app.include_router(cache_management.router)
 app.include_router(backup_management.router)
 app.include_router(disaster_recovery.router)
 app.include_router(image_management.router)
+app.include_router(business_config.router)
+
+# Include accounting router if available
+if ACCOUNTING_AVAILABLE:
+    app.include_router(accounting.router)
 
 @app.get("/")
 async def root():

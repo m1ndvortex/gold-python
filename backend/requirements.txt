@@ -48,3 +48,6 @@ PyYAML==6.0.1
 # Image processing dependencies
 Pillow==10.1.0
 aiofiles==23.2.1
+# OAuth2 and HTTP client dependencies
+httpx==0.25.2
+pydantic-settings==2.1.0
