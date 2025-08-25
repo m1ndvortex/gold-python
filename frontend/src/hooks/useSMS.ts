@@ -120,11 +120,15 @@ export const usePreviewSMSTemplate = () => {
 
 // SMS Campaign Hooks
 export const useSMSCampaigns = (params?: { status?: string }) => {
-  return useQuery({
-    queryKey: ['sms-campaigns', params],
-    queryFn: () => smsApi.campaigns.getCampaigns(params),
-    staleTime: 2 * 60 * 1000, // 2 minutes
-  });
+  return useQuery(
+    ['sms-campaigns', params],
+    () => smsApi.campaigns.getCampaigns(params),
+    {
+      staleTime: 3 * 60 * 1000, // 3 minutes - increased cache time
+      cacheTime: 5 * 60 * 1000, // 5 minutes garbage collection
+      refetchOnWindowFocus: false,
+    }
+  );
 };
 
 export const useSMSCampaign = (id: string) => {
@@ -267,20 +271,28 @@ export const useRetryFailedSMS = () => {
 
 // SMS History and Statistics Hooks
 export const useSMSHistory = (filters?: SMSHistoryFilters) => {
-  return useQuery({
-    queryKey: ['sms-history', filters],
-    queryFn: () => smsApi.history.getHistory(filters),
-    staleTime: 1 * 60 * 1000, // 1 minute
-  });
+  return useQuery(
+    ['sms-history', filters],
+    () => smsApi.history.getHistory(filters),
+    {
+      staleTime: 2 * 60 * 1000, // 2 minutes - increased cache time
+      cacheTime: 5 * 60 * 1000, // 5 minutes garbage collection
+      refetchOnWindowFocus: false,
+    }
+  );
 };
 
 export const useSMSOverallStats = () => {
-  return useQuery({
-    queryKey: ['sms-overall-stats'],
-    queryFn: () => smsApi.history.getOverallStats(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchInterval: 60000, // Refetch every minute for dashboard updates
-  });
+  return useQuery(
+    ['sms-overall-stats'],
+    () => smsApi.history.getOverallStats(),
+    {
+      staleTime: 2 * 60 * 1000, // 2 minutes - reduced for more frequent updates
+      cacheTime: 5 * 60 * 1000, // 5 minutes garbage collection
+      refetchInterval: 2 * 60 * 1000, // Refetch every 2 minutes instead of 1 minute
+      refetchOnWindowFocus: false, // Prevent unnecessary refetches
+    }
+  );
 };
 
 export const useSMSMessages = (params?: {
@@ -304,7 +316,7 @@ export const useSMSMessage = (id: string) => {
   });
 };
 
-// Combined hook for SMS dashboard data
+// Combined hook for SMS dashboard data with optimized loading
 export const useSMSDashboardData = () => {
   const overallStats = useSMSOverallStats();
   const recentCampaigns = useSMSCampaigns({ status: undefined });

@@ -30,7 +30,7 @@ from schemas import (
 )
 from services.sms_service import SMSService, SMSGatewayError
 
-router = APIRouter(prefix="/api/sms", tags=["SMS"])
+router = APIRouter(prefix="/sms", tags=["SMS"])
 
 # Template Management Endpoints
 

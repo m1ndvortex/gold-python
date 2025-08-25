@@ -442,27 +442,61 @@ class SMSService:
         return stats
     
     def get_overall_statistics(self) -> Dict[str, Any]:
-        """Get overall SMS statistics"""
-        campaigns = self.db.query(SMSCampaign).all()
-        messages = self.db.query(SMSMessage).all()
+        """Get overall SMS statistics with optimized queries"""
+        from sqlalchemy import func, case
         
-        total_sent = len([m for m in messages if m.status == 'sent'])
-        total_delivered = len([m for m in messages if m.delivery_status == 'delivered'])
+        # Optimized query for campaign count
+        total_campaigns = self.db.query(func.count(SMSCampaign.id)).scalar() or 0
+        
+        # Optimized query for message statistics
+        message_stats = self.db.query(
+            func.count(SMSMessage.id).label('total_messages'),
+            func.sum(case((SMSMessage.status == 'sent', 1), else_=0)).label('total_sent'),
+            func.sum(case((SMSMessage.delivery_status == 'delivered', 1), else_=0)).label('total_delivered')
+        ).first()
+        
+        total_messages = message_stats.total_messages or 0
+        total_sent = message_stats.total_sent or 0
+        total_delivered = message_stats.total_delivered or 0
         
         stats = {
-            'total_campaigns': len(campaigns),
+            'total_campaigns': total_campaigns,
             'total_messages_sent': total_sent,
             'total_messages_delivered': total_delivered,
-            'overall_success_rate': (total_sent / len(messages) * 100) if messages else 0,
-            'overall_delivery_rate': (total_delivered / len(messages) * 100) if messages else 0,
+            'overall_success_rate': (total_sent / total_messages * 100) if total_messages else 0,
+            'overall_delivery_rate': (total_delivered / total_messages * 100) if total_messages else 0,
             'recent_campaigns': []
         }
         
-        # Get recent campaign stats
-        recent_campaigns = sorted(campaigns, key=lambda c: c.created_at, reverse=True)[:5]
+        # Get recent campaign stats with optimized query
+        recent_campaigns = self.db.query(SMSCampaign).order_by(
+            SMSCampaign.created_at.desc()
+        ).limit(5).all()
+        
         for campaign in recent_campaigns:
-            campaign_stats = self.get_campaign_statistics(campaign.id)
-            if campaign_stats:
-                stats['recent_campaigns'].append(campaign_stats)
+            # Use optimized campaign stats query
+            campaign_messages = self.db.query(
+                func.count(SMSMessage.id).label('total'),
+                func.sum(case((SMSMessage.status == 'sent', 1), else_=0)).label('sent'),
+                func.sum(case((SMSMessage.delivery_status == 'delivered', 1), else_=0)).label('delivered')
+            ).filter(SMSMessage.campaign_id == campaign.id).first()
+            
+            total = campaign_messages.total or 0
+            sent = campaign_messages.sent or 0
+            delivered = campaign_messages.delivered or 0
+            
+            campaign_stats = {
+                'campaign_id': campaign.id,
+                'campaign_name': campaign.name,
+                'total_recipients': campaign.total_recipients,
+                'sent_count': sent,
+                'delivered_count': delivered,
+                'failed_count': total - sent,
+                'success_rate': (sent / total * 100) if total else 0,
+                'delivery_rate': (delivered / total * 100) if total else 0,
+                'created_at': campaign.created_at,
+                'status': campaign.status
+            }
+            stats['recent_campaigns'].append(campaign_stats)
         
         return stats

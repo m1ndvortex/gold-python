@@ -36,17 +36,29 @@ const SMSOverview: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[...Array(4)].map((_, i) => (
-          <Card key={i}>
-            <CardContent className="p-6">
-              <div className="animate-pulse">
-                <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-                <div className="h-8 bg-muted rounded w-1/2"></div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="space-y-6">
+        {/* Optimized loading skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i} variant="gradient-green">
+              <CardContent className="p-6">
+                <div className="animate-pulse space-y-3">
+                  <div className="h-4 bg-gradient-to-r from-green-200 to-teal-200 rounded w-3/4"></div>
+                  <div className="h-8 bg-gradient-to-r from-green-300 to-teal-300 rounded w-1/2"></div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        
+        {/* Loading indicator */}
+        <div className="text-center py-8">
+          <div className="relative mx-auto mb-4 w-8 h-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-transparent bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-border"></div>
+            <div className="absolute inset-0 animate-spin rounded-full h-8 w-8 border-2 border-transparent border-t-emerald-500"></div>
+          </div>
+          <p className="text-muted-foreground">Loading SMS dashboard...</p>
+        </div>
       </div>
     );
   }

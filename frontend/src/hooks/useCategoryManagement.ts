@@ -114,19 +114,29 @@ const enhancedCategoriesApi = {
 
 // Enhanced category management hooks
 export const useCategoryTree = () => {
-  return useQuery({
-    queryKey: ['categories', 'tree'],
-    queryFn: enhancedCategoriesApi.getCategoryTree,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  return useQuery(
+    ['categories', 'tree'],
+    enhancedCategoriesApi.getCategoryTree,
+    {
+      staleTime: 10 * 60 * 1000, // 10 minutes - increased cache time
+      cacheTime: 15 * 60 * 1000, // 15 minutes garbage collection
+      refetchOnWindowFocus: false, // Prevent refetch on window focus
+      refetchOnMount: false, // Prevent refetch on component mount if data exists
+    }
+  );
 };
 
 export const useCategoryTemplates = () => {
-  return useQuery({
-    queryKey: ['category-templates'],
-    queryFn: enhancedCategoriesApi.getCategoryTemplates,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-  });
+  return useQuery(
+    ['category-templates'],
+    enhancedCategoriesApi.getCategoryTemplates,
+    {
+      staleTime: 15 * 60 * 1000, // 15 minutes - increased cache time
+      cacheTime: 20 * 60 * 1000, // 20 minutes garbage collection
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+    }
+  );
 };
 
 export const useCreateCategoryTemplate = () => {

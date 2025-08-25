@@ -204,9 +204,15 @@ export const CategoryManager: React.FC<CategoryManagerProps> = ({
 
   if (isLoading) {
     return (
-      <Card>
+      <Card variant="gradient-teal">
         <CardContent className="p-6">
-          <div className="text-center">Loading category management...</div>
+          <div className="text-center space-y-4">
+            <div className="relative mx-auto mb-4 w-8 h-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-2 border-transparent bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-border"></div>
+              <div className="absolute inset-0 animate-spin rounded-full h-8 w-8 border-2 border-transparent border-t-teal-500"></div>
+            </div>
+            <p className="text-muted-foreground">Loading category management...</p>
+          </div>
         </CardContent>
       </Card>
     );

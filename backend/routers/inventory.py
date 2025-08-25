@@ -106,6 +106,73 @@ async def get_categories(
     categories = query.all()
     return categories
 
+@router.get("/categories/tree", response_model=List[schemas.CategoryWithStats])
+async def get_category_tree(
+    include_stats: bool = True,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user)
+):
+    """Get complete category tree with statistics - optimized version"""
+    from sqlalchemy.orm import selectinload
+    
+    # Optimized query with eager loading and limited data
+    query = db.query(models.Category).filter(
+        models.Category.is_active == True
+    ).order_by(models.Category.sort_order, models.Category.name)
+    
+    # Use selectinload for better performance if there are relationships
+    categories = query.all()
+    
+    # Early return for empty categories
+    if not categories:
+        return []
+    
+    count_dict = {}
+    if include_stats:
+        # Single optimized query for product counts
+        product_counts = db.query(
+            models.InventoryItem.category_id,
+            func.count(models.InventoryItem.id).label('count')
+        ).filter(
+            models.InventoryItem.is_active == True,
+            models.InventoryItem.category_id.in_([c.id for c in categories])
+        ).group_by(models.InventoryItem.category_id).all()
+        
+        count_dict = {str(cat_id): count for cat_id, count in product_counts}
+    
+    # Build tree structure with optimized approach
+    category_dict = {}
+    root_categories = []
+    
+    # First pass: create all category objects
+    for category in categories:
+        category_data = {
+            'id': category.id,
+            'name': category.name,
+            'description': category.description,
+            'parent_id': category.parent_id,
+            'sort_order': category.sort_order,
+            'is_active': category.is_active,
+            'created_at': category.created_at,
+            'updated_at': category.updated_at,
+            'children': [],
+            'product_count': count_dict.get(str(category.id), 0)
+        }
+        category_dict[str(category.id)] = category_data
+        
+        # Add to root if no parent
+        if not category.parent_id:
+            root_categories.append(category_data)
+    
+    # Second pass: build parent-child relationships
+    for category in categories:
+        if category.parent_id:
+            parent = category_dict.get(str(category.parent_id))
+            if parent:
+                parent['children'].append(category_dict[str(category.id)])
+    
+    return root_categories
+
 @router.get("/categories/{category_id}", response_model=schemas.CategoryWithChildren)
 async def get_category(
     category_id: str,
@@ -211,55 +278,6 @@ async def delete_category(
     return {"message": "Category deleted successfully"}
 
 # Enhanced Category Management Endpoints
-
-@router.get("/categories/tree", response_model=List[schemas.CategoryWithStats])
-async def get_category_tree(
-    include_stats: bool = True,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
-):
-    """Get complete category tree with statistics"""
-    # Get all categories
-    categories = db.query(models.Category).filter(
-        models.Category.is_active == True
-    ).order_by(models.Category.sort_order, models.Category.name).all()
-    
-    if include_stats:
-        # Get product counts for each category
-        product_counts = db.query(
-            models.InventoryItem.category_id,
-            func.count(models.InventoryItem.id).label('count')
-        ).filter(
-            models.InventoryItem.is_active == True
-        ).group_by(models.InventoryItem.category_id).all()
-        
-        count_dict = {str(cat_id): count for cat_id, count in product_counts}
-    else:
-        count_dict = {}
-    
-    # Build tree structure
-    category_dict = {}
-    root_categories = []
-    
-    for category in categories:
-        category_data = {
-            **category.__dict__,
-            'children': [],
-            'product_count': count_dict.get(str(category.id), 0)
-        }
-        category_dict[str(category.id)] = category_data
-        
-        if not category.parent_id:
-            root_categories.append(category_data)
-    
-    # Build parent-child relationships
-    for category in categories:
-        if category.parent_id:
-            parent = category_dict.get(str(category.parent_id))
-            if parent:
-                parent['children'].append(category_dict[str(category.id)])
-    
-    return root_categories
 
 @router.post("/categories/bulk-update")
 async def bulk_update_categories(

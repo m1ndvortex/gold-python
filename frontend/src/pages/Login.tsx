@@ -179,7 +179,7 @@ export const Login: React.FC = () => {
               </CardTitle>
               <CardDescription className="text-lg text-slate-600 font-medium">
                 {language === 'en' 
-                  ? 'Enter your credentials to access the management system' 
+                  ? 'Enter your credentials to access the system' 
                   : 'اطلاعات ورود خود را برای دسترسی به سیستم وارد کنید'
                 }
               </CardDescription>
@@ -334,72 +334,23 @@ export const Login: React.FC = () => {
               </Button>
             </form>
 
-            {/* Enhanced Demo Credentials */}
-            <div className="mt-8 p-6 bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 rounded-2xl border border-green-200 shadow-lg">
-              <div className="text-center mb-6">
-                <h4 className="text-lg font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent mb-2">
-                  {language === 'en' ? '🎯 Demo Access' : '🎯 دسترسی نمونه'}
-                </h4>
-                <p className="text-sm text-slate-600 font-medium">
-                  {language === 'en' ? 'Use these credentials to explore the system' : 'از این اطلاعات برای کاوش سیستم استفاده کنید'}
-                </p>
-              </div>
+            {/* Authentication Links */}
+            <div className="text-center pt-6 border-t border-gray-200 space-y-3">
+              <Link 
+                to="/forgot-password" 
+                className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors inline-flex items-center gap-1 hover:underline"
+              >
+                <span>{language === 'en' ? 'Forgot Password?' : 'فراموشی رمز عبور؟'}</span>
+              </Link>
               
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-md border border-blue-200 hover:shadow-lg transition-all duration-300">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
-                      <span className="text-white text-sm font-bold">👑</span>
-                    </div>
-                    <span className="text-base font-semibold text-blue-700">
-                      {language === 'en' ? 'Owner' : 'مالک'}
-                    </span>
-                  </div>
-                  <span className="text-sm font-mono bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-2 rounded-lg text-blue-800 border border-blue-200">admin / admin123</span>
-                </div>
-                
-                <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-md border border-green-200 hover:shadow-lg transition-all duration-300">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
-                      <span className="text-white text-sm font-bold">⚡</span>
-                    </div>
-                    <span className="text-base font-semibold text-green-700">
-                      {language === 'en' ? 'Manager' : 'مدیر'}
-                    </span>
-                  </div>
-                  <span className="text-sm font-mono bg-gradient-to-r from-green-50 to-teal-50 px-3 py-2 rounded-lg text-green-800 border border-green-200">manager / manager123</span>
-                </div>
-                
-                <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-md border border-amber-200 hover:shadow-lg transition-all duration-300">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
-                      <span className="text-white text-sm font-bold">💰</span>
-                    </div>
-                    <span className="text-base font-semibold text-amber-700">
-                      {language === 'en' ? 'Cashier' : 'صندوقدار'}
-                    </span>
-                  </div>
-                  <span className="text-sm font-mono bg-gradient-to-r from-amber-50 to-orange-50 px-3 py-2 rounded-lg text-amber-800 border border-amber-200">cashier / cashier123</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Additional Authentication Links */}
-            <div className="text-center pt-6 border-t border-gray-200 space-y-4">
-              <div className="flex items-center justify-center gap-6">
-                <Link 
-                  to="/register" 
-                  className="text-sm font-medium text-green-600 hover:text-green-700 transition-colors flex items-center gap-1"
-                >
-                  <span>{language === 'en' ? 'Create Account' : 'ایجاد حساب کاربری'}</span>
-                </Link>
-                <div className="w-px h-4 bg-gray-300"></div>
-                <Link 
-                  to="/forgot-password" 
-                  className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1"
-                >
-                  <span>{language === 'en' ? 'Forgot Password?' : 'فراموشی رمز عبور؟'}</span>
-                </Link>
+              {/* Admin Note */}
+              <div className="text-xs text-slate-500 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">
+                <span>
+                  {language === 'en' 
+                    ? '💼 New accounts are created by system administrators only' 
+                    : '💼 حساب‌های جدید فقط توسط مدیران سیستم ایجاد می‌شوند'
+                  }
+                </span>
               </div>
             </div>
           </CardContent>
