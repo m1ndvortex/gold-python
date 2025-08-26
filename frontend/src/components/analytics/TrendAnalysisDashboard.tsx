@@ -480,10 +480,10 @@ export const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
                         height={400}
                         analysis={{
                           enabled: true,
-                          showTrendLine: true,
-                          showSeasonality: true,
+                          windowSize: 10,
+                          showPrediction: true,
                           showConfidenceBands: true,
-                          showPrediction: true
+                          anomalyDetection: true
                         }}
                       />
                     </CardContent>
@@ -498,6 +498,7 @@ export const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
                         <InteractiveChart 
                           data={trendData.historical_data.slice(-30).map(item => ({
                             name: new Date(item.date).toLocaleDateString(),
+                            value: item.trend_component,
                             trend: item.trend_component,
                             seasonal: item.seasonal_component,
                             residual: item.residual
@@ -688,7 +689,4 @@ export const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
   );
 };
 
-export default TrendAnalysisDashboard;export {
- TrendAnalysisDashboard };e
-xport default TrendAnalysisDashboard;export { Tr
-endAnalysisDashboard };
+export default TrendAnalysisDashboard;

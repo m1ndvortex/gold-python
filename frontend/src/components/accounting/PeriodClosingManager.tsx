@@ -1,11 +1,7 @@
-import React from 'react';
-
 /**
  * Period Closing Manager Component
  * Multi-period closing and locking interface with edit restrictions display
  */
-
-export {};
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
@@ -540,7 +536,6 @@ export const PeriodClosingManager: React.FC<PeriodClosingManagerProps> = ({ clas
       </Dialog>
     </div>
   );
-};expo
-rt { PeriodClosingManager };export
- default PeriodClosingManager;export 
-{ PeriodClosingManager };
+};
+
+export default PeriodClosingManager;

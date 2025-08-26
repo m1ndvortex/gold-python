@@ -98,11 +98,11 @@ describe('Enhanced Invoice Docker Integration Tests', () => {
   describe('StockValidation Component', () => {
     const mockStockItems = [
       {
-        id: '1',
-        name: 'Test Gold Ring Enhanced',
+        inventoryItemId: '1',
+        itemName: 'Test Gold Ring Enhanced',
         requestedQuantity: 2,
-        availableQuantity: 10,
-        status: 'available' as const
+        availableStock: 10,
+        category: 'jewelry'
       }
     ];
 
@@ -120,20 +120,39 @@ describe('Enhanced Invoice Docker Integration Tests', () => {
   });
 
   describe('PricingAnalytics Component', () => {
-    const mockAnalytics = {
-      totalRevenue: 981.00,
+    const mockPricingItems = [
+      {
+        itemId: '1',
+        itemName: 'Test Gold Ring',
+        quantity: 1,
+        costPrice: 700.00,
+        salePrice: 981.00,
+        totalCost: 700.00,
+        totalRevenue: 981.00,
+        margin: 281.00,
+        marginPercentage: 22.2,
+        category: 'jewelry'
+      }
+    ];
+
+    const mockPricingBreakdown = {
+      subtotal: 981.00,
       totalCost: 700.00,
       grossProfit: 281.00,
       profitMargin: 22.2,
-      goldMetrics: {
+      goldSpecific: {
         totalWeight: 5.5,
         goldValue: 400.00,
-        averagePurity: 18
-      }
+        laborCost: 200.00,
+        profitAmount: 281.00
+      },
+      taxAmount: 0,
+      discountAmount: 0,
+      finalTotal: 981.00
     };
 
     test('displays pricing analytics correctly', () => {
-      render(<PricingAnalytics analytics={mockAnalytics} />);
+      render(<PricingAnalytics items={mockPricingItems} breakdown={mockPricingBreakdown} />);
       
       expect(screen.getByText('$981.00')).toBeInTheDocument();
       expect(screen.getByText('$700.00')).toBeInTheDocument();
@@ -146,8 +165,7 @@ describe('Enhanced Invoice Docker Integration Tests', () => {
       render(
         <WorkflowIndicator 
           currentStage="draft"
-          totalStages={4}
-          stageProgress={25}
+          showProgress={true}
         />
       );
       
@@ -215,15 +233,19 @@ describe('Enhanced Invoice Docker Integration Tests', () => {
         userName: 'Test User',
         userRole: 'manager',
         timestamp: new Date().toISOString(),
-        details: 'Invoice created with real backend',
-        changes: []
+        description: 'Invoice created with real backend',
+        category: 'invoice' as const,
+        severity: 'medium' as const
       }
     ];
 
     test('displays audit trail entries', () => {
       render(
         <AuditTrail 
-          entries={mockAuditEntries}
+          invoiceId="test-invoice-1"
+          auditEntries={mockAuditEntries}
+          workflowHistory={[]}
+          changeHistory={[]}
           onExportAuditLog={jest.fn().mockResolvedValue(undefined)}
         />
       );

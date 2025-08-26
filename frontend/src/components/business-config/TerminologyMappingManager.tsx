@@ -1,7 +1,3 @@
-export {};
-
-import React from 'react';
-
 /**
  * Terminology Mapping Manager
  * 
@@ -534,7 +530,6 @@ export const TerminologyMappingManager: React.FC<TerminologyMappingManagerProps>
       </Card>
     </div>
   );
-};expor
-t { TerminologyMappingManager };expor
-t default TerminologyMappingManager;exp
-ort { TerminologyMappingManager };
+};
+
+export default TerminologyMappingManager;

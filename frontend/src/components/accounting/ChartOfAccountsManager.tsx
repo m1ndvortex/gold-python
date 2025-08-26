@@ -337,21 +337,18 @@ export const ChartOfAccountsManager: React.FC<ChartOfAccountsManagerProps> = ({ 
       const data = await accountingApi.getChartOfAccounts();
       
       // Build hierarchy
-      const accountMap = new Map(data.map(acc => [acc.id, { ...acc, children: [] }]));
+      const accountMap = new Map(data.map(acc => [acc.id, { ...acc, children: [] as ChartOfAccount[] }]));
       const rootAccounts: ChartOfAccount[] = [];
 
       data.forEach(account => {
         const acc = accountMap.get(account.id)!;
         if (account.parent_id) {
           const parent = accountMap.get(account.parent_id);
-          if (parent) {
-            if (!parent.children) {
-              parent.children = [];
-            }
-            parent.children.push(acc as ChartOfAccount);
+          if (parent && parent.children) {
+            parent.children.push(acc);
           }
         } else {
-          rootAccounts.push(acc as ChartOfAccount);
+          rootAccounts.push(acc);
         }
       });
 

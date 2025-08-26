@@ -1,7 +1,3 @@
-export {};
-
-import React from 'react';
-
 /**
  * Custom Field Schema Manager
  * 
@@ -879,7 +875,6 @@ export const CustomFieldSchemaManager: React.FC<CustomFieldSchemaManagerProps> =
       </Card>
     </div>
   );
-};export { Cu
-stomFieldSchemaManager };e
-xport default CustomFieldSchemaManager;export 
-{ CustomFieldSchemaManager };
+};
+
+export default CustomFieldSchemaManager;

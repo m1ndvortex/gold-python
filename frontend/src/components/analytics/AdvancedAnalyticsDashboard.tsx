@@ -61,8 +61,10 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'kpi' | 'predictive' | 'segmentation' | 'trends' | 'comparative' | 'alerts' | 'export'>('overview');
   const [timeRange, setTimeRange] = useState<TimeRange>({ 
-    start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), 
-    end: new Date() 
+    period: 'month',
+    label: 'Last 30 Days',
+    startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), 
+    endDate: new Date() 
   });
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [exportConfig, setExportConfig] = useState<ExportConfig>({
@@ -80,8 +82,8 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
     queryFn: async () => {
       const params = new URLSearchParams({
         business_type: businessType,
-        start_date: timeRange.start.toISOString(),
-        end_date: timeRange.end.toISOString()
+        start_date: timeRange.startDate!.toISOString(),
+        end_date: timeRange.endDate!.toISOString()
       });
       return apiGet(`/advanced-analytics/overview?${params.toString()}`);
     },
@@ -394,7 +396,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
               </TabsContent>
 
               <TabsContent value="kpi" className="space-y-6">
-                <KPIDashboard businessType={businessType} timeRange={timeRange} />
+                <KPIDashboard />
               </TabsContent>
 
               <TabsContent value="predictive" className="space-y-6">
@@ -428,7 +430,4 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
   );
 };
 
-export default AdvancedAnalyticsDashboard;ex
-port { AdvancedAnalyticsDashboard };export
- default AdvancedAnalyticsDashboard;e
-xport { AdvancedAnalyticsDashboard };
+export default AdvancedAnalyticsDashboard;

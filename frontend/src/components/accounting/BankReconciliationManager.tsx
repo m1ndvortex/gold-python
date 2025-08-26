@@ -717,8 +717,5 @@ export const BankReconciliationManager: React.FC<BankReconciliationManagerProps>
     </div>
   );
 };
-expor
-t { BankReconciliationManager };exp
-ort default BankReconciliationManager;
-export { Ba
-nkReconciliationManager };
+
+export default BankReconciliationManager;

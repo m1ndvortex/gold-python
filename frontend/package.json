@@ -72,6 +72,8 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
+    "build:check": "tsc --project tsconfig.build.json --noEmit",
+    "build:verify": "npm run build && node scripts/verify-build.js",
     "test": "react-scripts test --watchAll=false",
     "test:watch": "react-scripts test",
     "test:docker": "cross-env REACT_APP_API_URL=http://localhost:8000 react-scripts test --watchAll=false --testTimeout=120000",
