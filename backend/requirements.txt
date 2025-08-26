@@ -51,3 +51,7 @@ aiofiles==23.2.1
 # OAuth2 and HTTP client dependencies
 httpx==0.25.2
 pydantic-settings==2.1.0
+# Localization and internationalization
+babel==2.13.1
+# API Gateway HTTP client for webhooks
+aiohttp==3.9.1

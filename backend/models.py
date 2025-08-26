@@ -4,315 +4,24 @@ from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.sql import func
 import uuid
 
-Base = declarative_base()
+# Import Base from database_base to ensure single metadata instance
+from database_base import Base
 
-class User(Base):
-    __tablename__ = "users"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    username = Column(String(50), unique=True, nullable=False)
-    email = Column(String(100), unique=True, nullable=False)
-    password_hash = Column(String(255), nullable=False)
-    role_id = Column(UUID(as_uuid=True), ForeignKey("roles.id"))
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    
-    role = relationship("Role", back_populates="users")
-    oauth2_tokens = relationship("OAuth2Token", back_populates="user")
-    audit_logs = relationship("OAuth2AuditLog", back_populates="user")
+# Import core models from models_universal to avoid duplicates
+from models_universal import (
+    User, Role, OAuth2Token, OAuth2AuditLog,
+    Category, InventoryItem, Customer, Invoice, InvoiceItem, 
+    Payment, AccountingEntry, CompanySettings
+)
 
-class Role(Base):
-    __tablename__ = "roles"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(50), unique=True, nullable=False)
-    description = Column(Text)
-    permissions = Column(JSONB)  # JSON for permissions
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
-    users = relationship("User", back_populates="role")
+# Import localization models
+from models_localization import (
+    LanguageConfiguration, Translation, BusinessTerminology,
+    CurrencyConfiguration, ExchangeRateHistory, DocumentTemplate,
+    LocalizationSettings, MultilingualData, SearchIndex, TranslationMemory
+)
 
-class OAuth2Token(Base):
-    __tablename__ = "oauth2_tokens"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    access_token_hash = Column(String(255), nullable=False)
-    refresh_token_hash = Column(String(255), nullable=False)
-    expires_at = Column(DateTime(timezone=True), nullable=False)
-    refresh_expires_at = Column(DateTime(timezone=True), nullable=False)
-    scopes = Column(JSONB, nullable=False, default=[])
-    revoked = Column(Boolean, default=False)
-    revoked_at = Column(DateTime(timezone=True))
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
-    user = relationship("User", back_populates="oauth2_tokens")
-    
-    __table_args__ = (
-        Index('idx_oauth2_tokens_user', 'user_id'),
-        Index('idx_oauth2_tokens_access_hash', 'access_token_hash'),
-        Index('idx_oauth2_tokens_refresh_hash', 'refresh_token_hash'),
-        Index('idx_oauth2_tokens_expires', 'expires_at'),
-        Index('idx_oauth2_tokens_revoked', 'revoked'),
-    )
-
-class OAuth2AuditLog(Base):
-    __tablename__ = "oauth2_audit_logs"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"))
-    event_type = Column(String(50), nullable=False)
-    event_category = Column(String(50), nullable=False)  # token, security, authentication
-    details = Column(JSONB, default={})
-    ip_address = Column(String(45))  # IPv6 compatible
-    user_agent = Column(Text)
-    severity = Column(String(20), default="info")  # info, warning, high, critical
-    timestamp = Column(DateTime(timezone=True), server_default=func.now())
-    
-    user = relationship("User", back_populates="audit_logs")
-    
-    __table_args__ = (
-        Index('idx_oauth2_audit_user', 'user_id'),
-        Index('idx_oauth2_audit_event_type', 'event_type'),
-        Index('idx_oauth2_audit_category', 'event_category'),
-        Index('idx_oauth2_audit_timestamp', 'timestamp'),
-        Index('idx_oauth2_audit_severity', 'severity'),
-        Index('idx_oauth2_audit_ip', 'ip_address'),
-    )
-
-class Category(Base):
-    __tablename__ = "categories"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(100), nullable=False)
-    parent_id = Column(UUID(as_uuid=True), ForeignKey("categories.id"))
-    description = Column(Text)
-    icon = Column(String(50))  # Icon name for UI
-    color = Column(String(7))  # Hex color code
-    attributes = Column(JSONB)  # Custom attributes definition
-    category_metadata = Column(JSONB)  # Additional metadata
-    sort_order = Column(Integer, default=0)  # For drag-and-drop ordering
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    
-    parent = relationship("Category", remote_side=[id], back_populates="children")
-    children = relationship("Category", back_populates="parent")
-    inventory_items = relationship("InventoryItem", back_populates="category")
-    
-    __table_args__ = (
-        Index('idx_categories_parent', 'parent_id'),
-        Index('idx_categories_active', 'is_active'),
-        Index('idx_categories_sort', 'sort_order'),
-    )
-
-class CategoryTemplate(Base):
-    __tablename__ = "category_templates"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(100), nullable=False)
-    description = Column(Text)
-    template_data = Column(JSONB, nullable=False)  # Template structure with attributes
-    is_active = Column(Boolean, default=True)
-    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    
-    creator = relationship("User")
-
-class InventoryItem(Base):
-    __tablename__ = "inventory_items"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(200), nullable=False)
-    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.id"))
-    weight_grams = Column(DECIMAL(10, 3), nullable=False)
-    purchase_price = Column(DECIMAL(12, 2), nullable=False)
-    sell_price = Column(DECIMAL(12, 2), nullable=False)
-    stock_quantity = Column(Integer, nullable=False, default=0)
-    min_stock_level = Column(Integer, default=5)
-    description = Column(Text)
-    image_url = Column(String(500))
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    
-    category = relationship("Category", back_populates="inventory_items")
-    invoice_items = relationship("InvoiceItem", back_populates="inventory_item")
-    
-    __table_args__ = (
-        Index('idx_inventory_items_category', 'category_id'),
-        Index('idx_inventory_items_active', 'is_active'),
-        Index('idx_inventory_items_stock', 'stock_quantity'),
-    )
-
-class Customer(Base):
-    __tablename__ = "customers"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(200), nullable=False)
-    phone = Column(String(20))
-    email = Column(String(100))
-    
-    # Old address field (deprecated - kept for backward compatibility)
-    address = Column(Text)  # Will be removed in future migration
-    
-    # Comprehensive address fields
-    street_address = Column(String(255))
-    city = Column(String(100))
-    state = Column(String(100))
-    postal_code = Column(String(20))
-    country = Column(String(100), default='United States')
-    
-    # Personal information
-    national_id = Column(String(50), unique=True)  # SSN, National ID, etc.
-    date_of_birth = Column(Date)
-    age = Column(Integer)  # Calculated field, can be updated periodically
-    gender = Column(String(20))  # male, female, other, prefer_not_to_say
-    nationality = Column(String(100))
-    occupation = Column(String(100))
-    
-    # Emergency contact information
-    emergency_contact_name = Column(String(200))
-    emergency_contact_phone = Column(String(20))
-    emergency_contact_relationship = Column(String(50))
-    
-    # Additional information
-    notes = Column(Text)  # General notes about the customer
-    tags = Column(JSONB)  # Tags for categorization ["VIP", "Wholesale", etc.]
-    custom_fields = Column(JSONB)  # Flexible custom fields {"field_name": "value"}
-    preferences = Column(JSONB)  # Customer preferences {"contact_method": "phone", etc.}
-    
-    # Business-related fields
-    customer_type = Column(String(50), default='retail')  # retail, wholesale, corporate
-    credit_limit = Column(DECIMAL(12, 2), default=0)
-    payment_terms = Column(Integer, default=0)  # Days for payment (0 = immediate)
-    discount_percentage = Column(DECIMAL(5, 2), default=0)  # Default discount for this customer
-    tax_exempt = Column(Boolean, default=False)
-    tax_id = Column(String(50))  # Tax identification number for businesses
-    
-    # Existing fields
-    total_purchases = Column(DECIMAL(12, 2), default=0)
-    current_debt = Column(DECIMAL(12, 2), default=0)
-    last_purchase_date = Column(DateTime(timezone=True))
-    
-    # Status and metadata
-    is_active = Column(Boolean, default=True)
-    blacklisted = Column(Boolean, default=False)
-    blacklist_reason = Column(Text)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    
-    invoices = relationship("Invoice", back_populates="customer")
-    payments = relationship("Payment", back_populates="customer")
-    
-    __table_args__ = (
-        Index('idx_customers_debt', 'current_debt'),
-        Index('idx_customers_phone', 'phone'),
-        Index('idx_customers_email', 'email'),
-        Index('idx_customers_national_id', 'national_id'),
-        Index('idx_customers_type', 'customer_type'),
-        Index('idx_customers_active', 'is_active'),
-        Index('idx_customers_city', 'city'),
-        Index('idx_customers_dob', 'date_of_birth'),
-    )
-
-class Invoice(Base):
-    __tablename__ = "invoices"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    invoice_number = Column(String(50), unique=True, nullable=False)
-    customer_id = Column(UUID(as_uuid=True), ForeignKey("customers.id"))
-    total_amount = Column(DECIMAL(12, 2), nullable=False)
-    paid_amount = Column(DECIMAL(12, 2), default=0)
-    remaining_amount = Column(DECIMAL(12, 2), nullable=False)
-    gold_price_per_gram = Column(DECIMAL(10, 2), nullable=False)
-    labor_cost_percentage = Column(DECIMAL(5, 2), default=0)
-    profit_percentage = Column(DECIMAL(5, 2), default=0)
-    vat_percentage = Column(DECIMAL(5, 2), default=0)
-    status = Column(String(20), default='pending')
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    
-    customer = relationship("Customer", back_populates="invoices")
-    invoice_items = relationship("InvoiceItem", back_populates="invoice")
-    payments = relationship("Payment", back_populates="invoice")
-    
-    __table_args__ = (
-        Index('idx_invoices_customer', 'customer_id'),
-        Index('idx_invoices_date', 'created_at'),
-        Index('idx_invoices_status', 'status'),
-    )
-
-class InvoiceItem(Base):
-    __tablename__ = "invoice_items"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    invoice_id = Column(UUID(as_uuid=True), ForeignKey("invoices.id"))
-    inventory_item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id"))
-    quantity = Column(Integer, nullable=False)
-    unit_price = Column(DECIMAL(12, 2), nullable=False)
-    total_price = Column(DECIMAL(12, 2), nullable=False)
-    weight_grams = Column(DECIMAL(10, 3), nullable=False)
-    
-    invoice = relationship("Invoice", back_populates="invoice_items")
-    inventory_item = relationship("InventoryItem", back_populates="invoice_items")
-
-class AccountingEntry(Base):
-    __tablename__ = "accounting_entries"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    entry_type = Column(String(20), nullable=False)  # 'income', 'expense', 'cash', 'bank', 'gold_weight'
-    category = Column(String(50), nullable=False)
-    amount = Column(DECIMAL(12, 2))
-    weight_grams = Column(DECIMAL(10, 3))
-    description = Column(Text, nullable=False)
-    reference_id = Column(UUID(as_uuid=True))  # Links to invoice, customer, etc.
-    reference_type = Column(String(50))
-    transaction_date = Column(DateTime(timezone=True), server_default=func.now())
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
-    __table_args__ = (
-        Index('idx_accounting_entries_type_date', 'entry_type', 'transaction_date'),
-        Index('idx_accounting_entries_reference', 'reference_id', 'reference_type'),
-    )
-
-class Payment(Base):
-    __tablename__ = "payments"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    customer_id = Column(UUID(as_uuid=True), ForeignKey("customers.id"), nullable=False)
-    invoice_id = Column(UUID(as_uuid=True), ForeignKey("invoices.id"))  # Optional, can be general payment
-    amount = Column(DECIMAL(12, 2), nullable=False)
-    payment_method = Column(String(20), default='cash')  # 'cash', 'bank', 'card'
-    description = Column(Text)
-    payment_date = Column(DateTime(timezone=True), server_default=func.now())
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
-    customer = relationship("Customer", back_populates="payments")
-    invoice = relationship("Invoice", back_populates="payments")
-    
-    __table_args__ = (
-        Index('idx_payments_customer', 'customer_id'),
-        Index('idx_payments_date', 'payment_date'),
-        Index('idx_payments_invoice', 'invoice_id'),
-    )
-
-class CompanySettings(Base):
-    __tablename__ = "company_settings"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    company_name = Column(String(200))
-    company_logo_url = Column(String(500))
-    company_address = Column(Text)
-    default_gold_price = Column(DECIMAL(10, 2))
-    default_labor_percentage = Column(DECIMAL(5, 2))
-    default_profit_percentage = Column(DECIMAL(5, 2))
-    default_vat_percentage = Column(DECIMAL(5, 2))
-    invoice_template = Column(JSONB)  # JSON for template
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
+# SMS Management Models
 class SMSTemplate(Base):
     __tablename__ = "sms_templates"
     
@@ -424,6 +133,115 @@ class KPITarget(Base):
         Index('idx_kpi_targets_active', 'is_active', 'period_start', 'period_end'),
     )
 
+# Stock Optimization Models
+class StockOptimizationRecommendation(Base):
+    __tablename__ = "stock_optimization_recommendations"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
+    recommendation_type = Column(String(30), nullable=False)  # 'reorder', 'reduce', 'discontinue', 'promote'
+    current_stock = Column(Integer, nullable=False)
+    recommended_stock = Column(Integer, nullable=False)
+    reorder_point = Column(Integer)
+    economic_order_quantity = Column(Integer)
+    safety_stock = Column(Integer)
+    lead_time_days = Column(Integer)
+    confidence_score = Column(DECIMAL(3, 2), default=0)  # 0-1 confidence in recommendation
+    cost_impact = Column(DECIMAL(12, 2))  # Estimated cost impact of recommendation
+    revenue_impact = Column(DECIMAL(12, 2))  # Estimated revenue impact
+    reasoning = Column(JSONB)  # Detailed reasoning for the recommendation
+    priority = Column(String(10), default='medium')  # 'low', 'medium', 'high', 'urgent'
+    status = Column(String(20), default='pending')  # 'pending', 'approved', 'rejected', 'implemented'
+    valid_until = Column(DateTime(timezone=True))
+    created_by = Column(String(50), default='system')  # 'system' or user_id
+    reviewed_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    reviewed_at = Column(DateTime(timezone=True))
+    implemented_at = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    # Relationships
+    item = relationship("InventoryItem")
+    reviewer = relationship("User")
+
+    __table_args__ = (
+        Index('idx_stock_optimization_item', 'item_id'),
+        Index('idx_stock_optimization_type_priority', 'recommendation_type', 'priority'),
+        Index('idx_stock_optimization_status', 'status'),
+        Index('idx_stock_optimization_valid_until', 'valid_until'),
+    )
+
+# Customer Intelligence Models
+class CustomerSegment(Base):
+    __tablename__ = "customer_segments"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    segment_name = Column(String(100), nullable=False, unique=True)
+    segment_description = Column(Text)
+    segment_criteria = Column(JSONB, nullable=False)
+    segment_color = Column(String(7), default='#3B82F6')
+    is_active = Column(Boolean, default=True)
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    creator = relationship("User")
+    segment_assignments = relationship("CustomerSegmentAssignment", back_populates="segment")
+    
+    __table_args__ = (
+        Index('idx_customer_segments_active', 'is_active'),
+    )
+
+class CustomerSegmentAssignment(Base):
+    __tablename__ = "customer_segment_assignments"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    customer_id = Column(UUID(as_uuid=True), ForeignKey("customers.id", ondelete="CASCADE"), nullable=False)
+    segment_id = Column(UUID(as_uuid=True), ForeignKey("customer_segments.id", ondelete="CASCADE"), nullable=False)
+    assigned_at = Column(DateTime(timezone=True), server_default=func.now())
+    assignment_score = Column(DECIMAL(5, 2))  # How well customer fits segment (0-100)
+    is_primary = Column(Boolean, default=False)  # Is this the customer's primary segment
+    
+    customer = relationship("Customer")
+    segment = relationship("CustomerSegment", back_populates="segment_assignments")
+    
+    __table_args__ = (
+        Index('idx_customer_segment_assignments_customer', 'customer_id'),
+        Index('idx_customer_segment_assignments_segment', 'segment_id'),
+    )
+
+class CustomerBehaviorAnalysis(Base):
+    __tablename__ = "customer_behavior_analysis"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    customer_id = Column(UUID(as_uuid=True), ForeignKey("customers.id", ondelete="CASCADE"), nullable=False)
+    analysis_period_start = Column(DateTime(timezone=True), nullable=False)
+    analysis_period_end = Column(DateTime(timezone=True), nullable=False)
+    purchase_frequency = Column(DECIMAL(5, 2), default=0)  # Purchases per month
+    average_order_value = Column(DECIMAL(12, 2), default=0)
+    total_spent = Column(DECIMAL(15, 2), default=0)
+    customer_lifetime_value = Column(DECIMAL(15, 2), default=0)
+    last_purchase_date = Column(DateTime(timezone=True))
+    days_since_last_purchase = Column(Integer)
+    preferred_categories = Column(JSONB)  # Top 3 categories by spending
+    preferred_payment_method = Column(String(50))
+    risk_score = Column(DECIMAL(3, 2), default=0)  # Credit risk (0-1)
+    loyalty_score = Column(DECIMAL(3, 2), default=0)  # Loyalty score (0-1)
+    engagement_score = Column(DECIMAL(3, 2), default=0)  # Engagement score (0-1)
+    churn_probability = Column(DECIMAL(3, 2), default=0)  # Probability of churn (0-1)
+    predicted_next_purchase = Column(DateTime(timezone=True).with_variant(DateTime(), "postgresql"))
+    seasonal_patterns = Column(JSONB)
+    calculated_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    customer = relationship("Customer")
+    
+    __table_args__ = (
+        Index('idx_customer_behavior_customer', 'customer_id'),
+        Index('idx_customer_behavior_period', 'analysis_period_start', 'analysis_period_end'),
+        Index('idx_customer_behavior_ltv', 'customer_lifetime_value'),
+        Index('idx_customer_behavior_churn', 'churn_probability'),
+    )
+
 # Profitability Analysis Models
 class ProfitabilityAnalysis(Base):
     __tablename__ = "profitability_analysis"
@@ -473,76 +291,61 @@ class MarginAnalysis(Base):
         Index('idx_margin_analysis_variance', 'margin_variance'),
     )
 
-# Customer Intelligence Models
-class CustomerSegment(Base):
-    __tablename__ = "customer_segments"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    segment_name = Column(String(100), nullable=False, unique=True)
-    segment_description = Column(Text)
-    segment_criteria = Column(JSONB, nullable=False)
-    segment_color = Column(String(7), default='#3B82F6')
-    is_active = Column(Boolean, default=True)
-    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    
-    creator = relationship("User")
-    segment_assignments = relationship("CustomerSegmentAssignment", back_populates="segment")
-    
-    __table_args__ = (
-        Index('idx_customer_segments_active', 'is_active'),
-    )
+# Inventory Intelligence Models
+class InventoryTurnoverAnalysis(Base):
+    __tablename__ = "inventory_turnover_analysis"
 
-class CustomerSegmentAssignment(Base):
-    __tablename__ = "customer_segment_assignments"
-    
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    customer_id = Column(UUID(as_uuid=True), ForeignKey("customers.id", ondelete="CASCADE"), nullable=False)
-    segment_id = Column(UUID(as_uuid=True), ForeignKey("customer_segments.id", ondelete="CASCADE"), nullable=False)
-    assigned_at = Column(DateTime(timezone=True), server_default=func.now())
-    assignment_score = Column(DECIMAL(5, 2))  # How well customer fits segment (0-100)
-    is_primary = Column(Boolean, default=False)  # Is this the customer's primary segment
-    
-    customer = relationship("Customer")
-    segment = relationship("CustomerSegment", back_populates="segment_assignments")
-    
-    __table_args__ = (
-        Index('idx_customer_segment_assignments_customer', 'customer_id'),
-        Index('idx_customer_segment_assignments_segment', 'segment_id'),
-        # Unique constraint on customer_id and segment_id combination
-    )
-
-class CustomerBehaviorAnalysis(Base):
-    __tablename__ = "customer_behavior_analysis"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    customer_id = Column(UUID(as_uuid=True), ForeignKey("customers.id", ondelete="CASCADE"), nullable=False)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
     analysis_period_start = Column(DateTime(timezone=True), nullable=False)
     analysis_period_end = Column(DateTime(timezone=True), nullable=False)
-    purchase_frequency = Column(DECIMAL(5, 2), default=0)  # Purchases per month
-    average_order_value = Column(DECIMAL(12, 2), default=0)
-    total_spent = Column(DECIMAL(15, 2), default=0)
-    customer_lifetime_value = Column(DECIMAL(15, 2), default=0)
-    last_purchase_date = Column(DateTime(timezone=True))
-    days_since_last_purchase = Column(Integer)
-    preferred_categories = Column(JSONB)  # Top 3 categories by spending
-    preferred_payment_method = Column(String(50))
-    risk_score = Column(DECIMAL(3, 2), default=0)  # Credit risk (0-1)
-    loyalty_score = Column(DECIMAL(3, 2), default=0)  # Loyalty score (0-1)
-    engagement_score = Column(DECIMAL(3, 2), default=0)  # Engagement score (0-1)
-    churn_probability = Column(DECIMAL(3, 2), default=0)  # Probability of churn (0-1)
-    predicted_next_purchase = Column(DateTime(timezone=True).with_variant(DateTime(), "postgresql"))
-    seasonal_patterns = Column(JSONB)
+    units_sold = Column(Integer, default=0)
+    average_stock = Column(DECIMAL(10, 2), default=0)
+    turnover_ratio = Column(DECIMAL(8, 4), default=0)
+    velocity_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
+    movement_classification = Column(String(20), default='unknown')  # fast, normal, slow, dead
+    days_to_stockout = Column(Integer)
+    seasonal_factor = Column(DECIMAL(4, 2), default=1.0)
+    trend_direction = Column(String(15), default='stable')  # increasing, decreasing, stable
+    last_sale_date = Column(DateTime(timezone=True))
     calculated_at = Column(DateTime(timezone=True), server_default=func.now())
-    
-    customer = relationship("Customer")
-    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    item = relationship("InventoryItem")
+
     __table_args__ = (
-        Index('idx_customer_behavior_customer', 'customer_id'),
-        Index('idx_customer_behavior_period', 'analysis_period_start', 'analysis_period_end'),
-        Index('idx_customer_behavior_ltv', 'customer_lifetime_value'),
-        Index('idx_customer_behavior_churn', 'churn_probability'),
+        Index('idx_inventory_turnover_item_period', 'item_id', 'analysis_period_start', 'analysis_period_end'),
+        Index('idx_inventory_turnover_classification', 'movement_classification'),
+        Index('idx_inventory_turnover_velocity', 'velocity_score'),
+    )
+
+class DemandForecasting(Base):
+    __tablename__ = "demand_forecasting"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
+    forecast_period_start = Column(Date, nullable=False)
+    forecast_period_end = Column(Date, nullable=False)
+    forecast_type = Column(String(20), nullable=False)  # daily, weekly, monthly, seasonal
+    historical_data = Column(JSONB)  # Historical sales data used for forecast
+    predicted_demand = Column(DECIMAL(10, 2), nullable=False)
+    confidence_interval_lower = Column(DECIMAL(10, 2))
+    confidence_interval_upper = Column(DECIMAL(10, 2))
+    forecast_accuracy = Column(DECIMAL(5, 2))  # Accuracy of previous forecasts
+    seasonal_patterns = Column(JSONB)  # Seasonal adjustment factors
+    trend_component = Column(DECIMAL(8, 4), default=0)
+    forecast_method = Column(String(30))  # moving_average, exponential_smoothing, linear_regression
+    external_factors = Column(JSONB)  # Events, promotions that might affect demand
+    generated_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    item = relationship("InventoryItem")
+
+    __table_args__ = (
+        Index('idx_demand_forecasting_item_period', 'item_id', 'forecast_period_start', 'forecast_period_end'),
+        Index('idx_demand_forecasting_type', 'forecast_type'),
     )
 
 # Report Scheduling Models
@@ -606,450 +409,388 @@ class CustomReport(Base):
         Index('idx_custom_reports_created_by', 'created_by'),
     )
 
-# Inventory Intelligence Models
-class InventoryTurnoverAnalysis(Base):
-    __tablename__ = "inventory_turnover_analysis"
+class SeasonalAnalysis(Base):
+    __tablename__ = "seasonal_analysis"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
-    analysis_period_start = Column(DateTime(timezone=True), nullable=False)
-    analysis_period_end = Column(DateTime(timezone=True), nullable=False)
-    units_sold = Column(Integer, default=0)
-    average_stock = Column(DECIMAL(10, 2), default=0)
-    turnover_ratio = Column(DECIMAL(8, 4), default=0)
-    velocity_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
-    movement_classification = Column(String(20), default='unknown')  # fast, normal, slow, dead
-    days_to_stockout = Column(Integer)
-    seasonal_factor = Column(DECIMAL(4, 2), default=1.0)
-    trend_direction = Column(String(15), default='stable')  # increasing, decreasing, stable
-    last_sale_date = Column(DateTime(timezone=True))
+    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.id", ondelete="CASCADE"))
+    analysis_year = Column(Integer, nullable=False)
+    seasonal_patterns = Column(JSONB, nullable=False)  # Monthly/quarterly patterns
+    peak_months = Column(JSONB)  # Months with highest sales
+    low_months = Column(JSONB)  # Months with lowest sales
+    seasonal_index = Column(DECIMAL(4, 2), default=1.0)  # Overall seasonality strength
+    trend_strength = Column(DECIMAL(4, 2), default=0)  # Trend component strength
+    volatility_score = Column(DECIMAL(4, 2), default=0)  # Sales volatility
+    recommendations = Column(JSONB)  # Seasonal stocking recommendations
     calculated_at = Column(DateTime(timezone=True), server_default=func.now())
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
     item = relationship("InventoryItem")
-
-    __table_args__ = (
-        Index('idx_inventory_turnover_item_period', 'item_id', 'analysis_period_start', 'analysis_period_end'),
-        Index('idx_inventory_turnover_classification', 'movement_classification'),
-        Index('idx_inventory_turnover_velocity', 'velocity_score'),
-    )
-
-class StockOptimizationRecommendation(Base):
-    __tablename__ = "stock_optimization_recommendations"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
-    recommendation_type = Column(String(30), nullable=False)  # reorder, reduce, increase, discontinue
-    current_stock = Column(Integer, nullable=False)
-    recommended_stock = Column(Integer)
-    reorder_point = Column(Integer)
-    reorder_quantity = Column(Integer)
-    safety_stock = Column(Integer)
-    max_stock_level = Column(Integer)
-    economic_order_quantity = Column(Integer)
-    lead_time_days = Column(Integer, default=7)
-    holding_cost_per_unit = Column(DECIMAL(10, 4), default=0)
-    ordering_cost = Column(DECIMAL(10, 2), default=0)
-    stockout_cost = Column(DECIMAL(10, 2), default=0)
-    confidence_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
-    reasoning = Column(Text)
-    priority_level = Column(String(10), default='medium')  # high, medium, low
-    estimated_savings = Column(DECIMAL(12, 2), default=0)
-    implementation_date = Column(Date)
-    status = Column(String(20), default='pending')  # pending, approved, implemented, rejected
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    expires_at = Column(DateTime(timezone=True))
-
-    # Relationships
-    item = relationship("InventoryItem")
-
-    __table_args__ = (
-        Index('idx_stock_optimization_item', 'item_id'),
-        Index('idx_stock_optimization_type', 'recommendation_type'),
-        Index('idx_stock_optimization_priority', 'priority_level'),
-        Index('idx_stock_optimization_status', 'status'),
-    )
-
-class DemandForecasting(Base):
-    __tablename__ = "demand_forecasting"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
-    forecast_period_start = Column(Date, nullable=False)
-    forecast_period_end = Column(Date, nullable=False)
-    forecast_type = Column(String(20), nullable=False)  # daily, weekly, monthly, seasonal
-    historical_data = Column(JSONB)  # Historical sales data used for forecast
-    predicted_demand = Column(DECIMAL(10, 2), nullable=False)
-    confidence_interval_lower = Column(DECIMAL(10, 2))
-    confidence_interval_upper = Column(DECIMAL(10, 2))
-    forecast_accuracy = Column(DECIMAL(5, 2))  # Accuracy of previous forecasts
-    seasonal_patterns = Column(JSONB)  # Seasonal adjustment factors
-    trend_component = Column(DECIMAL(8, 4), default=0)
-    forecast_method = Column(String(30))  # moving_average, exponential_smoothing, linear_regression
-    external_factors = Column(JSONB)  # Events, promotions that might affect demand
-    generated_at = Column(DateTime(timezone=True), server_default=func.now())
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    # Relationships
-    item = relationship("InventoryItem")
-
-    __table_args__ = (
-        Index('idx_demand_forecasting_item_period', 'item_id', 'forecast_period_start', 'forecast_period_end'),
-        Index('idx_demand_forecasting_type', 'forecast_type'),
-    )
-
-class SeasonalAnalysis(Base):
-    __tablename__ = "seasonal_analysis"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"))
-    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.id", ondelete="SET NULL"))
-    analysis_type = Column(String(20), nullable=False)  # item, category, global
-    season = Column(String(20), nullable=False)  # spring, summer, fall, winter, holiday, ramadan
-    year = Column(Integer, nullable=False)
-    baseline_demand = Column(DECIMAL(10, 2), default=0)
-    seasonal_factor = Column(DECIMAL(6, 4), default=1.0)
-    peak_period_start = Column(Date)
-    peak_period_end = Column(Date)
-    demand_variance = Column(DECIMAL(8, 4), default=0)
-    confidence_level = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
-    recommendations = Column(JSONB)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    # Relationships
-    item = relationship("InventoryItem")
     category = relationship("Category")
 
     __table_args__ = (
-        Index('idx_seasonal_analysis_item_season', 'item_id', 'season', 'year'),
-        Index('idx_seasonal_analysis_category_season', 'category_id', 'season', 'year'),
+        Index('idx_seasonal_analysis_item_year', 'item_id', 'analysis_year'),
+        Index('idx_seasonal_analysis_category_year', 'category_id', 'analysis_year'),
     )
 
 # Advanced Analytics Models for Business Intelligence
-
 class KPISnapshot(Base):
     """Time-series KPI tracking table"""
     __tablename__ = "kpi_snapshots"
-    __table_args__ = {'schema': 'analytics'}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     kpi_type = Column(String(50), nullable=False)  # 'financial', 'operational', 'customer'
-    kpi_name = Column(String(100), nullable=False)  # 'daily_revenue', 'inventory_turnover'
-    value = Column(DECIMAL(15, 4), nullable=False)
+    kpi_name = Column(String(100), nullable=False)
+    kpi_value = Column(DECIMAL(15, 4), nullable=False)
     target_value = Column(DECIMAL(15, 4))
-    achievement_rate = Column(DECIMAL(5, 2))  # Percentage
-    trend_direction = Column(String(10))  # 'up', 'down', 'stable'
-    variance_percentage = Column(DECIMAL(8, 4))
+    variance = Column(DECIMAL(15, 4))  # Actual - Target
+    variance_percentage = Column(DECIMAL(5, 2))  # (Actual - Target) / Target * 100
+    period_type = Column(String(20), nullable=False)  # 'daily', 'weekly', 'monthly', 'yearly'
     period_start = Column(DateTime(timezone=True), nullable=False)
     period_end = Column(DateTime(timezone=True), nullable=False)
-    kpi_metadata = Column(JSONB)  # Additional KPI-specific data
+    snapshot_date = Column(DateTime(timezone=True), nullable=False)
+    kpi_metadata = Column(JSONB)  # Additional context data
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-class DemandForecast(Base):
-    """Demand forecasting table"""
-    __tablename__ = "demand_forecasts"
-    __table_args__ = {'schema': 'analytics'}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
-    forecast_date = Column(Date, nullable=False)
-    forecast_period = Column(String(20), nullable=False)  # 'daily', 'weekly', 'monthly'
-    predicted_demand = Column(DECIMAL(10, 2), nullable=False)
-    confidence_interval_lower = Column(DECIMAL(10, 2))
-    confidence_interval_upper = Column(DECIMAL(10, 2))
-    confidence_score = Column(DECIMAL(5, 4))  # 0-1 scale
-    model_used = Column(String(50), nullable=False)  # 'arima', 'linear_regression'
-    accuracy_score = Column(DECIMAL(5, 4))  # Historical accuracy
-    seasonal_factor = Column(DECIMAL(6, 4), default=1.0)
-    trend_component = Column(DECIMAL(8, 4), default=0)
-    historical_data = Column(JSONB)  # Historical sales data used
-    external_factors = Column(JSONB)  # Events, promotions affecting demand
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    # Relationships
-    item = relationship("InventoryItem")
-
-# Duplicate CustomReport removed - using the one defined earlier
+    __table_args__ = (
+        Index('idx_kpi_snapshots_type_name_date', 'kpi_type', 'kpi_name', 'snapshot_date'),
+        Index('idx_kpi_snapshots_period', 'period_type', 'period_start', 'period_end'),
+    )
 
 class AnalyticsCache(Base):
     """Analytics cache table for performance optimization"""
     __tablename__ = "analytics_cache"
-    __table_args__ = {'schema': 'analytics'}
 
-    cache_key = Column(String(255), primary_key=True)
-    data = Column(JSONB, nullable=False)
-    ttl = Column(Integer, nullable=False)  # Time to live in seconds
-    expires_at = Column(DateTime(timezone=True), nullable=False)
-    cache_type = Column(String(50), nullable=False)  # 'kpi', 'report', 'forecast'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    cache_key = Column(String(255), nullable=False, unique=True)
+    cache_data = Column(JSONB, nullable=False)
+    cache_type = Column(String(50), nullable=False)  # 'kpi', 'report', 'chart', 'forecast'
     entity_type = Column(String(50))  # 'global', 'customer', 'item', 'category'
     entity_id = Column(UUID(as_uuid=True))
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-class StockOptimizationRecommendation(Base):
-    """Stock optimization recommendations table"""
-    __tablename__ = "stock_optimization_recommendations"
-    __table_args__ = {'schema': 'analytics'}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
-    recommendation_type = Column(String(30), nullable=False)  # 'reorder', 'reduce', 'increase'
-    current_stock = Column(Integer, nullable=False)
-    recommended_stock = Column(Integer)
-    reorder_point = Column(Integer)
-    reorder_quantity = Column(Integer)
-    safety_stock = Column(Integer)
-    max_stock_level = Column(Integer)
-    economic_order_quantity = Column(Integer)
-    lead_time_days = Column(Integer, default=7)
-    holding_cost_per_unit = Column(DECIMAL(10, 4), default=0)
-    ordering_cost = Column(DECIMAL(10, 2), default=0)
-    stockout_cost = Column(DECIMAL(10, 2), default=0)
-    confidence_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
-    reasoning = Column(Text)
-    priority_level = Column(String(10), default='medium')  # 'high', 'medium', 'low'
-    estimated_savings = Column(DECIMAL(12, 2), default=0)
-    implementation_date = Column(Date)
-    status = Column(String(20), default='pending')  # 'pending', 'approved', 'implemented'
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    expires_at = Column(DateTime(timezone=True))
-
-    # Relationships
-    item = relationship("InventoryItem")
-
-class CostAnalysis(Base):
-    """Cost analysis table for optimization insights"""
-    __tablename__ = "cost_analysis"
-    __table_args__ = {'schema': 'analytics'}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    entity_type = Column(String(50), nullable=False)  # 'item', 'category', 'global'
-    entity_id = Column(UUID(as_uuid=True))
-    analysis_date = Column(Date, nullable=False)
-    carrying_cost = Column(DECIMAL(12, 2), default=0)
-    ordering_cost = Column(DECIMAL(12, 2), default=0)
-    stockout_cost = Column(DECIMAL(12, 2), default=0)
-    total_cost = Column(DECIMAL(12, 2), default=0)
-    cost_per_unit = Column(DECIMAL(10, 4), default=0)
-    cost_breakdown = Column(JSONB)  # Detailed cost components
-    optimization_potential = Column(DECIMAL(12, 2), default=0)
-    recommendations = Column(JSONB)  # Cost reduction recommendations
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-class CategoryPerformance(Base):
-    """Category performance analysis table"""
-    __tablename__ = "category_performance"
-    __table_args__ = {'schema': 'analytics'}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.id", ondelete="CASCADE"), nullable=False)
-    analysis_date = Column(Date, nullable=False)
-    revenue = Column(DECIMAL(15, 2), default=0)
-    units_sold = Column(Integer, default=0)
-    profit_margin = Column(DECIMAL(5, 2), default=0)
-    inventory_turnover = Column(DECIMAL(8, 4), default=0)
-    velocity_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
-    movement_classification = Column(String(20), default='normal')  # 'fast', 'normal', 'slow'
-    seasonal_factor = Column(DECIMAL(6, 4), default=1.0)
-    cross_selling_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
-    performance_trend = Column(String(15), default='stable')  # 'improving', 'declining'
-    recommendations = Column(JSONB)  # Performance improvement suggestions
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    # Relationships
-    category = relationship("Category")
-
-class PerformanceMetric(Base):
-    """System performance metrics table"""
-    __tablename__ = "performance_metrics"
-    __table_args__ = {'schema': 'analytics'}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    metric_type = Column(String(50), nullable=False)  # 'response_time', 'memory_usage'
-    metric_name = Column(String(100), nullable=False)
-    value = Column(DECIMAL(15, 4), nullable=False)
-    unit = Column(String(20))  # 'ms', 'mb', 'percent', 'count'
-    threshold_value = Column(DECIMAL(15, 4))
-    status = Column(String(20), default='normal')  # 'normal', 'warning', 'critical'
-    service_name = Column(String(50))  # 'backend', 'database', 'redis'
-    endpoint = Column(String(200))  # For API performance metrics
-    additional_data = Column(JSONB)
-    recorded_at = Column(DateTime(timezone=True), nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-class BackupLog(Base):
-    """Backup operations log table"""
-    __tablename__ = "backup_logs"
-    __table_args__ = {'schema': 'analytics'}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    backup_type = Column(String(30), nullable=False)  # 'database', 'files', 'full'
-    backup_status = Column(String(20), nullable=False)  # 'started', 'completed', 'failed'
-    backup_size_bytes = Column(Integer)
-    backup_location = Column(String(500))
-    encryption_used = Column(Boolean, default=False)
-    compression_used = Column(Boolean, default=False)
-    verification_status = Column(String(20))  # 'pending', 'passed', 'failed'
-    error_message = Column(Text)
-    started_at = Column(DateTime(timezone=True), nullable=False)
-    completed_at = Column(DateTime(timezone=True))
-    retention_until = Column(Date)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-class AlertRule(Base):
-    """Alert rules configuration table"""
-    __tablename__ = "alert_rules"
-    __table_args__ = {'schema': 'analytics'}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    rule_name = Column(String(100), nullable=False)
-    rule_type = Column(String(50), nullable=False)  # 'kpi_threshold', 'performance'
-    conditions = Column(JSONB, nullable=False)  # Alert conditions and thresholds
-    severity = Column(String(20), default='medium')  # 'low', 'medium', 'high', 'critical'
-    notification_channels = Column(JSONB)  # Email, SMS, webhook configurations
-    is_active = Column(Boolean, default=True)
-    cooldown_minutes = Column(Integer, default=60)  # Minimum time between alerts
-    escalation_rules = Column(JSONB)  # Escalation configuration
-    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    last_triggered = Column(DateTime(timezone=True))
-    trigger_count = Column(Integer, default=0)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
-    # Relationships
-    creator = relationship("User")
-
-class AlertHistory(Base):
-    """Alert history table"""
-    __tablename__ = "alert_history"
-    __table_args__ = {'schema': 'analytics'}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    rule_id = Column(UUID(as_uuid=True), ForeignKey("analytics.alert_rules.id", ondelete="CASCADE"), nullable=False)
-    alert_level = Column(String(20), nullable=False)
-    message = Column(Text, nullable=False)
-    triggered_value = Column(DECIMAL(15, 4))
-    threshold_value = Column(DECIMAL(15, 4))
-    entity_type = Column(String(50))
-    entity_id = Column(UUID(as_uuid=True))
-    notification_sent = Column(Boolean, default=False)
-    acknowledged = Column(Boolean, default=False)
-    acknowledged_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
-    acknowledged_at = Column(DateTime(timezone=True))
-    resolved = Column(Boolean, default=False)
-    resolved_at = Column(DateTime(timezone=True))
-    additional_data = Column(JSONB)
-    triggered_at = Column(DateTime(timezone=True), nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    # Relationships
-    rule = relationship("AlertRule")
-    acknowledger = relationship("User")
-
-class ImageManagement(Base):
-    """Enhanced image management table"""
-    __tablename__ = "image_management"
-    __table_args__ = {'schema': 'analytics'}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    entity_type = Column(String(50), nullable=False)  # 'product', 'category', 'company'
-    entity_id = Column(UUID(as_uuid=True), nullable=False)
-    original_filename = Column(String(255), nullable=False)
-    stored_filename = Column(String(255), nullable=False)
-    file_path = Column(String(500), nullable=False)
-    file_size_bytes = Column(Integer, nullable=False)
-    mime_type = Column(String(100), nullable=False)
-    image_width = Column(Integer)
-    image_height = Column(Integer)
-    thumbnails = Column(JSONB)  # Generated thumbnail information
-    is_primary = Column(Boolean, default=False)
-    alt_text = Column(String(255))
-    caption = Column(Text)
-    sort_order = Column(Integer, default=0)
-    optimization_applied = Column(Boolean, default=False)
-    compression_ratio = Column(DECIMAL(5, 4))
-    upload_metadata = Column(JSONB)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    hit_count = Column(Integer, default=0)
+    last_accessed = Column(DateTime(timezone=True), server_default=func.now())
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     __table_args__ = (
-        Index('idx_image_management_entity', 'entity_type', 'entity_id'),
-        Index('idx_image_management_primary', 'is_primary'),
-        Index('idx_image_management_sort', 'sort_order'),
-        {'schema': 'analytics'}
+        Index('idx_analytics_cache_key', 'cache_key'),
+        Index('idx_analytics_cache_type_entity', 'cache_type', 'entity_type', 'entity_id'),
+        Index('idx_analytics_cache_expires', 'expires_at'),
     )
 
 class InventoryPerformanceMetrics(Base):
     __tablename__ = "inventory_performance_metrics"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    metric_date = Column(Date, nullable=False)
-    total_inventory_value = Column(DECIMAL(15, 2), default=0)
-    total_items_count = Column(Integer, default=0)
-    fast_moving_items_count = Column(Integer, default=0)
-    slow_moving_items_count = Column(Integer, default=0)
-    dead_stock_items_count = Column(Integer, default=0)
-    average_turnover_ratio = Column(DECIMAL(8, 4), default=0)
-    inventory_to_sales_ratio = Column(DECIMAL(6, 4), default=0)
-    carrying_cost_percentage = Column(DECIMAL(5, 2), default=0)
-    stockout_incidents = Column(Integer, default=0)
-    overstock_incidents = Column(Integer, default=0)
-    optimization_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
-    total_holding_cost = Column(DECIMAL(12, 2), default=0)
-    total_ordering_cost = Column(DECIMAL(12, 2), default=0)
-    total_stockout_cost = Column(DECIMAL(12, 2), default=0)
-    efficiency_rating = Column(String(15), default='average')  # excellent, good, average, poor
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
+    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.id", ondelete="CASCADE"))
+    metric_date = Column(DateTime(timezone=True), nullable=False)
+    
+    # Performance metrics
+    sales_velocity = Column(DECIMAL(8, 4), default=0)  # Units sold per day
+    stock_efficiency = Column(DECIMAL(5, 2), default=0)  # Stock utilization percentage
+    carrying_cost = Column(DECIMAL(12, 2), default=0)  # Cost of holding inventory
+    stockout_risk = Column(DECIMAL(3, 2), default=0)  # Risk of stockout (0-1)
+    overstock_risk = Column(DECIMAL(3, 2), default=0)  # Risk of overstock (0-1)
+    
+    # Financial metrics
+    inventory_value = Column(DECIMAL(15, 2), default=0)  # Current inventory value
+    dead_stock_value = Column(DECIMAL(15, 2), default=0)  # Value of dead stock
+    opportunity_cost = Column(DECIMAL(12, 2), default=0)  # Cost of missed sales
+    
+    # Operational metrics
+    reorder_frequency = Column(DECIMAL(5, 2), default=0)  # Reorders per month
+    lead_time_variance = Column(DECIMAL(5, 2), default=0)  # Lead time variability
+    forecast_accuracy = Column(DECIMAL(5, 2), default=0)  # Forecast accuracy percentage
+    
+    # Recommendations
+    recommended_action = Column(String(50))  # 'increase', 'decrease', 'maintain', 'discontinue'
+    action_priority = Column(String(10), default='medium')  # 'low', 'medium', 'high', 'urgent'
+    
     calculated_at = Column(DateTime(timezone=True), server_default=func.now())
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+    # Relationships
+    item = relationship("InventoryItem")
+    category = relationship("Category")
+
     __table_args__ = (
-        Index('idx_inventory_performance_date', 'metric_date'),
-        Index('idx_inventory_performance_score', 'optimization_score'),
+        Index('idx_inventory_performance_item_date', 'item_id', 'metric_date'),
+        Index('idx_inventory_performance_category_date', 'category_id', 'metric_date'),
+        Index('idx_inventory_performance_action', 'recommended_action', 'action_priority'),
     )
 
-# Additional models for background tasks
+# Alert System Models
+class AlertRule(Base):
+    __tablename__ = "alert_rules"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(200), nullable=False)
+    description = Column(Text)
+    alert_type = Column(String(50), nullable=False)  # 'threshold', 'anomaly', 'trend', 'custom'
+    entity_type = Column(String(50), nullable=False)  # 'inventory', 'sales', 'customer', 'financial'
+    entity_id = Column(UUID(as_uuid=True))  # Specific entity ID or null for global
+    
+    # Rule configuration
+    rule_config = Column(JSONB, nullable=False)  # Rule parameters and conditions
+    threshold_value = Column(DECIMAL(15, 4))  # Threshold for threshold-based alerts
+    comparison_operator = Column(String(10))  # '>', '<', '>=', '<=', '==', '!='
+    
+    # Alert settings
+    severity = Column(String(20), default='medium')  # 'low', 'medium', 'high', 'critical'
+    notification_channels = Column(JSONB, default=['email'])  # ['email', 'sms', 'webhook']
+    notification_recipients = Column(JSONB, default=[])  # List of email addresses or phone numbers
+    
+    # Status and scheduling
+    is_active = Column(Boolean, default=True)
+    check_frequency = Column(Integer, default=60)  # Check frequency in minutes
+    last_checked = Column(DateTime(timezone=True))
+    last_triggered = Column(DateTime(timezone=True))
+    trigger_count = Column(Integer, default=0)
+    
+    # Metadata
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    # Relationships
+    creator = relationship("User")
+    alert_history = relationship("AlertHistory", back_populates="alert_rule")
+
+    __table_args__ = (
+        Index('idx_alert_rules_type', 'alert_type'),
+        Index('idx_alert_rules_entity', 'entity_type', 'entity_id'),
+        Index('idx_alert_rules_active', 'is_active'),
+        Index('idx_alert_rules_severity', 'severity'),
+    )
+
+class AlertHistory(Base):
+    __tablename__ = "alert_history"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    alert_rule_id = Column(UUID(as_uuid=True), ForeignKey("alert_rules.id", ondelete="CASCADE"), nullable=False)
+    
+    # Alert details
+    alert_message = Column(Text, nullable=False)
+    alert_data = Column(JSONB)  # Additional context data
+    severity = Column(String(20), nullable=False)
+    
+    # Trigger information
+    triggered_value = Column(DECIMAL(15, 4))  # Value that triggered the alert
+    threshold_value = Column(DECIMAL(15, 4))  # Threshold that was exceeded
+    trigger_condition = Column(String(100))  # Description of trigger condition
+    
+    # Status and resolution
+    status = Column(String(20), default='active')  # 'active', 'acknowledged', 'resolved', 'dismissed'
+    acknowledged_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    acknowledged_at = Column(DateTime(timezone=True))
+    resolved_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    resolved_at = Column(DateTime(timezone=True))
+    resolution_notes = Column(Text)
+    
+    # Notification tracking
+    notifications_sent = Column(JSONB, default=[])  # Track which notifications were sent
+    notification_status = Column(String(20), default='pending')  # 'pending', 'sent', 'failed'
+    
+    # Timestamps
+    triggered_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    alert_rule = relationship("AlertRule", back_populates="alert_history")
+    acknowledger = relationship("User", foreign_keys=[acknowledged_by])
+    resolver = relationship("User", foreign_keys=[resolved_by])
+
+    __table_args__ = (
+        Index('idx_alert_history_rule', 'alert_rule_id'),
+        Index('idx_alert_history_status', 'status'),
+        Index('idx_alert_history_severity', 'severity'),
+        Index('idx_alert_history_triggered', 'triggered_at'),
+    )
+
+# Forecasting Models
+class DemandForecast(Base):
+    __tablename__ = "demand_forecasts"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
+    forecast_date = Column(Date, nullable=False)
+    forecast_horizon_days = Column(Integer, nullable=False)  # How many days ahead
+    predicted_demand = Column(DECIMAL(10, 2), nullable=False)
+    confidence_level = Column(DECIMAL(5, 2), default=0.95)  # 0.95 = 95% confidence
+    lower_bound = Column(DECIMAL(10, 2))
+    upper_bound = Column(DECIMAL(10, 2))
+    
+    # Model information
+    model_type = Column(String(50), nullable=False)  # 'linear_regression', 'arima', 'exponential_smoothing'
+    model_accuracy = Column(DECIMAL(5, 2))  # Model accuracy percentage
+    training_period_start = Column(Date)
+    training_period_end = Column(Date)
+    
+    # Seasonal and trend components
+    seasonal_component = Column(DECIMAL(8, 4), default=0)
+    trend_component = Column(DECIMAL(8, 4), default=0)
+    residual_component = Column(DECIMAL(8, 4), default=0)
+    
+    # External factors
+    external_factors = Column(JSONB)  # Weather, holidays, promotions, etc.
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    # Relationships
+    item = relationship("InventoryItem")
+
+    __table_args__ = (
+        Index('idx_demand_forecasts_item_date', 'item_id', 'forecast_date'),
+        Index('idx_demand_forecasts_horizon', 'forecast_horizon_days'),
+        Index('idx_demand_forecasts_model', 'model_type'),
+    )
+
 class ForecastModel(Base):
     __tablename__ = "forecast_models"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id"), nullable=False)
-    model_type = Column(String(50), nullable=False)  # 'arima', 'linear_regression', 'seasonal_decompose'
-    confidence_score = Column(DECIMAL(5, 4), nullable=False)
-    accuracy_metrics = Column(JSONB)
-    training_date = Column(Date, nullable=False)
+    name = Column(String(100), nullable=False)
+    model_type = Column(String(50), nullable=False)  # 'linear_regression', 'arima', 'exponential_smoothing'
+    description = Column(Text)
+    
+    # Model configuration
+    model_config = Column(JSONB, nullable=False)  # Model parameters and hyperparameters
+    training_config = Column(JSONB)  # Training configuration
+    
+    # Performance metrics
+    accuracy_score = Column(DECIMAL(5, 2))  # Overall accuracy percentage
+    mae = Column(DECIMAL(10, 4))  # Mean Absolute Error
+    mse = Column(DECIMAL(10, 4))  # Mean Squared Error
+    rmse = Column(DECIMAL(10, 4))  # Root Mean Squared Error
+    mape = Column(DECIMAL(5, 2))  # Mean Absolute Percentage Error
+    
+    # Model status
     is_active = Column(Boolean, default=True)
+    is_trained = Column(Boolean, default=False)
+    last_trained = Column(DateTime(timezone=True))
+    training_data_size = Column(Integer)
+    
+    # Versioning
+    version = Column(String(20), default='1.0')
+    parent_model_id = Column(UUID(as_uuid=True), ForeignKey("forecast_models.id"))
+    
+    # Metadata
+    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
-    item = relationship("InventoryItem")
-    
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    # Relationships
+    creator = relationship("User")
+    parent_model = relationship("ForecastModel", remote_side=[id])
+
     __table_args__ = (
-        Index('idx_forecast_models_item', 'item_id'),
+        Index('idx_forecast_models_type', 'model_type'),
         Index('idx_forecast_models_active', 'is_active'),
-        Index('idx_forecast_models_confidence', 'confidence_score'),
+        Index('idx_forecast_models_accuracy', 'accuracy_score'),
     )
 
 class ReportExecution(Base):
     __tablename__ = "report_executions"
-    
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    report_id = Column(UUID(as_uuid=True), ForeignKey("custom_reports.id"), nullable=False)
-    execution_type = Column(String(20), nullable=False)  # 'manual', 'scheduled'
-    status = Column(String(20), nullable=False)  # 'pending', 'running', 'completed', 'failed'
-    export_format = Column(String(20))  # 'pdf', 'excel', 'csv'
-    file_path = Column(String(500))
-    file_size = Column(Integer, default=0)
-    generation_time_seconds = Column(Integer, default=0)
-    error_message = Column(Text)
-    parameters = Column(JSONB)
-    task_metadata = Column(JSONB)  # Renamed from metadata to avoid conflict
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    report_id = Column(UUID(as_uuid=True), ForeignKey("custom_reports.id", ondelete="CASCADE"))
+    scheduled_report_id = Column(UUID(as_uuid=True), ForeignKey("scheduled_reports.id", ondelete="CASCADE"))
+    
+    # Execution details
+    execution_type = Column(String(20), nullable=False)  # 'manual', 'scheduled', 'api'
+    status = Column(String(20), default='pending')  # 'pending', 'running', 'completed', 'failed', 'cancelled'
+    
+    # Timing
+    started_at = Column(DateTime(timezone=True))
     completed_at = Column(DateTime(timezone=True))
+    duration_seconds = Column(Integer)
     
+    # Configuration
+    report_config = Column(JSONB, nullable=False)  # Report configuration at execution time
+    export_formats = Column(JSONB, default=['pdf'])  # Requested export formats
+    
+    # Results
+    output_files = Column(JSONB)  # Generated file paths/URLs
+    row_count = Column(Integer)  # Number of rows in result
+    file_sizes = Column(JSONB)  # File sizes for each format
+    
+    # Error handling
+    error_message = Column(Text)
+    error_details = Column(JSONB)
+    retry_count = Column(Integer, default=0)
+    max_retries = Column(Integer, default=3)
+    
+    # Metadata
+    executed_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    # Relationships
     report = relationship("CustomReport")
-    
+    scheduled_report = relationship("ScheduledReport")
+    executor = relationship("User")
+
     __table_args__ = (
         Index('idx_report_executions_report', 'report_id'),
+        Index('idx_report_executions_scheduled', 'scheduled_report_id'),
         Index('idx_report_executions_status', 'status'),
+        Index('idx_report_executions_started', 'started_at'),
         Index('idx_report_executions_type', 'execution_type'),
-        Index('idx_report_executions_created', 'created_at'),
+    )
+
+# Image Management Models
+class ImageManagement(Base):
+    __tablename__ = "image_management"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    filename = Column(String(255), nullable=False)
+    original_filename = Column(String(255), nullable=False)
+    file_path = Column(String(500), nullable=False)
+    file_size = Column(Integer, nullable=False)  # Size in bytes
+    mime_type = Column(String(100), nullable=False)
+    
+    # Image properties
+    width = Column(Integer)
+    height = Column(Integer)
+    format = Column(String(10))  # 'JPEG', 'PNG', 'GIF', etc.
+    
+    # Categorization
+    category = Column(String(50), nullable=False)  # 'inventory', 'customer', 'report', 'general'
+    entity_type = Column(String(50))  # 'inventory_item', 'customer', 'category'
+    entity_id = Column(UUID(as_uuid=True))  # ID of the related entity
+    
+    # Image variants (thumbnails, etc.)
+    variants = Column(JSONB)  # Different sizes/formats of the same image
+    
+    # Metadata
+    alt_text = Column(String(255))  # Alt text for accessibility
+    description = Column(Text)
+    tags = Column(JSONB)  # Array of tags for searching
+    
+    # Status
+    is_active = Column(Boolean, default=True)
+    is_processed = Column(Boolean, default=False)  # Has image processing completed
+    processing_status = Column(String(20), default='pending')  # 'pending', 'processing', 'completed', 'failed'
+    
+    # Upload information
+    uploaded_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    upload_source = Column(String(50), default='web')  # 'web', 'api', 'bulk_import'
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    # Relationships
+    uploader = relationship("User")
+
+    __table_args__ = (
+        Index('idx_image_management_category', 'category'),
+        Index('idx_image_management_entity', 'entity_type', 'entity_id'),
+        Index('idx_image_management_active', 'is_active'),
+        Index('idx_image_management_processed', 'is_processed'),
+        Index('idx_image_management_uploader', 'uploaded_by'),
     )

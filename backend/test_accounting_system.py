@@ -11,10 +11,12 @@ from fastapi.testclient import TestClient
 
 from main import app
 from database import get_db, engine
+from models_universal import (
+    ChartOfAccounts, AccountingPeriod, JournalEntry, JournalEntryLine, Base
+)
 from models_accounting import (
-    ChartOfAccounts, AccountingPeriod, JournalEntry, JournalEntryLine,
     BankAccount, BankTransaction, BankReconciliation, CheckRegister,
-    AccountingAuditLog, Base
+    AccountingAuditLog
 )
 from services.accounting_service import AccountingService
 from schemas_accounting import (

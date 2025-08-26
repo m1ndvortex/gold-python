@@ -70,13 +70,13 @@ export const CashBankLedger: React.FC = () => {
   };
 
   // Calculate totals
-  const cashInTotal = cashBankEntries?.filter(entry => 
+  const cashInTotal = cashBankEntries?.filter((entry: any) => 
     entry.transaction_type === 'cash_in' || entry.transaction_type === 'bank_deposit'
-  ).reduce((sum, entry) => sum + entry.amount, 0) || 0;
+  ).reduce((sum: number, entry: any) => sum + entry.amount, 0) || 0;
 
-  const cashOutTotal = cashBankEntries?.filter(entry => 
+  const cashOutTotal = cashBankEntries?.filter((entry: any) => 
     entry.transaction_type === 'cash_out' || entry.transaction_type === 'bank_withdrawal'
-  ).reduce((sum, entry) => sum + entry.amount, 0) || 0;
+  ).reduce((sum: number, entry: any) => sum + entry.amount, 0) || 0;
 
   const netCashFlow = cashInTotal - cashOutTotal;
 
@@ -346,7 +346,7 @@ export const CashBankLedger: React.FC = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    cashBankEntries?.map((entry) => (
+                    cashBankEntries?.map((entry: any) => (
                       <TableRow key={entry.id}>
                         <TableCell>
                           {getTransactionTypeBadge(entry.transaction_type)}

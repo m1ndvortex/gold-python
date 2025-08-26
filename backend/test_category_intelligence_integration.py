@@ -16,7 +16,8 @@ from fastapi.testclient import TestClient
 
 from main import app
 from database import get_db, engine
-from models import Base, Category, InventoryItem, Customer, Invoice, InvoiceItem
+from database_base import Base
+from models import Category, InventoryItem, Customer, Invoice, InvoiceItem
 from services.category_intelligence_service import CategoryIntelligenceService
 import uuid
 

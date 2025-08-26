@@ -4,7 +4,11 @@ Create all database tables directly using SQLAlchemy
 """
 
 from database import engine
-from models import Base
+from database_base import Base
+# Import all model files to register them with the Base
+import models
+import models_universal
+import models_accounting
 
 def create_all_tables():
     """Create all tables defined in models"""

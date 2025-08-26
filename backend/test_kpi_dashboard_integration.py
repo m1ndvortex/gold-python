@@ -13,7 +13,8 @@ from sqlalchemy.orm import Session
 
 from main import app
 from database import get_db, engine
-from models import Base, User, Role, InventoryItem, Category, Customer, Invoice, InvoiceItem, Payment
+from database_base import Base
+from models import User, Role, InventoryItem, Category, Customer, Invoice, InvoiceItem, Payment
 from auth import create_access_token
 import models
 

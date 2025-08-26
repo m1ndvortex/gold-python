@@ -17,7 +17,8 @@ from sqlalchemy import text
 
 from main import app
 from database import get_db, create_analytics_schema
-from models import Base, ImageManagement
+from database_base import Base
+from models import ImageManagement
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_database():

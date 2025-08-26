@@ -18,7 +18,8 @@ from uuid import uuid4
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from database import SessionLocal, engine
-from models import Base, User, Role, Customer, SMSTemplate, SMSCampaign, SMSMessage
+from database_base import Base
+from models import User, Role, Customer, SMSTemplate, SMSCampaign, SMSMessage
 from schemas import SMSTemplateCreate, SMSCampaignCreate
 from services.sms_service import SMSService
 

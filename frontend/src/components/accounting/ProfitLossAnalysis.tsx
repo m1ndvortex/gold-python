@@ -444,7 +444,7 @@ export const ProfitLossAnalysis: React.FC = () => {
             <CardContent className="p-6">
               {profitLossData.top_performing_categories.length > 0 ? (
                 <div className="space-y-4">
-                  {profitLossData.top_performing_categories.map((category, index) => (
+                  {profitLossData.top_performing_categories.map((category: any, index: number) => (
                     <div key={category.category} className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/30 rounded-xl border-0 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">

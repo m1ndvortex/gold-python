@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database import engine, get_db
 import models
-from routers import auth, oauth2_auth, roles, inventory, customers, invoices, reports, settings, sms, analytics, profitability, customer_intelligence, inventory_intelligence, custom_reports, kpi_dashboard, analytics_data, chart_sharing, cost_analysis, category_intelligence, alerts, cache_management, backup_management, disaster_recovery, image_management, business_config
+from routers import auth, oauth2_auth, roles, inventory, customers, invoices, reports, settings, sms, analytics, profitability, customer_intelligence, inventory_intelligence, custom_reports, kpi_dashboard, analytics_data, chart_sharing, cost_analysis, category_intelligence, alerts, cache_management, backup_management, disaster_recovery, image_management, business_config, localization, advanced_analytics, api_gateway, api_documentation
 try:
     from routers import accounting
     ACCOUNTING_AVAILABLE = True
@@ -25,9 +25,52 @@ except Exception as e:
     print(f"Warning: Could not seed database: {e}")
 
 app = FastAPI(
-    title="Gold Shop Management API",
-    description="A comprehensive API for gold shop business management",
-    version="1.0.0"
+    title="Universal Business Management API",
+    description="""
+    A comprehensive API for universal business management with enterprise-grade features:
+    
+    ## Features
+    - **Full CRUD Operations**: Complete REST API for all business entities
+    - **API Key Management**: Secure API key authentication with rate limiting
+    - **Webhook System**: Real-time event notifications with retry logic
+    - **Bulk Operations**: Import/export capabilities with data validation
+    - **Workflow Automation**: Trigger-based actions and business process automation
+    - **External Integrations**: Connect with payment processors, shipping, and accounting services
+    - **Rate Limiting**: Configurable rate limits per API key
+    - **Usage Analytics**: Comprehensive API usage tracking and analytics
+    - **Interactive Documentation**: Built-in API documentation with testing capabilities
+    
+    ## Authentication
+    Use Bearer token authentication with your API key:
+    ```
+    Authorization: Bearer your_api_key_here
+    ```
+    
+    ## Rate Limits
+    - Default: 60 requests/minute, 1000 requests/hour, 10000 requests/day
+    - Custom limits available per API key
+    
+    ## Webhooks
+    Subscribe to real-time events:
+    - invoice.created, invoice.updated
+    - inventory.low_stock, inventory.updated
+    - customer.created, customer.updated
+    - payment.received, payment.failed
+    
+    ## Business Types Supported
+    - Gold Shop, Retail Store, Restaurant, Service Business
+    - Manufacturing, Wholesale, Pharmacy, Automotive
+    - Custom business types with configurable workflows
+    """,
+    version="2.0.0",
+    contact={
+        "name": "API Support",
+        "email": "api-support@universalbusiness.com"
+    },
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT"
+    }
 )
 
 # Configure CORS
@@ -66,6 +109,10 @@ app.include_router(backup_management.router)
 app.include_router(disaster_recovery.router)
 app.include_router(image_management.router)
 app.include_router(business_config.router)
+app.include_router(localization.router)
+app.include_router(advanced_analytics.router)
+app.include_router(api_gateway.router)
+app.include_router(api_documentation.router)
 
 # Include accounting router if available
 if ACCOUNTING_AVAILABLE:

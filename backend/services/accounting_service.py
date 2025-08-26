@@ -10,8 +10,10 @@ from datetime import datetime, date
 from decimal import Decimal
 import uuid
 
+from models_universal import (
+    ChartOfAccounts, AccountingPeriod, JournalEntry, JournalEntryLine
+)
 from models_accounting import (
-    ChartOfAccounts, AccountingPeriod, JournalEntry, JournalEntryLine,
     BankAccount, BankTransaction, BankReconciliation, CheckRegister,
     AccountingAuditLog
 )

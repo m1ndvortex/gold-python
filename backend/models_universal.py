@@ -14,7 +14,8 @@ from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.sql import func
 import uuid
 
-Base = declarative_base()
+# Import Base from database_base to ensure single metadata instance
+from database_base import Base
 
 # Business Configuration Models
 class BusinessConfiguration(Base):
@@ -160,7 +161,7 @@ class Category(Base):
     
     __table_args__ = (
         Index('idx_categories_parent', 'parent_id'),
-        Index('idx_categories_path', 'path', postgresql_using='gist'),
+        Index('idx_categories_path', 'path'),
         Index('idx_categories_level', 'level'),
         Index('idx_categories_business_type', 'business_type'),
         Index('idx_categories_active', 'is_active'),
@@ -214,7 +215,7 @@ class InventoryItem(Base):
     
     category = relationship("Category", back_populates="inventory_items")
     invoice_items = relationship("InvoiceItem", back_populates="inventory_item")
-    inventory_movements = relationship("InventoryMovement", back_populates="inventory_item")
+    inventory_movements = relationship("InventoryMovement", back_populates="inventory_item", cascade="all, delete-orphan")
     
     __table_args__ = (
         Index('idx_inventory_items_sku', 'sku', unique=True),

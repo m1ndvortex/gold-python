@@ -80,8 +80,8 @@ export const IncomeLedger: React.FC = () => {
     return format(new Date(dateString), 'MMM dd, yyyy HH:mm');
   };
 
-  const totalRevenue = incomeEntries?.reduce((sum, entry) => sum + entry.paid_amount, 0) || 0;
-  const totalOutstanding = incomeEntries?.reduce((sum, entry) => sum + entry.remaining_amount, 0) || 0;
+  const totalRevenue = incomeEntries?.reduce((sum: number, entry: any) => sum + entry.paid_amount, 0) || 0;
+  const totalOutstanding = incomeEntries?.reduce((sum: number, entry: any) => sum + entry.remaining_amount, 0) || 0;
 
   if (error) {
     return (
@@ -299,7 +299,7 @@ export const IncomeLedger: React.FC = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    incomeEntries?.map((entry) => (
+                    incomeEntries?.map((entry: any) => (
                       <TableRow key={entry.id}>
                         <TableCell className="font-medium">
                           {entry.invoice_number}

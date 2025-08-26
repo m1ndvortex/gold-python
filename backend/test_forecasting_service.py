@@ -17,7 +17,8 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from database import get_db
 from services.forecasting_service import ForecastingService, DemandForecast, SeasonalityAnalysis, SafetyStockRecommendation
-from models import Base, InventoryItem, Invoice, InvoiceItem, Customer, Category
+from database_base import Base
+from models import InventoryItem, Invoice, InvoiceItem, Customer, Category
 
 # Test database setup - use Docker database
 TEST_DATABASE_URL = "postgresql://postgres:postgres@db:5432/goldshop"
