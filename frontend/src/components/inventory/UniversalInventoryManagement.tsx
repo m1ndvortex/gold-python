@@ -175,7 +175,7 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
     setIsLoadingAlerts(true);
     try {
       const response = await stockAlertsApi.getLowStockAlerts(1.0, undefined, businessType);
-      setLowStockAlerts(response.alerts);
+      setLowStockAlerts(response?.alerts || []);
     } catch (error) {
       console.error('Failed to load alerts:', error);
     } finally {
@@ -193,7 +193,7 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
         10, // limit
         0 // offset
       );
-      setRecentMovements(response.movements);
+      setRecentMovements(response?.movements || []);
     } catch (error) {
       console.error('Failed to load recent movements:', error);
     }
@@ -344,7 +344,7 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
       sortable: true,
       filterable: true,
       filterType: 'select',
-      filterOptions: categories.map(cat => ({ label: cat.name, value: cat.id })),
+      filterOptions: categories?.map(cat => ({ label: cat.name, value: cat.id })) || [],
     },
     {
       id: 'pricing',
