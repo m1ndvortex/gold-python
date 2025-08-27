@@ -4,6 +4,27 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
 
+// Mock ResizeObserver
+class ResizeObserverMock {
+  observe = jest.fn();
+  unobserve = jest.fn();
+  disconnect = jest.fn();
+}
+
+global.ResizeObserver = ResizeObserverMock;
+
+// Mock IntersectionObserver
+class IntersectionObserverMock {
+  observe = jest.fn();
+  unobserve = jest.fn();
+  disconnect = jest.fn();
+  root = null;
+  rootMargin = '';
+  thresholds = [];
+}
+
+global.IntersectionObserver = IntersectionObserverMock;
+
 // Mock axios
 jest.mock('axios', () => ({
   default: {

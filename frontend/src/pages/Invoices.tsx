@@ -21,7 +21,7 @@ import {
   Eye
 } from 'lucide-react';
 import { InvoiceList } from '../components/invoices/InvoiceList';
-import { InvoiceForm } from '../components/invoices/InvoiceForm';
+import { EnhancedInvoiceForm } from '../components/invoices/EnhancedInvoiceForm';
 import { InvoicePreview } from '../components/invoices/InvoicePreview';
 import { PaymentForm } from '../components/invoices/PaymentForm';
 import { PDFGenerator } from '../components/invoices/PDFGenerator';
@@ -384,9 +384,10 @@ export const Invoices: React.FC = () => {
             </div>
           </DialogHeader>
           <div className="pt-6">
-            <InvoiceForm
+            <EnhancedInvoiceForm
               onSuccess={handleInvoiceCreated}
               onCancel={closeDialogs}
+              mode={selectedInvoice ? 'edit' : 'create'}
               initialData={selectedInvoice ? {
                 customer_id: selectedInvoice.customer_id,
                 gold_price_per_gram: selectedInvoice.gold_price_per_gram,

@@ -481,6 +481,89 @@ async def cleanup_expired_tokens(
     
     return {"message": f"Cleaned up {cleaned_count} expired tokens"}
 
+@router.get("/providers")
+async def get_oauth2_providers():
+    """Get available OAuth2 providers"""
+    
+    providers = []
+    
+    # Check if OAuth2 is configured and add available providers
+    if validate_oauth2_config():
+        provider_info = {
+            "id": config.provider.value,
+            "name": config.provider.value.title(),
+            "type": config.provider.value,
+            "enabled": True,
+            "configured": True
+        }
+        
+        # Add provider-specific information
+        if config.provider.value == "auth0":
+            provider_info.update({
+                "display_name": "Auth0",
+                "icon": "auth0",
+                "description": "Enterprise identity platform"
+            })
+        elif config.provider.value == "keycloak":
+            provider_info.update({
+                "display_name": "Keycloak",
+                "icon": "keycloak", 
+                "description": "Open source identity management"
+            })
+        else:
+            provider_info.update({
+                "display_name": "Custom OAuth2",
+                "icon": "oauth",
+                "description": "Custom OAuth2 provider"
+            })
+        
+        providers.append(provider_info)
+    
+    # Always include traditional login as an option
+    providers.append({
+        "id": "traditional",
+        "name": "traditional",
+        "type": "traditional",
+        "display_name": "Username & Password",
+        "icon": "login",
+        "description": "Traditional username and password login",
+        "enabled": True,
+        "configured": True
+    })
+    
+    return {
+        "providers": providers,
+        "default_provider": "traditional" if not validate_oauth2_config() else config.provider.value
+    }
+
+@router.get("/providers/{provider_id}/config")
+async def get_provider_config(provider_id: str):
+    """Get OAuth2 provider configuration for client-side use"""
+    
+    if provider_id == "traditional":
+        return {
+            "type": "traditional",
+            "login_endpoint": "/api/oauth2/login",
+            "requires_redirect": False
+        }
+    
+    if not validate_oauth2_config() or provider_id != config.provider.value:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Provider not found or not configured"
+        )
+    
+    # Return safe configuration for client-side use
+    return {
+        "type": config.provider.value,
+        "client_id": config.client_id,
+        "domain": config.domain,
+        "authorize_endpoint": "/api/oauth2/authorize",
+        "callback_endpoint": "/api/oauth2/callback",
+        "requires_redirect": True,
+        "scopes": config.default_scopes
+    }
+
 @router.get("/health")
 async def oauth2_health_check():
     """OAuth2 system health check"""

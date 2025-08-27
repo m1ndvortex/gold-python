@@ -12,6 +12,7 @@ export interface InvoiceItemCreate {
   inventory_item_id: string;
   quantity: number;
   weight_grams: number;
+  unit_price: number;
 }
 
 export interface InvoiceCreate {

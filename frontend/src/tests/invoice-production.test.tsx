@@ -3,7 +3,7 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { InvoiceList } from '../components/invoices/InvoiceList';
-import { InvoiceForm } from '../components/invoices/InvoiceForm';
+import { EnhancedInvoiceForm } from '../components/invoices/EnhancedInvoiceForm';
 import { PaymentForm } from '../components/invoices/PaymentForm';
 import { Invoices } from '../pages/Invoices';
 

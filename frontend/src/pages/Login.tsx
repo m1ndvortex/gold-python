@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button } from '../components/ui/button';
@@ -10,7 +10,8 @@ import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../hooks/useLanguage';
 import { LoginCredentials } from '../types';
 import { cn } from '../lib/utils';
-import { Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, ArrowLeft } from 'lucide-react';
+import { OAuth2LoginInterface } from '../components/auth/OAuth2LoginInterface';
 
 interface LoginFormData extends LoginCredentials {
   rememberMe?: boolean;
@@ -18,6 +19,7 @@ interface LoginFormData extends LoginCredentials {
 
 export const Login: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [showTraditionalLogin, setShowTraditionalLogin] = useState(false);
   const { login, isLoggingIn, loginError, isAuthenticated, isLoading } = useAuth();
   const { t, language, setLanguage, direction } = useLanguage();
   const navigate = useNavigate();
@@ -93,6 +95,14 @@ export const Login: React.FC = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleTraditionalLogin = () => {
+    setShowTraditionalLogin(true);
+  };
+
+  const handleBackToOAuth2 = () => {
+    setShowTraditionalLogin(false);
+  };
+
   const getErrorMessage = (error: any): string => {
     if (!error) return '';
     
@@ -130,7 +140,7 @@ export const Login: React.FC = () => {
         <div className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-br from-cyan-200/20 to-blue-300/15 rounded-full blur-2xl animate-bounce"></div>
       </div>
 
-      <div className="max-w-md w-full space-y-8 relative z-10">
+      <div className="max-w-2xl w-full space-y-8 relative z-10">
         {/* Enhanced Header */}
         <div className="text-center space-y-6">
           <div className="flex items-center justify-center">
@@ -170,28 +180,55 @@ export const Login: React.FC = () => {
           </div>
         </div>
 
-        {/* Enhanced Login Form */}
-        <Card className="shadow-2xl border-0 bg-white/98 backdrop-blur-md hover:shadow-3xl transition-all duration-500">
-          <CardHeader className="space-y-6 pb-8">
-            <div className="text-center space-y-3">
-              <CardTitle className="text-4xl font-bold bg-gradient-to-r from-green-600 via-teal-600 to-blue-600 bg-clip-text text-transparent">
-                {t('auth.login')}
-              </CardTitle>
-              <CardDescription className="text-lg text-slate-600 font-medium">
-                {language === 'en' 
-                  ? 'Enter your credentials to access the system' 
-                  : 'اطلاعات ورود خود را برای دسترسی به سیستم وارد کنید'
-                }
-              </CardDescription>
-            </div>
-            {/* Enhanced Security Badge */}
-            <div className="flex items-center justify-center">
-              <div className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 text-green-700 rounded-full text-sm font-medium shadow-sm">
-                <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-full animate-pulse"></div>
-                <span>{language === 'en' ? '🔒 Secure Connection' : '🔒 اتصال امن'}</span>
+        {/* OAuth2 or Traditional Login */}
+        {!showTraditionalLogin ? (
+          <OAuth2LoginInterface 
+            onTraditionalLogin={handleTraditionalLogin}
+            className="shadow-2xl border-0 bg-white/98 backdrop-blur-md hover:shadow-3xl transition-all duration-500"
+          />
+        ) : (
+          <Card className="shadow-2xl border-0 bg-white/98 backdrop-blur-md hover:shadow-3xl transition-all duration-500">
+            <CardHeader className="space-y-6 pb-8">
+              <div className="flex items-center justify-between">
+                <Button
+                  onClick={handleBackToOAuth2}
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  {language === 'en' ? 'Back to OAuth2' : 'بازگشت به OAuth2'}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleLanguage}
+                  className="bg-white/70 backdrop-blur-sm border-green-200 hover:bg-white/90 hover:border-green-300 transition-all duration-300 shadow-lg hover:shadow-xl"
+                >
+                  <span className="mr-2">{language === 'en' ? '🇮🇷' : '🇺🇸'}</span>
+                  {language === 'en' ? 'فارسی' : 'English'}
+                </Button>
               </div>
-            </div>
-          </CardHeader>
+              
+              <div className="text-center space-y-3">
+                <CardTitle className="text-4xl font-bold bg-gradient-to-r from-green-600 via-teal-600 to-blue-600 bg-clip-text text-transparent">
+                  {t('auth.login')}
+                </CardTitle>
+                <CardDescription className="text-lg text-slate-600 font-medium">
+                  {language === 'en' 
+                    ? 'Enter your credentials to access the system' 
+                    : 'اطلاعات ورود خود را برای دسترسی به سیستم وارد کنید'
+                  }
+                </CardDescription>
+              </div>
+              {/* Enhanced Security Badge */}
+              <div className="flex items-center justify-center">
+                <div className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 text-green-700 rounded-full text-sm font-medium shadow-sm">
+                  <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-full animate-pulse"></div>
+                  <span>{language === 'en' ? '🔒 Secure Connection' : '🔒 اتصال امن'}</span>
+                </div>
+              </div>
+            </CardHeader>
           <CardContent className="space-y-6">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* Username Field */}
@@ -353,8 +390,9 @@ export const Login: React.FC = () => {
                 </span>
               </div>
             </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

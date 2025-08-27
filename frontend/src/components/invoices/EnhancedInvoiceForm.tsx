@@ -131,7 +131,7 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
       items: [{ 
         inventory_item_id: '', 
         quantity: 1, 
-        weight_grams: 0,
+        weight_grams: 1, // Set to 1 instead of 0 to avoid validation issues
         unit_price_override: undefined,
         discount_percentage: 0,
         notes: ''
@@ -152,27 +152,44 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
   useEffect(() => {
     const { customer_id, items, ...calculationData } = watchedValues;
     
+    // Debug logging
+    console.log('Calculation check:', {
+      customer_id: !!customer_id,
+      items_length: items?.length || 0,
+      items_valid: items?.every(item => item.inventory_item_id && item.quantity > 0 && item.weight_grams > 0),
+      gold_price: calculationData.gold_price_per_gram,
+      items: items
+    });
+    
     if (
       customer_id &&
-      items.length > 0 &&
+      items?.length > 0 &&
       items.every(item => item.inventory_item_id && item.quantity > 0 && item.weight_grams > 0) &&
       calculationData.gold_price_per_gram > 0
     ) {
       const invoiceData: InvoiceCreate = {
         customer_id,
-        ...calculationData,
+        gold_price_per_gram: calculationData.gold_price_per_gram,
+        labor_cost_percentage: calculationData.labor_cost_percentage || 0,
+        profit_percentage: calculationData.profit_percentage || 0,
+        vat_percentage: calculationData.vat_percentage || 0,
         items: items.map(item => ({
           inventory_item_id: item.inventory_item_id,
           quantity: item.quantity,
           weight_grams: item.weight_grams,
+          unit_price: item.unit_price_override || 0, // Backend will calculate actual price
         })),
       };
 
+      console.log('Triggering calculation with:', invoiceData);
+
       calculateMutation.mutate(invoiceData, {
         onSuccess: (result) => {
+          console.log('Calculation success:', result);
           setCalculation(result);
         },
-        onError: () => {
+        onError: (error) => {
+          console.error('Calculation error:', error);
           setCalculation(null);
         },
       });
@@ -195,7 +212,7 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
     append({ 
       inventory_item_id: '', 
       quantity: 1, 
-      weight_grams: 0,
+      weight_grams: 1, // Set to 1 instead of 0 to avoid validation issues
       unit_price_override: undefined,
       discount_percentage: 0,
       notes: ''
@@ -221,6 +238,7 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
         inventory_item_id: item.inventory_item_id,
         quantity: item.quantity,
         weight_grams: item.weight_grams,
+        unit_price: item.unit_price_override || 0, // Backend will calculate actual price
       })),
     };
 
@@ -290,38 +308,38 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 bg-transparent h-auto p-1">
+        <TabsList className="grid w-full grid-cols-5 bg-gradient-to-r from-slate-50/80 to-slate-100/60 backdrop-blur-sm border border-slate-200/40 h-auto p-1 rounded-lg">
           <TabsTrigger 
             value="basic" 
-            className="flex items-center gap-2 p-3 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-blue-300 rounded-lg m-1 transition-all duration-300"
+            className="flex items-center gap-2 p-3 text-slate-700 hover:text-slate-900 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-blue-300 data-[state=active]:text-blue-900 rounded-lg m-1 transition-all duration-300"
           >
             <FileText className="h-4 w-4" />
             <span className="font-medium">Basic Info</span>
           </TabsTrigger>
           <TabsTrigger 
             value="items" 
-            className="flex items-center gap-2 p-3 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300 rounded-lg m-1 transition-all duration-300"
+            className="flex items-center gap-2 p-3 text-slate-700 hover:text-slate-900 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-purple-300 data-[state=active]:text-purple-900 rounded-lg m-1 transition-all duration-300"
           >
             <Receipt className="h-4 w-4" />
             <span className="font-medium">Items</span>
           </TabsTrigger>
           <TabsTrigger 
             value="validation" 
-            className="flex items-center gap-2 p-3 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-green-300 rounded-lg m-1 transition-all duration-300"
+            className="flex items-center gap-2 p-3 text-slate-700 hover:text-slate-900 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-green-300 data-[state=active]:text-green-900 rounded-lg m-1 transition-all duration-300"
           >
             <Package className="h-4 w-4" />
             <span className="font-medium">Validation</span>
           </TabsTrigger>
           <TabsTrigger 
             value="analytics" 
-            className="flex items-center gap-2 p-3 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-emerald-300 rounded-lg m-1 transition-all duration-300"
+            className="flex items-center gap-2 p-3 text-slate-700 hover:text-slate-900 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-emerald-300 data-[state=active]:text-emerald-900 rounded-lg m-1 transition-all duration-300"
           >
             <BarChart3 className="h-4 w-4" />
             <span className="font-medium">Analytics</span>
           </TabsTrigger>
           <TabsTrigger 
             value="workflow" 
-            className="flex items-center gap-2 p-3 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-indigo-300 rounded-lg m-1 transition-all duration-300"
+            className="flex items-center gap-2 p-3 text-slate-700 hover:text-slate-900 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:border-2 data-[state=active]:border-indigo-300 data-[state=active]:text-indigo-900 rounded-lg m-1 transition-all duration-300"
           >
             <Settings className="h-4 w-4" />
             <span className="font-medium">Workflow</span>
@@ -331,13 +349,13 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <TabsContent value="basic" className="space-y-6 mt-6">
             {/* Customer Selection */}
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50">
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50/80 to-indigo-100/60 backdrop-blur-sm border border-blue-200/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
                     <FileText className="h-4 w-4 text-white" />
                   </div>
-                  <span className="text-blue-800">Customer & Business Information</span>
+                  <span className="text-blue-900 font-semibold">Customer & Business Information</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -395,23 +413,23 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
                 </div>
 
                 {selectedCustomer && (
-                  <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="p-3 bg-white/60 backdrop-blur-sm rounded-lg border border-blue-200/40">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
-                        <span className="block text-gray-600">Current Debt</span>
-                        <span className="font-medium">${selectedCustomer.current_debt.toFixed(2)}</span>
+                        <span className="block text-slate-700 font-medium">Current Debt</span>
+                        <span className="font-semibold text-slate-900">${selectedCustomer.current_debt.toFixed(2)}</span>
                       </div>
                       <div>
-                        <span className="block text-gray-600">Total Purchases</span>
-                        <span className="font-medium">${selectedCustomer.total_purchases.toFixed(2)}</span>
+                        <span className="block text-slate-700 font-medium">Total Purchases</span>
+                        <span className="font-semibold text-slate-900">${selectedCustomer.total_purchases.toFixed(2)}</span>
                       </div>
                       <div>
-                        <span className="block text-gray-600">Customer Type</span>
-                        <span className="font-medium">{selectedCustomer.customer_type || 'Standard'}</span>
+                        <span className="block text-slate-700 font-medium">Customer Type</span>
+                        <span className="font-semibold text-slate-900">{selectedCustomer.customer_type || 'Standard'}</span>
                       </div>
                       <div>
-                        <span className="block text-gray-600">Credit Limit</span>
-                        <span className="font-medium">
+                        <span className="block text-slate-700 font-medium">Credit Limit</span>
+                        <span className="font-semibold text-slate-900">
                           {selectedCustomer.credit_limit ? `$${selectedCustomer.credit_limit.toFixed(2)}` : 'No limit'}
                         </span>
                       </div>
@@ -422,14 +440,14 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
             </Card>
 
             {/* Pricing Configuration */}
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-50 to-teal-100/50">
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-50/80 to-teal-100/60 backdrop-blur-sm border border-emerald-200/30">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
                       <Calculator className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-emerald-800">Pricing Configuration</span>
+                    <span className="text-emerald-900 font-semibold">Pricing Configuration</span>
                   </CardTitle>
                   <Button
                     type="button"
@@ -499,7 +517,7 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
                 )}
 
                 {showAdvancedPricing && (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-emerald-50/50 border border-emerald-200/50 rounded-lg">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-white/60 backdrop-blur-sm border border-emerald-200/50 rounded-lg">
                     <div>
                       <Label htmlFor="discount_percentage">Global Discount (%)</Label>
                       <Input
@@ -538,13 +556,13 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
 
           <TabsContent value="items" className="space-y-6 mt-6">
             {/* Items Selection */}
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50">
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50/80 to-violet-100/60 backdrop-blur-sm border border-purple-200/30">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
                     <Receipt className="h-4 w-4 text-white" />
                   </div>
-                  <span className="text-purple-800">Invoice Items</span>
+                  <span className="text-purple-900 font-semibold">Invoice Items</span>
                 </CardTitle>
                 <Button 
                   type="button" 
@@ -558,7 +576,7 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
               </CardHeader>
               <CardContent className="space-y-4">
                 {fields.map((field, index) => (
-                  <div key={field.id} className="grid grid-cols-12 gap-4 items-end p-4 border rounded-lg">
+                  <div key={field.id} className="grid grid-cols-12 gap-4 items-end p-4 bg-white/60 backdrop-blur-sm border border-purple-200/40 rounded-lg">
                     <div className="col-span-4">
                       <Label>Item *</Label>
                       <Select
@@ -654,37 +672,37 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
 
             {/* Calculation Summary */}
             {calculation && (
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-100/50">
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50/80 to-emerald-100/60 backdrop-blur-sm border border-green-200/30">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
                       <Calculator className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-green-800">Invoice Summary</span>
+                    <span className="text-green-900 font-semibold">Invoice Summary</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
-                      <p className="text-gray-600">Subtotal (Gold)</p>
-                      <p className="font-medium">${calculation.subtotal.toFixed(2)}</p>
+                      <p className="text-slate-700 font-medium">Subtotal (Gold)</p>
+                      <p className="font-semibold text-slate-900">${calculation.subtotal.toFixed(2)}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Labor Cost</p>
-                      <p className="font-medium">${calculation.total_labor_cost.toFixed(2)}</p>
+                      <p className="text-slate-700 font-medium">Labor Cost</p>
+                      <p className="font-semibold text-slate-900">${calculation.total_labor_cost.toFixed(2)}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Profit</p>
-                      <p className="font-medium">${calculation.total_profit.toFixed(2)}</p>
+                      <p className="text-slate-700 font-medium">Profit</p>
+                      <p className="font-semibold text-slate-900">${calculation.total_profit.toFixed(2)}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">VAT</p>
-                      <p className="font-medium">${calculation.total_vat.toFixed(2)}</p>
+                      <p className="text-slate-700 font-medium">VAT</p>
+                      <p className="font-semibold text-slate-900">${calculation.total_vat.toFixed(2)}</p>
                     </div>
                   </div>
                   <div className="mt-4 pt-4 border-t border-green-200">
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-semibold text-green-800">Grand Total:</span>
+                      <span className="text-lg font-semibold text-green-900">Grand Total:</span>
                       <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                         ${calculation.grand_total.toFixed(2)}
                       </span>
@@ -741,7 +759,7 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
           </TabsContent>
 
           {/* Form Actions */}
-          <div className="flex justify-between sticky bottom-0 bg-white p-4 border-t shadow-lg">
+          <div className="flex justify-between sticky bottom-0 bg-white/95 backdrop-blur-sm p-4 border-t border-slate-200/50 shadow-lg">
             <div className="flex gap-2">
               {onCancel && (
                 <Button type="button" variant="outline" onClick={onCancel}>
@@ -750,14 +768,35 @@ export const EnhancedInvoiceForm: React.FC<EnhancedInvoiceFormProps> = ({
               )}
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2">
               <Button
                 type="submit"
-                disabled={!calculation || createMutation.isPending}
+                disabled={
+                  createMutation.isPending ||
+                  !watchedValues.customer_id ||
+                  !watchedValues.items?.length ||
+                  !watchedValues.items.every(item => item.inventory_item_id && item.quantity > 0 && item.weight_grams > 0) ||
+                  !watchedValues.gold_price_per_gram
+                }
                 className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 {createMutation.isPending ? 'Creating...' : 'Create Invoice'}
               </Button>
+              
+              {/* Debug info - remove in production */}
+              {(!watchedValues.customer_id ||
+                !watchedValues.items?.length ||
+                !watchedValues.items.every(item => item.inventory_item_id && item.quantity > 0 && item.weight_grams > 0) ||
+                !watchedValues.gold_price_per_gram) && (
+                <div className="text-xs text-red-600 bg-red-50 p-2 rounded">
+                  Missing: {[
+                    !watchedValues.customer_id && 'Customer',
+                    !watchedValues.items?.length && 'Items',
+                    watchedValues.items?.length && !watchedValues.items.every(item => item.inventory_item_id && item.quantity > 0 && item.weight_grams > 0) && 'Complete item details',
+                    !watchedValues.gold_price_per_gram && 'Gold price'
+                  ].filter(Boolean).join(', ')}
+                </div>
+              )}
             </div>
           </div>
         </form>

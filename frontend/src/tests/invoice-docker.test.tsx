@@ -3,7 +3,7 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { InvoiceList } from '../components/invoices/InvoiceList';
-import { InvoiceForm } from '../components/invoices/InvoiceForm';
+import { EnhancedInvoiceForm } from '../components/invoices/EnhancedInvoiceForm';
 import { PaymentForm } from '../components/invoices/PaymentForm';
 import { invoiceApi } from '../services/invoiceApi';
 import { customerApi } from '../services/customerApi';
@@ -117,11 +117,11 @@ describe('Invoice Components - Docker Integration', () => {
     });
   });
 
-  describe('InvoiceForm Component', () => {
+  describe('EnhancedInvoiceForm Component', () => {
     test('renders invoice form with customer and item selection', async () => {
       render(
         <TestWrapper>
-          <InvoiceForm />
+          <EnhancedInvoiceForm />
         </TestWrapper>
       );
 
@@ -139,7 +139,7 @@ describe('Invoice Components - Docker Integration', () => {
     test('loads customers and inventory items from backend', async () => {
       render(
         <TestWrapper>
-          <InvoiceForm />
+          <EnhancedInvoiceForm />
         </TestWrapper>
       );
 
@@ -154,7 +154,7 @@ describe('Invoice Components - Docker Integration', () => {
     test('calculates invoice totals in real-time', async () => {
       render(
         <TestWrapper>
-          <InvoiceForm />
+          <EnhancedInvoiceForm />
         </TestWrapper>
       );
 
@@ -176,7 +176,7 @@ describe('Invoice Components - Docker Integration', () => {
       
       render(
         <TestWrapper>
-          <InvoiceForm onSuccess={mockOnSuccess} />
+          <EnhancedInvoiceForm onSuccess={mockOnSuccess} />
         </TestWrapper>
       );
 
