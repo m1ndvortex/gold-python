@@ -54,4 +54,4 @@ pydantic-settings==2.1.0
 # Localization and internationalization
 babel==2.13.1
 # API Gateway HTTP client for webhooks
-aiohttp==3.9.1
+aiohttp==3.12.14
