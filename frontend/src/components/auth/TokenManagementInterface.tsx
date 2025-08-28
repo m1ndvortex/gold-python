@@ -65,7 +65,7 @@ export const TokenManagementInterface: React.FC = () => {
     try {
       const response = await fetch('/api/oauth2/token-info', {
         headers: {
-          'Authorization': \Bearer \\
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }
       });
 
@@ -82,7 +82,7 @@ export const TokenManagementInterface: React.FC = () => {
     try {
       const response = await fetch('/api/oauth2/sessions', {
         headers: {
-          'Authorization': \Bearer \\
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }
       });
 
@@ -137,8 +137,8 @@ export const TokenManagementInterface: React.FC = () => {
 
     } catch (error) {
       setError(language === 'en' 
-        ? \Token refresh failed: \The term 'tail' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again. A parameter cannot be found that matches parameter name 'X'. The term 'chmod' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again. A parameter cannot be found that matches parameter name 'Chord'. A parameter cannot be found that matches parameter name 'Chord'. A parameter cannot be found that matches parameter name 'Chord'. A parameter cannot be found that matches parameter name 'Chord'.\ 
-        : \تازهسازی توکن ناموفق بود: \The term 'tail' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again. A parameter cannot be found that matches parameter name 'X'. The term 'chmod' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again. A parameter cannot be found that matches parameter name 'Chord'. A parameter cannot be found that matches parameter name 'Chord'. A parameter cannot be found that matches parameter name 'Chord'. A parameter cannot be found that matches parameter name 'Chord'.\
+        ? `Token refresh failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        : `تازهسازی توکن ناموفق بود: ${error instanceof Error ? error.message : 'خطای نامشخص'}`
       );
     } finally {
       setRefreshing(false);
@@ -146,4 +146,147 @@ export const TokenManagementInterface: React.FC = () => {
   };
 
   return (
-    <div className=" space-y-6\>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Key className="h-5 w-5" />
+            {language === 'en' ? 'Token Management' : 'مدیریت توکن‌ها'}
+          </CardTitle>
+          <CardDescription>
+            {language === 'en' 
+              ? 'Manage your authentication tokens and active sessions'
+              : 'مدیریت توکن‌های احراز هویت و جلسات فعال'
+            }
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {error && (
+            <Alert>
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          
+          {success && (
+            <Alert>
+              <CheckCircle className="h-4 w-4" />
+              <AlertDescription>{success}</AlertDescription>
+            </Alert>
+          )}
+
+          {/* Token Information */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-medium">
+              {language === 'en' ? 'Access Token' : 'توکن دسترسی'}
+            </h3>
+            {tokenInfo ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Timer className="h-4 w-4" />
+                    <span className="text-sm font-medium">
+                      {language === 'en' ? 'Expires At:' : 'انقضا در:'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {new Date(tokenInfo.access_token_expires_at).toLocaleString()}
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <RefreshCw className="h-4 w-4" />
+                    <span className="text-sm font-medium">
+                      {language === 'en' ? 'Refresh Count:' : 'تعداد تازه‌سازی:'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {tokenInfo.refresh_count}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                {language === 'en' ? 'Loading token information...' : 'بارگذاری اطلاعات توکن...'}
+              </p>
+            )}
+          </div>
+
+          {/* Refresh Token Button */}
+          <div className="flex gap-2">
+            <Button 
+              onClick={handleRefreshToken} 
+              disabled={refreshing}
+              variant="outline"
+            >
+              {refreshing ? (
+                <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <RefreshCw className="h-4 w-4 mr-2" />
+              )}
+              {refreshing 
+                ? (language === 'en' ? 'Refreshing...' : 'در حال تازه‌سازی...')
+                : (language === 'en' ? 'Refresh Token' : 'تازه‌سازی توکن')
+              }
+            </Button>
+          </div>
+
+          {/* Active Sessions */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-medium">
+              {language === 'en' ? 'Active Sessions' : 'جلسات فعال'}
+            </h3>
+            {sessions.length > 0 ? (
+              <div className="space-y-2">
+                {sessions.map((session) => (
+                  <div key={session.session_id} className="border rounded-lg p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Activity className="h-4 w-4" />
+                        <span className="text-sm font-medium">
+                          {session.ip_address}
+                        </span>
+                        {session.is_current && (
+                          <Badge variant="default">
+                            {language === 'en' ? 'Current' : 'فعلی'}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(session.last_activity).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {session.user_agent}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                {language === 'en' ? 'No active sessions found' : 'هیچ جلسه فعالی یافت نشد'}
+              </p>
+            )}
+          </div>
+
+          {/* Logout */}
+          <div className="pt-4 border-t">
+            <Button 
+              onClick={logout} 
+              variant="destructive"
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              {language === 'en' ? 'Logout' : 'خروج'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default TokenManagementInterface;

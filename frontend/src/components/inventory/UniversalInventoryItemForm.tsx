@@ -20,7 +20,11 @@ import {
   Calendar,
   Type,
   ToggleLeft,
-  ToggleRight
+  ToggleRight,
+  Settings,
+  Archive,
+  Lock,
+  Shield
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/button';
@@ -50,6 +54,7 @@ import { Alert, AlertDescription } from '../ui/alert';
 import { Separator } from '../ui/separator';
 import { ScrollArea } from '../ui/scroll-area';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useAuth } from '../../hooks/useAuth';
 import { cn } from '../../lib/utils';
 import type { 
   UniversalInventoryItem,
@@ -104,6 +109,44 @@ export const UniversalInventoryItemForm: React.FC<UniversalInventoryItemFormProp
   isLoading = false
 }) => {
   const { t } = useLanguage();
+  const { user, hasPermission, isAuthenticated } = useAuth();
+
+  // Check authentication and permissions
+  const isEditing = !!item;
+  const requiredPermission = isEditing ? 'edit_inventory' : 'create_inventory';
+  
+  if (!isAuthenticated || !hasPermission(requiredPermission)) {
+    return (
+      <Dialog open onOpenChange={onClose}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-lg bg-red-100 flex items-center justify-center">
+                <Lock className="h-4 w-4 text-red-600" />
+              </div>
+              Access Denied
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-6 text-center">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
+                <Shield className="h-8 w-8 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">Permission Required</h3>
+                <p className="text-muted-foreground">
+                  You don't have permission to {isEditing ? 'edit' : 'create'} inventory items.
+                </p>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={onClose} variant="outline">Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isUploading, setIsUploading] = useState(false);
@@ -239,6 +282,31 @@ export const UniversalInventoryItemForm: React.FC<UniversalInventoryItemFormProp
       setValue('tags', updatedTags);
       setNewTag('');
     }
+  };
+
+  // Generate QR code data
+  const generateQRCode = () => {
+    const itemName = watch('name');
+    const sku = watch('sku');
+    const barcode = watch('barcode');
+    
+    if (itemName) {
+      const qrData = JSON.stringify({
+        name: itemName,
+        sku: sku || 'AUTO',
+        barcode: barcode || 'AUTO',
+        timestamp: new Date().toISOString()
+      });
+      setValue('qr_code', qrData);
+    }
+  };
+
+  // Generate barcode
+  const generateBarcode = () => {
+    const timestamp = Date.now().toString();
+    const randomSuffix = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    const generatedBarcode = `${timestamp.slice(-8)}${randomSuffix}`;
+    setValue('barcode', generatedBarcode);
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -445,20 +513,19 @@ export const UniversalInventoryItemForm: React.FC<UniversalInventoryItemFormProp
                         </Button>
                       </div>
                     ) : (
-                      <div className="border-2 border-dashed border-muted-foreground/25 rounded-md p-8 text-center">
+                      <div 
+                        className="border-2 border-dashed border-muted-foreground/25 rounded-md p-8 text-center cursor-pointer hover:border-green-300 transition-colors"
+                        onClick={() => document.getElementById('image-upload')?.click()}
+                      >
                         <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                         <div className="space-y-2">
                           <p className="text-sm text-muted-foreground">
                             Upload a product image
                           </p>
-                          <Label htmlFor="image-upload" className="cursor-pointer">
-                            <Button type="button" variant="outline" asChild>
-                              <span className="flex items-center gap-2">
-                                <Upload className="h-4 w-4" />
-                                Choose File
-                              </span>
-                            </Button>
-                          </Label>
+                          <Button type="button" variant="outline" className="pointer-events-none">
+                            <Upload className="h-4 w-4 mr-2" />
+                            Choose File
+                          </Button>
                         </div>
                       </div>
                     )}
@@ -556,7 +623,13 @@ export const UniversalInventoryItemForm: React.FC<UniversalInventoryItemFormProp
                             placeholder="e.g., 1234567890123"
                             disabled={watchedGenerateBarcode}
                           />
-                          <Button type="button" variant="outline" size="icon">
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="icon"
+                            onClick={generateBarcode}
+                            title="Generate Barcode"
+                          >
                             <Scan className="h-4 w-4" />
                           </Button>
                         </div>
@@ -571,7 +644,13 @@ export const UniversalInventoryItemForm: React.FC<UniversalInventoryItemFormProp
                           {...register('qr_code')}
                           placeholder="Optional QR code data"
                         />
-                        <Button type="button" variant="outline" size="icon">
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="icon"
+                          onClick={generateQRCode}
+                          title="Generate QR Code"
+                        >
                           <QrCode className="h-4 w-4" />
                         </Button>
                       </div>
@@ -877,15 +956,232 @@ export const UniversalInventoryItemForm: React.FC<UniversalInventoryItemFormProp
                   </AlertDescription>
                 </Alert>
 
-                {/* Business Type Fields */}
+                {/* Gold Shop Specific Fields */}
                 <Card variant="gradient-orange">
                   <CardHeader>
-                    <CardTitle className="text-lg">Business Type Specific Fields</CardTitle>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Settings className="h-5 w-5" />
+                      Gold Shop Specific Fields
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                      Additional fields will be available based on your business type configuration.
-                    </p>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="gold_purity">Gold Purity (Karat)</Label>
+                        <Select
+                          value={customAttributes.gold_purity || ''}
+                          onValueChange={(value) => updateCustomAttribute('gold_purity', value, 'enum')}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select purity" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="24k">24K (99.9%)</SelectItem>
+                            <SelectItem value="22k">22K (91.7%)</SelectItem>
+                            <SelectItem value="21k">21K (87.5%)</SelectItem>
+                            <SelectItem value="18k">18K (75.0%)</SelectItem>
+                            <SelectItem value="14k">14K (58.3%)</SelectItem>
+                            <SelectItem value="10k">10K (41.7%)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="gold_type">Gold Type</Label>
+                        <Select
+                          value={customAttributes.gold_type || ''}
+                          onValueChange={(value) => updateCustomAttribute('gold_type', value, 'enum')}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="yellow">Yellow Gold</SelectItem>
+                            <SelectItem value="white">White Gold</SelectItem>
+                            <SelectItem value="rose">Rose Gold</SelectItem>
+                            <SelectItem value="mixed">Mixed Gold</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="stone_type">Stone Type</Label>
+                        <Input
+                          value={customAttributes.stone_type || ''}
+                          onChange={(e) => updateCustomAttribute('stone_type', e.target.value, 'text')}
+                          placeholder="e.g., Diamond, Ruby, Emerald"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="stone_weight">Stone Weight (Carat)</Label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          value={customAttributes.stone_weight || ''}
+                          onChange={(e) => updateCustomAttribute('stone_weight', parseFloat(e.target.value) || 0, 'number')}
+                          placeholder="0.00"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="making_charges">Making Charges (%)</Label>
+                        <Input
+                          type="number"
+                          step="0.1"
+                          value={customAttributes.making_charges || ''}
+                          onChange={(e) => updateCustomAttribute('making_charges', parseFloat(e.target.value) || 0, 'number')}
+                          placeholder="0.0"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="hallmark_number">Hallmark Number</Label>
+                        <Input
+                          value={customAttributes.hallmark_number || ''}
+                          onChange={(e) => updateCustomAttribute('hallmark_number', e.target.value, 'text')}
+                          placeholder="Hallmark certification number"
+                        />
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-medium">Additional Properties</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex items-center space-x-2">
+                          <Switch
+                            checked={!!customAttributes.is_certified}
+                            onCheckedChange={(checked) => updateCustomAttribute('is_certified', checked, 'boolean')}
+                          />
+                          <Label>Certified Item</Label>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <Switch
+                            checked={!!customAttributes.is_antique}
+                            onCheckedChange={(checked) => updateCustomAttribute('is_antique', checked, 'boolean')}
+                          />
+                          <Label>Antique Item</Label>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <Switch
+                            checked={!!customAttributes.is_custom_made}
+                            onCheckedChange={(checked) => updateCustomAttribute('is_custom_made', checked, 'boolean')}
+                          />
+                          <Label>Custom Made</Label>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <Switch
+                            checked={!!customAttributes.requires_special_care}
+                            onCheckedChange={(checked) => updateCustomAttribute('requires_special_care', checked, 'boolean')}
+                          />
+                          <Label>Requires Special Care</Label>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Supplier Information */}
+                <Card variant="gradient-purple">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Package className="h-5 w-5" />
+                      Supplier Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="supplier_name">Supplier Name</Label>
+                        <Input
+                          value={customAttributes.supplier_name || ''}
+                          onChange={(e) => updateCustomAttribute('supplier_name', e.target.value, 'text')}
+                          placeholder="Supplier or manufacturer name"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="supplier_code">Supplier Code</Label>
+                        <Input
+                          value={customAttributes.supplier_code || ''}
+                          onChange={(e) => updateCustomAttribute('supplier_code', e.target.value, 'text')}
+                          placeholder="Internal supplier code"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="purchase_date">Purchase Date</Label>
+                        <Input
+                          type="date"
+                          value={customAttributes.purchase_date || ''}
+                          onChange={(e) => updateCustomAttribute('purchase_date', e.target.value, 'date')}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="warranty_period">Warranty Period (Months)</Label>
+                        <Input
+                          type="number"
+                          value={customAttributes.warranty_period || ''}
+                          onChange={(e) => updateCustomAttribute('warranty_period', parseInt(e.target.value) || 0, 'number')}
+                          placeholder="12"
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Location & Storage */}
+                <Card variant="gradient-teal">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Archive className="h-5 w-5" />
+                      Location & Storage
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="storage_location">Storage Location</Label>
+                        <Input
+                          value={customAttributes.storage_location || ''}
+                          onChange={(e) => updateCustomAttribute('storage_location', e.target.value, 'text')}
+                          placeholder="e.g., Vault A, Shelf 3"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="display_location">Display Location</Label>
+                        <Input
+                          value={customAttributes.display_location || ''}
+                          onChange={(e) => updateCustomAttribute('display_location', e.target.value, 'text')}
+                          placeholder="e.g., Showcase 1, Position 5"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="security_level">Security Level</Label>
+                        <Select
+                          value={customAttributes.security_level || ''}
+                          onValueChange={(value) => updateCustomAttribute('security_level', value, 'enum')}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select level" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="low">Low Security</SelectItem>
+                            <SelectItem value="medium">Medium Security</SelectItem>
+                            <SelectItem value="high">High Security</SelectItem>
+                            <SelectItem value="maximum">Maximum Security</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>

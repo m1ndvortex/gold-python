@@ -26,9 +26,13 @@ import {
   Wallet,
   CreditCard,
   Building2,
-  Users
+  Users,
+  Lock,
+  Shield
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useAuth } from '../../hooks/useAuth';
+import { WithPermissions } from '../auth/WithPermissions';
 import { accountingApi } from '../../services/accountingApi';
 import { AccountingDashboardData } from '../../types/accounting';
 
@@ -40,6 +44,48 @@ export const AccountingDashboard: React.FC<AccountingDashboardProps> = ({ classN
   const [dashboardData, setDashboardData] = useState<AccountingDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user, hasPermission, isAuthenticated } = useAuth();
+
+  // Check authentication and permissions
+  if (!isAuthenticated) {
+    return (
+      <div className={cn("space-y-6", className)}>
+        <Card className="border-0 shadow-lg">
+          <CardContent className="p-8 text-center">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
+                <Lock className="h-8 w-8 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">Authentication Required</h3>
+                <p className="text-muted-foreground">Please log in to access accounting dashboard.</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!hasPermission('view_accounting')) {
+    return (
+      <div className={cn("space-y-6", className)}>
+        <Card className="border-0 shadow-lg">
+          <CardContent className="p-8 text-center">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center">
+                <Shield className="h-8 w-8 text-amber-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">Access Denied</h3>
+                <p className="text-muted-foreground">You don't have permission to view accounting data.</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   useEffect(() => {
     loadDashboardData();
@@ -149,10 +195,12 @@ export const AccountingDashboard: React.FC<AccountingDashboardProps> = ({ classN
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
-          <Button variant="gradient-green" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
+          <WithPermissions permissions={['export_reports']}>
+            <Button variant="gradient-green" size="sm">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+          </WithPermissions>
         </div>
       </div>
 

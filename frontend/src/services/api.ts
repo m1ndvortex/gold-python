@@ -1,5 +1,6 @@
 // Base API utilities for making HTTP requests
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// 🐳 DOCKER FIX: Use empty base URL for proxy compatibility
+const API_BASE_URL = '';
 
 interface ApiRequestOptions {
   headers?: Record<string, string>;

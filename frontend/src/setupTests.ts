@@ -18,12 +18,13 @@ class IntersectionObserverMock {
   observe = jest.fn();
   unobserve = jest.fn();
   disconnect = jest.fn();
+  takeRecords = jest.fn(() => []);
   root = null;
   rootMargin = '';
   thresholds = [];
 }
 
-global.IntersectionObserver = IntersectionObserverMock;
+global.IntersectionObserver = IntersectionObserverMock as any;
 
 // Mock axios
 jest.mock('axios', () => ({

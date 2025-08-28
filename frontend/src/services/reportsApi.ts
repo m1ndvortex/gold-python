@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+import { AuthenticatedApiClient } from './AuthenticatedApiClient';
 
 // Utility function to clean up parameters (remove empty strings and undefined values)
 const cleanParams = (params: Record<string, any>): Record<string, any> => {
@@ -11,18 +9,6 @@ const cleanParams = (params: Record<string, any>): Record<string, any> => {
     }
   }
   return cleaned;
-};
-
-// Create axios instance with auth token
-const createAuthenticatedAxios = () => {
-  const token = localStorage.getItem('access_token');
-  return axios.create({
-    baseURL: API_BASE_URL,
-    headers: {
-      'Authorization': token ? `Bearer ${token}` : '',
-      'Content-Type': 'application/json',
-    },
-  });
 };
 
 export interface SalesTrendData {
@@ -208,96 +194,140 @@ export interface SalesOverviewChartData {
   };
 }
 
-// Sales Reports API
-export const getSalesTrends = async (params: {
+class ReportsApiService extends AuthenticatedApiClient {
+  constructor() {
+    super({
+      timeout: 30000, // 30 second timeout for reports
+      retryAttempts: 2,
+    });
+  }
+
+  // Sales Reports API
+  async getSalesTrends(params: {
+    start_date?: string;
+    end_date?: string;
+    period?: 'daily' | 'weekly' | 'monthly';
+    category_id?: string;
+  }): Promise<SalesTrendData> {
+    const cleanedParams = cleanParams(params);
+    return this.get<SalesTrendData>('/reports/sales/trends', { params: cleanedParams });
+  }
+
+  async getTopProducts(params: {
+    start_date?: string;
+    end_date?: string;
+    limit?: number;
+  }): Promise<TopProductsData> {
+    const cleanedParams = cleanParams(params);
+    return this.get<TopProductsData>('/reports/sales/top-products', { params: cleanedParams });
+  }
+
+  // Inventory Reports API
+  async getInventoryValuation(params: {
+    category_id?: string;
+    include_inactive?: boolean;
+  }): Promise<InventoryValuationData> {
+    const cleanedParams = cleanParams(params);
+    return this.get<InventoryValuationData>('/reports/inventory/valuation', { params: cleanedParams });
+  }
+
+  async getLowStockReport(params: {
+    category_id?: string;
+    threshold_multiplier?: number;
+  }): Promise<LowStockData> {
+    const cleanedParams = cleanParams(params);
+    return this.get<LowStockData>('/reports/inventory/low-stock', { params: cleanedParams });
+  }
+
+  // Customer Reports API
+  async getCustomerAnalysis(params: {
+    start_date?: string;
+    end_date?: string;
+    min_purchases?: number;
+  }): Promise<CustomerAnalysisData> {
+    const cleanedParams = cleanParams(params);
+    return this.get<CustomerAnalysisData>('/reports/customers/analysis', { params: cleanedParams });
+  }
+
+  async getDebtReport(params: {
+    min_debt?: number;
+    sort_by?: 'debt_desc' | 'debt_asc' | 'name' | 'last_payment';
+  }): Promise<DebtReportData> {
+    const cleanedParams = cleanParams(params);
+    return this.get<DebtReportData>('/reports/customers/debt-report', { params: cleanedParams });
+  }
+
+  // Chart Data API
+  async getSalesOverviewChart(params: {
+    days?: number;
+  }): Promise<SalesOverviewChartData> {
+    const cleanedParams = cleanParams(params);
+    return this.get<SalesOverviewChartData>('/reports/charts/sales-overview', { params: cleanedParams });
+  }
+
+  // Export functionality
+  async exportReportToPDF(reportType: string, data: any): Promise<Blob> {
+    const response = await this.axiosInstance.post(`/reports/export/${reportType}`, data, {
+      responseType: 'blob',
+    });
+    return response.data as Blob;
+  }
+
+  async exportReportToCSV(reportType: string, data: any): Promise<Blob> {
+    const response = await this.axiosInstance.post(`/reports/export/${reportType}/csv`, data, {
+      responseType: 'blob',
+    });
+    return response.data as Blob;
+  }
+}
+
+// Create singleton instance
+const reportsApiService = new ReportsApiService();
+
+// Export individual functions for backward compatibility
+export const getSalesTrends = (params: {
   start_date?: string;
   end_date?: string;
   period?: 'daily' | 'weekly' | 'monthly';
   category_id?: string;
-}): Promise<SalesTrendData> => {
-  const api = createAuthenticatedAxios();
-  const cleanedParams = cleanParams(params);
-  const response = await api.get('/reports/sales/trends', { params: cleanedParams });
-  return response.data as SalesTrendData;
-};
+}) => reportsApiService.getSalesTrends(params);
 
-export const getTopProducts = async (params: {
+export const getTopProducts = (params: {
   start_date?: string;
   end_date?: string;
   limit?: number;
-}): Promise<TopProductsData> => {
-  const api = createAuthenticatedAxios();
-  const cleanedParams = cleanParams(params);
-  const response = await api.get('/reports/sales/top-products', { params: cleanedParams });
-  return response.data as TopProductsData;
-};
+}) => reportsApiService.getTopProducts(params);
 
-// Inventory Reports API
-export const getInventoryValuation = async (params: {
+export const getInventoryValuation = (params: {
   category_id?: string;
   include_inactive?: boolean;
-}): Promise<InventoryValuationData> => {
-  const api = createAuthenticatedAxios();
-  const cleanedParams = cleanParams(params);
-  const response = await api.get('/reports/inventory/valuation', { params: cleanedParams });
-  return response.data as InventoryValuationData;
-};
+}) => reportsApiService.getInventoryValuation(params);
 
-export const getLowStockReport = async (params: {
+export const getLowStockReport = (params: {
   category_id?: string;
   threshold_multiplier?: number;
-}): Promise<LowStockData> => {
-  const api = createAuthenticatedAxios();
-  const cleanedParams = cleanParams(params);
-  const response = await api.get('/reports/inventory/low-stock', { params: cleanedParams });
-  return response.data as LowStockData;
-};
+}) => reportsApiService.getLowStockReport(params);
 
-// Customer Reports API
-export const getCustomerAnalysis = async (params: {
+export const getCustomerAnalysis = (params: {
   start_date?: string;
   end_date?: string;
   min_purchases?: number;
-}): Promise<CustomerAnalysisData> => {
-  const api = createAuthenticatedAxios();
-  const cleanedParams = cleanParams(params);
-  const response = await api.get('/reports/customers/analysis', { params: cleanedParams });
-  return response.data as CustomerAnalysisData;
-};
+}) => reportsApiService.getCustomerAnalysis(params);
 
-export const getDebtReport = async (params: {
+export const getDebtReport = (params: {
   min_debt?: number;
   sort_by?: 'debt_desc' | 'debt_asc' | 'name' | 'last_payment';
-}): Promise<DebtReportData> => {
-  const api = createAuthenticatedAxios();
-  const cleanedParams = cleanParams(params);
-  const response = await api.get('/reports/customers/debt-report', { params: cleanedParams });
-  return response.data as DebtReportData;
-};
+}) => reportsApiService.getDebtReport(params);
 
-// Chart Data API
-export const getSalesOverviewChart = async (params: {
+export const getSalesOverviewChart = (params: {
   days?: number;
-}): Promise<SalesOverviewChartData> => {
-  const api = createAuthenticatedAxios();
-  const cleanedParams = cleanParams(params);
-  const response = await api.get('/reports/charts/sales-overview', { params: cleanedParams });
-  return response.data as SalesOverviewChartData;
-};
+}) => reportsApiService.getSalesOverviewChart(params);
 
-// Export functionality
-export const exportReportToPDF = async (reportType: string, data: any): Promise<Blob> => {
-  const api = createAuthenticatedAxios();
-  const response = await api.post(`/reports/export/${reportType}`, data, {
-    responseType: 'blob',
-  });
-  return response.data as Blob;
-};
+export const exportReportToPDF = (reportType: string, data: any) => 
+  reportsApiService.exportReportToPDF(reportType, data);
 
-export const exportReportToCSV = async (reportType: string, data: any): Promise<Blob> => {
-  const api = createAuthenticatedAxios();
-  const response = await api.post(`/reports/export/${reportType}/csv`, data, {
-    responseType: 'blob',
-  });
-  return response.data as Blob;
-};
+export const exportReportToCSV = (reportType: string, data: any) => 
+  reportsApiService.exportReportToCSV(reportType, data);
+
+// Export the service instance as well
+export const reportsApi = reportsApiService;

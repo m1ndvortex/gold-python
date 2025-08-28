@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Edit, Phone, Mail, MapPin, DollarSign, Calendar, CreditCard, History, User, TrendingUp, AlertTriangle, ImageIcon, FileText } from 'lucide-react';
+import { X, Edit, Phone, Mail, MapPin, DollarSign, Calendar, CreditCard, History, User, TrendingUp, AlertTriangle, ImageIcon, FileText, Lock, Shield } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { DataTable, DataTableColumn } from '../ui/data-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { useCustomer, useCustomerDebtHistory, useCustomerPayments } from '../../hooks/useCustomers';
+import { useAuth } from '../../hooks/useAuth';
+import { WithPermissions } from '../auth/WithPermissions';
 import { ComprehensiveCustomerForm } from './ComprehensiveCustomerForm';
 import { PaymentForm } from './PaymentForm';
 import { ImageGallery } from '../image-management/ImageGallery';
@@ -23,6 +25,11 @@ export const CustomerProfile: React.FC<CustomerProfileProps> = ({
 }) => {
   const [showEditForm, setShowEditForm] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const { user, hasPermission, isAuthenticated } = useAuth();
+
+  // Check permissions
+  const canEditCustomers = hasPermission('edit_customers');
+  const canManagePayments = hasPermission('manage_payments');
 
   // Fetch detailed customer data
   const { data: customer, isLoading } = useCustomer(initialCustomer.id);
@@ -93,15 +100,17 @@ export const CustomerProfile: React.FC<CustomerProfileProps> = ({
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowEditForm(true)}
-                className="bg-white hover:bg-green-50 border-green-200 text-green-700 hover:text-green-800"
-              >
-                <Edit className="h-4 w-4 mr-2" />
-                Edit Profile
-              </Button>
+              <WithPermissions permissions={['edit_customers']}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowEditForm(true)}
+                  className="bg-white hover:bg-green-50 border-green-200 text-green-700 hover:text-green-800"
+                >
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Profile
+                </Button>
+              </WithPermissions>
               <Button
                 variant="ghost"
                 size="sm"

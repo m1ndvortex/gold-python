@@ -5,6 +5,8 @@ import { Button } from '../ui/button';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import { LowStockItem, UnpaidInvoice } from '../../types';
 import { useLanguage } from '../../hooks/useLanguage';
+import { usePermissions } from '../../hooks/usePermissions';
+import { WithPermissions } from '../auth/WithPermissions';
 import { 
   AlertTriangle, 
   Clock, 
@@ -59,6 +61,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
   onDismissAlert
 }) => {
   const { t } = useLanguage();
+  const { hasPermission, canManageInventory, canManageCustomers } = usePermissions();
   const [activeTab, setActiveTab] = useState<'all' | 'critical' | 'unread'>('all');
   const [showDismissed, setShowDismissed] = useState(false);
   const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set());
@@ -117,12 +120,12 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
     }
   };
 
-  // Convert raw data to enhanced alerts
+  // Convert raw data to enhanced alerts with permission filtering
   const enhancedAlerts = useMemo((): EnhancedAlert[] => {
     const alerts: EnhancedAlert[] = [];
 
-    // Process low stock items
-    if (lowStockItems) {
+    // Process low stock items - only if user has inventory permissions
+    if (lowStockItems && hasPermission('inventory:view')) {
       lowStockItems.forEach(item => {
         const priority: AlertPriority = item.status === 'critical' ? 'critical' : 'high';
         alerts.push({
@@ -140,8 +143,8 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
       });
     }
 
-    // Process unpaid invoices
-    if (unpaidInvoices) {
+    // Process unpaid invoices - only if user has customer or invoice permissions
+    if (unpaidInvoices && (hasPermission('invoices:view') || hasPermission('customers:view'))) {
       unpaidInvoices.forEach(invoice => {
         let priority: AlertPriority = 'medium';
         if (invoice.days_overdue > 30) priority = 'critical';
@@ -169,7 +172,7 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
       if (priorityDiff !== 0) return priorityDiff;
       return b.timestamp.getTime() - a.timestamp.getTime();
     });
-  }, [lowStockItems, unpaidInvoices, readAlerts, dismissedAlerts]);
+  }, [lowStockItems, unpaidInvoices, readAlerts, dismissedAlerts, hasPermission]);
 
   // Filter alerts based on active tab
   const filteredAlerts = useMemo(() => {
@@ -211,9 +214,10 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
       handleMarkAsRead(alert.id);
     }
 
-    if (alert.category === 'inventory') {
+    // Check permissions before allowing navigation
+    if (alert.category === 'inventory' && canManageInventory()) {
       onLowStockClick(alert.data.item_id);
-    } else if (alert.category === 'finance') {
+    } else if (alert.category === 'finance' && canManageCustomers()) {
       onInvoiceClick(alert.data.invoice_id);
     }
   };

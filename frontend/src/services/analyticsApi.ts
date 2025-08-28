@@ -1,4 +1,4 @@
-import { apiGet, apiPost, apiPut } from './api';
+import { AuthenticatedApiClient } from './AuthenticatedApiClient';
 import type {
   DashboardAnalytics,
   KPITarget,
@@ -9,78 +9,118 @@ import type {
   AnalyticsData
 } from '../types/analytics';
 
-const API_BASE = '/analytics';
+class AnalyticsApiService extends AuthenticatedApiClient {
+  constructor() {
+    super({
+      baseURL: '/analytics',
+      timeout: 60000, // 60 second timeout for analytics operations
+      retryAttempts: 2,
+    });
+  }
 
-// Dashboard Analytics API
-export const getDashboardAnalytics = async (
+  // Dashboard Analytics API
+  async getDashboardAnalytics(
+    startDate?: string,
+    endDate?: string
+  ): Promise<DashboardAnalytics> {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    const queryString = params.toString();
+    const url = queryString ? `/dashboard?${queryString}` : '/dashboard';
+    
+    return this.get<DashboardAnalytics>(url);
+  }
+
+  // KPI Targets API
+  async createKPITarget(kpiTarget: KPITargetCreate): Promise<KPITarget> {
+    return this.post<KPITarget>('/kpi-targets', kpiTarget);
+  }
+
+  async getKPITargets(
+    kpiType?: string,
+    targetPeriod?: string,
+    isActive: boolean = true
+  ): Promise<KPITarget[]> {
+    const params = new URLSearchParams();
+    if (kpiType) params.append('kpi_type', kpiType);
+    if (targetPeriod) params.append('target_period', targetPeriod);
+    params.append('is_active', isActive.toString());
+    
+    const queryString = params.toString();
+    const url = queryString ? `/kpi-targets?${queryString}` : '/kpi-targets';
+    
+    return this.get<KPITarget[]>(url);
+  }
+
+  async updateKPITarget(
+    kpiTargetId: string,
+    updates: KPITargetUpdate
+  ): Promise<KPITarget> {
+    return this.put<KPITarget>(`/kpi-targets/${kpiTargetId}`, updates);
+  }
+
+  // Analytics Data API
+  async getAnalyticsData(
+    request: AnalyticsRequest,
+    skip: number = 0,
+    limit: number = 100
+  ): Promise<AnalyticsResponse> {
+    const params = new URLSearchParams();
+    params.append('skip', skip.toString());
+    params.append('limit', limit.toString());
+    
+    if (request.start_date) params.append('start_date', request.start_date);
+    if (request.end_date) params.append('end_date', request.end_date);
+    if (request.data_types) {
+      request.data_types.forEach(type => params.append('data_types', type));
+    }
+    if (request.entity_types) {
+      request.entity_types.forEach(type => params.append('entity_types', type));
+    }
+    if (request.entity_ids) {
+      request.entity_ids.forEach(id => params.append('entity_ids', id));
+    }
+    
+    const queryString = params.toString();
+    const url = queryString ? `/analytics-data?${queryString}` : '/analytics-data';
+    
+    return this.get<AnalyticsResponse>(url);
+  }
+}
+
+// Create singleton instance
+const analyticsApiService = new AnalyticsApiService();
+
+// Export individual functions for backward compatibility
+export const getDashboardAnalytics = (
   startDate?: string,
   endDate?: string
-): Promise<DashboardAnalytics> => {
-  const params = new URLSearchParams();
-  if (startDate) params.append('start_date', startDate);
-  if (endDate) params.append('end_date', endDate);
-  
-  const queryString = params.toString();
-  const url = queryString ? `${API_BASE}/dashboard?${queryString}` : `${API_BASE}/dashboard`;
-  
-  return apiGet<DashboardAnalytics>(url);
-};
+) => analyticsApiService.getDashboardAnalytics(startDate, endDate);
 
-// KPI Targets API
-export const createKPITarget = async (kpiTarget: KPITargetCreate): Promise<KPITarget> => {
-  return apiPost<KPITarget>(`${API_BASE}/kpi-targets`, kpiTarget);
-};
+export const createKPITarget = (kpiTarget: KPITargetCreate) => 
+  analyticsApiService.createKPITarget(kpiTarget);
 
-export const getKPITargets = async (
+export const getKPITargets = (
   kpiType?: string,
   targetPeriod?: string,
   isActive: boolean = true
-): Promise<KPITarget[]> => {
-  const params = new URLSearchParams();
-  if (kpiType) params.append('kpi_type', kpiType);
-  if (targetPeriod) params.append('target_period', targetPeriod);
-  params.append('is_active', isActive.toString());
-  
-  const queryString = params.toString();
-  const url = queryString ? `${API_BASE}/kpi-targets?${queryString}` : `${API_BASE}/kpi-targets`;
-  
-  return apiGet<KPITarget[]>(url);
-};
+) => analyticsApiService.getKPITargets(kpiType, targetPeriod, isActive);
 
-export const updateKPITarget = async (
+export const updateKPITarget = (
   kpiTargetId: string,
   updates: KPITargetUpdate
-): Promise<KPITarget> => {
-  return apiPut<KPITarget>(`${API_BASE}/kpi-targets/${kpiTargetId}`, updates);
-};
+) => analyticsApiService.updateKPITarget(kpiTargetId, updates);
 
-// Analytics Data API
-export const getAnalyticsData = async (
+export const getAnalyticsData = (
   request: AnalyticsRequest,
   skip: number = 0,
   limit: number = 100
-): Promise<AnalyticsResponse> => {
-  const params = new URLSearchParams();
-  params.append('skip', skip.toString());
-  params.append('limit', limit.toString());
-  
-  if (request.start_date) params.append('start_date', request.start_date);
-  if (request.end_date) params.append('end_date', request.end_date);
-  if (request.data_types) {
-    request.data_types.forEach(type => params.append('data_types', type));
-  }
-  if (request.entity_types) {
-    request.entity_types.forEach(type => params.append('entity_types', type));
-  }
-  if (request.entity_ids) {
-    request.entity_ids.forEach(id => params.append('entity_ids', id));
-  }
-  
-  const queryString = params.toString();
-  const url = queryString ? `${API_BASE}/analytics-data?${queryString}` : `${API_BASE}/analytics-data`;
-  
-  return apiGet<AnalyticsResponse>(url);
-};
+) => analyticsApiService.getAnalyticsData(request, skip, limit);
+
+// Export the service instance
+export const analyticsApi = analyticsApiService;
 
 // Utility functions for date formatting
 export const formatDateForAPI = (date: Date): string => {

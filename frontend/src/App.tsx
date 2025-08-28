@@ -2,18 +2,22 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageContext, useLanguageProvider } from './hooks/useLanguage';
+import { AuthProvider, AuthErrorBoundary } from './contexts/AuthContext';
 import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
+import { OAuth2Callback } from './pages/OAuth2Callback';
 import { InventoryWithRouting as Inventory } from './pages/Inventory';
 import { Customers } from './pages/Customers';
 import { Invoices } from './pages/Invoices';
 import { AccountingWithRouting as Accounting } from './pages/Accounting';
+import { AnalyticsWithRouting as Analytics } from './pages/Analytics';
 import { ReportsWithRouting as Reports } from './pages/Reports';
 import { SettingsWithRouting as Settings } from './pages/Settings';
 import { SMSWithRouting as SMS } from './pages/SMS';
+import { RBACManagement } from './pages/RBACManagement';
 import { AuthGuard } from './components/auth/AuthGuard';
 import { MainLayout } from './components/layout/MainLayout';
 import './App.css';
@@ -40,106 +44,132 @@ const AppContent: React.FC = () => {
 
   return (
     <LanguageContext.Provider value={languageContextValue}>
-      <div className="App min-h-screen bg-background">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route
-            path="/"
-            element={
-              <AuthGuard>
-                <MainLayout>
-                  <Dashboard />
-                </MainLayout>
-              </AuthGuard>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <AuthGuard>
-                <MainLayout>
-                  <Dashboard />
-                </MainLayout>
-              </AuthGuard>
-            }
-          />
-          <Route
-            path="/inventory/*"
-            element={
-              <AuthGuard>
-                <MainLayout>
-                  <Inventory />
-                </MainLayout>
-              </AuthGuard>
-            }
-          />
-          <Route
-            path="/customers"
-            element={
-              <AuthGuard>
-                <MainLayout>
-                  <Customers />
-                </MainLayout>
-              </AuthGuard>
-            }
-          />
-          <Route
-            path="/invoices"
-            element={
-              <AuthGuard>
-                <MainLayout>
-                  <Invoices />
-                </MainLayout>
-              </AuthGuard>
-            }
-          />
-          <Route
-            path="/accounting/*"
-            element={
-              <AuthGuard>
-                <MainLayout>
-                  <Accounting />
-                </MainLayout>
-              </AuthGuard>
-            }
-          />
-          <Route
-            path="/reports/*"
-            element={
-              <AuthGuard>
-                <MainLayout>
-                  <Reports />
-                </MainLayout>
-              </AuthGuard>
-            }
-          />
-          <Route
-            path="/settings/*"
-            element={
-              <AuthGuard>
-                <MainLayout>
-                  <Settings />
-                </MainLayout>
-              </AuthGuard>
-            }
-          />
-          <Route
-            path="/sms/*"
-            element={
-              <AuthGuard>
-                <MainLayout>
-                  <SMS />
-                </MainLayout>
-              </AuthGuard>
-            }
-          />
-          {/* Redirect any unknown routes to dashboard */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
+      <AuthErrorBoundary>
+        <AuthProvider>
+          <div className="App min-h-screen bg-background">
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/oauth2/callback" element={<OAuth2Callback />} />
+              <Route path="/auth/callback" element={<OAuth2Callback />} />
+              <Route
+                path="/"
+                element={
+                  <AuthGuard>
+                    <MainLayout>
+                      <Dashboard />
+                    </MainLayout>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <AuthGuard>
+                    <MainLayout>
+                      <Dashboard />
+                    </MainLayout>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/inventory/*"
+                element={
+                  <AuthGuard>
+                    <MainLayout>
+                      <Inventory />
+                    </MainLayout>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/customers"
+                element={
+                  <AuthGuard>
+                    <MainLayout>
+                      <Customers />
+                    </MainLayout>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/invoices"
+                element={
+                  <AuthGuard>
+                    <MainLayout>
+                      <Invoices />
+                    </MainLayout>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/accounting/*"
+                element={
+                  <AuthGuard>
+                    <MainLayout>
+                      <Accounting />
+                    </MainLayout>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/analytics/*"
+                element={
+                  <AuthGuard>
+                    <MainLayout>
+                      <Analytics />
+                    </MainLayout>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/reports/*"
+                element={
+                  <AuthGuard>
+                    <MainLayout>
+                      <Reports />
+                    </MainLayout>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/settings/*"
+                element={
+                  <AuthGuard>
+                    <MainLayout>
+                      <Settings />
+                    </MainLayout>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/sms/*"
+                element={
+                  <AuthGuard>
+                    <MainLayout>
+                      <SMS />
+                    </MainLayout>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/rbac-management"
+                element={
+                  <AuthGuard>
+                    <MainLayout>
+                      <RBACManagement />
+                    </MainLayout>
+                  </AuthGuard>
+                }
+              />
+              {/* Redirect any unknown routes to dashboard */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
+        </AuthProvider>
+      </AuthErrorBoundary>
     </LanguageContext.Provider>
   );
 };

@@ -33,6 +33,8 @@ import {
 } from 'lucide-react';
 import { useInvoices, useDeleteInvoice } from '../../hooks/useInvoices';
 import { useCustomers } from '../../hooks/useCustomers';
+import { useAuth } from '../../hooks/useAuth';
+import { WithPermissions } from '../auth/WithPermissions';
 import type { Invoice } from '../../types';
 import type { InvoiceSearchFilters } from '../../services/invoiceApi';
 
@@ -55,6 +57,13 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
   const [customerFilter, setCustomerFilter] = useState<string>('');
   const [page, setPage] = useState(0);
   const limit = 50;
+  const { user, hasPermission } = useAuth();
+
+  // Check permissions
+  const canCreateInvoices = hasPermission('create_invoices');
+  const canEditInvoices = hasPermission('edit_invoices');
+  const canDeleteInvoices = hasPermission('delete_invoices');
+  const canManagePayments = hasPermission('manage_payments');
 
   // API hooks
   const { data: invoices = [], isLoading, error } = useInvoices(
@@ -165,7 +174,7 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Invoices</h2>
-        {onCreateNew && (
+        {onCreateNew && canCreateInvoices && (
           <Button 
             onClick={onCreateNew}
             className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
@@ -305,13 +314,13 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
                               View Details
                             </DropdownMenuItem>
                           )}
-                          {onEditInvoice && invoice.status !== 'cancelled' && (
+                          {onEditInvoice && canEditInvoices && invoice.status !== 'cancelled' && (
                             <DropdownMenuItem onClick={() => onEditInvoice(invoice)}>
                               <Edit className="mr-2 h-4 w-4" />
                               Edit
                             </DropdownMenuItem>
                           )}
-                          {onAddPayment && invoice.remaining_amount > 0 && (
+                          {onAddPayment && canManagePayments && invoice.remaining_amount > 0 && (
                             <DropdownMenuItem onClick={() => onAddPayment(invoice)}>
                               <DollarSign className="mr-2 h-4 w-4" />
                               Add Payment
@@ -321,7 +330,7 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
                             <FileText className="mr-2 h-4 w-4" />
                             Generate PDF
                           </DropdownMenuItem>
-                          {invoice.paid_amount === 0 && (
+                          {canDeleteInvoices && invoice.paid_amount === 0 && (
                             <DropdownMenuItem
                               onClick={() => handleDelete(invoice)}
                               className="text-red-600"

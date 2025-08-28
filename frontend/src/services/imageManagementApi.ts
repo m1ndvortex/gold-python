@@ -4,7 +4,7 @@
  * Provides API functions for image upload, management, and retrieval
  */
 
-import axios from 'axios';
+import { AuthenticatedApiClient } from './AuthenticatedApiClient';
 import {
   ImageMetadata,
   ImageUploadResult,
@@ -16,33 +16,18 @@ import {
   EntityType
 } from '../types/imageManagement';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-
-// Create axios instance with default config
-const apiClient = axios.create({
-  baseURL: `${API_BASE_URL}/api/images`,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Add auth token to requests
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token') || localStorage.getItem('token');
-  if (token) {
-    if (!config.headers) {
-      config.headers = {};
-    }
-    config.headers.Authorization = `Bearer ${token}`;
+class ImageManagementApiService extends AuthenticatedApiClient {
+  constructor() {
+    super({
+      baseURL: '/api/images',
+      timeout: 60000, // 60 second timeout for image uploads
+      retryAttempts: 1, // Don't retry image uploads
+    });
   }
-  return config;
-});
-
-export class ImageManagementAPI {
   /**
    * Upload single image
    */
-  static async uploadImage(
+  async uploadImage(
     file: File,
     entityType: EntityType,
     entityId: string,
@@ -67,7 +52,7 @@ export class ImageManagementAPI {
       formData.append('is_primary', options.isPrimary.toString());
     }
 
-    const response = await apiClient.post<UploadImageResponse>('/upload', formData, {
+    const response = await this.axiosInstance.post('/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -79,7 +64,7 @@ export class ImageManagementAPI {
   /**
    * Upload multiple images
    */
-  static async uploadMultipleImages(
+  async uploadMultipleImages(
     files: File[],
     entityType: EntityType,
     entityId: string
@@ -104,19 +89,7 @@ export class ImageManagementAPI {
     formData.append('entity_type', entityType);
     formData.append('entity_id', entityId);
 
-    const response = await apiClient.post<{
-      results: Array<{
-        filename: string;
-        success: boolean;
-        data?: ImageUploadResult;
-        error?: string;
-      }>;
-      summary: {
-        total_files: number;
-        successful: number;
-        failed: number;
-      };
-    }>('/upload/multiple', formData, {
+    const response = await this.axiosInstance.post('/upload/multiple', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -128,12 +101,12 @@ export class ImageManagementAPI {
   /**
    * Get all images for an entity
    */
-  static async getEntityImages(
+  async getEntityImages(
     entityType: EntityType,
     entityId: string,
     includeThumbnails: boolean = true
   ): Promise<ImageMetadata[]> {
-    const response = await apiClient.get<GetEntityImagesResponse>(
+    const response = await this.axiosInstance.get(
       `/entity/${entityType}/${entityId}`,
       {
         params: {
@@ -148,7 +121,7 @@ export class ImageManagementAPI {
   /**
    * Get image file URL
    */
-  static getImageUrl(
+  getImageUrl(
     imageId: string,
     size?: 'small' | 'medium' | 'large' | 'gallery' | 'original',
     optimized: boolean = false
@@ -162,13 +135,13 @@ export class ImageManagementAPI {
     }
 
     const queryString = params.toString();
-    return `${API_BASE_URL}/api/images/file/${imageId}${queryString ? `?${queryString}` : ''}`;
+    return `/api/images/file/${imageId}${queryString ? `?${queryString}` : ''}`;
   }
 
   /**
    * Update image metadata
    */
-  static async updateImageMetadata(
+  async updateImageMetadata(
     imageId: string,
     updates: {
       altText?: string;
@@ -196,7 +169,7 @@ export class ImageManagementAPI {
       payload.sort_order = updates.sortOrder;
     }
 
-    const response = await apiClient.put<UpdateImageMetadataResponse>(
+    const response = await this.axiosInstance.put(
       `/${imageId}/metadata`,
       payload
     );
@@ -207,19 +180,19 @@ export class ImageManagementAPI {
   /**
    * Delete image
    */
-  static async deleteImage(imageId: string): Promise<{
+  async deleteImage(imageId: string): Promise<{
     success: boolean;
     image_id: string;
     files_deleted: string[];
   }> {
-    const response = await apiClient.delete<DeleteImageResponse>(`/${imageId}`);
+    const response = await this.axiosInstance.delete(`/${imageId}`);
     return response.data.data;
   }
 
   /**
    * Get image statistics
    */
-  static async getImageStatistics(): Promise<{
+  async getImageStatistics(): Promise<{
     total_images: number;
     images_by_entity_type: Record<string, number>;
     total_storage_bytes: number;
@@ -228,18 +201,18 @@ export class ImageManagementAPI {
     average_compression_ratio: number;
     optimization_percentage: number;
   }> {
-    const response = await apiClient.get<ImageStatisticsResponse>('/statistics');
+    const response = await this.axiosInstance.get('/statistics');
     return response.data.data;
   }
 
   /**
    * Re-optimize image
    */
-  static async reoptimizeImage(
+  async reoptimizeImage(
     imageId: string,
     quality: number = 85
   ): Promise<any> {
-    const response = await apiClient.post(`/optimize/${imageId}`, null, {
+    const response = await this.axiosInstance.post(`/optimize/${imageId}`, null, {
       params: { quality },
     });
     return response.data;
@@ -248,15 +221,73 @@ export class ImageManagementAPI {
   /**
    * Regenerate thumbnails
    */
-  static async regenerateThumbnails(
+  async regenerateThumbnails(
     imageId: string,
     sizes?: string[]
   ): Promise<any> {
-    const response = await apiClient.post(`/regenerate-thumbnails/${imageId}`, null, {
+    const response = await this.axiosInstance.post(`/regenerate-thumbnails/${imageId}`, null, {
       params: sizes ? { sizes } : {},
     });
     return response.data;
   }
+}
+
+// Create singleton instance
+const imageManagementApiService = new ImageManagementApiService();
+
+// Export the service instance
+export const imageManagementApi = imageManagementApiService;
+
+// Export the class for backward compatibility
+export class ImageManagementAPI {
+  static uploadImage = (
+    file: File,
+    entityType: EntityType,
+    entityId: string,
+    options: {
+      altText?: string;
+      caption?: string;
+      isPrimary?: boolean;
+    } = {}
+  ) => imageManagementApiService.uploadImage(file, entityType, entityId, options);
+
+  static uploadMultipleImages = (
+    files: File[],
+    entityType: EntityType,
+    entityId: string
+  ) => imageManagementApiService.uploadMultipleImages(files, entityType, entityId);
+
+  static getEntityImages = (
+    entityType: EntityType,
+    entityId: string,
+    includeThumbnails: boolean = true
+  ) => imageManagementApiService.getEntityImages(entityType, entityId, includeThumbnails);
+
+  static getImageUrl = (
+    imageId: string,
+    size?: 'small' | 'medium' | 'large' | 'gallery' | 'original',
+    optimized: boolean = false
+  ) => imageManagementApiService.getImageUrl(imageId, size, optimized);
+
+  static updateImageMetadata = (
+    imageId: string,
+    updates: {
+      altText?: string;
+      caption?: string;
+      isPrimary?: boolean;
+      sortOrder?: number;
+    }
+  ) => imageManagementApiService.updateImageMetadata(imageId, updates);
+
+  static deleteImage = (imageId: string) => imageManagementApiService.deleteImage(imageId);
+
+  static getImageStatistics = () => imageManagementApiService.getImageStatistics();
+
+  static reoptimizeImage = (imageId: string, quality: number = 85) => 
+    imageManagementApiService.reoptimizeImage(imageId, quality);
+
+  static regenerateThumbnails = (imageId: string, sizes?: string[]) => 
+    imageManagementApiService.regenerateThumbnails(imageId, sizes);
 }
 
 export default ImageManagementAPI;

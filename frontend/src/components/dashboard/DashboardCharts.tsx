@@ -2,6 +2,8 @@ import React from 'react';
 import { ModernChart } from './ModernChart';
 import { SalesChartData, CategorySalesData, TopProduct } from '../../types';
 import { useLanguage } from '../../hooks/useLanguage';
+import { usePermissions } from '../../hooks/usePermissions';
+import { WithPermissions } from '../auth/WithPermissions';
 
 interface DashboardChartsProps {
   salesData: SalesChartData | null;
@@ -19,6 +21,7 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
   onRefresh
 }) => {
   const { t } = useLanguage();
+  const { hasPermission, canViewReports, canViewAnalytics } = usePermissions();
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -112,43 +115,70 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Sales Trend Chart */}
-      <ModernChart
-        type="line"
-        data={getSalesChartData()}
-        title={t('dashboard.sales_trends')}
-        description={t('dashboard.sales_trends_desc')}
-        className="lg:col-span-2"
-        height={320}
-        onRefresh={onRefresh}
-        showExport={true}
-        showFullscreen={true}
-      />
+      {/* Sales Trend Chart - requires sales or reports view permission */}
+      <WithPermissions 
+        anyPermission={['sales:view', 'reports:view', 'analytics:view']}
+        fallback={
+          <div className="lg:col-span-2 p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200 flex items-center justify-center">
+            <p className="text-gray-500">{t('auth.sales_reports_access_required')}</p>
+          </div>
+        }
+      >
+        <ModernChart
+          type="line"
+          data={getSalesChartData()}
+          title={t('dashboard.sales_trends')}
+          description={t('dashboard.sales_trends_desc')}
+          className="lg:col-span-2"
+          height={320}
+          onRefresh={canViewReports() ? onRefresh : undefined}
+          showExport={canViewReports()}
+          showFullscreen={true}
+        />
+      </WithPermissions>
 
-      {/* Category Sales Chart */}
-      <ModernChart
-        type="doughnut"
-        data={getCategoryChartData()}
-        title={t('dashboard.sales_by_category')}
-        description={t('dashboard.sales_by_category_desc')}
-        height={320}
-        onRefresh={onRefresh}
-        showExport={true}
-        showFullscreen={true}
-        customOptions={categoryChartOptions}
-      />
+      {/* Category Sales Chart - requires inventory or sales view permission */}
+      <WithPermissions 
+        anyPermission={['inventory:view', 'sales:view', 'reports:view']}
+        fallback={
+          <div className="p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200 flex items-center justify-center">
+            <p className="text-gray-500">{t('auth.category_reports_access_required')}</p>
+          </div>
+        }
+      >
+        <ModernChart
+          type="doughnut"
+          data={getCategoryChartData()}
+          title={t('dashboard.sales_by_category')}
+          description={t('dashboard.sales_by_category_desc')}
+          height={320}
+          onRefresh={canViewReports() ? onRefresh : undefined}
+          showExport={canViewReports()}
+          showFullscreen={true}
+          customOptions={categoryChartOptions}
+        />
+      </WithPermissions>
 
-      {/* Top Products Chart */}
-      <ModernChart
-        type="bar"
-        data={getTopProductsChartData()}
-        title={t('dashboard.top_products')}
-        description={t('dashboard.top_products_desc')}
-        height={320}
-        onRefresh={onRefresh}
-        showExport={true}
-        showFullscreen={true}
-      />
+      {/* Top Products Chart - requires inventory or sales view permission */}
+      <WithPermissions 
+        anyPermission={['inventory:view', 'sales:view', 'reports:view']}
+        fallback={
+          <div className="p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200 flex items-center justify-center">
+            <p className="text-gray-500">{t('auth.product_reports_access_required')}</p>
+          </div>
+        }
+      >
+        <ModernChart
+          type="bar"
+          data={getTopProductsChartData()}
+          title={t('dashboard.top_products')}
+          description={t('dashboard.top_products_desc')}
+          height={320}
+          onRefresh={canViewReports() ? onRefresh : undefined}
+          showExport={canViewReports()}
+          showFullscreen={true}
+        />
+      </WithPermissions>
     </div>
   );
 };

@@ -18,7 +18,9 @@ import {
   TrendingUp,
   Target,
   Banknote,
-  Eye
+  Eye,
+  Lock,
+  Shield
 } from 'lucide-react';
 import { InvoiceList } from '../components/invoices/InvoiceList';
 import { EnhancedInvoiceForm } from '../components/invoices/EnhancedInvoiceForm';
@@ -26,6 +28,8 @@ import { InvoicePreview } from '../components/invoices/InvoicePreview';
 import { PaymentForm } from '../components/invoices/PaymentForm';
 import { PDFGenerator } from '../components/invoices/PDFGenerator';
 import { useInvoice, useInvoiceSummary } from '../hooks/useInvoices';
+import { useAuth } from '../hooks/useAuth';
+import { WithPermissions } from '../components/auth/WithPermissions';
 import { cn } from '../lib/utils';
 import type { Invoice } from '../types';
 import type { InvoiceWithDetails } from '../services/invoiceApi';
@@ -37,6 +41,54 @@ export const Invoices: React.FC = () => {
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const { user, hasPermission, isAuthenticated } = useAuth();
+
+  // Check authentication
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto p-6">
+        <Card className="border-0 shadow-lg">
+          <CardContent className="p-8 text-center">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
+                <Lock className="h-8 w-8 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">Authentication Required</h3>
+                <p className="text-muted-foreground">Please log in to access invoice management.</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Check permissions
+  const canViewInvoices = hasPermission('view_invoices');
+  const canCreateInvoices = hasPermission('create_invoices');
+  const canEditInvoices = hasPermission('edit_invoices');
+  const canManagePayments = hasPermission('manage_payments');
+
+  if (!canViewInvoices) {
+    return (
+      <div className="container mx-auto p-6">
+        <Card className="border-0 shadow-lg">
+          <CardContent className="p-8 text-center">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center">
+                <Shield className="h-8 w-8 text-amber-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">Access Denied</h3>
+                <p className="text-muted-foreground">You don't have permission to view invoices.</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // API hooks
   const { data: invoiceDetails } = useInvoice(selectedInvoiceId || '');
@@ -110,14 +162,16 @@ export const Invoices: React.FC = () => {
             </div>
           </div>
         </div>
-        <Button 
-          onClick={handleCreateNew}
-          size="lg"
-          className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          <Plus className="h-5 w-5 mr-2" />
-          Create New Invoice
-        </Button>
+        <WithPermissions permissions={['create_invoices']}>
+          <Button 
+            onClick={handleCreateNew}
+            size="lg"
+            className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <Plus className="h-5 w-5 mr-2" />
+            Create New Invoice
+          </Button>
+        </WithPermissions>
       </div>
 
       {/* Enhanced Summary Cards */}

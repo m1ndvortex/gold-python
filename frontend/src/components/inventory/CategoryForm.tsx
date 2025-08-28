@@ -110,8 +110,9 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
     watch, 
     setValue, 
     reset,
-    formState: { errors } 
+    formState: { errors, isValid, isSubmitting } 
   } = useForm<CategoryFormData>({
+    mode: 'onChange',
     defaultValues: {
       name: '',
       parent_id: '',
@@ -537,8 +538,12 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
+            <Button 
+              type="submit" 
+              disabled={isLoading || isSubmitting || !watch('name')?.trim()}
+              variant="gradient-green"
+            >
+              {isLoading || isSubmitting ? (
                 'Saving...'
               ) : (
                 <>

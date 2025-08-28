@@ -136,7 +136,7 @@ export const AdvancedDashboard: React.FC<AdvancedDashboardProps> = ({
 
   const salesData = analytics ? {
     ...analytics.sales,
-    top_selling_items: analytics.sales.top_selling_items?.map(item => ({
+    top_selling_items: analytics.sales.top_selling_items?.map((item: any) => ({
       name: item.name,
       sales: item.revenue
     }))
@@ -144,15 +144,15 @@ export const AdvancedDashboard: React.FC<AdvancedDashboardProps> = ({
 
   const inventoryData = analytics ? {
     ...analytics.inventory,
-    fast_moving_items: analytics.inventory.fast_moving_items?.map(item => ({
+    fast_moving_items: analytics.inventory.fast_moving_items?.map((item: any) => ({
       name: item.name,
       sales_velocity: item.total_sold
     })),
-    slow_moving_items: analytics.inventory.slow_moving_items?.map(item => ({
+    slow_moving_items: analytics.inventory.slow_moving_items?.map((item: any) => ({
       name: item.name,
       sales_velocity: item.total_sold
     })),
-    stock_optimization_suggestions: analytics.inventory.stock_optimization_suggestions?.map(suggestion => ({
+    stock_optimization_suggestions: analytics.inventory.stock_optimization_suggestions?.map((suggestion: any) => ({
       item: suggestion.item_name,
       suggestion: suggestion.recommended_action
     }))
@@ -160,7 +160,7 @@ export const AdvancedDashboard: React.FC<AdvancedDashboardProps> = ({
 
   const customerData = analytics ? {
     ...analytics.customers,
-    top_customers: analytics.customers.top_customers?.map(customer => ({
+    top_customers: analytics.customers.top_customers?.map((customer: any) => ({
       name: customer.name,
       total_purchases: customer.total_revenue
     }))

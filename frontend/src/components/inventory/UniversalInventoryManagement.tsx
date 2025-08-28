@@ -36,7 +36,9 @@ import {
   Star,
   Copy,
   Move,
-  Zap
+  Zap,
+  Lock,
+  Shield
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/button';
@@ -57,12 +59,15 @@ import { Progress } from '../ui/progress';
 import { Separator } from '../ui/separator';
 import { ScrollArea } from '../ui/scroll-area';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useAuth } from '../../hooks/useAuth';
+import { WithPermissions } from '../auth/WithPermissions';
 import { cn } from '../../lib/utils';
 
 // Import Universal Inventory Components
 import { UniversalInventorySearch } from './UniversalInventorySearch';
 import { UniversalCategoryHierarchy } from './UniversalCategoryHierarchy';
 import { UniversalInventoryItemForm } from './UniversalInventoryItemForm';
+import { CategoryForm } from './CategoryForm';
 
 // Import Universal Inventory API and Types
 import { 
@@ -114,6 +119,51 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
   className
 }) => {
   const { t } = useLanguage();
+  const { user, hasPermission, isAuthenticated } = useAuth();
+
+  // Check authentication
+  if (!isAuthenticated) {
+    return (
+      <Card className="border-0 shadow-lg">
+        <CardContent className="p-8 text-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
+              <Lock className="h-8 w-8 text-red-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-foreground">Authentication Required</h3>
+              <p className="text-muted-foreground">Please log in to access inventory management.</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Check permissions
+  const canViewInventory = hasPermission('view_inventory');
+  const canCreateInventory = hasPermission('create_inventory');
+  const canEditInventory = hasPermission('edit_inventory');
+  const canDeleteInventory = hasPermission('delete_inventory');
+  const canManageCategories = hasPermission('manage_categories');
+
+  if (!canViewInventory) {
+    return (
+      <Card className="border-0 shadow-lg">
+        <CardContent className="p-8 text-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center">
+              <Shield className="h-8 w-8 text-amber-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-foreground">Access Denied</h3>
+              <p className="text-muted-foreground">You don't have permission to view inventory.</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
   
   // State Management
   const [activeTab, setActiveTab] = useState<ActiveTab>('inventory');
@@ -124,6 +174,9 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
   const [editingItem, setEditingItem] = useState<UniversalInventoryItem | null>(null);
   const [showSearch, setShowSearch] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<CategoryWithStats | null>(null);
+  const [isCategoryLoading, setIsCategoryLoading] = useState(false);
   
   // Data State
   const [inventoryData, setInventoryData] = useState<InventorySearchResponse | null>(null);
@@ -247,6 +300,48 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
     } catch (error) {
       console.error('Failed to delete item:', error);
       throw error;
+    }
+  };
+
+  const handleCategoryCreate = async (data: any) => {
+    setIsCategoryLoading(true);
+    try {
+      await universalCategoriesApi.createCategory(data);
+      // Refresh categories
+      loadCategories();
+    } catch (error) {
+      console.error('Failed to create category:', error);
+      throw error;
+    } finally {
+      setIsCategoryLoading(false);
+    }
+  };
+
+  const handleCategoryUpdate = async (id: string, data: any) => {
+    setIsCategoryLoading(true);
+    try {
+      await universalCategoriesApi.updateCategory(id, data);
+      // Refresh categories
+      loadCategories();
+    } catch (error) {
+      console.error('Failed to update category:', error);
+      throw error;
+    } finally {
+      setIsCategoryLoading(false);
+    }
+  };
+
+  const handleCategoryDelete = async (id: string) => {
+    setIsCategoryLoading(true);
+    try {
+      await universalCategoriesApi.deleteCategory(id);
+      // Refresh categories
+      loadCategories();
+    } catch (error) {
+      console.error('Failed to delete category:', error);
+      throw error;
+    } finally {
+      setIsCategoryLoading(false);
     }
   };
 
@@ -427,7 +522,7 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
     },
   ];
 
-  // Table actions
+  // Table actions with permission checking
   const inventoryActions: DataTableAction<UniversalInventoryItemWithCategory>[] = [
     {
       id: 'view',
@@ -438,7 +533,7 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
         console.log('View item:', item);
       },
     },
-    {
+    ...(canEditInventory ? [{
       id: 'edit',
       label: 'Edit',
       icon: <Edit className="h-4 w-4" />,
@@ -446,8 +541,8 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
         setEditingItem(item);
         setShowForm(true);
       },
-    },
-    {
+    }] : []),
+    ...(canCreateInventory ? [{
       id: 'duplicate',
       label: 'Duplicate',
       icon: <Copy className="h-4 w-4" />,
@@ -467,12 +562,12 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
           console.error('Failed to duplicate item:', error);
         }
       },
-    },
-    {
+    }] : []),
+    ...(canDeleteInventory ? [{
       id: 'delete',
       label: 'Delete',
       icon: <Trash2 className="h-4 w-4" />,
-      variant: 'destructive',
+      variant: 'destructive' as const,
       onClick: async (item) => {
         if (window.confirm(`Are you sure you want to delete "${item.name}"?`)) {
           try {
@@ -482,7 +577,7 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
           }
         }
       },
-    },
+    }] : []),
   ];
 
   // Grid view component
@@ -581,18 +676,20 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
                       Min: {item.min_stock_level}
                     </div>
                     <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 hover:bg-green-100"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditingItem(item);
-                          setShowForm(true);
-                        }}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
+                      {canEditInventory && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 hover:bg-green-100"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingItem(item);
+                            setShowForm(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      )}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
@@ -609,18 +706,24 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
                             <Eye className="h-4 w-4 mr-2" />
                             View Details
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => console.log('Duplicate item:', item)}>
-                            <Copy className="h-4 w-4 mr-2" />
-                            Duplicate
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            onClick={() => handleItemDelete(item.id)}
-                            className="text-red-600"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
+                          {canCreateInventory && (
+                            <DropdownMenuItem onClick={() => console.log('Duplicate item:', item)}>
+                              <Copy className="h-4 w-4 mr-2" />
+                              Duplicate
+                            </DropdownMenuItem>
+                          )}
+                          {canDeleteInventory && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem 
+                                onClick={() => handleItemDelete(item.id)}
+                                className="text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
@@ -790,14 +893,16 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
             <Search className="h-4 w-4" />
             Advanced Search
           </Button>
-          <Button 
-            variant="gradient-green" 
-            onClick={() => setShowForm(true)} 
-            className="flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            Add Item
-          </Button>
+          <WithPermissions permissions={['create_inventory']}>
+            <Button 
+              variant="gradient-green" 
+              onClick={() => setShowForm(true)} 
+              className="flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Add Item
+            </Button>
+          </WithPermissions>
         </div>
       </motion.div>
 
@@ -1000,9 +1105,19 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
               setExpandedCategories(newExpanded);
             }}
             onCategorySelect={(category) => console.log('Selected category:', category)}
-            onCategoryEdit={(category) => console.log('Edit category:', category)}
-            onCategoryDelete={(category) => console.log('Delete category:', category)}
-            onCategoryAdd={(parentId) => console.log('Add category with parent:', parentId)}
+            onCategoryEdit={(category) => {
+              setEditingCategory(category);
+              setShowCategoryForm(true);
+            }}
+            onCategoryDelete={async (category) => {
+              if (window.confirm(`Are you sure you want to delete "${category.name}"?`)) {
+                await handleCategoryDelete(category.id);
+              }
+            }}
+            onCategoryAdd={(parentId) => {
+              setEditingCategory(null);
+              setShowCategoryForm(true);
+            }}
             showStats={true}
             showActions={true}
           />
@@ -1081,6 +1196,32 @@ export const UniversalInventoryManagement: React.FC<UniversalInventoryManagement
               }
             }}
             isLoading={isLoading}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Category Form Dialog */}
+      <AnimatePresence>
+        {showCategoryForm && (
+          <CategoryForm
+            category={editingCategory || undefined}
+            parentCategories={categories}
+            templates={[]}
+            isOpen={showCategoryForm}
+            onClose={() => {
+              setShowCategoryForm(false);
+              setEditingCategory(null);
+            }}
+            onSubmit={async (data) => {
+              if (editingCategory) {
+                await handleCategoryUpdate(editingCategory.id, data);
+              } else {
+                await handleCategoryCreate(data);
+              }
+              setShowCategoryForm(false);
+              setEditingCategory(null);
+            }}
+            isLoading={isCategoryLoading}
           />
         )}
       </AnimatePresence>

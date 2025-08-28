@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { ApiResponse } from '../types';
+import { tokenManager } from '../services/TokenManager';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+// 🐳 DOCKER FIX: Use relative URLs for browser requests (handled by proxy)
+// The REACT_APP_API_URL with backend:8000 is only for server-side rendering
+const API_BASE_URL = '';
 
 // Create axios instance
 export const api = axios.create({
@@ -9,34 +12,84 @@ export const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 30000, // 30 second timeout
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token and handle token refresh
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token');
-    if (token) {
+    // Add authorization header if token exists
+    const authHeader = tokenManager.getAuthorizationHeader();
+    if (authHeader) {
       config.headers = config.headers || {};
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers['Authorization'] = authHeader;
     }
+
+    // Add request timestamp for debugging
+    (config as any).metadata = { startTime: Date.now() };
+    
     return config;
   },
   (error) => {
+    console.error('Request interceptor error:', error);
     return Promise.reject(error);
   }
 );
 
-// Response interceptor for error handling
+// Response interceptor for error handling and token refresh
 api.interceptors.response.use(
-  (response) => {
+  (response: any) => {
+    // Log response time for debugging
+    const config = response.config as any;
+    if (config.metadata?.startTime) {
+      const duration = Date.now() - config.metadata.startTime;
+      console.log(`API ${config.method?.toUpperCase()} ${config.url} completed in ${duration}ms`);
+    }
+    
     return response;
   },
-  (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid
-      localStorage.removeItem('access_token');
-      window.location.href = '/login';
+  async (error: any) => {
+    const originalRequest = error.config as any;
+    
+    // Handle 401 Unauthorized errors
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      
+      console.log('Received 401, attempting token refresh...');
+      
+      // Try to refresh token
+      const refreshed = await tokenManager.refreshTokens();
+      
+      if (refreshed) {
+        // Retry the original request with new token
+        const authHeader = tokenManager.getAuthorizationHeader();
+        if (authHeader) {
+          originalRequest.headers['Authorization'] = authHeader;
+        }
+        
+        console.log('Token refreshed, retrying request...');
+        return api(originalRequest);
+      } else {
+        // Refresh failed, redirect to login
+        console.log('Token refresh failed, redirecting to login...');
+        tokenManager.clearTokens();
+        
+        // Only redirect if not already on login page
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
+      }
     }
+    
+    // Handle other error types
+    if (error.response?.status === 403) {
+      console.warn('Access forbidden - insufficient permissions');
+    } else if (error.response?.status === 429) {
+      console.warn('Rate limit exceeded');
+    } else if (error.response?.status >= 500) {
+      console.error('Server error:', error.response.status);
+    }
+    
     return Promise.reject(error);
   }
 );
