@@ -16,8 +16,7 @@ from sqlalchemy.orm import Session
 
 from main import app
 from database import get_db, engine
-from database_base import Base
-from models import InventoryItem, Invoice, InvoiceItem, Category, User
+from models import Base, InventoryItem, Invoice, InvoiceItem, Category, User
 from services.cost_analysis_service import CostAnalysisService
 
 

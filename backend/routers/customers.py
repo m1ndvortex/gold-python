@@ -18,7 +18,7 @@ from schemas import (
     CustomerDebtSummary,
     CustomerSearchFilters
 )
-from oauth2_middleware import get_current_user, require_permission
+from auth import get_current_user, require_permission
 
 router = APIRouter(prefix="/customers", tags=["customers"])
 

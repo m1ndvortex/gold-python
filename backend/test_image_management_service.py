@@ -20,8 +20,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
 
 from services.image_management_service import ImageManagementService, ImageProcessingError
-from database_base import Base
-from models import ImageManagement
+from models import ImageManagement, Base
 from database import get_db
 from sqlalchemy import func
 

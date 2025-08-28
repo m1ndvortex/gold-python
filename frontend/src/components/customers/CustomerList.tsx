@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Plus, Phone, Mail, AlertTriangle, DollarSign, Filter, Users, Eye, Edit, Trash2, Lock, Shield } from 'lucide-react';
+import { Search, Plus, Phone, Mail, AlertTriangle, DollarSign, Filter, Users, Eye, Edit, Trash2 } from 'lucide-react';
 import { useLanguage } from '../../hooks/useLanguage';
-import { useAuth } from '../../hooks/useAuth';
-import { WithPermissions } from '../auth/WithPermissions';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
@@ -20,50 +18,6 @@ interface CustomerListProps {
 
 export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) => {
   const { t } = useLanguage();
-  const { user, hasPermission, isAuthenticated } = useAuth();
-
-  // Check authentication
-  if (!isAuthenticated) {
-    return (
-      <Card className="border-0 shadow-lg">
-        <CardContent className="p-8 text-center">
-          <div className="flex flex-col items-center gap-4">
-            <div className="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
-              <Lock className="h-8 w-8 text-red-600" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-foreground">Authentication Required</h3>
-              <p className="text-muted-foreground">Please log in to access customer management.</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Check permissions
-  const canViewCustomers = hasPermission('view_customers');
-  const canCreateCustomers = hasPermission('create_customers');
-  const canEditCustomers = hasPermission('edit_customers');
-  const canDeleteCustomers = hasPermission('delete_customers');
-
-  if (!canViewCustomers) {
-    return (
-      <Card className="border-0 shadow-lg">
-        <CardContent className="p-8 text-center">
-          <div className="flex flex-col items-center gap-4">
-            <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center">
-              <Shield className="h-8 w-8 text-amber-600" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-foreground">Access Denied</h3>
-              <p className="text-muted-foreground">You don't have permission to view customers.</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<CustomerSearchFilters>({
     sort_by: 'created_at',
@@ -238,7 +192,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
     }
   ];
 
-  // Define table actions with permission checking
+  // Define table actions
   const actions: DataTableAction<Customer>[] = [
     {
       id: 'view',
@@ -250,7 +204,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
       },
       variant: 'ghost'
     },
-    ...(canEditCustomers ? [{
+    {
       id: 'edit',
       label: t('customers.edit'),
       icon: <Edit className="h-4 w-4" />,
@@ -258,8 +212,8 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
         setSelectedCustomer(customer);
         setShowCreateForm(true);
       },
-      variant: 'ghost' as const
-    }] : [])
+      variant: 'ghost'
+    }
   ];
 
   return (
@@ -288,15 +242,13 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
               {selectedRows.length} selected
             </Badge>
           )}
-          <WithPermissions permissions={['create_customers']}>
-            <Button 
-              onClick={() => setShowCreateForm(true)}
-              className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              {t('customers.add_customer')}
-            </Button>
-          </WithPermissions>
+          <Button 
+            onClick={() => setShowCreateForm(true)}
+            className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            {t('customers.add_customer')}
+          </Button>
         </div>
       </div>
 

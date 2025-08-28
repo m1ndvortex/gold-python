@@ -4,26 +4,23 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import { KPIWidget, KPIData } from './KPIWidget';
+import { TimeRangeSelector, TimeRange } from './TimeRangeSelector';
+import { AlertsPanel } from './AlertsPanel';
 import { 
-  Target, 
+  RefreshCw, 
   TrendingUp, 
-  TrendingDown,
-  DollarSign,
-  Users,
-  Package,
-  Activity,
-  RefreshCw,
+  DollarSign, 
+  Package, 
+  Users, 
   AlertTriangle,
-  BarChart3
+  CheckCircle,
+  Activity,
+  BarChart3,
+  Settings
 } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiGet } from '@/services/api';
-import { useAuth } from '@/hooks/useAuth';
-import { usePermissions } from '@/hooks/usePermissions';
-import { WithPermissions } from '@/components/auth/WithPermissions';
-import { TimeRangeSelector, TimeRange } from './TimeRangeSelector';
-import { AlertsPanel } from './AlertsPanel';
-import { KPIWidget, KPIData } from './KPIWidget';
 
 // Types for KPI Dashboard
 export interface KPIDashboardData {
@@ -114,17 +111,11 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
   const [websocket, setWebsocket] = useState<WebSocket | null>(null);
 
   const queryClient = useQueryClient();
-  const { isAuthenticated, getToken } = useAuth();
-  const { canViewAnalytics, hasPermission } = usePermissions();
 
-  // Fetch KPI dashboard data - only if authenticated and has permission
+  // Fetch KPI dashboard data
   const { data: kpiData, isLoading, error, refetch } = useQuery({
     queryKey: ['kpi-dashboard', timeRange],
     queryFn: async (): Promise<KPIDashboardData> => {
-      if (!isAuthenticated || !canViewAnalytics()) {
-        throw new Error('Unauthorized access to KPI dashboard');
-      }
-
       const params = new URLSearchParams();
       
       if (timeRange.startDate) {
@@ -140,40 +131,30 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
       const url = `/kpi/dashboard?${params.toString()}`;
       return apiGet<KPIDashboardData>(url);
     },
-    enabled: isAuthenticated && canViewAnalytics(),
     refetchInterval: autoRefresh ? refreshInterval : false,
     staleTime: 10000, // 10 seconds
   });
 
-  // Fetch KPI alerts - only if authenticated and has permission
+  // Fetch KPI alerts
   const { data: alertsData } = useQuery({
     queryKey: ['kpi-alerts'],
     queryFn: async (): Promise<KPIAlert[]> => {
-      if (!isAuthenticated || !canViewAnalytics()) {
-        throw new Error('Unauthorized access to KPI alerts');
-      }
       return apiGet<KPIAlert[]>('/kpi/alerts');
     },
-    enabled: isAuthenticated && canViewAnalytics(),
     refetchInterval: autoRefresh ? refreshInterval : false,
   });
 
-  // WebSocket connection for real-time updates - only if authenticated
+  // WebSocket connection for real-time updates
   useEffect(() => {
-    if (!autoRefresh || !isAuthenticated || !canViewAnalytics()) return;
+    if (!autoRefresh) return;
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/kpi/ws`;
     
     const ws = new WebSocket(wsUrl);
     
-    // Add authentication token to WebSocket connection
     ws.onopen = () => {
       console.log('KPI WebSocket connected');
-      const token = getToken();
-      if (token) {
-        ws.send(JSON.stringify({ type: 'auth', token }));
-      }
       setWebsocket(ws);
     };
     
@@ -202,11 +183,11 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
     };
 
     return () => {
-      if (ws && ws.readyState === WebSocket.OPEN && typeof ws.close === 'function') {
+      if (ws.readyState === WebSocket.OPEN) {
         ws.close();
       }
     };
-  }, [autoRefresh, queryClient, isAuthenticated, canViewAnalytics, getToken]);
+  }, [autoRefresh, queryClient]);
 
   // Update alerts when data changes
   useEffect(() => {
@@ -311,35 +292,6 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
         return 'text-gray-600 bg-gray-100';
     }
   };
-
-  // Check authentication and permissions first
-  if (!isAuthenticated) {
-    return (
-      <Card className={cn('p-6', className)}>
-        <div className="text-center">
-          <AlertTriangle className="h-12 w-12 text-orange-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-orange-700 mb-2">Authentication Required</h3>
-          <p className="text-orange-600 mb-4">
-            Please log in to access the KPI dashboard
-          </p>
-        </div>
-      </Card>
-    );
-  }
-
-  if (!canViewAnalytics()) {
-    return (
-      <Card className={cn('p-6', className)}>
-        <div className="text-center">
-          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-red-700 mb-2">Access Denied</h3>
-          <p className="text-red-600 mb-4">
-            You don't have permission to view analytics and KPI data
-          </p>
-        </div>
-      </Card>
-    );
-  }
 
   if (error) {
     return (
@@ -455,12 +407,12 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
       {showAlerts && alerts.length > 0 && (
         <AlertsPanel
           alerts={alerts}
-          onAcknowledge={(alertId: string) => {
+          onAcknowledge={(alertId) => {
             setAlerts(prev => prev.map(alert => 
               alert.id === alertId ? { ...alert, acknowledged: true } : alert
             ));
           }}
-          onDismiss={(alertId: string) => {
+          onDismiss={(alertId) => {
             setAlerts(prev => prev.filter(alert => alert.id !== alertId));
           }}
         />
@@ -497,78 +449,60 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
-          <WithPermissions 
-            permissions={['analytics:view']}
-            fallback={
-              <div className="p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
-                <p className="text-gray-500">Analytics access required to view overview KPIs</p>
-              </div>
-            }
-          >
-            <div className={cn(
-              'grid gap-4',
-              compactMode ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-            )}>
-              {isLoading ? (
-                Array.from({ length: 4 }).map((_, i) => (
-                  <Card key={i} className="animate-pulse border-0 shadow-lg bg-gradient-to-br from-green-50 to-teal-100/50">
-                    <CardContent className="p-6">
-                      <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
-                      <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
-                      <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                getOverviewKPIs().map((kpi: KPIData) => (
-                  <KPIWidget
-                    key={kpi.id}
-                    data={kpi}
-                    size={compactMode ? 'sm' : 'md'}
-                    animated={true}
-                  />
-                ))
-              )}
-            </div>
-          </WithPermissions>
+          <div className={cn(
+            'grid gap-4',
+            compactMode ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+          )}>
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <Card key={i} className="animate-pulse border-0 shadow-lg bg-gradient-to-br from-green-50 to-teal-100/50">
+                  <CardContent className="p-6">
+                    <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              getOverviewKPIs().map((kpi) => (
+                <KPIWidget
+                  key={kpi.id}
+                  data={kpi}
+                  size={compactMode ? 'sm' : 'md'}
+                  animated={true}
+                />
+              ))
+            )}
+          </div>
         </TabsContent>
 
         {/* Financial Tab */}
         <TabsContent value="financial" className="space-y-6">
-          <WithPermissions 
-            anyPermission={['accounting:view', 'analytics:financial']}
-            fallback={
-              <div className="p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
-                <p className="text-gray-500">Financial access required to view financial KPIs</p>
-              </div>
-            }
-          >
-            <div className={cn(
-              'grid gap-4',
-              compactMode ? 'grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-            )}>
-              {isLoading ? (
-                Array.from({ length: 3 }).map((_, i) => (
-                  <Card key={i} className="animate-pulse border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50">
-                    <CardContent className="p-6">
-                      <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
-                      <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
-                      <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                getFinancialKPIs().map((kpi: KPIData) => (
-                  <KPIWidget
-                    key={kpi.id}
-                    data={kpi}
-                    size={compactMode ? 'sm' : 'md'}
-                    animated={true}
-                  />
-                ))
-              )}
-            </div>
-          </WithPermissions>
+          <div className={cn(
+            'grid gap-4',
+            compactMode ? 'grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+          )}>
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <Card key={i} className="animate-pulse border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-100/50">
+                  <CardContent className="p-6">
+                    <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2" />
+                    <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              getFinancialKPIs().map((kpi) => (
+                <KPIWidget
+                  key={kpi.id}
+                  data={kpi}
+                  size={compactMode ? 'sm' : 'md'}
+                  animated={true}
+                />
+              ))
+            )}
+          </div>
         </TabsContent>
 
         {/* Operational Tab */}
@@ -588,7 +522,7 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
                 </Card>
               ))
             ) : (
-              getOperationalKPIs().map((kpi: KPIData) => (
+              getOperationalKPIs().map((kpi) => (
                 <KPIWidget
                   key={kpi.id}
                   data={kpi}
@@ -617,7 +551,7 @@ export const KPIDashboard: React.FC<KPIDashboardProps> = ({
                 </Card>
               ))
             ) : (
-              getCustomerKPIs().map((kpi: KPIData) => (
+              getCustomerKPIs().map((kpi) => (
                 <KPIWidget
                   key={kpi.id}
                   data={kpi}

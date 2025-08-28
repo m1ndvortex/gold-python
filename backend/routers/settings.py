@@ -6,7 +6,7 @@ import bcrypt
 from datetime import datetime
 
 from database import get_db
-from oauth2_middleware import get_current_user, require_permission
+from auth import get_current_user, require_permission
 import models
 import schemas
 

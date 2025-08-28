@@ -186,7 +186,7 @@ describe('Login Page - Production Version', () => {
   describe('Error Handling', () => {
     test('should display login error when authentication fails', () => {
       // Set mock to return error state
-      mockUseAuth.loginError = new Error('Invalid username or password') as any;
+      mockUseAuth.loginError = { response: { status: 401 } };
       
       renderLoginPage();
       
@@ -195,7 +195,7 @@ describe('Login Page - Production Version', () => {
 
     test('should display network error message', () => {
       // Set mock to return network error state
-      mockUseAuth.loginError = new Error('Network error') as any;
+      mockUseAuth.loginError = { code: 'NETWORK_ERROR' };
       
       renderLoginPage();
       

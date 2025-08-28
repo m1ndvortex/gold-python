@@ -69,17 +69,17 @@ export const GoldWeightLedger: React.FC = () => {
   };
 
   // Calculate totals
-  const totalPurchases = goldWeightEntries?.filter((entry: any) => 
+  const totalPurchases = goldWeightEntries?.filter(entry => 
     entry.transaction_type === 'purchase'
-  ).reduce((sum: number, entry: any) => sum + entry.weight_grams, 0) || 0;
+  ).reduce((sum, entry) => sum + entry.weight_grams, 0) || 0;
 
-  const totalSales = goldWeightEntries?.filter((entry: any) => 
+  const totalSales = goldWeightEntries?.filter(entry => 
     entry.transaction_type === 'sale'
-  ).reduce((sum: number, entry: any) => sum + Math.abs(entry.weight_grams), 0) || 0;
+  ).reduce((sum, entry) => sum + Math.abs(entry.weight_grams), 0) || 0;
 
   const netGoldWeight = totalPurchases - totalSales;
 
-  const totalValuation = goldWeightEntries?.reduce((sum: number, entry: any) => 
+  const totalValuation = goldWeightEntries?.reduce((sum, entry) => 
     sum + (entry.current_valuation || 0), 0) || 0;
 
   if (error) {
@@ -325,7 +325,7 @@ export const GoldWeightLedger: React.FC = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    goldWeightEntries?.map((entry: any) => (
+                    goldWeightEntries?.map((entry) => (
                       <TableRow key={entry.id}>
                         <TableCell>
                           {getTransactionTypeBadge(entry.transaction_type)}
@@ -380,7 +380,7 @@ export const GoldWeightLedger: React.FC = () => {
                 <TrendingUpIcon className="h-6 w-6 text-emerald-600" />
               </div>
               <div className="text-3xl font-bold text-emerald-700 mb-2">
-                {goldWeightEntries?.filter((e: any) => e.transaction_type === 'purchase').length || 0}
+                {goldWeightEntries?.filter(e => e.transaction_type === 'purchase').length || 0}
               </div>
               <div className="text-sm font-medium text-emerald-600">Purchase Transactions</div>
             </div>
@@ -389,7 +389,7 @@ export const GoldWeightLedger: React.FC = () => {
                 <TrendingDownIcon className="h-6 w-6 text-red-600" />
               </div>
               <div className="text-3xl font-bold text-red-700 mb-2">
-                {goldWeightEntries?.filter((e: any) => e.transaction_type === 'sale').length || 0}
+                {goldWeightEntries?.filter(e => e.transaction_type === 'sale').length || 0}
               </div>
               <div className="text-sm font-medium text-red-600">Sale Transactions</div>
             </div>
@@ -398,7 +398,7 @@ export const GoldWeightLedger: React.FC = () => {
                 <ScaleIcon className="h-6 w-6 text-blue-600" />
               </div>
               <div className="text-3xl font-bold text-blue-700 mb-2">
-                {goldWeightEntries?.filter((e: any) => e.transaction_type === 'adjustment').length || 0}
+                {goldWeightEntries?.filter(e => e.transaction_type === 'adjustment').length || 0}
               </div>
               <div className="text-sm font-medium text-blue-600">Adjustment Transactions</div>
             </div>

@@ -46,10 +46,7 @@ def create_admin_user():
                     "edit_settings": True,
                     "manage_roles": True,
                     "manage_users": True,
-                    "view_roles": True,
-                    "view_audit_logs": True,
-                    "view_security_analysis": True,
-                    "admin": True
+                    "view_roles": True
                 }
             )
             db.add(owner_role)

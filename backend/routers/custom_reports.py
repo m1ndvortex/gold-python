@@ -17,7 +17,7 @@ import uuid
 import logging
 
 from database import get_db
-from oauth2_middleware import get_current_user
+from auth import get_current_user
 from schemas import User
 from services.report_engine_service import ReportEngineService
 from services.report_scheduler_service import ReportSchedulerService

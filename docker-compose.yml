@@ -74,10 +74,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      target: development
     container_name: goldshop_frontend
     environment:
-      REACT_APP_API_URL: ""
+      REACT_APP_API_URL: http://localhost:8000
       REACT_APP_ENVIRONMENT: development
     ports:
       - "3000:3000"
@@ -88,6 +87,7 @@ services:
       - backend
     networks:
       - goldshop_network
+    command: npm start
 
 volumes:
   postgres_data:

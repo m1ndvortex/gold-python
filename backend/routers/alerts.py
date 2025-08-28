@@ -16,7 +16,7 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 
 from database import get_db
-from oauth2_middleware import get_current_user
+from auth import get_current_user
 from models import User
 from services.alert_service import AlertService
 

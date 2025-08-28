@@ -104,10 +104,10 @@ export const ExpenseLedger: React.FC = () => {
     return category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
-  const totalExpenses = expenseEntries?.reduce((sum: number, entry: any) => sum + entry.amount, 0) || 0;
+  const totalExpenses = expenseEntries?.reduce((sum, entry) => sum + entry.amount, 0) || 0;
 
   // Group expenses by category for summary
-  const expensesByCategory = expenseEntries?.reduce((acc: any, entry: any) => {
+  const expensesByCategory = expenseEntries?.reduce((acc, entry) => {
     acc[entry.category] = (acc[entry.category] || 0) + entry.amount;
     return acc;
   }, {} as Record<string, number>) || {};
@@ -394,7 +394,7 @@ export const ExpenseLedger: React.FC = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    expenseEntries?.map((entry: any) => (
+                    expenseEntries?.map((entry) => (
                       <TableRow key={entry.id}>
                         <TableCell>
                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">

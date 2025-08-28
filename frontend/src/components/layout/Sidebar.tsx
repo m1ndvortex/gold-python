@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -76,19 +76,11 @@ const navigationItems: NavigationItem[] = [
         icon: Gem,
         href: '/inventory/products',
         permission: 'view_inventory',
-        badge: 'Enhanced',
       },
       {
         key: 'nav.inventory.categories',
         icon: FolderOpen,
         href: '/inventory/categories',
-        permission: 'view_inventory',
-        badge: 'Professional',
-      },
-      {
-        key: 'nav.inventory.analytics',
-        icon: BarChart3,
-        href: '/inventory/analytics',
         permission: 'view_inventory',
         badge: 'New',
       },
@@ -97,14 +89,13 @@ const navigationItems: NavigationItem[] = [
         icon: Plus,
         href: '/inventory/bulk',
         permission: 'edit_inventory',
-        badge: 'Enhanced',
       },
       {
-        key: 'nav.inventory.images',
+        key: 'Images',
         icon: ImageIcon,
         href: '/inventory/images',
         permission: 'view_inventory',
-        badge: 'Enhanced',
+        badge: 'New',
       },
     ],
   },
@@ -151,58 +142,6 @@ const navigationItems: NavigationItem[] = [
         key: 'nav.accounting.debt',
         href: '/accounting/debt',
         permission: 'view_accounting',
-      },
-    ],
-  },
-  {
-    key: 'nav.analytics',
-    icon: Activity,
-    href: '/analytics',
-    permission: 'view_analytics',
-    badge: 'AI',
-    expandable: true,
-    children: [
-      {
-        key: 'nav.analytics.dashboard',
-        icon: BarChart3,
-        href: '/analytics/dashboard',
-        permission: 'view_analytics',
-        badge: 'New',
-      },
-      {
-        key: 'nav.analytics.kpi',
-        icon: Target,
-        href: '/analytics/kpi',
-        permission: 'view_analytics',
-        badge: 'Pro',
-      },
-      {
-        key: 'nav.analytics.predictive',
-        icon: TrendingUp,
-        href: '/analytics/predictive',
-        permission: 'view_analytics',
-        badge: 'AI',
-      },
-      {
-        key: 'nav.analytics.segmentation',
-        icon: Users,
-        href: '/analytics/segmentation',
-        permission: 'view_analytics',
-        badge: 'AI',
-      },
-      {
-        key: 'nav.analytics.trends',
-        icon: Activity,
-        href: '/analytics/trends',
-        permission: 'view_analytics',
-        badge: 'Pro',
-      },
-      {
-        key: 'nav.analytics.export',
-        icon: Upload,
-        href: '/analytics/export',
-        permission: 'view_analytics',
-        badge: 'Pro',
       },
     ],
   },
@@ -340,140 +279,47 @@ export const Sidebar: React.FC<SidebarProps> = ({
   className,
 }) => {
   const { t, direction } = useLanguage();
-  const { hasPermission, hasAnyRole, isAuthenticated, user, isLoading } = useAuth();
+  const { hasPermission, hasAnyRole } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   const isRTL = direction === 'rtl';
 
-  // Enhanced permission checking with better error handling
-  const checkItemPermissions = useCallback((item: NavigationItem | NavigationSubItem): boolean => {
-    // If user is not authenticated, hide all items except public ones
-    if (!isAuthenticated) {
-      return false;
-    }
-
-    // Check permissions first
+  // Filter navigation items based on permissions
+  const visibleItems = navigationItems.filter((item) => {
     if (item.permission && !hasPermission(item.permission)) {
       return false;
     }
-
-    // Check roles if specified
-    if (item.roles && item.roles.length > 0 && !hasAnyRole(item.roles)) {
+    if (item.roles && !hasAnyRole(item.roles)) {
       return false;
     }
-
     return true;
-  }, [isAuthenticated, hasPermission, hasAnyRole]);
+  });
 
-  // Filter navigation items based on enhanced permissions
-  const visibleItems = navigationItems.filter(checkItemPermissions);
-
-  // Persist navigation state in localStorage
-  useEffect(() => {
-    try {
-      const savedExpandedItems = localStorage.getItem('sidebar-expanded-items');
-      if (savedExpandedItems) {
-        try {
-          const parsed = JSON.parse(savedExpandedItems);
-          setExpandedItems(new Set(parsed));
-        } catch (parseError) {
-          console.warn('Failed to parse saved expanded items:', parseError);
-        }
-      }
-    } catch (storageError) {
-      console.warn('Failed to access localStorage:', storageError);
-    }
-  }, []);
-
-  // Save expanded items to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('sidebar-expanded-items', JSON.stringify(Array.from(expandedItems)));
-    } catch (error) {
-      console.warn('Failed to save expanded items to localStorage:', error);
-    }
-  }, [expandedItems]);
-
-  // Auto-expand parent items when child is active
-  useEffect(() => {
-    const currentPath = location.pathname;
-    const newExpanded = new Set(expandedItems);
-    
-    navigationItems.forEach(item => {
-      if (item.children) {
-        const hasActiveChild = item.children.some(child => 
-          checkItemPermissions(child) && isActiveRoute(child.href)
-        );
-        if (hasActiveChild) {
-          newExpanded.add(item.key);
-        }
-      }
-    });
-    
-    if (newExpanded.size !== expandedItems.size) {
-      setExpandedItems(newExpanded);
-    }
-  }, [location.pathname, expandedItems, checkItemPermissions]);
-
-  // Enhanced active route detection with better matching
-  const isActiveRoute = useCallback((href: string) => {
-    const currentPath = location.pathname;
-    
-    // Handle dashboard special case
-    if (href === '/dashboard') {
-      return currentPath === '/' || currentPath === '/dashboard';
-    }
-    
-    // Handle exact matches
-    if (currentPath === href) {
+  const isActiveRoute = (href: string) => {
+    if (href === '/dashboard' && (location.pathname === '/' || location.pathname === '/dashboard')) {
       return true;
     }
-    
-    // Handle nested routes with better matching
-    if (href !== '/dashboard' && currentPath.startsWith(href)) {
-      // Ensure we're matching complete path segments
-      const nextChar = currentPath[href.length];
-      return nextChar === '/' || nextChar === undefined;
-    }
-    
-    return false;
-  }, [location.pathname]);
+    return location.pathname.startsWith(href) && href !== '/dashboard';
+  };
 
-  const isParentActive = useCallback((item: NavigationItem) => {
+  const isParentActive = (item: NavigationItem) => {
     if (isActiveRoute(item.href)) return true;
     if (item.children) {
-      return item.children.some(child => 
-        checkItemPermissions(child) && isActiveRoute(child.href)
-      );
+      return item.children.some(child => isActiveRoute(child.href));
     }
     return false;
-  }, [isActiveRoute, checkItemPermissions]);
+  };
 
-  // Enhanced navigation handler with permission checking
-  const handleNavigation = useCallback((href: string, item: NavigationItem | NavigationSubItem) => {
-    // Double-check permissions before navigation
-    if (!checkItemPermissions(item)) {
-      console.warn('Navigation blocked: insufficient permissions for', href);
-      return;
+  const toggleExpanded = (itemKey: string) => {
+    const newExpanded = new Set(expandedItems);
+    if (newExpanded.has(itemKey)) {
+      newExpanded.delete(itemKey);
+    } else {
+      newExpanded.add(itemKey);
     }
-    
-    // Navigate to the route
-    navigate(href);
-  }, [navigate, checkItemPermissions]);
-
-  const toggleExpanded = useCallback((itemKey: string) => {
-    setExpandedItems(prev => {
-      const newExpanded = new Set(prev);
-      if (newExpanded.has(itemKey)) {
-        newExpanded.delete(itemKey);
-      } else {
-        newExpanded.add(itemKey);
-      }
-      return newExpanded;
-    });
-  }, []);
+    setExpandedItems(newExpanded);
+  };
 
   const ToggleIcon = isRTL ? 
     (isCollapsed ? ChevronLeft : ChevronRight) : 
@@ -508,7 +354,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         className
       )}
     >
-      {/* Header with Enhanced Gradient and Authentication Status */}
+      {/* Header with Enhanced Gradient */}
       <motion.div 
         className="flex items-center justify-between p-4 border-b border-border/50 bg-gradient-to-r from-green-50 via-teal-50 to-blue-50"
         layout
@@ -526,24 +372,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-green/25">
                   <Gem className="h-5 w-5 text-white" />
                 </div>
-                {/* Authentication status indicator */}
-                <div className={cn(
-                  "absolute -top-1 -right-1 w-3 h-3 rounded-full",
-                  isAuthenticated && !isLoading ? "bg-teal-400 animate-pulse" : "bg-red-400"
-                )} />
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-teal-400 rounded-full animate-pulse" />
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-foreground text-lg leading-tight">
                   {t('app.title')}
                 </span>
                 <span className="text-xs text-muted-foreground font-medium">
-                  {isAuthenticated ? 'Professional Edition' : 'Not Authenticated'}
+                  Professional Edition
                 </span>
-                {user && (
-                  <span className="text-xs text-green-600 font-medium truncate max-w-32">
-                    {user.username}
-                  </span>
-                )}
               </div>
             </motion.div>
           )}
@@ -571,28 +408,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Navigation */}
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-green/20 scrollbar-track-transparent">
-        {isLoading ? (
-          <div className="space-y-2">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="h-10 bg-gradient-to-r from-slate-200 to-slate-300 rounded-xl" />
-              </div>
-            ))}
-          </div>
-        ) : !isAuthenticated ? (
-          <div className="text-center py-8">
-            <p className="text-sm text-muted-foreground">
-              {t('auth.please_login')}
-            </p>
-          </div>
-        ) : visibleItems.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-sm text-muted-foreground">
-              {t('nav.no_access')}
-            </p>
-          </div>
-        ) : (
-          visibleItems.map((item, index) => {
+        {visibleItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = isParentActive(item);
           const isExpanded = expandedItems.has(item.key);
@@ -610,8 +426,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className="relative">
                 {hasChildren && !isCollapsed ? (
                   <div className="flex">
-                    <button
-                      onClick={() => handleNavigation(item.href, item)}
+                    <Link
+                      to={item.href}
                       className={cn(
                         'flex-1 flex items-center px-3 py-2.5 rounded-l-xl text-sm font-medium transition-all duration-200',
                         'hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 hover:text-green-700 hover:shadow-sm',
@@ -649,7 +465,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           {item.badge}
                         </span>
                       )}
-                    </button>
+                    </Link>
                     <button
                       onClick={() => toggleExpanded(item.key)}
                       className={cn(
@@ -669,10 +485,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     </button>
                   </div>
                 ) : (
-                  <button
-                    onClick={() => handleNavigation(item.href, item)}
+                  <Link
+                    to={item.href}
                     className={cn(
-                      'w-full flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
+                      'flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
                       'hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 hover:text-green-700 hover:shadow-sm',
                       'focus:outline-none focus:ring-2 focus:ring-green/20 focus:ring-offset-2',
                       'group relative overflow-hidden',
@@ -712,7 +528,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         )}
                       </>
                     )}
-                  </button>
+                  </Link>
                 )}
               </div>
 
@@ -736,11 +552,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       const isChildActive = isActiveRoute(child.href);
 
                       return (
-                        <button
+                        <Link
                           key={child.key}
-                          onClick={() => handleNavigation(child.href, child)}
+                          to={child.href}
                           className={cn(
-                            'w-full flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                            'flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
                             'hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 hover:text-green-600',
                             'focus:outline-none focus:ring-2 focus:ring-green/20 focus:ring-offset-2',
                             'space-x-3 rtl:space-x-reverse relative',
@@ -763,7 +579,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                               {child.badge}
                             </span>
                           )}
-                        </button>
+                        </Link>
                       );
                     })}
                   </motion.div>
@@ -771,8 +587,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </AnimatePresence>
             </motion.div>
           );
-        })
-        )}
+        })}
       </nav>
 
       {/* Footer with Professional Branding */}
@@ -793,27 +608,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {t('common.professional_edition')} {t('common.version')} 2.0
               </div>
               <div className="flex items-center justify-center space-x-1 text-xs text-muted-foreground">
-                <div className={cn(
-                  "w-2 h-2 rounded-full",
-                  isAuthenticated && !isLoading ? "bg-green-500 animate-pulse" : "bg-red-500"
-                )} />
-                <span>
-                  {isAuthenticated && !isLoading 
-                    ? t('common.system_online') 
-                    : isLoading 
-                      ? t('common.connecting')
-                      : t('common.not_authenticated')
-                  }
-                </span>
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                <span>{t('common.system_online')}</span>
               </div>
-              {user && (
-                <div className="text-xs text-green-600 font-medium">
-                  {user.rbac_roles && user.rbac_roles.length > 0 
-                    ? user.rbac_roles.filter(r => r.is_active).map(r => r.display_name).join(', ')
-                    : user.role?.name || 'No Role'
-                  }
-                </div>
-              )}
             </div>
           </motion.div>
         )}

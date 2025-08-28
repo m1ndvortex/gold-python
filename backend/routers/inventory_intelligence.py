@@ -16,7 +16,7 @@ from datetime import date, datetime, timedelta
 import uuid
 
 from database import get_db
-from oauth2_middleware import get_current_user
+from auth import get_current_user
 from models import (
     User, InventoryItem, Category,
     InventoryTurnoverAnalysis, StockOptimizationRecommendation,

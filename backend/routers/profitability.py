@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, date
 from database import get_db
 import models
 import schemas
-from oauth2_middleware import get_current_user, require_permission
+from auth import get_current_active_user, require_permission
 from decimal import Decimal
 import logging
 

@@ -35,7 +35,7 @@ def setup_database():
     create_analytics_schema()
     
     # Create tables
-    from database_base import Base
+    from models import Base
     Base.metadata.create_all(bind=engine)
 
 @pytest.fixture

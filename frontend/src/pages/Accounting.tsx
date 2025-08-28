@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
-import { useAuth } from '../hooks/useAuth';
-import { WithPermissions } from '../components/auth/WithPermissions';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
@@ -22,9 +20,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Wallet,
-  PiggyBank,
-  Lock,
-  Shield
+  PiggyBank
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -41,52 +37,6 @@ export const Accounting: React.FC = () => {
   const { t } = useLanguage();
   const { useLedgerSummary } = useAccounting();
   const [activeTab, setActiveTab] = useState('income');
-  const { user, hasPermission, isAuthenticated } = useAuth();
-
-  // Check authentication
-  if (!isAuthenticated) {
-    return (
-      <div className="container mx-auto p-6">
-        <Card className="border-0 shadow-lg">
-          <CardContent className="p-8 text-center">
-            <div className="flex flex-col items-center gap-4">
-              <div className="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
-                <Lock className="h-8 w-8 text-red-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-foreground">Authentication Required</h3>
-                <p className="text-muted-foreground">Please log in to access accounting features.</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Check permissions
-  const canViewAccounting = hasPermission('view_accounting');
-  const canManageAccounting = hasPermission('manage_accounting');
-
-  if (!canViewAccounting) {
-    return (
-      <div className="container mx-auto p-6">
-        <Card className="border-0 shadow-lg">
-          <CardContent className="p-8 text-center">
-            <div className="flex flex-col items-center gap-4">
-              <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center">
-                <Shield className="h-8 w-8 text-amber-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-foreground">Access Denied</h3>
-                <p className="text-muted-foreground">You don't have permission to view accounting data.</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   // Get ledger summary for overview
   const { data: ledgerSummary, isLoading: summaryLoading } = useLedgerSummary();

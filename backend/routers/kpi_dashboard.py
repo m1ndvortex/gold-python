@@ -10,7 +10,7 @@ from datetime import datetime, date, timedelta
 from database import get_db
 import models
 import schemas
-from oauth2_middleware import get_current_user, require_permission
+from auth import get_current_active_user, require_permission
 from services.kpi_calculator_service import FinancialKPICalculator, OperationalKPICalculator, CustomerKPICalculator
 import json
 import asyncio

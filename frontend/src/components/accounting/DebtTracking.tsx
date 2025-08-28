@@ -73,10 +73,10 @@ export const DebtTracking: React.FC = () => {
   };
 
   // Calculate totals
-  const totalDebt = debtEntries?.reduce((sum: number, entry: any) => sum + entry.total_debt, 0) || 0;
+  const totalDebt = debtEntries?.reduce((sum, entry) => sum + entry.total_debt, 0) || 0;
   const totalCustomers = debtEntries?.length || 0;
   const averageDebt = totalCustomers > 0 ? totalDebt / totalCustomers : 0;
-  const criticalDebtCount = debtEntries?.filter((entry: any) => entry.total_debt >= 10000).length || 0;
+  const criticalDebtCount = debtEntries?.filter(entry => entry.total_debt >= 10000).length || 0;
 
   if (error) {
     return (
@@ -315,7 +315,7 @@ export const DebtTracking: React.FC = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    debtEntries?.map((entry: any) => {
+                    debtEntries?.map((entry) => {
                       const daysSincePayment = getDaysSinceLastPayment(entry.last_payment_date);
                       return (
                         <TableRow key={entry.customer_id}>
@@ -395,11 +395,11 @@ export const DebtTracking: React.FC = () => {
                 <AlertTriangleIcon className="h-6 w-6 text-red-600" />
               </div>
               <div className="text-3xl font-bold text-red-700 mb-2">
-                {debtEntries?.filter((e: any) => e.total_debt >= 10000).length || 0}
+                {debtEntries?.filter(e => e.total_debt >= 10000).length || 0}
               </div>
               <div className="text-sm font-medium text-red-600 mb-1">Critical (≥$10,000)</div>
               <div className="text-xs text-red-500 font-medium">
-                {formatCurrency(debtEntries?.filter((e: any) => e.total_debt >= 10000).reduce((sum: number, e: any) => sum + e.total_debt, 0) || 0)}
+                {formatCurrency(debtEntries?.filter(e => e.total_debt >= 10000).reduce((sum, e) => sum + e.total_debt, 0) || 0)}
               </div>
             </div>
             <div className="text-center p-6 bg-gradient-to-br from-orange-50 to-amber-100/60 rounded-xl border-0 shadow-md hover:shadow-lg transition-all duration-300">
@@ -407,11 +407,11 @@ export const DebtTracking: React.FC = () => {
                 <AlertTriangleIcon className="h-6 w-6 text-orange-600" />
               </div>
               <div className="text-3xl font-bold text-orange-700 mb-2">
-                {debtEntries?.filter((e: any) => e.total_debt >= 5000 && e.total_debt < 10000).length || 0}
+                {debtEntries?.filter(e => e.total_debt >= 5000 && e.total_debt < 10000).length || 0}
               </div>
               <div className="text-sm font-medium text-orange-600 mb-1">High ($5,000-$9,999)</div>
               <div className="text-xs text-orange-500 font-medium">
-                {formatCurrency(debtEntries?.filter((e: any) => e.total_debt >= 5000 && e.total_debt < 10000).reduce((sum: number, e: any) => sum + e.total_debt, 0) || 0)}
+                {formatCurrency(debtEntries?.filter(e => e.total_debt >= 5000 && e.total_debt < 10000).reduce((sum, e) => sum + e.total_debt, 0) || 0)}
               </div>
             </div>
             <div className="text-center p-6 bg-gradient-to-br from-yellow-50 to-amber-100/60 rounded-xl border-0 shadow-md hover:shadow-lg transition-all duration-300">
@@ -419,11 +419,11 @@ export const DebtTracking: React.FC = () => {
                 <AlertTriangleIcon className="h-6 w-6 text-yellow-600" />
               </div>
               <div className="text-3xl font-bold text-yellow-700 mb-2">
-                {debtEntries?.filter((e: any) => e.total_debt >= 1000 && e.total_debt < 5000).length || 0}
+                {debtEntries?.filter(e => e.total_debt >= 1000 && e.total_debt < 5000).length || 0}
               </div>
               <div className="text-sm font-medium text-yellow-600 mb-1">Medium ($1,000-$4,999)</div>
               <div className="text-xs text-yellow-500 font-medium">
-                {formatCurrency(debtEntries?.filter((e: any) => e.total_debt >= 1000 && e.total_debt < 5000).reduce((sum: number, e: any) => sum + e.total_debt, 0) || 0)}
+                {formatCurrency(debtEntries?.filter(e => e.total_debt >= 1000 && e.total_debt < 5000).reduce((sum, e) => sum + e.total_debt, 0) || 0)}
               </div>
             </div>
             <div className="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-100/60 rounded-xl border-0 shadow-md hover:shadow-lg transition-all duration-300">
@@ -431,11 +431,11 @@ export const DebtTracking: React.FC = () => {
                 <CheckCircleIcon className="h-6 w-6 text-green-600" />
               </div>
               <div className="text-3xl font-bold text-green-700 mb-2">
-                {debtEntries?.filter((e: any) => e.total_debt < 1000).length || 0}
+                {debtEntries?.filter(e => e.total_debt < 1000).length || 0}
               </div>
               <div className="text-sm font-medium text-green-600 mb-1">Low (&lt;$1,000)</div>
               <div className="text-xs text-green-500 font-medium">
-                {formatCurrency(debtEntries?.filter((e: any) => e.total_debt < 1000).reduce((sum: number, e: any) => sum + e.total_debt, 0) || 0)}
+                {formatCurrency(debtEntries?.filter(e => e.total_debt < 1000).reduce((sum, e) => sum + e.total_debt, 0) || 0)}
               </div>
             </div>
           </div>

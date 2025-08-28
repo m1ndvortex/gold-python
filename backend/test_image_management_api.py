@@ -15,7 +15,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
 
 from main import app
-from database_base import Base
+from models import Base
 from database import get_db
 
 # Test configuration

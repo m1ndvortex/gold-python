@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { Invoices } from '../pages/Invoices';
 import { InvoiceList } from '../components/invoices/InvoiceList';
-import { EnhancedInvoiceForm } from '../components/invoices/EnhancedInvoiceForm';
+import { InvoiceForm } from '../components/invoices/InvoiceForm';
 import { InvoicePreview } from '../components/invoices/InvoicePreview';
 import { PaymentForm } from '../components/invoices/PaymentForm';
 import { PDFGenerator } from '../components/invoices/PDFGenerator';
@@ -286,11 +286,11 @@ describe('Invoice Components Gradient Styling', () => {
     });
   });
 
-  describe('EnhancedInvoiceForm Component', () => {
+  describe('InvoiceForm Component', () => {
     it('should render with gradient styling', () => {
       render(
         <TestWrapper>
-          <EnhancedInvoiceForm />
+          <InvoiceForm />
         </TestWrapper>
       );
 

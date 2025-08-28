@@ -11,7 +11,6 @@ import { InvoiceTemplateDesigner } from '../components/settings/InvoiceTemplateD
 import { RolePermissionManager } from '../components/settings/RolePermissionManager';
 import { UserManagementComponent } from '../components/settings/UserManagement';
 import { DisasterRecoveryDashboard } from '../components/settings/DisasterRecoveryDashboard';
-import { RBACManagement } from './RBACManagement';
 import { useLanguage } from '../hooks/useLanguage';
 import { useAuth } from '../hooks/useAuth';
 import { 
@@ -158,22 +157,6 @@ export const Settings: React.FC = () => {
                   </TabsTrigger>
                 )}
                 
-                {canManageRoles && (
-                  <TabsTrigger 
-                    value="rbac" 
-                    className={cn(
-                      "flex flex-col items-center gap-2 p-4 rounded-lg transition-all duration-300 group",
-                      "hover:bg-white hover:shadow-lg hover:scale-105",
-                      "data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:border-2 data-[state=active]:border-cyan-300 data-[state=active]:scale-105"
-                    )}
-                  >
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
-                      <Shield className="h-4 w-4 text-white" />
-                    </div>
-                    <span className="text-xs font-medium">RBAC</span>
-                  </TabsTrigger>
-                )}
-                
                 {canManageUsers && (
                   <TabsTrigger 
                     value="users" 
@@ -312,29 +295,6 @@ export const Settings: React.FC = () => {
                     </Badge>
                   </div>
                   <UserManagementComponent />
-                </div>
-              </TabsContent>
-            )}
-
-            {canManageRoles && (
-              <TabsContent value="rbac" className="p-0">
-                <div className="p-6 space-y-6 bg-gradient-to-br from-cyan-50/40 via-white to-teal-50/20">
-                  <div className="flex items-center justify-between pb-4 border-b border-cyan-200/50">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center shadow-lg">
-                        <Shield className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold text-foreground">RBAC Management</h3>
-                        <p className="text-sm text-muted-foreground">Advanced role-based access control system</p>
-                      </div>
-                    </div>
-                    <Badge variant="outline" className="bg-gradient-to-r from-cyan-50 to-teal-100 text-cyan-700 border-cyan-200 shadow-sm">
-                      <Shield className="h-3 w-3 mr-1" />
-                      Advanced Security
-                    </Badge>
-                  </div>
-                  <RBACManagement />
                 </div>
               </TabsContent>
             )}

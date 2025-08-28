@@ -24,8 +24,7 @@ celery_app = Celery(
         "analytics_tasks.report_tasks",
         "analytics_tasks.backup_tasks",
         "analytics_tasks.alert_tasks",
-        "analytics_tasks.disaster_recovery_tasks",
-        "analytics_tasks.analytics_intelligence_tasks"
+        "analytics_tasks.disaster_recovery_tasks"
     ]
 )
 
@@ -39,7 +38,6 @@ celery_app.conf.update(
         "analytics_tasks.backup_tasks.*": {"queue": "backup_queue"},
         "analytics_tasks.alert_tasks.*": {"queue": "alerts_queue"},
         "analytics_tasks.disaster_recovery_tasks.*": {"queue": "disaster_recovery_queue"},
-        "analytics_tasks.analytics_intelligence_tasks.*": {"queue": "analytics_intelligence_queue"},
     },
     
     # Task execution settings
@@ -153,31 +151,6 @@ celery_app.conf.update(
             "schedule": 604800.0,  # Weekly
             "kwargs": {"retention_days": 90},
             "options": {"expires": 3600},  # Expire after 1 hour
-        },
-        
-        # Advanced analytics tasks
-        "daily-business-insights": {
-            "task": "analytics_tasks.analytics_intelligence_tasks.generate_business_insights_task",
-            "schedule": 86400.0,  # Daily
-            "kwargs": {"business_type": "gold_shop", "analysis_period_days": 30},
-            "options": {"expires": 7200},  # Expire after 2 hours
-        },
-        "weekly-customer-segmentation": {
-            "task": "analytics_tasks.analytics_intelligence_tasks.perform_customer_segmentation_task",
-            "schedule": 604800.0,  # Weekly
-            "kwargs": {"segmentation_method": "rfm", "num_segments": 5},
-            "options": {"expires": 3600},  # Expire after 1 hour
-        },
-        "daily-anomaly-detection": {
-            "task": "analytics_tasks.analytics_intelligence_tasks.detect_anomalies_task",
-            "schedule": 86400.0,  # Daily
-            "kwargs": {"metric_name": "revenue", "detection_method": "statistical"},
-            "options": {"expires": 1800},  # Expire after 30 minutes
-        },
-        "analytics-cache-cleanup": {
-            "task": "analytics_tasks.analytics_intelligence_tasks.cleanup_analytics_cache_task",
-            "schedule": 3600.0,  # Every hour
-            "options": {"expires": 900},  # Expire after 15 minutes
         },
     },
 )
