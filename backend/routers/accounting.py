@@ -10,6 +10,8 @@ from datetime import datetime, date
 
 from database import get_db
 from services.accounting_service import AccountingService
+from oauth2_middleware import get_current_user, require_permission, require_any_permission
+import models
 from schemas_accounting import (
     ChartOfAccountsCreate, ChartOfAccountsUpdate, ChartOfAccountsResponse,
     AccountingPeriodCreate, AccountingPeriodResponse,
@@ -30,7 +32,7 @@ router = APIRouter(prefix="/api/accounting", tags=["accounting"])
 async def create_chart_account(
     account_data: ChartOfAccountsCreate,
     db: Session = Depends(get_db),
-    current_user_id: str = "system"  # TODO: Get from auth
+    current_user: models.User = Depends(require_permission("manage_accounting"))
 ):
     """Create a new chart of accounts entry"""
     try:

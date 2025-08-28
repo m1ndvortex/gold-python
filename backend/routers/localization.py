@@ -53,7 +53,7 @@ from schemas_localization_simple import (
     # Bulk Operations
     BulkTranslationRequest, BulkTranslationResponse
 )
-from auth import get_current_user
+from oauth2_middleware import get_current_user
 from models_universal import User
 
 router = APIRouter(prefix="/api/localization", tags=["localization"])

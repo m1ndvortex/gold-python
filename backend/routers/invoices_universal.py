@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 import uuid
 
 from database import get_db
-from auth import get_current_user
+from oauth2_middleware import get_current_user
 from models_universal import (
     Invoice, InvoiceItem, Customer, InventoryItem, User, 
     Payment, PaymentMethod, AuditLog, BusinessConfiguration

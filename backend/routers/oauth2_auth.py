@@ -20,6 +20,7 @@ from oauth2_audit import (
     TokenEvent, SecurityEvent, analyze_failed_login_attempts, detect_suspicious_activity
 )
 from auth import verify_password, get_password_hash  # Import existing password functions
+from services.authentication_service import get_authentication_service
 
 router = APIRouter(prefix="/api/oauth2", tags=["OAuth2 Authentication"])
 
@@ -75,6 +76,7 @@ class AuditLogResponse(BaseModel):
 token_manager = get_token_manager()
 provider_service = get_oauth2_provider_service()
 config = get_oauth2_config()
+auth_service = get_authentication_service()
 
 def _get_client_info(request: Request) -> tuple[Optional[str], Optional[str]]:
     """Extract client IP and user agent from request"""
@@ -115,62 +117,22 @@ async def login(
     
     ip_address, user_agent = _get_client_info(request)
     
-    # Authenticate user
-    user = db.query(models.User).filter(models.User.username == login_data.username).first()
-    
-    if not user or not verify_password(login_data.password, user.password_hash):
-        # Log failed login attempt
-        log_authentication_event(
-            db, user.id if user else None, TokenEvent.LOGIN_FAILED, False,
-            {"username": login_data.username, "reason": "invalid_credentials"},
-            ip_address, user_agent
+    try:
+        # Use authentication service for comprehensive login
+        user, access_token, refresh_token = await auth_service.authenticate_user(
+            db, login_data.username, login_data.password, ip_address, user_agent
         )
         
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password"
-        )
-    
-    if not user.is_active:
-        log_authentication_event(
-            db, user.id, TokenEvent.LOGIN_FAILED, False,
-            {"username": login_data.username, "reason": "inactive_user"},
-            ip_address, user_agent
+        return LoginResponse(
+            access_token=access_token,
+            refresh_token=refresh_token,
+            expires_in=config.access_token_expire_minutes * 60,
+            user=_serialize_user(user)
         )
         
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User account is inactive"
-        )
-    
-    # Get user permissions as scopes
-    scopes = _get_user_permissions(user)
-    if not scopes:
-        scopes = config.default_scopes
-    
-    # Create token pair
-    access_token, refresh_token, access_expires_at, refresh_expires_at = token_manager.create_token_pair(
-        str(user.id), scopes, db,
-        additional_claims={
-            "username": user.username,
-            "email": user.email,
-            "role": user.role.name if user.role else None
-        }
-    )
-    
-    # Log successful login
-    log_authentication_event(
-        db, user.id, TokenEvent.LOGIN_SUCCESS, True,
-        {"username": login_data.username, "scopes": scopes},
-        ip_address, user_agent
-    )
-    
-    return LoginResponse(
-        access_token=access_token,
-        refresh_token=refresh_token,
-        expires_in=config.access_token_expire_minutes * 60,
-        user=_serialize_user(user)
-    )
+    except HTTPException:
+        # Re-raise HTTP exceptions from auth service
+        raise
 
 @router.post("/refresh", response_model=LoginResponse)
 async def refresh_token(
@@ -182,26 +144,26 @@ async def refresh_token(
     
     ip_address, user_agent = _get_client_info(request)
     
-    result = token_manager.refresh_tokens(refresh_data.refresh_token, db)
-    
-    if not result:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid refresh token"
+    try:
+        # Use authentication service for token refresh
+        new_access_token, new_refresh_token = await auth_service.refresh_user_tokens(
+            db, refresh_data.refresh_token, ip_address, user_agent
         )
-    
-    new_access_token, new_refresh_token, access_expires_at, refresh_expires_at = result
-    
-    # Get user info from new token
-    payload = token_manager.validate_access_token(new_access_token, db)
-    user = db.query(models.User).filter(models.User.id == payload["sub"]).first()
-    
-    return LoginResponse(
-        access_token=new_access_token,
-        refresh_token=new_refresh_token,
-        expires_in=config.access_token_expire_minutes * 60,
-        user=_serialize_user(user)
-    )
+        
+        # Get user info from new token
+        payload = token_manager.validate_access_token(new_access_token, db)
+        user = db.query(models.User).filter(models.User.id == payload["sub"]).first()
+        
+        return LoginResponse(
+            access_token=new_access_token,
+            refresh_token=new_refresh_token,
+            expires_in=config.access_token_expire_minutes * 60,
+            user=_serialize_user(user)
+        )
+        
+    except HTTPException:
+        # Re-raise HTTP exceptions from auth service
+        raise
 
 @router.post("/oauth2/authorize", response_model=OAuth2AuthorizeResponse)
 async def oauth2_authorize(
@@ -353,13 +315,9 @@ async def logout(
     
     ip_address, user_agent = _get_client_info(request)
     
-    # Revoke all user tokens
-    revoked_count = token_manager.revoke_user_tokens(str(current_user.id), db)
-    
-    log_authentication_event(
-        db, current_user.id, TokenEvent.LOGOUT, True,
-        {"revoked_tokens": revoked_count},
-        ip_address, user_agent
+    # Use authentication service for logout
+    revoked_count = await auth_service.logout_user(
+        db, current_user, revoke_all_tokens=True, ip_address=ip_address, user_agent=user_agent
     )
     
     return {"message": "Logged out successfully", "revoked_tokens": revoked_count}
@@ -564,14 +522,93 @@ async def get_provider_config(provider_id: str):
         "scopes": config.default_scopes
     }
 
+@router.get("/sessions")
+async def get_user_sessions(
+    current_user: models.User = Depends(get_current_user)
+):
+    """Get current user's active sessions"""
+    
+    sessions = await auth_service.get_user_sessions(str(current_user.id))
+    return sessions
+
+@router.delete("/sessions/{token_hash}")
+async def revoke_user_session(
+    token_hash: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Revoke a specific user session"""
+    
+    success = await auth_service.revoke_user_session(db, str(current_user.id), token_hash)
+    
+    if success:
+        return {"message": "Session revoked successfully"}
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Session not found"
+        )
+
+@router.post("/change-password")
+async def change_password(
+    request: Request,
+    current_password: str,
+    new_password: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Change user password"""
+    
+    try:
+        await auth_service.change_password(
+            db, current_user, current_password, new_password, revoke_all_tokens=True
+        )
+        
+        return {"message": "Password changed successfully. Please login again."}
+        
+    except HTTPException:
+        raise
+
+@router.get("/stats")
+async def get_authentication_stats(
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get authentication statistics (admin only)"""
+    
+    # Check if user has admin role or admin permission
+    user_permissions = _get_user_permissions(current_user)
+    if not (current_user.role and current_user.role.name in ["admin", "Owner"]) and "admin" not in user_permissions:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin role required"
+        )
+    
+    stats = await auth_service.get_authentication_stats(db)
+    return stats
+
 @router.get("/health")
-async def oauth2_health_check():
+async def oauth2_health_check(db: Session = Depends(get_db)):
     """OAuth2 system health check"""
+    
+    # Get token manager stats
+    try:
+        token_stats = token_manager.get_token_stats(db)
+        redis_connected = token_stats.get("redis", {}).get("redis_connected", False)
+    except Exception as e:
+        token_stats = {"error": str(e)}
+        redis_connected = False
     
     return {
         "status": "healthy",
         "provider": config.provider.value,
         "provider_configured": validate_oauth2_config(),
         "audit_logging": config.audit_logging_enabled,
-        "token_rotation": config.token_rotation_enabled
+        "token_rotation": config.token_rotation_enabled,
+        "redis_connected": redis_connected,
+        "system_info": {
+            "access_token_expire_minutes": config.access_token_expire_minutes,
+            "refresh_token_expire_days": config.refresh_token_expire_days
+        },
+        "token_stats": token_stats
     }

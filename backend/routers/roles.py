@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 import models
 import schemas
-from auth import get_current_active_user, require_permission
+from oauth2_middleware import get_current_user, require_permission
 
 router = APIRouter(prefix="/roles", tags=["roles"])
 
@@ -40,7 +40,7 @@ async def get_roles(
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get all roles"""
     roles = db.query(models.Role).offset(skip).limit(limit).all()
@@ -50,7 +50,7 @@ async def get_roles(
 async def get_role(
     role_id: str,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get a specific role by ID"""
     role = db.query(models.Role).filter(models.Role.id == role_id).first()
@@ -123,7 +123,7 @@ async def delete_role(
 
 @router.get("/permissions/available")
 async def get_available_permissions(
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get list of available permissions"""
     permissions = {

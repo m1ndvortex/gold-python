@@ -16,7 +16,7 @@ from uuid import UUID
 import asyncio
 
 from database import get_db
-from auth import get_current_user, require_permission
+from oauth2_middleware import get_current_user, require_permission
 from schemas import (
     SMSTemplate, SMSTemplateCreate, SMSTemplateUpdate,
     SMSCampaign, SMSCampaignCreate, SMSCampaignUpdate, SMSCampaignWithDetails,

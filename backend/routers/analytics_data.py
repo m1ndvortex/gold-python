@@ -10,7 +10,7 @@ from datetime import datetime, date, timedelta
 from database import get_db
 import models
 import schemas
-from auth import get_current_active_user, require_permission
+from oauth2_middleware import get_current_user, require_permission
 from services.forecasting_service import ForecastingService
 from services.stock_optimization_service import StockOptimizationService
 import logging

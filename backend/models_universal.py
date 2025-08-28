@@ -65,14 +65,56 @@ class User(Base):
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
+    
+    # Legacy role support (for backward compatibility)
     role_id = Column(UUID(as_uuid=True), ForeignKey("roles.id"))
+    
+    # Enhanced user properties
+    first_name = Column(String(100))
+    last_name = Column(String(100))
+    phone = Column(String(20))
+    
+    # Account status
     is_active = Column(Boolean, default=True)
+    is_verified = Column(Boolean, default=False)
+    is_locked = Column(Boolean, default=False)
+    locked_until = Column(DateTime(timezone=True))
+    failed_login_attempts = Column(Integer, default=0)
+    
+    # Profile information
+    avatar_url = Column(String(500))
+    timezone = Column(String(50), default='UTC')
+    language = Column(String(10), default='en')
+    preferences = Column(JSONB)
+    
+    # Security
+    last_login = Column(DateTime(timezone=True))
+    last_password_change = Column(DateTime(timezone=True))
+    password_expires_at = Column(DateTime(timezone=True))
+    two_factor_enabled = Column(Boolean, default=False)
+    two_factor_secret = Column(String(255))
+    
+    # Audit fields
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
+    # Legacy relationship (for backward compatibility)
     role = relationship("Role", back_populates="users")
+    
+    # OAuth2 relationships
     oauth2_tokens = relationship("OAuth2Token", back_populates="user")
     audit_logs = relationship("OAuth2AuditLog", back_populates="user")
+    
+    # RBAC relationships (will be set up after models_rbac is imported)
+    # rbac_roles = relationship("RBACRole", secondary="user_roles", back_populates="users")
+    
+    __table_args__ = (
+        Index('idx_users_email', 'email'),
+        Index('idx_users_username', 'username'),
+        Index('idx_users_active', 'is_active'),
+        Index('idx_users_locked', 'is_locked'),
+        Index('idx_users_last_login', 'last_login'),
+    )
 
 class Role(Base):
     __tablename__ = "roles"
@@ -426,7 +468,7 @@ class ChartOfAccounts(Base):
     __table_args__ = (
         Index('idx_chart_of_accounts_code', 'account_code'),
         Index('idx_chart_of_accounts_type', 'account_type'),
-        Index('idx_chart_of_accounts_path', 'path', postgresql_using='gist'),
+        Index('idx_chart_of_accounts_path', 'path'),
         Index('idx_chart_of_accounts_active', 'is_active'),
     )
 

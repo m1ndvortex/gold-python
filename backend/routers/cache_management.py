@@ -16,7 +16,7 @@ from database import get_db
 from redis_config import get_analytics_cache
 from services.cache_invalidation_service import get_cache_invalidation_service
 from services.cache_performance_service import get_cache_performance_service
-from auth import get_current_user
+from oauth2_middleware import get_current_user
 from schemas import User
 
 logger = logging.getLogger(__name__)

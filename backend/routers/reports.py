@@ -4,7 +4,7 @@ from sqlalchemy import func, and_, or_, desc, asc, text, case
 from typing import Optional, List, Dict, Any
 from datetime import datetime, date, timedelta
 from database import get_db
-from auth import get_current_user
+from oauth2_middleware import get_current_user, require_permission
 import models
 from schemas import User
 

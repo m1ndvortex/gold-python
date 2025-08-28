@@ -14,7 +14,7 @@ from pathlib import Path
 
 from database import get_db
 from services.image_management_service import ImageManagementService, ImageProcessingError
-from auth import get_current_user
+from oauth2_middleware import get_current_user
 from models import User
 
 logger = logging.getLogger(__name__)

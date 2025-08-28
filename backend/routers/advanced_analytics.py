@@ -21,7 +21,7 @@ from datetime import datetime, date, timedelta
 from pydantic import BaseModel, Field
 
 from database import get_db
-from auth import get_current_user, require_permission
+from oauth2_middleware import get_current_user, require_permission
 from models import User
 from services.advanced_analytics_service import AdvancedAnalyticsService
 from analytics_tasks.analytics_intelligence_tasks import (

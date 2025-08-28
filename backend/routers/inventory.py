@@ -6,7 +6,7 @@ from database import get_db
 import models
 import schemas
 from schemas_inventory_universal import *
-from auth import get_current_active_user
+from oauth2_middleware import get_current_user, require_permission, require_any_permission
 from services.inventory_service import UniversalInventoryService
 import os
 import uuid
@@ -54,7 +54,7 @@ def save_uploaded_file(file: UploadFile) -> str:
 async def create_category(
     category: schemas.CategoryCreate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(require_any_permission(["manage_inventory", "manage_categories"]))
 ):
     """Create a new category"""
     # Check if parent category exists if parent_id is provided
@@ -92,7 +92,7 @@ async def get_categories(
     parent_id: Optional[str] = None,
     include_children: bool = True,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get categories with optional hierarchical structure"""
     query = db.query(models.Category)
@@ -113,7 +113,7 @@ async def get_categories(
 async def get_category_tree(
     include_stats: bool = True,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get complete category tree with statistics - optimized version"""
     from sqlalchemy.orm import selectinload
@@ -180,7 +180,7 @@ async def get_category_tree(
 async def get_category(
     category_id: str,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get a specific category with its children"""
     category = db.query(models.Category).options(
@@ -201,7 +201,7 @@ async def update_category(
     category_id: str,
     category_update: schemas.CategoryUpdate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Update a category"""
     db_category = db.query(models.Category).filter(models.Category.id == category_id).first()
@@ -242,7 +242,7 @@ async def update_category(
 async def delete_category(
     category_id: str,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Delete a category (only if no inventory items are associated)"""
     db_category = db.query(models.Category).filter(models.Category.id == category_id).first()
@@ -286,7 +286,7 @@ async def delete_category(
 async def bulk_update_categories(
     request: schemas.CategoryBulkUpdateRequest,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Bulk update multiple categories"""
     categories = db.query(models.Category).filter(
@@ -314,7 +314,7 @@ async def bulk_update_categories(
 async def reorder_category(
     request: schemas.CategoryReorderRequest,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Reorder category (drag and drop support)"""
     category = db.query(models.Category).filter(
@@ -355,7 +355,7 @@ async def reorder_category(
 async def create_category_template(
     template: schemas.CategoryTemplateCreate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Create a new category template"""
     db_template = models.CategoryTemplate(
@@ -372,7 +372,7 @@ async def create_category_template(
 async def get_category_templates(
     active_only: bool = True,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get all category templates"""
     query = db.query(models.CategoryTemplate).options(
@@ -390,7 +390,7 @@ async def create_category_from_template(
     template_id: str,
     category_data: schemas.CategoryCreate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Create a category from a template"""
     template = db.query(models.CategoryTemplate).filter(
@@ -429,7 +429,7 @@ async def create_category_from_template(
 async def create_universal_inventory_item(
     item: UniversalInventoryItemCreate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(require_permission("manage_inventory"))
 ):
     """Create a new universal inventory item with enhanced features"""
     service = UniversalInventoryService(db)
@@ -457,7 +457,7 @@ async def update_universal_inventory_item(
     item_id: str,
     item_update: UniversalInventoryItemUpdate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Update a universal inventory item"""
     service = UniversalInventoryService(db)
@@ -485,7 +485,7 @@ async def update_universal_inventory_item(
 async def search_universal_inventory(
     search_request: InventorySearchRequest,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(require_permission("view_inventory"))
 ):
     """Advanced search for inventory items with filtering and pagination"""
     service = UniversalInventoryService(db)
@@ -536,7 +536,7 @@ async def get_universal_low_stock_alerts(
     category_ids: Optional[List[str]] = Query(default=None),
     business_type: Optional[str] = Query(default=None),
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get low stock alerts with enhanced filtering"""
     service = UniversalInventoryService(db)
@@ -574,7 +574,7 @@ async def get_universal_category_tree(
     include_stats: bool = Query(default=True),
     max_depth: Optional[int] = Query(default=None, ge=1, le=10),
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get category tree with universal business support"""
     service = UniversalInventoryService(db)
@@ -595,7 +595,7 @@ async def create_universal_category(
     category: UniversalCategoryCreate,
     business_type: Optional[str] = Query(default=None),
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Create a new universal category with hierarchical support"""
     service = UniversalInventoryService(db)
@@ -618,7 +618,7 @@ async def update_category_hierarchy(
     category_id: str,
     hierarchy_update: CategoryHierarchyMove,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Update category hierarchy (move category to different parent)"""
     service = UniversalInventoryService(db)
@@ -645,7 +645,7 @@ async def get_inventory_movements(
     limit: int = Query(default=100, ge=1, le=1000),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get inventory movements with filtering"""
     service = UniversalInventoryService(db)
@@ -668,7 +668,7 @@ async def get_inventory_movements(
 async def convert_units(
     conversion_request: UnitConversionRequest,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Convert quantity between different units of measure"""
     service = UniversalInventoryService(db)
@@ -699,7 +699,7 @@ async def convert_units(
 async def get_inventory_analytics(
     business_type: Optional[str] = Query(default=None),
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get comprehensive inventory analytics"""
     service = UniversalInventoryService(db)
@@ -734,7 +734,7 @@ async def get_inventory_analytics(
 async def validate_sku(
     validation_request: SKUValidationRequest,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Validate SKU uniqueness and format"""
     service = UniversalInventoryService(db)
@@ -767,7 +767,7 @@ async def validate_sku(
 async def validate_barcode(
     validation_request: BarcodeValidationRequest,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Validate barcode uniqueness and format"""
     service = UniversalInventoryService(db)
@@ -810,7 +810,7 @@ async def validate_barcode(
 async def create_inventory_item(
     item: schemas.InventoryItemCreate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Create a new inventory item"""
     # Validate category exists if provided
@@ -856,7 +856,7 @@ async def create_inventory_item(
 @router.post("/items/upload-image")
 async def upload_item_image(
     file: UploadFile = File(...),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Upload an image for inventory item"""
     try:
@@ -874,7 +874,7 @@ async def get_inventory_items(
     low_stock_only: bool = False,
     active_only: bool = True,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get inventory items with filtering and pagination"""
     query = db.query(models.InventoryItem).options(
@@ -909,7 +909,7 @@ async def get_inventory_items(
 async def get_inventory_item(
     item_id: str,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get a specific inventory item"""
     item = db.query(models.InventoryItem).options(
@@ -929,7 +929,7 @@ async def update_inventory_item(
     item_id: str,
     item_update: schemas.InventoryItemUpdate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Update an inventory item"""
     db_item = db.query(models.InventoryItem).filter(models.InventoryItem.id == item_id).first()
@@ -995,7 +995,7 @@ async def update_item_stock(
     item_id: str,
     stock_update: schemas.StockUpdateRequest,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Update inventory item stock level"""
     db_item = db.query(models.InventoryItem).filter(models.InventoryItem.id == item_id).first()
@@ -1029,7 +1029,7 @@ async def update_item_stock(
 async def delete_inventory_item(
     item_id: str,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Soft delete an inventory item (set is_active to False)"""
     db_item = db.query(models.InventoryItem).filter(models.InventoryItem.id == item_id).first()
@@ -1061,7 +1061,7 @@ async def delete_inventory_item(
 @router.get("/alerts/low-stock", response_model=List[schemas.LowStockAlert])
 async def get_low_stock_alerts(
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get all items with low stock levels"""
     low_stock_items = db.query(models.InventoryItem).options(
@@ -1089,7 +1089,7 @@ async def get_low_stock_alerts(
 @router.get("/stats")
 async def get_inventory_stats(
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_active_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get inventory statistics"""
     from sqlalchemy import func

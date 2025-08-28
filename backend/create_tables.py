@@ -9,6 +9,7 @@ from database_base import Base
 import models
 import models_universal
 import models_accounting
+import models_rbac
 
 def create_all_tables():
     """Create all tables defined in models"""
