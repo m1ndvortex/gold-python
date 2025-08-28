@@ -435,7 +435,382 @@ class CategoryAnalytics(BaseModel):
     low_stock_items: int
     subcategories_count: int
 
+# Universal Invoice Schemas
+class InvoiceType(str):
+    GOLD = "gold"
+    GENERAL = "general"
+
+class InvoiceStatus(str):
+    DRAFT = "draft"
+    APPROVED = "approved"
+    PAID = "paid"
+    PARTIALLY_PAID = "partially_paid"
+    CANCELLED = "cancelled"
+    VOIDED = "voided"
+
+class WorkflowStage(str):
+    DRAFT = "draft"
+    PENDING_APPROVAL = "pending_approval"
+    APPROVED = "approved"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+
+class PaymentStatus(str):
+    UNPAID = "unpaid"
+    PARTIALLY_PAID = "partially_paid"
+    PAID = "paid"
+    OVERPAID = "overpaid"
+
+# Gold-specific fields schema
+class GoldInvoiceFields(BaseModel):
+    gold_price_per_gram: Decimal = Field(..., description="Gold price per gram")
+    labor_cost_percentage: Decimal = Field(default=0, description="Labor cost percentage")
+    profit_percentage: Decimal = Field(default=0, description="Profit percentage")
+    vat_percentage: Decimal = Field(default=0, description="VAT percentage")
+    gold_sood: Optional[Decimal] = Field(None, description="سود (profit)")
+    gold_ojrat: Optional[Decimal] = Field(None, description="اجرت (wage/labor fee)")
+    gold_maliyat: Optional[Decimal] = Field(None, description="مالیات (tax)")
+    gold_total_weight: Optional[Decimal] = Field(None, description="Total gold weight")
+
+# Universal Invoice Item Schemas
+class UniversalInvoiceItemBase(BaseModel):
+    inventory_item_id: Optional[UUID] = Field(None, description="Inventory item ID")
+    item_name: str = Field(..., description="Item name (snapshot)")
+    item_sku: Optional[str] = Field(None, description="Item SKU (snapshot)")
+    item_description: Optional[str] = Field(None, description="Item description (snapshot)")
+    quantity: Decimal = Field(..., description="Quantity")
+    unit_price: Decimal = Field(..., description="Unit price")
+    unit_of_measure: str = Field(default='piece', description="Unit of measure")
+    weight_grams: Optional[Decimal] = Field(None, description="Weight in grams")
+    custom_attributes: Dict[str, Any] = Field(default_factory=dict, description="Custom attributes snapshot")
+    item_images: List[Dict[str, Any]] = Field(default_factory=list, description="Item images snapshot")
+    gold_specific: Optional[Dict[str, Any]] = Field(None, description="Gold-specific item data")
+
+class UniversalInvoiceItemCreate(UniversalInvoiceItemBase):
+    pass
+
+class UniversalInvoiceItemUpdate(BaseModel):
+    item_name: Optional[str] = None
+    quantity: Optional[Decimal] = None
+    unit_price: Optional[Decimal] = None
+    unit_of_measure: Optional[str] = None
+    weight_grams: Optional[Decimal] = None
+    custom_attributes: Optional[Dict[str, Any]] = None
+    gold_specific: Optional[Dict[str, Any]] = None
+
+class UniversalInvoiceItem(UniversalInvoiceItemBase):
+    id: UUID
+    invoice_id: UUID
+    total_price: Decimal
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class UniversalInvoiceItemWithInventory(UniversalInvoiceItem):
+    inventory_item: Optional[UniversalInventoryItem] = None
+
+# Universal Invoice Schemas
+class UniversalInvoiceBase(BaseModel):
+    type: str = Field(default=InvoiceType.GENERAL, description="Invoice type: gold or general")
+    customer_id: Optional[UUID] = Field(None, description="Customer ID")
+    customer_name: Optional[str] = Field(None, description="Customer name")
+    customer_phone: Optional[str] = Field(None, description="Customer phone")
+    customer_address: Optional[str] = Field(None, description="Customer address")
+    customer_email: Optional[str] = Field(None, description="Customer email")
+    
+    # Pricing
+    currency: str = Field(default='USD', description="Currency code")
+    
+    # Workflow
+    requires_approval: bool = Field(default=False, description="Requires approval before affecting stock")
+    approval_notes: Optional[str] = Field(None, description="Approval notes")
+    
+    # Additional metadata
+    notes: Optional[str] = Field(None, description="Invoice notes")
+    invoice_metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
+    
+    # QR Card configuration
+    card_theme: str = Field(default='glass', description="QR card theme")
+    card_config: Dict[str, Any] = Field(default_factory=dict, description="QR card configuration")
+    
+    @validator('type')
+    def validate_type(cls, v):
+        if v not in [InvoiceType.GOLD, InvoiceType.GENERAL]:
+            raise ValueError(f'Type must be either "{InvoiceType.GOLD}" or "{InvoiceType.GENERAL}"')
+        return v
+
+class UniversalInvoiceCreate(UniversalInvoiceBase):
+    items: List[UniversalInvoiceItemCreate] = Field(..., description="Invoice items")
+    gold_fields: Optional[GoldInvoiceFields] = Field(None, description="Gold-specific fields (required for gold invoices)")
+    
+    @validator('gold_fields')
+    def validate_gold_fields(cls, v, values):
+        if values.get('type') == InvoiceType.GOLD and v is None:
+            raise ValueError('Gold fields are required for gold invoices')
+        if values.get('type') == InvoiceType.GENERAL and v is not None:
+            raise ValueError('Gold fields should not be provided for general invoices')
+        return v
+
+class UniversalInvoiceUpdate(BaseModel):
+    customer_id: Optional[UUID] = None
+    customer_name: Optional[str] = None
+    customer_phone: Optional[str] = None
+    customer_address: Optional[str] = None
+    customer_email: Optional[str] = None
+    status: Optional[str] = None
+    workflow_stage: Optional[str] = None
+    requires_approval: Optional[bool] = None
+    approval_notes: Optional[str] = None
+    notes: Optional[str] = None
+    invoice_metadata: Optional[Dict[str, Any]] = None
+    gold_fields: Optional[GoldInvoiceFields] = None
+
+class UniversalInvoice(UniversalInvoiceBase):
+    id: UUID
+    invoice_number: str
+    status: str
+    workflow_stage: str
+    
+    # Calculated pricing
+    subtotal: Decimal
+    tax_amount: Decimal
+    discount_amount: Decimal
+    total_amount: Decimal
+    
+    # Payment tracking
+    paid_amount: Decimal
+    remaining_amount: Decimal
+    payment_status: str
+    payment_method: Optional[str] = None
+    payment_date: Optional[datetime] = None
+    
+    # Workflow tracking
+    stock_affected: bool
+    approved_by: Optional[UUID] = None
+    approved_at: Optional[datetime] = None
+    
+    # Gold-specific fields (conditional)
+    gold_price_per_gram: Optional[Decimal] = None
+    labor_cost_percentage: Optional[Decimal] = None
+    profit_percentage: Optional[Decimal] = None
+    vat_percentage: Optional[Decimal] = None
+    gold_sood: Optional[Decimal] = None
+    gold_ojrat: Optional[Decimal] = None
+    gold_maliyat: Optional[Decimal] = None
+    gold_total_weight: Optional[Decimal] = None
+    
+    # QR Card information
+    qr_code: Optional[str] = None
+    card_url: Optional[str] = None
+    
+    # Audit trail
+    created_at: datetime
+    updated_at: datetime
+    created_by: Optional[UUID] = None
+    updated_by: Optional[UUID] = None
+    
+    class Config:
+        from_attributes = True
+
+class UniversalInvoiceWithDetails(UniversalInvoice):
+    items: List[UniversalInvoiceItemWithInventory] = Field(default_factory=list)
+    qr_card: Optional['QRInvoiceCard'] = None
+
+# Invoice Calculation Schemas
+class InvoiceItemCalculation(BaseModel):
+    item_id: UUID
+    item_name: str
+    quantity: Decimal
+    unit_price: Decimal
+    total_price: Decimal
+    weight_grams: Optional[Decimal] = None
+    
+    # Gold-specific calculations
+    base_price: Optional[Decimal] = None
+    labor_cost: Optional[Decimal] = None
+    profit_amount: Optional[Decimal] = None
+    vat_amount: Optional[Decimal] = None
+
+class InvoiceCalculationSummary(BaseModel):
+    items: List[InvoiceItemCalculation]
+    subtotal: Decimal
+    total_labor_cost: Decimal = Field(default=0)
+    total_profit: Decimal = Field(default=0)
+    total_vat: Decimal = Field(default=0)
+    tax_amount: Decimal = Field(default=0)
+    discount_amount: Decimal = Field(default=0)
+    grand_total: Decimal
+
+# Invoice Workflow Schemas
+class InvoiceApprovalRequest(BaseModel):
+    approval_notes: Optional[str] = Field(None, description="Approval notes")
+
+class InvoiceStatusUpdate(BaseModel):
+    status: str = Field(..., description="New status")
+    notes: Optional[str] = Field(None, description="Status change notes")
+    
+    @validator('status')
+    def validate_status(cls, v):
+        valid_statuses = [InvoiceStatus.DRAFT, InvoiceStatus.APPROVED, InvoiceStatus.PAID, 
+                         InvoiceStatus.PARTIALLY_PAID, InvoiceStatus.CANCELLED, InvoiceStatus.VOIDED]
+        if v not in valid_statuses:
+            raise ValueError(f'Status must be one of: {", ".join(valid_statuses)}')
+        return v
+
+class InvoiceWorkflowUpdate(BaseModel):
+    workflow_stage: str = Field(..., description="New workflow stage")
+    notes: Optional[str] = Field(None, description="Workflow change notes")
+    
+    @validator('workflow_stage')
+    def validate_workflow_stage(cls, v):
+        valid_stages = [WorkflowStage.DRAFT, WorkflowStage.PENDING_APPROVAL, 
+                       WorkflowStage.APPROVED, WorkflowStage.COMPLETED, WorkflowStage.CANCELLED]
+        if v not in valid_stages:
+            raise ValueError(f'Workflow stage must be one of: {", ".join(valid_stages)}')
+        return v
+
+# Payment Schemas
+class InvoicePaymentRequest(BaseModel):
+    amount: Decimal = Field(..., description="Payment amount")
+    payment_method: str = Field(default='cash', description="Payment method")
+    description: Optional[str] = Field(None, description="Payment description")
+    payment_date: Optional[datetime] = Field(None, description="Payment date")
+
+class InvoicePayment(BaseModel):
+    id: UUID
+    invoice_id: UUID
+    customer_id: Optional[UUID] = None
+    amount: Decimal
+    payment_method: str
+    description: Optional[str] = None
+    payment_date: datetime
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+# QR Invoice Card Schemas
+class QRInvoiceCardBase(BaseModel):
+    theme: str = Field(default='glass', description="Card theme")
+    background_color: str = Field(default='#ffffff', description="Background color")
+    text_color: str = Field(default='#000000', description="Text color")
+    accent_color: str = Field(default='#3B82F6', description="Accent color")
+    is_public: bool = Field(default=True, description="Is publicly accessible")
+    requires_password: bool = Field(default=False, description="Requires password")
+    access_password: Optional[str] = Field(None, description="Access password")
+    expires_at: Optional[datetime] = Field(None, description="Expiration date")
+
+class QRInvoiceCardCreate(QRInvoiceCardBase):
+    pass
+
+class QRInvoiceCardUpdate(BaseModel):
+    theme: Optional[str] = None
+    background_color: Optional[str] = None
+    text_color: Optional[str] = None
+    accent_color: Optional[str] = None
+    is_public: Optional[bool] = None
+    requires_password: Optional[bool] = None
+    access_password: Optional[str] = None
+    expires_at: Optional[datetime] = None
+    is_active: Optional[bool] = None
+
+class QRInvoiceCard(QRInvoiceCardBase):
+    id: UUID
+    invoice_id: UUID
+    qr_code: str
+    card_url: str
+    short_url: Optional[str] = None
+    card_data: Dict[str, Any]
+    view_count: int
+    last_viewed_at: Optional[datetime] = None
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+    created_by: Optional[UUID] = None
+    
+    class Config:
+        from_attributes = True
+
+class QRInvoiceCardWithInvoice(QRInvoiceCard):
+    invoice: Optional[UniversalInvoice] = None
+
+# Search and Filter Schemas
+class InvoiceSearchFilters(BaseModel):
+    search: Optional[str] = Field(None, description="Search term for invoice number, customer name")
+    type: Optional[str] = Field(None, description="Filter by invoice type")
+    status: Optional[str] = Field(None, description="Filter by status")
+    workflow_stage: Optional[str] = Field(None, description="Filter by workflow stage")
+    payment_status: Optional[str] = Field(None, description="Filter by payment status")
+    customer_id: Optional[UUID] = Field(None, description="Filter by customer")
+    created_after: Optional[datetime] = Field(None, description="Created after date")
+    created_before: Optional[datetime] = Field(None, description="Created before date")
+    min_amount: Optional[Decimal] = Field(None, description="Minimum total amount")
+    max_amount: Optional[Decimal] = Field(None, description="Maximum total amount")
+    has_remaining_amount: Optional[bool] = Field(None, description="Has remaining amount")
+    approved_by: Optional[UUID] = Field(None, description="Approved by user")
+    sort_by: str = Field(default='created_at', description="Sort field")
+    sort_order: str = Field(default='desc', description="Sort order: asc, desc")
+
+# Bulk Operations Schemas
+class BulkInvoiceStatusUpdate(BaseModel):
+    invoice_ids: List[UUID] = Field(..., description="List of invoice IDs")
+    status: str = Field(..., description="New status")
+    notes: Optional[str] = Field(None, description="Status change notes")
+
+class BulkInvoiceApproval(BaseModel):
+    invoice_ids: List[UUID] = Field(..., description="List of invoice IDs")
+    approval_notes: Optional[str] = Field(None, description="Approval notes")
+
+# Response Schemas
+class InvoicesResponse(PaginatedResponse):
+    items: List[UniversalInvoice]
+
+class InvoiceItemsResponse(PaginatedResponse):
+    items: List[UniversalInvoiceItem]
+
+class QRCardsResponse(PaginatedResponse):
+    items: List[QRInvoiceCard]
+
+# Analytics Schemas
+class InvoiceAnalytics(BaseModel):
+    total_invoices: int
+    total_amount: Decimal
+    total_paid: Decimal
+    total_outstanding: Decimal
+    gold_invoices_count: int
+    general_invoices_count: int
+    average_invoice_amount: Decimal
+    status_breakdown: Dict[str, int]
+    payment_status_breakdown: Dict[str, int]
+    monthly_trends: List[Dict[str, Any]]
+
+class InvoiceTypeAnalytics(BaseModel):
+    invoice_type: str
+    count: int
+    total_amount: Decimal
+    average_amount: Decimal
+    paid_amount: Decimal
+    outstanding_amount: Decimal
+
+# Manual Price Override Schema
+class PriceOverrideRequest(BaseModel):
+    item_id: UUID = Field(..., description="Invoice item ID")
+    override_price: Decimal = Field(..., description="Override unit price")
+    reason: Optional[str] = Field(None, description="Reason for price override")
+
+class PriceOverrideResponse(BaseModel):
+    item_id: UUID
+    original_price: Decimal
+    override_price: Decimal
+    price_difference: Decimal
+    reason: Optional[str] = None
+    applied_at: datetime
+
 # Update forward references
 UniversalCategoryWithChildren.model_rebuild()
 UniversalCategoryWithStats.model_rebuild()
 UniversalInventoryItemWithImages.model_rebuild()
+UniversalInvoiceWithDetails.model_rebuild()
+QRInvoiceCardWithInvoice.model_rebuild()

@@ -43,7 +43,12 @@ This implementation plan transforms the existing gold shop management system int
   - Write comprehensive unit tests for inventory services using real PostgreSQL database in Docker
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8_
 
-- [ ] 3. Dual Invoice System Backend Implementation
+- [x] 3. Dual Invoice System Backend Implementation
+
+
+
+
+
   - Implement invoice type selection system allowing choice between Gold and General invoices at creation
   - Create conditional field management for Gold invoices (سود, اجرت, مالیات) with proper validation and storage
   - Build invoice workflow engine supporting draft → approved workflow with inventory impact control
