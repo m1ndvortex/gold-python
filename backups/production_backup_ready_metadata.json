@@ -1,0 +1,8 @@
+{
+  "backup_type": "sql_dump",
+  "backup_name": "production_backup_ready",
+  "created_at": "2025-08-28T23:49:43.482618",
+  "database": "goldshop",
+  "file_size": 154544,
+  "file_path": "backups\\production_backup_ready.sql"
+}
