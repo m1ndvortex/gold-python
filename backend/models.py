@@ -681,7 +681,6 @@ class SeasonalAnalysis(Base):
 class KPISnapshot(Base):
     """Time-series KPI tracking table"""
     __tablename__ = "kpi_snapshots"
-    __table_args__ = {'schema': 'analytics'}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     kpi_type = Column(String(50), nullable=False)  # 'financial', 'operational', 'customer'
@@ -699,7 +698,6 @@ class KPISnapshot(Base):
 class DemandForecast(Base):
     """Demand forecasting table"""
     __tablename__ = "demand_forecasts"
-    __table_args__ = {'schema': 'analytics'}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
@@ -725,7 +723,6 @@ class DemandForecast(Base):
 class AnalyticsCache(Base):
     """Analytics cache table for performance optimization"""
     __tablename__ = "analytics_cache"
-    __table_args__ = {'schema': 'analytics'}
 
     cache_key = Column(String(255), primary_key=True)
     data = Column(JSONB, nullable=False)
@@ -736,41 +733,11 @@ class AnalyticsCache(Base):
     entity_id = Column(UUID(as_uuid=True))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-class StockOptimizationRecommendation(Base):
-    """Stock optimization recommendations table"""
-    __tablename__ = "stock_optimization_recommendations"
-    __table_args__ = {'schema': 'analytics'}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    item_id = Column(UUID(as_uuid=True), ForeignKey("inventory_items.id", ondelete="CASCADE"), nullable=False)
-    recommendation_type = Column(String(30), nullable=False)  # 'reorder', 'reduce', 'increase'
-    current_stock = Column(Integer, nullable=False)
-    recommended_stock = Column(Integer)
-    reorder_point = Column(Integer)
-    reorder_quantity = Column(Integer)
-    safety_stock = Column(Integer)
-    max_stock_level = Column(Integer)
-    economic_order_quantity = Column(Integer)
-    lead_time_days = Column(Integer, default=7)
-    holding_cost_per_unit = Column(DECIMAL(10, 4), default=0)
-    ordering_cost = Column(DECIMAL(10, 2), default=0)
-    stockout_cost = Column(DECIMAL(10, 2), default=0)
-    confidence_score = Column(DECIMAL(3, 2), default=0)  # 0-1 scale
-    reasoning = Column(Text)
-    priority_level = Column(String(10), default='medium')  # 'high', 'medium', 'low'
-    estimated_savings = Column(DECIMAL(12, 2), default=0)
-    implementation_date = Column(Date)
-    status = Column(String(20), default='pending')  # 'pending', 'approved', 'implemented'
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    expires_at = Column(DateTime(timezone=True))
-
-    # Relationships
-    item = relationship("InventoryItem")
+# Duplicate class removed - using the first definition
 
 class CostAnalysis(Base):
     """Cost analysis table for optimization insights"""
     __tablename__ = "cost_analysis"
-    __table_args__ = {'schema': 'analytics'}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     entity_type = Column(String(50), nullable=False)  # 'item', 'category', 'global'
@@ -789,7 +756,6 @@ class CostAnalysis(Base):
 class CategoryPerformance(Base):
     """Category performance analysis table"""
     __tablename__ = "category_performance"
-    __table_args__ = {'schema': 'analytics'}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     category_id = Column(UUID(as_uuid=True), ForeignKey("categories.id", ondelete="CASCADE"), nullable=False)
@@ -812,7 +778,6 @@ class CategoryPerformance(Base):
 class PerformanceMetric(Base):
     """System performance metrics table"""
     __tablename__ = "performance_metrics"
-    __table_args__ = {'schema': 'analytics'}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     metric_type = Column(String(50), nullable=False)  # 'response_time', 'memory_usage'
@@ -830,7 +795,6 @@ class PerformanceMetric(Base):
 class BackupLog(Base):
     """Backup operations log table"""
     __tablename__ = "backup_logs"
-    __table_args__ = {'schema': 'analytics'}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     backup_type = Column(String(30), nullable=False)  # 'database', 'files', 'full'
@@ -849,7 +813,6 @@ class BackupLog(Base):
 class AlertRule(Base):
     """Alert rules configuration table"""
     __tablename__ = "alert_rules"
-    __table_args__ = {'schema': 'analytics'}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     rule_name = Column(String(100), nullable=False)
@@ -872,10 +835,9 @@ class AlertRule(Base):
 class AlertHistory(Base):
     """Alert history table"""
     __tablename__ = "alert_history"
-    __table_args__ = {'schema': 'analytics'}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    rule_id = Column(UUID(as_uuid=True), ForeignKey("analytics.alert_rules.id", ondelete="CASCADE"), nullable=False)
+    rule_id = Column(UUID(as_uuid=True), ForeignKey("alert_rules.id", ondelete="CASCADE"), nullable=False)
     alert_level = Column(String(20), nullable=False)
     message = Column(Text, nullable=False)
     triggered_value = Column(DECIMAL(15, 4))
@@ -899,7 +861,6 @@ class AlertHistory(Base):
 class ImageManagement(Base):
     """Enhanced image management table"""
     __tablename__ = "image_management"
-    __table_args__ = {'schema': 'analytics'}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     entity_type = Column(String(50), nullable=False)  # 'product', 'category', 'company'
@@ -926,7 +887,6 @@ class ImageManagement(Base):
         Index('idx_image_management_entity', 'entity_type', 'entity_id'),
         Index('idx_image_management_primary', 'is_primary'),
         Index('idx_image_management_sort', 'sort_order'),
-        {'schema': 'analytics'}
     )
 
 class InventoryPerformanceMetrics(Base):
