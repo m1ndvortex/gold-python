@@ -22,6 +22,9 @@ python scripts/database_backup.py full
 ```bash
 # Interactive restore (recommended)
 python scripts/database_restore.py interactive
+
+# Complete restore (most robust, handles conflicts)
+python scripts/database_restore.py complete --name "backup_name"
 ```
 
 ## 📋 Prerequisites
@@ -99,6 +102,38 @@ python scripts/database_backup.py full
 python scripts/database_backup.py full --name "weekly_backup_$(date +%Y%m%d)"
 ```
 
+## 🔄 Restore Methods
+
+### 1. Complete Restore (Recommended)
+**What it does:**
+- Completely removes existing database volumes
+- Restores volumes from backup
+- Drops and recreates database for clean state
+- Handles all conflicts automatically
+- Most robust method for problem situations
+
+**When to use:**
+- When standard restore fails due to conflicts
+- After making database changes that need to be reverted
+- For guaranteed clean restoration
+- When you need to completely reset to backup state
+
+**Command:**
+```bash
+python scripts/database_restore.py complete --name "backup_name"
+```
+
+### 2. Standard Restore Methods
+**Available options:**
+- SQL only restore
+- Volume only restore  
+- Full restore (SQL + volumes)
+
+**When to use:**
+- When you need partial restoration
+- In development environments
+- When complete restore is not needed
+
 ## 📁 Backup Storage Structure
 
 ```
@@ -145,7 +180,11 @@ python scripts/database_restore.py volume --name "backup_name"
 
 #### Restore Full Backup
 ```bash
+# Standard method
 python scripts/database_restore.py full --name "backup_name"
+
+# Complete method (recommended for conflicts)
+python scripts/database_restore.py complete --name "backup_name"
 ```
 
 ## ⚠️ Important Safety Guidelines

@@ -108,7 +108,10 @@ python scripts/database_backup.py full --name "weekly_$(date +%Y%m%d)"
 # Interactive restore (safest)
 python scripts/database_restore.py interactive
 
-# Direct restore (if you know the backup name)
+# Complete restore (most robust, handles conflicts)
+python scripts/database_restore.py complete --name "backup_name"
+
+# Standard restore (if you know the backup name)
 python scripts/database_restore.py full --name "backup_name"
 ```
 
@@ -117,9 +120,11 @@ python scripts/database_restore.py full --name "backup_name"
 1. **Automatic Timestamping** - No backup overwrites
 2. **Metadata Tracking** - Complete backup information
 3. **Interactive Restore** - Prevents accidental data loss
-4. **Container Health Checks** - Ensures safe operations
-5. **Multiple Backup Methods** - Fallback options
-6. **Cross-Platform Compatibility** - Works on Windows/Linux/Mac
+4. **Complete Restore Method** - Handles database conflicts automatically
+5. **Container Health Checks** - Ensures safe operations
+6. **Multiple Backup Methods** - Fallback options
+7. **Cross-Platform Compatibility** - Works on Windows/Linux/Mac
+8. **Conflict Resolution** - Automatically handles existing data conflicts
 
 ## 📁 Backup Storage Structure
 
@@ -164,20 +169,20 @@ backups/
 
 ### If Something Goes Wrong
 ```bash
-# 1. Stop containers
-docker-compose down
-
-# 2. Restore from backup
+# Option 1: Interactive restore (recommended)
 python scripts/database_restore.py interactive
 
-# 3. Start containers
-docker-compose up -d
+# Option 2: Complete restore (handles conflicts)
+python scripts/database_restore.py complete --name "BACKUP_NAME"
 ```
 
 ### Quick Recovery
 ```bash
-# One-line emergency restore (replace BACKUP_NAME)
-docker-compose down && python scripts/database_restore.py full --name "BACKUP_NAME" && docker-compose up -d
+# Complete restore (most robust)
+python scripts/database_restore.py complete --name "BACKUP_NAME"
+
+# Standard restore (if no conflicts expected)
+python scripts/database_restore.py full --name "BACKUP_NAME"
 ```
 
 ## 📞 Support
