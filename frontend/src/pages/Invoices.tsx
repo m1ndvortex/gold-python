@@ -164,7 +164,7 @@ export const Invoices: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <p className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">${summary.total_amount.toFixed(2)}</p>
+                <p className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">${Number(summary.total_amount).toFixed(2)}</p>
                 <p className="text-xs text-emerald-600">Total invoice value</p>
               </div>
             </CardContent>
@@ -181,15 +181,15 @@ export const Invoices: React.FC = () => {
                   <CardTitle className="text-sm font-medium text-green-700">Payments Received</CardTitle>
                 </div>
                 <Badge className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-0 shadow-sm">
-                  {summary.total_paid > 0 ? Math.round((summary.total_paid / summary.total_amount) * 100) : 0}%
+                  {Number(summary.total_paid) > 0 ? Math.round((Number(summary.total_paid) / Number(summary.total_amount)) * 100) : 0}%
                 </Badge>
               </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">${summary.total_paid.toFixed(2)}</p>
+                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">${Number(summary.total_paid).toFixed(2)}</p>
                 <Progress 
-                  value={summary.total_paid > 0 ? (summary.total_paid / summary.total_amount) * 100 : 0} 
+                  value={Number(summary.total_paid) > 0 ? (Number(summary.total_paid) / Number(summary.total_amount)) * 100 : 0} 
                   className="h-2"
                 />
               </div>
@@ -208,18 +208,18 @@ export const Invoices: React.FC = () => {
                 </div>
                 <Badge 
                   className={cn(
-                    summary.total_remaining > (summary.total_amount * 0.3) 
+                    Number(summary.total_outstanding) > (Number(summary.total_amount) * 0.3) 
                       ? "bg-gradient-to-r from-red-100 to-rose-100 text-red-700 border-0 shadow-sm" 
                       : "bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 border-0 shadow-sm"
                   )}
                 >
-                  {summary.total_remaining > (summary.total_amount * 0.3) ? "High" : "Normal"}
+                  {Number(summary.total_outstanding) > (Number(summary.total_amount) * 0.3) ? "High" : "Normal"}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <p className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">${summary.total_remaining.toFixed(2)}</p>
+                <p className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">${Number(summary.total_outstanding).toFixed(2)}</p>
                 <div className="flex items-center gap-2 text-xs text-amber-600">
                   <AlertCircle className="h-3 w-3" />
                   <span>Requires attention</span>
@@ -388,11 +388,14 @@ export const Invoices: React.FC = () => {
               onSuccess={handleInvoiceCreated}
               onCancel={closeDialogs}
               initialData={selectedInvoice ? {
+                type: selectedInvoice.type || 'general',
                 customer_id: selectedInvoice.customer_id,
-                gold_price_per_gram: selectedInvoice.gold_price_per_gram,
-                labor_cost_percentage: selectedInvoice.labor_cost_percentage,
-                profit_percentage: selectedInvoice.profit_percentage,
-                vat_percentage: selectedInvoice.vat_percentage,
+                gold_fields: selectedInvoice.type === 'gold' ? {
+                  gold_price_per_gram: selectedInvoice.gold_price_per_gram || 2500,
+                  labor_cost_percentage: selectedInvoice.labor_cost_percentage || 10,
+                  profit_percentage: selectedInvoice.profit_percentage || 15,
+                  vat_percentage: selectedInvoice.vat_percentage || 9,
+                } : undefined,
               } : undefined}
             />
           </div>

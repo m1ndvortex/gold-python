@@ -291,13 +291,13 @@ class CustomerUpdate(BaseModel):
 
 class Customer(CustomerBase):
     id: UUID
-    total_purchases: float
-    current_debt: float
+    total_purchases: float = 0.0
+    current_debt: float = 0.0
     last_purchase_date: Optional[datetime] = None
     
     # Status fields
-    is_active: bool
-    blacklisted: bool
+    is_active: bool = True
+    blacklisted: bool = False
     blacklist_reason: Optional[str] = None
     
     created_at: datetime

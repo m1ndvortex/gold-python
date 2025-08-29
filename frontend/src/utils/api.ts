@@ -71,6 +71,6 @@ export const apiPatch = async <T, D = any>(url: string, data?: D): Promise<T> =>
 };
 
 export const apiDelete = async <T>(url: string, data?: any): Promise<T> => {
-  const response = await api.delete(url, { data });
+  const response = data ? await api.delete(url, { data } as any) : await api.delete(url);
   return unwrap<T>(response.data);
 };

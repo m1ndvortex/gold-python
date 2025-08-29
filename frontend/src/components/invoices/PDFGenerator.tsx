@@ -109,7 +109,7 @@ export const PDFGenerator: React.FC<PDFGeneratorProps> = ({
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     const pricingDetails = [
-      `Gold Price: $${invoice.gold_price_per_gram.toFixed(2)}/gram`,
+      `Gold Price: $${invoice.gold_price_per_gram?.toFixed(2) || '0.00'}/gram`,
       `Labor Cost: ${invoice.labor_cost_percentage}%`,
       `Profit Margin: ${invoice.profit_percentage}%`,
       `VAT: ${invoice.vat_percentage}%`

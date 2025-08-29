@@ -269,15 +269,20 @@ describe('Invoice Components - Docker Integration', () => {
       }
 
       const invoiceData = {
+        type: 'gold' as const,
         customer_id: customers[0].id,
-        gold_price_per_gram: 2500,
-        labor_cost_percentage: 10,
-        profit_percentage: 15,
-        vat_percentage: 9,
+        gold_fields: {
+          gold_price_per_gram: 2500,
+          labor_cost_percentage: 10,
+          profit_percentage: 15,
+          vat_percentage: 9,
+        },
         items: [
           {
             inventory_item_id: inventoryItems[0].id,
+            item_name: inventoryItems[0].name,
             quantity: 1,
+            unit_price: inventoryItems[0].sell_price,
             weight_grams: inventoryItems[0].weight_grams,
           },
         ],

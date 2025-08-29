@@ -136,7 +136,7 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
               <p className="text-gray-600">Gold Price (per gram)</p>
-              <p className="font-medium">${invoice.gold_price_per_gram.toFixed(2)}</p>
+              <p className="font-medium">${invoice.gold_price_per_gram?.toFixed(2) || '0.00'}</p>
             </div>
             <div>
               <p className="text-gray-600">Labor Cost</p>

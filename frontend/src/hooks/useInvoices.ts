@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '../components/ui/use-toast';
 import {
   invoiceApi,
+  type UniversalInvoiceCreate,
   type InvoiceCreate,
   type InvoiceSearchFilters,
   type InvoicePaymentRequest,
@@ -66,7 +67,7 @@ export const useCalculateInvoice = () => {
   });
 };
 
-// Create invoice hook
+// Create universal invoice hook
 export const useCreateInvoice = () => {
   const queryClient = useQueryClient();
 
@@ -87,6 +88,33 @@ export const useCreateInvoice = () => {
 
       toast({
         title: 'Invoice Created',
+        description: `${data.type === 'gold' ? 'Gold' : 'General'} invoice ${data.invoice_number} created successfully`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Creation Failed',
+        description: error.response?.data?.detail || 'Failed to create invoice',
+        variant: 'destructive',
+      });
+    },
+  });
+};
+
+// Create legacy invoice hook (for backward compatibility)
+export const useCreateLegacyInvoice = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: invoiceApi.createLegacyInvoice,
+    onSuccess: (data: InvoiceWithDetails) => {
+      queryClient.invalidateQueries({ queryKey: invoiceKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['customers'] });
+      queryClient.invalidateQueries({ queryKey: ['inventory'] });
+
+      toast({
+        title: 'Invoice Created',
         description: `Invoice ${data.invoice_number} created successfully`,
       });
     },
@@ -100,12 +128,12 @@ export const useCreateInvoice = () => {
   });
 };
 
-// Update invoice hook
+// Update universal invoice hook
 export const useUpdateInvoice = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ invoiceId, updateData }: { invoiceId: string; updateData: Partial<InvoiceCreate> }) =>
+    mutationFn: ({ invoiceId, updateData }: { invoiceId: string; updateData: Partial<UniversalInvoiceCreate> }) =>
       invoiceApi.updateInvoice(invoiceId, updateData),
     onSuccess: (data: InvoiceWithDetails) => {
       // Update the specific invoice in cache
@@ -116,13 +144,78 @@ export const useUpdateInvoice = () => {
 
       toast({
         title: 'Invoice Updated',
-        description: `Invoice ${data.invoice_number} updated successfully`,
+        description: `${data.type === 'gold' ? 'Gold' : 'General'} invoice ${data.invoice_number} updated successfully`,
       });
     },
     onError: (error: any) => {
       toast({
         title: 'Update Failed',
         description: error.response?.data?.detail || 'Failed to update invoice',
+        variant: 'destructive',
+      });
+    },
+  });
+};
+
+// Approve invoice hook
+export const useApproveInvoice = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ invoiceId, approvalNotes }: { invoiceId: string; approvalNotes?: string }) =>
+      invoiceApi.approveInvoice(invoiceId, approvalNotes),
+    onSuccess: (data: InvoiceWithDetails) => {
+      // Update the specific invoice in cache
+      queryClient.setQueryData(invoiceKeys.detail(data.id), data);
+      
+      // Invalidate invoice lists
+      queryClient.invalidateQueries({ queryKey: invoiceKeys.lists() });
+      
+      // Invalidate inventory data (stock updates)
+      queryClient.invalidateQueries({ queryKey: ['inventory'] });
+
+      toast({
+        title: 'Invoice Approved',
+        description: `${data.type === 'gold' ? 'Gold' : 'General'} invoice ${data.invoice_number} approved and stock updated`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Approval Failed',
+        description: error.response?.data?.detail || 'Failed to approve invoice',
+        variant: 'destructive',
+      });
+    },
+  });
+};
+
+// Override item price hook
+export const useOverrideItemPrice = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ invoiceId, itemId, overridePrice, reason }: { 
+      invoiceId: string; 
+      itemId: string; 
+      overridePrice: number; 
+      reason?: string 
+    }) => invoiceApi.overrideItemPrice(invoiceId, itemId, overridePrice, reason),
+    onSuccess: (_, variables) => {
+      // Invalidate the specific invoice
+      queryClient.invalidateQueries({ queryKey: invoiceKeys.detail(variables.invoiceId) });
+      
+      // Invalidate invoice lists
+      queryClient.invalidateQueries({ queryKey: invoiceKeys.lists() });
+
+      toast({
+        title: 'Price Override Applied',
+        description: 'Item price has been successfully overridden',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Price Override Failed',
+        description: error.response?.data?.detail || 'Failed to override item price',
         variant: 'destructive',
       });
     },

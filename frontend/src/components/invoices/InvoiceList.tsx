@@ -53,6 +53,8 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [customerFilter, setCustomerFilter] = useState<string>('');
+  const [typeFilter, setTypeFilter] = useState<string>('');
+  const [workflowFilter, setWorkflowFilter] = useState<string>('');
   const [page, setPage] = useState(0);
   const limit = 50;
 
@@ -60,8 +62,10 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
   const { data: invoices = [], isLoading, error } = useInvoices(
     {
       ...filters,
-      invoice_number: searchTerm || undefined,
+      search: searchTerm || undefined,
+      type: (typeFilter as 'gold' | 'general') || undefined,
       status: statusFilter || undefined,
+      workflow_stage: workflowFilter || undefined,
       customer_id: customerFilter || undefined,
     },
     page * limit,
@@ -86,6 +90,18 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
   // Handle customer filter
   const handleCustomerFilter = (customerId: string) => {
     setCustomerFilter(customerId);
+    setPage(0);
+  };
+
+  // Handle invoice type filter
+  const handleTypeFilter = (type: string) => {
+    setTypeFilter(type);
+    setPage(0);
+  };
+
+  // Handle workflow stage filter
+  const handleWorkflowFilter = (stage: string) => {
+    setWorkflowFilter(stage);
     setPage(0);
   };
 
@@ -135,12 +151,45 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
         return <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-sm">Paid</Badge>;
       case 'partially_paid':
         return <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 border-0 shadow-sm">Partially Paid</Badge>;
-      case 'pending':
-        return <Badge className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border-0 shadow-sm">Pending</Badge>;
+      case 'approved':
+        return <Badge className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border-0 shadow-sm">Approved</Badge>;
+      case 'draft':
+        return <Badge className="bg-gradient-to-r from-gray-100 to-slate-100 text-gray-700 border-0 shadow-sm">Draft</Badge>;
       case 'cancelled':
         return <Badge className="bg-gradient-to-r from-red-100 to-rose-100 text-red-700 border-0 shadow-sm">Cancelled</Badge>;
+      case 'voided':
+        return <Badge className="bg-gradient-to-r from-red-100 to-rose-100 text-red-700 border-0 shadow-sm">Voided</Badge>;
       default:
         return <Badge className="bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 border-0 shadow-sm">{status}</Badge>;
+    }
+  };
+
+  // Get invoice type badge
+  const getTypeBadge = (type: string) => {
+    switch (type) {
+      case 'gold':
+        return <Badge className="bg-gradient-to-r from-amber-500 to-yellow-600 text-white border-0 shadow-sm">Gold</Badge>;
+      case 'general':
+        return <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0 shadow-sm">General</Badge>;
+      default:
+        return <Badge className="bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 border-0 shadow-sm">{type}</Badge>;
+    }
+  };
+
+  // Get workflow stage badge
+  const getWorkflowBadge = (workflowStage: string, requiresApproval: boolean) => {
+    switch (workflowStage) {
+      case 'draft':
+        return <Badge className="bg-gradient-to-r from-gray-100 to-slate-100 text-gray-700 border-0 shadow-sm">Draft</Badge>;
+      case 'approved':
+        return <Badge className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-0 shadow-sm">Approved</Badge>;
+      case 'pending_approval':
+        return <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 border-0 shadow-sm">Pending Approval</Badge>;
+      default:
+        if (requiresApproval) {
+          return <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 border-0 shadow-sm">Needs Approval</Badge>;
+        }
+        return <Badge className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-0 shadow-sm">Auto-Approved</Badge>;
     }
   };
 
@@ -187,17 +236,29 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search invoice number..."
+                placeholder="Search invoices..."
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="pl-10"
               />
             </div>
+
+            {/* Invoice Type Filter */}
+            <Select value={typeFilter || "all"} onValueChange={(value) => handleTypeFilter(value === "all" ? "" : value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="All Types" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="gold">Gold Invoices</SelectItem>
+                <SelectItem value="general">General Invoices</SelectItem>
+              </SelectContent>
+            </Select>
 
             {/* Status Filter */}
             <Select value={statusFilter || "all"} onValueChange={(value) => handleStatusFilter(value === "all" ? "" : value)}>
@@ -206,10 +267,12 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
                 <SelectItem value="partially_paid">Partially Paid</SelectItem>
                 <SelectItem value="paid">Paid</SelectItem>
                 <SelectItem value="cancelled">Cancelled</SelectItem>
+                <SelectItem value="voided">Voided</SelectItem>
               </SelectContent>
             </Select>
 
@@ -225,6 +288,19 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
                     {customer.name}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+
+            {/* Workflow Stage Filter */}
+            <Select value={workflowFilter || "all"} onValueChange={(value) => handleWorkflowFilter(value === "all" ? "" : value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="All Workflows" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Workflows</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="pending_approval">Pending Approval</SelectItem>
               </SelectContent>
             </Select>
 
@@ -251,25 +327,27 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
             <TableHeader>
               <TableRow>
                 <TableHead>Invoice #</TableHead>
+                <TableHead>Type</TableHead>
                 <TableHead>Customer</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Total Amount</TableHead>
                 <TableHead>Paid Amount</TableHead>
                 <TableHead>Remaining</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Workflow</TableHead>
                 <TableHead className="w-[100px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8">
+                  <TableCell colSpan={10} className="text-center py-8">
                     Loading invoices...
                   </TableCell>
                 </TableRow>
               ) : invoices.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8">
+                  <TableCell colSpan={10} className="text-center py-8">
                     No invoices found
                   </TableCell>
                 </TableRow>
@@ -279,18 +357,20 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
                     <TableCell className="font-medium">
                       {invoice.invoice_number}
                     </TableCell>
+                    <TableCell>{getTypeBadge(invoice.type || 'general')}</TableCell>
                     <TableCell>{getCustomerName(invoice.customer_id)}</TableCell>
                     <TableCell>
                       {format(new Date(invoice.created_at), 'MMM dd, yyyy')}
                     </TableCell>
-                    <TableCell>${invoice.total_amount.toFixed(2)}</TableCell>
-                    <TableCell>${invoice.paid_amount.toFixed(2)}</TableCell>
+                    <TableCell>${Number(invoice.total_amount || 0).toFixed(2)}</TableCell>
+                    <TableCell>${Number(invoice.paid_amount || 0).toFixed(2)}</TableCell>
                     <TableCell>
-                      <span className={invoice.remaining_amount > 0 ? 'text-red-600 font-medium' : 'text-green-600'}>
-                        ${invoice.remaining_amount.toFixed(2)}
+                      <span className={Number(invoice.remaining_amount || 0) > 0 ? 'text-red-600 font-medium' : 'text-green-600'}>
+                        ${Number(invoice.remaining_amount || 0).toFixed(2)}
                       </span>
                     </TableCell>
                     <TableCell>{getStatusBadge(invoice.status)}</TableCell>
+                    <TableCell>{getWorkflowBadge(invoice.workflow_stage || 'draft', invoice.requires_approval || false)}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

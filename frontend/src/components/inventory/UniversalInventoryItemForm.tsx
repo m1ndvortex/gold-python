@@ -357,7 +357,6 @@ export const UniversalInventoryItemForm: React.FC<UniversalInventoryItemFormProp
         ...data,
         custom_attributes: customAttributes,
         tags,
-        images: selectedImages,
       };
 
       // Remove form-specific fields

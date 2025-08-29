@@ -277,7 +277,6 @@ export const UniversalInventory: React.FC = () => {
         </div>
       ),
       sortable: true,
-      sortKey: 'sale_price',
       align: 'right',
     },
     {

@@ -622,19 +622,21 @@ async def get_debt_report(
             else:
                 debt_aging["ninety_days_plus"] += current_debt
             
+            total_lifetime_purchases = float(customer.total_purchases or 0)
+            
             debt_details.append({
                 "customer_id": str(customer.id),
                 "customer_name": customer.name,
                 "phone": customer.phone,
                 "email": customer.email,
                 "current_debt": current_debt,
-                "total_lifetime_purchases": float(customer.total_purchases),
+                "total_lifetime_purchases": total_lifetime_purchases,
                 "total_payments": total_payments,
                 "payment_count": int(customer.payment_count or 0),
                 "last_payment_date": customer.last_payment_date.isoformat() if customer.last_payment_date else None,
                 "days_since_last_payment": days_since_payment,
                 "unpaid_invoice_count": int(customer.unpaid_invoice_count or 0),
-                "debt_to_purchases_ratio": (current_debt / float(customer.total_purchases) * 100) if customer.total_purchases > 0 else 0,
+                "debt_to_purchases_ratio": (current_debt / total_lifetime_purchases * 100) if total_lifetime_purchases > 0 else 0,
                 "payment_history_score": min(100, (total_payments / max(1, current_debt + total_payments)) * 100)
             })
         

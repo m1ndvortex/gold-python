@@ -159,7 +159,7 @@ const CategoryNode: React.FC<CategoryNodeProps> = ({
     if ('item_count' in category && category.item_count !== undefined) {
       stats.push(
         <Badge key="items" variant="secondary" className="text-xs">
-          {category.item_count} {t('inventory.items')}
+          {`${category.item_count} ${t('inventory.items')}`}
         </Badge>
       );
     }
@@ -167,7 +167,7 @@ const CategoryNode: React.FC<CategoryNodeProps> = ({
     if ('total_value' in category && category.total_value !== undefined) {
       stats.push(
         <Badge key="value" variant="outline" className="text-xs">
-          ${category.total_value.toFixed(2)}
+          ${(category.total_value as number)?.toFixed(2) || '0.00'}
         </Badge>
       );
     }

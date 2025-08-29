@@ -18,13 +18,13 @@ import {
     DollarSign,
     Calendar,
     Tag,
+    Plus,
     TrendingDown,
     Eye,
     EyeOff,
     Barcode,
     QrCode,
-    Hash,
-    Plus
+    Hash
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';

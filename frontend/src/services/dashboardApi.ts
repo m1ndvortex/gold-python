@@ -85,7 +85,7 @@ export const dashboardApi = {
 
   // Get unpaid invoices
   getUnpaidInvoices: async (limit: number = 10): Promise<UnpaidInvoice[]> => {
-    const response = await api.get(`/invoices?status=pending&limit=${limit}`);
+    const response = await api.get(`/invoices/?status=pending&limit=${limit}`);
     return (response.data as any).invoices?.map((invoice: any) => ({
       invoice_id: invoice.id,
       invoice_number: invoice.invoice_number,

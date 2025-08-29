@@ -354,17 +354,53 @@ export interface InvoiceItem {
 export interface Invoice {
   id: string;
   invoice_number: string;
+  type?: 'gold' | 'general'; // New field for dual invoice system
   customer_id: string;
+  customer_name?: string;
+  customer_phone?: string;
+  customer_address?: string;
+  customer_email?: string;
   total_amount: number;
   paid_amount: number;
   remaining_amount: number;
-  gold_price_per_gram: number;
-  labor_cost_percentage: number;
-  profit_percentage: number;
-  vat_percentage: number;
+  subtotal?: number;
+  tax_amount?: number;
+  discount_amount?: number;
+  currency?: string;
+  
+  // Workflow fields
   status: string;
+  workflow_stage?: string;
+  payment_status?: string;
+  stock_affected?: boolean;
+  requires_approval?: boolean;
+  approved_by?: string;
+  approved_at?: string;
+  approval_notes?: string;
+  
+  // Gold-specific fields (conditional)
+  gold_price_per_gram?: number;
+  labor_cost_percentage?: number;
+  profit_percentage?: number;
+  vat_percentage?: number;
+  gold_sood?: number; // سود (profit)
+  gold_ojrat?: number; // اجرت (wage/labor fee)
+  gold_maliyat?: number; // مالیات (tax)
+  gold_total_weight?: number;
+  
+  // QR Card information
+  qr_code?: string;
+  card_url?: string;
+  card_theme?: string;
+  
+  // Additional metadata
+  notes?: string;
+  invoice_metadata?: Record<string, any>;
+  
   created_at: string;
   updated_at: string;
+  created_by?: string;
+  updated_by?: string;
 }
 
 export interface InvoiceWithDetails extends Invoice {
