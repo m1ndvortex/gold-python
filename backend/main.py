@@ -3,11 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database import engine, get_db
 import models
+import models_accounting
 from routers import auth, roles, inventory, customers, invoices, accounting, reports, settings, sms, analytics, profitability, customer_intelligence, inventory_intelligence, custom_reports, kpi_dashboard, analytics_data, chart_sharing, cost_analysis, category_intelligence, alerts, cache_management, backup_management, disaster_recovery, image_management, universal_inventory, universal_invoices, qr_invoice_cards
 
 # Create database tables safely
 try:
     models.Base.metadata.create_all(bind=engine)
+    models_accounting.Base.metadata.create_all(bind=engine)
     print("Database tables created/verified successfully")
 except Exception as e:
     print(f"Warning: Could not create tables: {e}")

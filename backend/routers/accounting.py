@@ -11,15 +11,259 @@ from models import (
     AccountingEntry, Invoice, InvoiceItem, Customer, Payment, 
     InventoryItem, Category
 )
+from models_accounting import (
+    ChartOfAccounts, SubsidiaryAccount, JournalEntry, JournalEntryLine,
+    CheckManagement, InstallmentAccount, InstallmentPayment,
+    BankReconciliation, AccountingPeriod
+)
 from schemas import (
     AccountingEntry as AccountingEntrySchema,
     AccountingEntryCreate
 )
+from schemas_accounting import (
+    ChartOfAccountsCreate, ChartOfAccountsUpdate, ChartOfAccounts as ChartOfAccountsSchema,
+    SubsidiaryAccountCreate, SubsidiaryAccountUpdate, SubsidiaryAccount as SubsidiaryAccountSchema,
+    JournalEntryCreate, JournalEntryUpdate, JournalEntry as JournalEntrySchema,
+    CheckManagementCreate, CheckManagementUpdate, CheckManagement as CheckManagementSchema,
+    InstallmentAccountCreate, InstallmentAccountUpdate, InstallmentAccount as InstallmentAccountSchema,
+    BankReconciliationCreate, BankReconciliationUpdate, BankReconciliation as BankReconciliationSchema,
+    TrialBalance, BalanceSheet, ProfitLossStatement, CashFlowStatement,
+    JournalEntryFilters, CheckFilters, InstallmentFilters
+)
+from services.accounting_service import AccountingService
 from auth import get_current_user
 
 router = APIRouter(prefix="/accounting", tags=["accounting"])
 
-# Pydantic models for accounting responses
+# Enhanced Double-Entry Accounting Endpoints
+
+# Chart of Accounts Management
+@router.post("/chart-of-accounts", response_model=ChartOfAccountsSchema)
+async def create_chart_of_account(
+    account_data: ChartOfAccountsCreate,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Create new chart of accounts entry"""
+    service = AccountingService(db)
+    try:
+        return await service.create_chart_of_account(account_data, current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/chart-of-accounts", response_model=List[ChartOfAccountsSchema])
+async def get_chart_of_accounts(
+    include_inactive: bool = Query(False),
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Get chart of accounts"""
+    service = AccountingService(db)
+    return await service.get_chart_of_accounts(include_inactive)
+
+@router.put("/chart-of-accounts/{account_id}", response_model=ChartOfAccountsSchema)
+async def update_chart_of_account(
+    account_id: UUID,
+    account_data: ChartOfAccountsUpdate,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Update chart of accounts entry"""
+    service = AccountingService(db)
+    try:
+        return await service.update_chart_of_account(account_id, account_data, current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+# Subsidiary Accounts Management (حساب‌های تفصیلی)
+@router.post("/subsidiary-accounts", response_model=SubsidiaryAccountSchema)
+async def create_subsidiary_account(
+    subsidiary_data: SubsidiaryAccountCreate,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Create subsidiary account (حساب تفصیلی)"""
+    service = AccountingService(db)
+    try:
+        return await service.create_subsidiary_account(subsidiary_data, current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/subsidiary-accounts", response_model=List[SubsidiaryAccountSchema])
+async def get_subsidiary_accounts(
+    main_account_id: Optional[UUID] = Query(None),
+    subsidiary_type: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Get subsidiary accounts with filtering"""
+    service = AccountingService(db)
+    return await service.get_subsidiary_accounts(main_account_id, subsidiary_type)
+
+# Journal Entries (Double-Entry System)
+@router.post("/journal-entries", response_model=JournalEntrySchema)
+async def create_journal_entry(
+    entry_data: JournalEntryCreate,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Create double-entry journal entry"""
+    service = AccountingService(db)
+    try:
+        return await service.create_journal_entry(entry_data, current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/journal-entries/{entry_id}/post", response_model=JournalEntrySchema)
+async def post_journal_entry(
+    entry_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Post journal entry (make it final)"""
+    service = AccountingService(db)
+    try:
+        return await service.post_journal_entry(entry_id, current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/journal-entries/{entry_id}/reverse", response_model=JournalEntrySchema)
+async def reverse_journal_entry(
+    entry_id: UUID,
+    reversal_reason: str,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Reverse journal entry"""
+    service = AccountingService(db)
+    try:
+        return await service.reverse_journal_entry(entry_id, reversal_reason, current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# Check Management System (مدیریت چک‌ها)
+@router.post("/checks", response_model=CheckManagementSchema)
+async def create_check(
+    check_data: CheckManagementCreate,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Create check record"""
+    service = AccountingService(db)
+    try:
+        return await service.create_check(check_data, current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.put("/checks/{check_id}/status", response_model=CheckManagementSchema)
+async def update_check_status(
+    check_id: UUID,
+    status: str,
+    notes: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Update check status"""
+    service = AccountingService(db)
+    try:
+        return await service.update_check_status(check_id, status, current_user.id, notes)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+# Installment Account Management (حساب‌های اقساطی)
+@router.post("/installment-accounts", response_model=InstallmentAccountSchema)
+async def create_installment_account(
+    installment_data: InstallmentAccountCreate,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Create installment account (حساب اقساطی)"""
+    service = AccountingService(db)
+    try:
+        return await service.create_installment_account(installment_data, current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/installment-accounts/{installment_id}/payments")
+async def process_installment_payment(
+    installment_id: UUID,
+    payment_amount: float,
+    payment_method: str,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Process installment payment"""
+    service = AccountingService(db)
+    try:
+        from decimal import Decimal
+        return await service.process_installment_payment(
+            installment_id, Decimal(str(payment_amount)), payment_method, current_user.id
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# Bank Reconciliation
+@router.post("/bank-reconciliation", response_model=BankReconciliationSchema)
+async def create_bank_reconciliation(
+    reconciliation_data: BankReconciliationCreate,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Create bank reconciliation"""
+    service = AccountingService(db)
+    try:
+        return await service.create_bank_reconciliation(reconciliation_data, current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# Financial Reports
+@router.get("/reports/trial-balance", response_model=TrialBalance)
+async def get_trial_balance(
+    as_of_date: date = Query(...),
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Generate trial balance report"""
+    service = AccountingService(db)
+    return await service.generate_trial_balance(as_of_date)
+
+@router.get("/reports/balance-sheet", response_model=BalanceSheet)
+async def get_balance_sheet(
+    as_of_date: date = Query(...),
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Generate balance sheet report"""
+    service = AccountingService(db)
+    return await service.generate_balance_sheet(as_of_date)
+
+@router.get("/reports/profit-loss", response_model=ProfitLossStatement)
+async def get_profit_loss_statement(
+    period_start: date = Query(...),
+    period_end: date = Query(...),
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Generate profit and loss statement"""
+    service = AccountingService(db)
+    return await service.generate_profit_loss_statement(period_start, period_end)
+
+# Gold-specific Accounting
+@router.post("/gold-invoice-journal-entry")
+async def create_gold_invoice_journal_entry(
+    invoice_id: UUID,
+    invoice_data: Dict[str, Any],
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Create journal entry for Gold invoice with سود, اجرت, مالیات"""
+    service = AccountingService(db)
+    try:
+        return await service.create_gold_invoice_journal_entry(invoice_id, invoice_data, current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# Pydantic models for accounting responses (Legacy - keeping for backward compatibility)
 from pydantic import BaseModel
 
 class LedgerEntry(BaseModel):
