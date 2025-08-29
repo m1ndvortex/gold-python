@@ -8,6 +8,7 @@ import { Register } from './pages/Register';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
 import { InventoryWithRouting as Inventory } from './pages/Inventory';
+import { UniversalInventory } from './pages/UniversalInventory';
 import { Customers } from './pages/Customers';
 import { Invoices } from './pages/Invoices';
 import { AccountingWithRouting as Accounting } from './pages/Accounting';
@@ -72,6 +73,16 @@ const AppContent: React.FC = () => {
               <AuthGuard>
                 <MainLayout>
                   <Inventory />
+                </MainLayout>
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/universal-inventory"
+            element={
+              <AuthGuard>
+                <MainLayout>
+                  <UniversalInventory />
                 </MainLayout>
               </AuthGuard>
             }

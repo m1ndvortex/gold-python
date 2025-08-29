@@ -65,7 +65,12 @@ export const apiPut = async <T, D = any>(url: string, data?: D): Promise<T> => {
   return unwrap<T>(response.data);
 };
 
-export const apiDelete = async <T>(url: string): Promise<T> => {
-  const response = await api.delete(url);
+export const apiPatch = async <T, D = any>(url: string, data?: D): Promise<T> => {
+  const response = await api.patch(url, data);
+  return unwrap<T>(response.data);
+};
+
+export const apiDelete = async <T>(url: string, data?: any): Promise<T> => {
+  const response = await api.delete(url, { data });
   return unwrap<T>(response.data);
 };
