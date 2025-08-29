@@ -736,6 +736,25 @@ class QRInvoiceCard(QRInvoiceCardBase):
 class QRInvoiceCardWithInvoice(QRInvoiceCard):
     invoice: Optional[UniversalInvoice] = None
 
+# QR Card Access Log Schemas
+class QRCardAccessLogBase(BaseModel):
+    ip_address: Optional[str] = Field(None, description="IP address")
+    user_agent: Optional[str] = Field(None, description="User agent string")
+    referer: Optional[str] = Field(None, description="Referer URL")
+    country: Optional[str] = Field(None, description="Country")
+    city: Optional[str] = Field(None, description="City")
+    device_type: Optional[str] = Field(None, description="Device type")
+    browser: Optional[str] = Field(None, description="Browser")
+    os: Optional[str] = Field(None, description="Operating system")
+
+class QRCardAccessLog(QRCardAccessLogBase):
+    id: UUID
+    card_id: UUID
+    accessed_at: datetime
+    
+    class Config:
+        from_attributes = True
+
 # Search and Filter Schemas
 class InvoiceSearchFilters(BaseModel):
     search: Optional[str] = Field(None, description="Search term for invoice number, customer name")

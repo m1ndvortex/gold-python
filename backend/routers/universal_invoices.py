@@ -225,68 +225,17 @@ def update_inventory_stock(db: Session, items: List[schemas.UniversalInvoiceItem
                 )
                 db.add(movement)
 
-def create_qr_code_and_card(invoice: models.UniversalInvoice, db: Session) -> models.QRInvoiceCard:
-    """Create QR code and card for invoice"""
-    # Generate unique QR code
-    qr_code_data = f"invoice:{invoice.id}"
-    card_url = f"/invoice-card/{invoice.id}"
+def create_qr_code_and_card(invoice: models.UniversalInvoice, db: Session, created_by: UUID = None) -> models.QRInvoiceCard:
+    """Create QR code and card for invoice using the comprehensive service"""
+    from services.qr_invoice_card_service import QRInvoiceCardService
     
-    # Generate QR code image (base64)
-    qr = qrcode.QRCode(version=1, box_size=10, border=5)
-    qr.add_data(card_url)
-    qr.make(fit=True)
-    
-    # Create card data snapshot
-    card_data = {
-        "invoice_number": invoice.invoice_number,
-        "invoice_type": invoice.type,
-        "customer_name": invoice.customer_name,
-        "total_amount": float(invoice.total_amount),
-        "currency": invoice.currency,
-        "created_at": invoice.created_at.isoformat(),
-        "items": [],
-        "gold_fields": {}
-    }
-    
-    # Add gold-specific fields if applicable
-    if invoice.type == "gold":
-        card_data["gold_fields"] = {
-            "gold_sood": float(invoice.gold_sood) if invoice.gold_sood else 0,
-            "gold_ojrat": float(invoice.gold_ojrat) if invoice.gold_ojrat else 0,
-            "gold_maliyat": float(invoice.gold_maliyat) if invoice.gold_maliyat else 0,
-            "gold_total_weight": float(invoice.gold_total_weight) if invoice.gold_total_weight else 0
-        }
-    
-    # Add items data
-    for item in invoice.invoice_items:
-        item_data = {
-            "name": item.item_name,
-            "quantity": float(item.quantity),
-            "unit_price": float(item.unit_price),
-            "total_price": float(item.total_price),
-            "images": item.item_images or []
-        }
-        card_data["items"].append(item_data)
-    
-    # Create QR card record
-    qr_card = models.QRInvoiceCard(
+    service = QRInvoiceCardService(db)
+    return service.create_qr_card(
         invoice_id=invoice.id,
-        qr_code=qr_code_data,
-        card_url=card_url,
-        theme=invoice.card_theme,
-        card_data=card_data,
+        theme=invoice.card_theme or "glass",
         is_public=True,
-        is_active=True
+        created_by=created_by
     )
-    
-    db.add(qr_card)
-    
-    # Update invoice with QR information
-    invoice.qr_code = qr_code_data
-    invoice.card_url = card_url
-    db.add(invoice)
-    
-    return qr_card
 
 def validate_invoice_business_rules(invoice_data: schemas.UniversalInvoiceCreate) -> None:
     """Validate business rules for invoice creation"""
@@ -441,7 +390,7 @@ def create_invoice(
         db.flush()  # Ensure invoice_items are available
         
         # Create QR code and card
-        qr_card = create_qr_code_and_card(invoice, db)
+        qr_card = create_qr_code_and_card(invoice, db, current_user.id)
         
         db.commit()
         
