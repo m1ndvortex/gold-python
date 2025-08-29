@@ -13,7 +13,7 @@ import logging
 from pathlib import Path
 
 from database import get_db
-from services.image_management_service import ImageManagementService, ImageProcessingError
+from services.image_management_service import ImageManagementService, ImageProcessingError, ImageBackupError
 from auth import get_current_user
 from models import User
 
@@ -294,4 +294,138 @@ async def regenerate_thumbnails(
         
     except Exception as e:
         logger.error(f"Error regenerating thumbnails: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.get("/serve/{image_id}")
+async def serve_image(
+    image_id: str,
+    size: Optional[str] = Query(None, description="Thumbnail size: small, medium, large, gallery, card, icon"),
+    optimized: bool = Query(False, description="Return optimized version"),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Serve image file with caching and performance optimization
+    """
+    try:
+        service = ImageManagementService(db)
+        result = await service.serve_image(
+            image_id=image_id,
+            size=size,
+            optimized=optimized
+        )
+        
+        # Return file response
+        return FileResponse(
+            path=result['file_path'],
+            media_type=result['mime_type'],
+            headers={
+                'Cache-Control': f'public, max-age={24*60*60}',  # 24 hours
+                'Last-Modified': result['last_modified'].strftime('%a, %d %b %Y %H:%M:%S GMT'),
+                'X-Cache-Hit': str(result['cache_hit']).lower()
+            }
+        )
+        
+    except ImageProcessingError as e:
+        logger.error(f"Error serving image: {e}")
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        logger.error(f"Unexpected error serving image: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.post("/cleanup")
+async def cleanup_orphaned_images(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Clean up orphaned and unused images
+    """
+    try:
+        service = ImageManagementService(db)
+        result = await service.cleanup_orphaned_images()
+        
+        return {
+            "message": "Image cleanup completed successfully",
+            "data": result
+        }
+        
+    except ImageProcessingError as e:
+        logger.error(f"Error during image cleanup: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Unexpected error during image cleanup: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.post("/backup")
+async def backup_images(
+    entity_type: Optional[str] = Query(None, description="Entity type to backup (optional)"),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Backup images to backup directory with metadata
+    """
+    try:
+        service = ImageManagementService(db)
+        result = await service.backup_images(entity_type=entity_type)
+        
+        return {
+            "message": "Image backup completed successfully",
+            "data": result
+        }
+        
+    except ImageBackupError as e:
+        logger.error(f"Error during image backup: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Unexpected error during image backup: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.post("/restore")
+async def restore_images(
+    backup_metadata_file: str = Query(..., description="Path to backup metadata file"),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Restore images from backup using metadata file
+    """
+    try:
+        service = ImageManagementService(db)
+        result = await service.restore_images(backup_metadata_file)
+        
+        return {
+            "message": "Image restore completed successfully",
+            "data": result
+        }
+        
+    except ImageBackupError as e:
+        logger.error(f"Error during image restore: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Unexpected error during image restore: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.get("/health")
+async def get_image_health_report(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Get comprehensive health report for image management system
+    """
+    try:
+        service = ImageManagementService(db)
+        result = await service.get_image_health_report()
+        
+        return {
+            "message": "Image health report generated successfully",
+            "data": result
+        }
+        
+    except ImageProcessingError as e:
+        logger.error(f"Error generating health report: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Unexpected error generating health report: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")

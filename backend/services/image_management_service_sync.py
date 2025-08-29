@@ -30,50 +30,75 @@ class ImageManagementServiceSync:
     Synchronous image management service for real database testing
     """
     
-    # Supported image formats
+    # Supported image formats with security validation
     SUPPORTED_FORMATS = {
         'image/jpeg': '.jpg',
         'image/jpg': '.jpg', 
         'image/png': '.png',
-        'image/webp': '.webp'
+        'image/webp': '.webp',
+        'image/gif': '.gif'  # Added GIF support
     }
     
     # Thumbnail sizes for different use cases
     THUMBNAIL_SIZES = {
-        'small': (150, 150),
-        'medium': (300, 300),
-        'large': (600, 600),
-        'gallery': (800, 600)
+        'small': (150, 150),      # List views, cards
+        'medium': (300, 300),     # Detail views
+        'large': (600, 600),      # Gallery views
+        'gallery': (800, 600),    # Full gallery display
+        'card': (400, 300),       # Invoice cards, QR cards
+        'icon': (64, 64)          # Category icons
     }
     
-    # Maximum file size (10MB)
-    MAX_FILE_SIZE = 10 * 1024 * 1024
+    # Maximum file size (15MB for high-quality images)
+    MAX_FILE_SIZE = 15 * 1024 * 1024
     
-    # Upload directory
+    # Upload directory structure
     UPLOAD_DIR = Path("uploads/images")
+    BACKUP_DIR = Path("backups/images")
+    CACHE_DIR = Path("cache/images")
+    
+    # Security settings
+    ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
+    DANGEROUS_EXTENSIONS = {'.exe', '.bat', '.sh', '.php', '.js', '.html', '.svg'}
     
     def __init__(self, db_session: Session):
         self.db = db_session
         self._ensure_upload_directories()
     
     def _ensure_upload_directories(self):
-        """Ensure all required upload directories exist"""
+        """Ensure all required upload, backup, and cache directories exist"""
         try:
-            # Create main upload directory
+            # Create main directories
             self.UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+            self.BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+            self.CACHE_DIR.mkdir(parents=True, exist_ok=True)
             
             # Create subdirectories for different entity types
-            for entity_type in ['products', 'categories', 'companies']:
+            entity_types = ['categories', 'inventory_items', 'invoices', 'customers', 'companies']
+            
+            for entity_type in entity_types:
+                # Upload directories
                 (self.UPLOAD_DIR / entity_type).mkdir(exist_ok=True)
                 (self.UPLOAD_DIR / entity_type / 'thumbnails').mkdir(exist_ok=True)
                 (self.UPLOAD_DIR / entity_type / 'optimized').mkdir(exist_ok=True)
                 
-            logger.info("Upload directories created successfully")
+                # Backup directories
+                (self.BACKUP_DIR / entity_type).mkdir(exist_ok=True)
+                (self.BACKUP_DIR / entity_type / 'thumbnails').mkdir(exist_ok=True)
+                (self.BACKUP_DIR / entity_type / 'optimized').mkdir(exist_ok=True)
+                
+                # Cache directories
+                (self.CACHE_DIR / entity_type).mkdir(exist_ok=True)
+                
+            # Create temporary processing directory
+            (self.UPLOAD_DIR / 'temp').mkdir(exist_ok=True)
+            
+            logger.info("All image management directories created successfully")
         except Exception as e:
-            logger.error(f"Failed to create upload directories: {e}")
-            raise ImageProcessingError(f"Failed to create upload directories: {e}")
+            logger.error(f"Failed to create image management directories: {e}")
+            raise ImageProcessingError(f"Failed to create image management directories: {e}")
     
-    async def upload_image(
+    def upload_image(
         self,
         file,  # MockUploadFile for testing
         entity_type: str,
@@ -351,7 +376,7 @@ class ImageManagementServiceSync:
         except Exception as e:
             logger.warning(f"Failed to unset primary images: {e}")
     
-    async def get_entity_images(
+    def get_entity_images(
         self, 
         entity_type: str, 
         entity_id: str,
@@ -404,7 +429,7 @@ class ImageManagementServiceSync:
             logger.error(f"Failed to get entity images: {e}")
             raise ImageProcessingError(f"Failed to get entity images: {e}")
     
-    async def update_image_metadata(
+    def update_image_metadata(
         self,
         image_id: str,
         alt_text: Optional[str] = None,
@@ -463,7 +488,7 @@ class ImageManagementServiceSync:
             self.db.rollback()
             raise ImageProcessingError(f"Failed to update image metadata: {e}")
     
-    async def delete_image(self, image_id: str) -> Dict[str, Any]:
+    def delete_image(self, image_id: str) -> Dict[str, Any]:
         """
         Delete image and all associated files (original, optimized, thumbnails)
         """
@@ -520,7 +545,7 @@ class ImageManagementServiceSync:
             self.db.rollback()
             raise ImageProcessingError(f"Failed to delete image: {e}")
     
-    async def get_image_statistics(self) -> Dict[str, Any]:
+    def get_image_statistics(self) -> Dict[str, Any]:
         """
         Get comprehensive image management statistics
         """
