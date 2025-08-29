@@ -30,6 +30,8 @@ import {
   DollarSign,
   Calendar,
   Plus,
+  QrCode,
+  Share2,
 } from 'lucide-react';
 import { useInvoices, useDeleteInvoice } from '../../hooks/useInvoices';
 import { useCustomers } from '../../hooks/useCustomers';
@@ -141,6 +143,26 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
     
     if (window.confirm(`Are you sure you want to delete invoice ${invoice.invoice_number}?`)) {
       deleteMutation.mutate(invoice.id);
+    }
+  };
+
+  // Handle QR card actions
+  const handleViewQRCard = (invoice: Invoice) => {
+    const url = `/public/invoice-card/${invoice.id}`;
+    window.open(url, '_blank');
+  };
+
+  const handleShareQRCard = (invoice: Invoice) => {
+    const url = `${window.location.origin}/public/invoice-card/${invoice.id}`;
+    if (navigator.share) {
+      navigator.share({
+        title: `Invoice ${invoice.invoice_number}`,
+        text: `View invoice details`,
+        url: url,
+      });
+    } else {
+      navigator.clipboard.writeText(url);
+      // You might want to show a toast notification here
     }
   };
 
@@ -400,6 +422,14 @@ export const InvoiceList: React.FC<InvoiceListProps> = ({
                           <DropdownMenuItem>
                             <FileText className="mr-2 h-4 w-4" />
                             Generate PDF
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleViewQRCard(invoice)}>
+                            <QrCode className="mr-2 h-4 w-4" />
+                            View QR Card
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleShareQRCard(invoice)}>
+                            <Share2 className="mr-2 h-4 w-4" />
+                            Share QR Card
                           </DropdownMenuItem>
                           {invoice.paid_amount === 0 && (
                             <DropdownMenuItem

@@ -15,6 +15,7 @@ import { Trash2, Plus, Calculator, Eye, FileText, Receipt, Gem, Package, AlertCi
 import { useCustomers } from '../../hooks/useCustomers';
 import { useInventoryItems } from '../../hooks/useInventory';
 import { useCalculateInvoice, useCreateInvoice } from '../../hooks/useInvoices';
+import { QRCardIntegration } from '../qr-cards/QRCardIntegration';
 import type { InvoiceCreate, InvoiceCalculationSummary } from '../../services/invoiceApi';
 import type { Customer, InventoryItem } from '../../types';
 
@@ -946,19 +947,7 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 </Card>
                 
                 {/* QR Code Preview */}
-                <Card className="border-0 shadow-lg">
-                  <CardHeader>
-                    <CardTitle>QR Code & Card</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <div className="w-32 h-32 bg-gray-100 rounded-lg mx-auto mb-3 flex items-center justify-center">
-                      <span className="text-gray-500 text-sm">QR Code will be generated</span>
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      A beautiful invoice card with QR code will be generated for customer access
-                    </p>
-                  </CardContent>
-                </Card>
+                <QRCardIntegration showPreview={true} />
               </div>
             </div>
             
