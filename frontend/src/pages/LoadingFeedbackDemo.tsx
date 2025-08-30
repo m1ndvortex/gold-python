@@ -284,9 +284,9 @@ const LoadingFeedbackDemoContent: React.FC = () => {
                   <CardTitle>Linear Progress</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Progress value={progress} variant="green" showLabel />
-                  <Progress value={75} variant="blue" showLabel />
-                  <AnimatedProgress value={60} variant="purple" showLabel animated />
+                  <Progress value={progress} />
+                  <Progress value={75} />
+                  <AnimatedProgress value={60} />
                 </CardContent>
               </Card>
 
@@ -297,9 +297,9 @@ const LoadingFeedbackDemoContent: React.FC = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-center space-x-4">
-                    <CircularProgress value={progress} variant="green" showLabel />
-                    <CircularProgress value={75} variant="blue" showLabel size={60} />
-                    <CircularProgress value={90} variant="purple" showLabel size={50} />
+                    <CircularProgress value={progress} />
+                    <CircularProgress value={75} size={60} />
+                    <CircularProgress value={90} size={50} />
                   </div>
                 </CardContent>
               </Card>

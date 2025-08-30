@@ -5,6 +5,7 @@ import { Button } from '../ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { Sidebar } from './Sidebar';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useDirectionAdapter } from '../../utils/directionAdapter';
 import { cn } from '../../lib/utils';
 
 interface MobileSidebarProps {
@@ -12,8 +13,11 @@ interface MobileSidebarProps {
 }
 
 export const MobileSidebar: React.FC<MobileSidebarProps> = ({ className }) => {
-  const { t } = useLanguage();
+  const { t, direction, language } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
+  const directionAdapter = useDirectionAdapter(language, direction);
+  
+  const isRTL = direction === 'rtl';
 
   return (
     <div className={cn('md:hidden', className)}>
@@ -39,14 +43,21 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({ className }) => {
         </SheetTrigger>
         
         <SheetContent 
-          side="left" 
-          className="p-0 w-80 bg-gradient-to-b from-slate-50 to-slate-100 border-r border-border/50"
+          side={isRTL ? "right" : "left"}
+          className={cn(
+            'p-0 w-80 bg-gradient-to-b from-slate-50 to-slate-100',
+            isRTL ? 'border-s border-border/50' : 'border-e border-border/50'
+          )}
         >
           <div className="flex items-center justify-between p-4 border-b border-border/50">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center space-x-3"
+              className={cn(
+                'flex items-center',
+                isRTL ? 'space-x-reverse' : '',
+                'space-x-3'
+              )}
             >
               <div className="relative">
                 <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-green/25">

@@ -33,7 +33,7 @@ const PopoverContext = React.createContext<{
 
 export const Popover: React.FC<PopoverProps> = ({ open, onOpenChange, children }) => {
   return (
-    <PopoverContext.Provider value={{ open, onOpenChange }}>
+    <PopoverContext.Provider value={{ open: open ?? false, onOpenChange: onOpenChange ?? (() => {}) }}>
       <div className="relative">
         {children}
       </div>
@@ -50,10 +50,11 @@ export const PopoverTrigger: React.FC<PopoverTriggerProps> = ({ asChild, childre
 
   if (asChild && React.isValidElement(children)) {
     return React.cloneElement(children, {
+      ...children.props,
       onClick: handleClick,
       'aria-expanded': open,
       'aria-haspopup': 'dialog'
-    });
+    } as any);
   }
 
   return (

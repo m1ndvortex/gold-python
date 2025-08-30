@@ -49,10 +49,11 @@ export const CollapsibleTrigger: React.FC<CollapsibleTriggerProps> = ({ asChild,
 
   if (asChild && React.isValidElement(children)) {
     return React.cloneElement(children, {
+      ...children.props,
       onClick: handleClick,
       'aria-expanded': open,
       'aria-controls': 'collapsible-content'
-    });
+    } as any);
   }
 
   return (

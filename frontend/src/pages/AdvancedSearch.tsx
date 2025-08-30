@@ -277,7 +277,7 @@ export const AdvancedSearchPage: React.FC = () => {
                     <div className="flex justify-end">
                       <Button
                         variant="outline"
-                        onClick={clearHistory}
+                        onClick={() => clearHistory()}
                         disabled={isClearing}
                       >
                         {t('search.clearHistory')}

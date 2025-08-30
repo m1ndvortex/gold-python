@@ -139,7 +139,7 @@ export const BusinessSetupFlow: React.FC<BusinessSetupFlowProps> = ({
   };
 
   const markStepCompleted = (stepId: string) => {
-    setCompletedSteps(prev => new Set([...prev, stepId]));
+    setCompletedSteps(prev => new Set([...Array.from(prev), stepId]));
   };
 
   const canProceedToNext = () => {
@@ -691,7 +691,7 @@ const ReviewAndCompleteStep: React.FC<{
           </div>
           <div>
             <span className="text-sm text-gray-600">Language:</span>
-            <p className="font-medium">{formData.default_language.toUpperCase()}</p>
+            <p className="font-medium">{formData.default_language?.toUpperCase() || 'N/A'}</p>
           </div>
           <div>
             <span className="text-sm text-gray-600">Timezone:</span>

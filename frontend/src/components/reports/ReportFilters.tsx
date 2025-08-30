@@ -102,9 +102,8 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({ filters, onFiltersChange 
             {language === 'fa' ? 'تاریخ شروع' : 'Start Date'}
           </Label>
           <DatePicker
-            id="start_date"
-            value={startDate}
-            onChange={handleStartDateChange}
+            selected={startDate || undefined}
+            onSelect={(date) => handleStartDateChange(date || null)}
             placeholder={language === 'fa' ? 'انتخاب تاریخ شروع' : 'Select start date'}
             className="w-full"
           />
@@ -116,12 +115,10 @@ const ReportFilters: React.FC<ReportFiltersProps> = ({ filters, onFiltersChange 
             {language === 'fa' ? 'تاریخ پایان' : 'End Date'}
           </Label>
           <DatePicker
-            id="end_date"
-            value={endDate}
-            onChange={handleEndDateChange}
+            selected={endDate || undefined}
+            onSelect={(date) => handleEndDateChange(date || null)}
             placeholder={language === 'fa' ? 'انتخاب تاریخ پایان' : 'Select end date'}
             className="w-full"
-            minDate={startDate || undefined}
           />
         </div>
 

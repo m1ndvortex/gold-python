@@ -173,7 +173,7 @@ export const SearchPresets: React.FC<SearchPresetsProps> = ({
                   <Checkbox
                     id="preset-public"
                     checked={isPublic}
-                    onCheckedChange={setIsPublic}
+                    onCheckedChange={(checked) => setIsPublic(checked === true)}
                   />
                   <Label htmlFor="preset-public" className="text-sm">
                     {t('search.presets.makePublic')}
@@ -183,7 +183,7 @@ export const SearchPresets: React.FC<SearchPresetsProps> = ({
                   <Checkbox
                     id="preset-default"
                     checked={isDefault}
-                    onCheckedChange={setIsDefault}
+                    onCheckedChange={(checked) => setIsDefault(checked === true)}
                   />
                   <Label htmlFor="preset-default" className="text-sm">
                     {t('search.presets.makeDefault')}
@@ -372,7 +372,7 @@ export const SearchPresets: React.FC<SearchPresetsProps> = ({
                 <Checkbox
                   id="edit-preset-public"
                   checked={isPublic}
-                  onCheckedChange={setIsPublic}
+                  onCheckedChange={(checked) => setIsPublic(checked === true)}
                 />
                 <Label htmlFor="edit-preset-public" className="text-sm">
                   {t('search.presets.makePublic')}
@@ -382,7 +382,7 @@ export const SearchPresets: React.FC<SearchPresetsProps> = ({
                 <Checkbox
                   id="edit-preset-default"
                   checked={isDefault}
-                  onCheckedChange={setIsDefault}
+                  onCheckedChange={(checked) => setIsDefault(checked === true)}
                 />
                 <Label htmlFor="edit-preset-default" className="text-sm">
                   {t('search.presets.makeDefault')}

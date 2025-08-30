@@ -252,7 +252,7 @@ export const SecurityMonitoring: React.FC = () => {
                   <div className="pt-2 border-t">
                     <span className="text-sm font-medium">{t('security.rateLimit.topBlockedIPs')}</span>
                     <div className="mt-2 space-y-1">
-                      {securityStatus.rateLimiting.topBlockedIPs.slice(0, 3).map((ip, index) => (
+                      {securityStatus.rateLimiting.topBlockedIPs.slice(0, 3).map((ip: string, index: number) => (
                         <div key={index} className="text-xs font-mono bg-muted px-2 py-1 rounded">
                           {ip}
                         </div>
@@ -315,7 +315,7 @@ export const SecurityMonitoring: React.FC = () => {
                     </Badge>
                   </div>
                   <div className="space-y-2">
-                    {securityStatus.vulnerabilities.slice(0, 3).map((vuln, index) => (
+                    {securityStatus.vulnerabilities.slice(0, 3).map((vuln: any, index: number) => (
                       <div key={index} className="p-3 border rounded-lg bg-red-50/50">
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-medium text-sm">{vuln.title}</span>

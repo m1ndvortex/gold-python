@@ -136,7 +136,7 @@ export const CategoryTreeFilter: React.FC<CategoryTreeFilterProps> = ({
     };
 
     const childIds = getAllChildIds(node);
-    const newSelection = [...new Set([...selectedCategories, ...childIds])];
+    const newSelection = Array.from(new Set([...selectedCategories, ...childIds]));
     onCategorySelect(newSelection);
   }, [selectedCategories, onCategorySelect]);
 

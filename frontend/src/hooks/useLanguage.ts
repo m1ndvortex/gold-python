@@ -1,5 +1,26 @@
 import { useState, useEffect, createContext, useContext } from 'react';
-import { Language, Direction, LanguageContextType } from '../types';
+import { Language, Direction } from '../types';
+import { 
+  EnhancedLanguageContextType, 
+  LanguageInfo,
+  TranslationValidationResult,
+  TranslationAuditResult,
+  TranslationRegistry
+} from '../types/translation';
+import { 
+  translationManager, 
+  getLanguageInfo, 
+  getSupportedLanguages, 
+  getDirection, 
+  isRTL, 
+  isLTR 
+} from '../utils/translationManager';
+import { translationAuditor } from '../utils/translationAudit';
+import { 
+  createDirectionAdapter, 
+  DirectionAdapter, 
+  directionUtils 
+} from '../utils/directionAdapter';
 
 // Comprehensive translation object with all missing translations
 export const translations = {
@@ -1149,6 +1170,27 @@ export const translations = {
     // Authentication
     'auth.login': 'ورود',
     'auth.logout': 'خروج',
+    'auth.welcome_message': 'به سیستم مدیریت طلافروشی خود خوش آمدید',
+    'auth.login_title': 'ورود',
+    'auth.username': 'نام کاربری',
+    'auth.password': 'رمز عبور',
+    'auth.remember_me': 'مرا به خاطر بسپار',
+    'auth.forgot_password': 'رمز عبور را فراموش کرده‌اید؟',
+    'auth.login_button': 'ورود',
+    'auth.register': 'ثبت‌نام',
+    'auth.register_title': 'ثبت‌نام',
+    'auth.first_name': 'نام',
+    'auth.last_name': 'نام خانوادگی',
+    'auth.email': 'ایمیل',
+    'auth.confirm_password': 'تأیید رمز عبور',
+    'auth.register_button': 'ثبت‌نام',
+    'auth.already_have_account': 'حساب کاربری دارید؟',
+    'auth.dont_have_account': 'حساب کاربری ندارید؟',
+    'auth.sign_in_here': 'اینجا وارد شوید',
+    'auth.sign_up_here': 'اینجا ثبت‌نام کنید',
+    'auth.logging_in': 'در حال ورود...',
+    'auth.registering': 'در حال ثبت‌نام...',
+    'auth.submitting': 'در حال ارسال...',
 
     // Common terms
     'common.save': 'ذخیره',
@@ -1182,36 +1224,156 @@ export const translations = {
     'common.version': 'نسخه',
     'common.search_placeholder': 'جستجو...',
     'common.no_data': 'اطلاعاتی موجود نیست',
-    'common.view': 'مشاهده',
-    'common.close': 'بستن',
     'common.submit': 'ارسال',
     'common.reset': 'بازنشانی',
+    'common.clear': 'پاک کردن',
     'common.select': 'انتخاب',
+    'common.choose': 'انتخاب کنید',
+    'common.upload': 'آپلود',
+    'common.download': 'دانلود',
+    'common.export': 'خروجی',
+    'common.import': 'وارد کردن',
+    'common.print': 'چاپ',
+    'common.preview': 'پیش‌نمایش',
+    'common.back': 'بازگشت',
+    'common.next': 'بعدی',
+    'common.previous': 'قبلی',
+    'common.first': 'اول',
+    'common.last': 'آخر',
+    'common.page': 'صفحه',
+    'common.of': 'از',
+    'common.showing': 'نمایش',
+    'common.to': 'تا',
+    'common.entries': 'ورودی',
+    'common.no_results': 'نتیجه‌ای یافت نشد',
+    'common.empty': 'خالی',
     'common.all': 'همه',
-    'common.none': 'هیچکدام',
+    'common.none': 'هیچ‌کدام',
     'common.yes': 'بله',
     'common.no': 'خیر',
+    'common.ok': 'تأیید',
     'common.confirm': 'تأیید',
-    'common.warning': 'هشدار',
-    'common.error': 'خطا',
+    'common.close': 'بستن',
+    'common.open': 'باز کردن',
+    'common.show': 'نمایش',
+    'common.hide': 'مخفی کردن',
+    'common.expand': 'گسترش',
+    'common.collapse': 'جمع کردن',
+    'common.more': 'بیشتر',
+    'common.less': 'کمتر',
+    'common.details': 'جزئیات',
+    'common.summary': 'خلاصه',
+    'common.description': 'توضیحات',
+    'common.name': 'نام',
+    'common.title': 'عنوان',
+    'common.type': 'نوع',
+    'common.category': 'دسته‌بندی',
+    'common.date': 'تاریخ',
+    'common.time': 'زمان',
+    'common.datetime': 'تاریخ و زمان',
+    'common.created': 'ایجاد شده',
+    'common.updated': 'به‌روزرسانی شده',
+    'common.modified': 'تغییر یافته',
+    'common.deleted': 'حذف شده',
+    'common.available': 'موجود',
+    'common.unavailable': 'غیرموجود',
+    'common.connected': 'متصل',
+    'common.disconnected': 'قطع شده',
     'common.success': 'موفقیت',
+    'common.error': 'خطا',
+    'common.warning': 'هشدار',
     'common.info': 'اطلاعات',
-    'common.dismiss': 'رد کردن',
-    'common.just_now': 'همین الان',
-    'common.minutes_ago': '{count} دقیقه پیش',
-    'common.hours_ago': '{count} ساعت پیش',
-    'common.days_ago': '{count} روز پیش',
+    'common.processing': 'در حال پردازش',
+    'common.completed': 'تکمیل شده',
+    'common.failed': 'ناموفق',
+    'common.cancelled': 'لغو شده',
+    'common.draft': 'پیش‌نویس',
+    'common.published': 'منتشر شده',
+    'common.archived': 'بایگانی شده',
 
-    // Dashboard
+    // Form Validation Messages
+    'validation.required': 'این فیلد الزامی است',
+    'validation.email': 'آدرس ایمیل نامعتبر است',
+    'validation.min_length': 'حداقل {min} کاراکتر وارد کنید',
+    'validation.max_length': 'حداکثر {max} کاراکتر مجاز است',
+    'validation.password_min': 'رمز عبور باید حداقل {min} کاراکتر باشد',
+    'validation.password_complexity': 'رمز عبور باید شامل حروف بزرگ، کوچک و عدد باشد',
+    'validation.passwords_match': 'رمزهای عبور مطابقت ندارند',
+    'validation.username_min': 'نام کاربری باید حداقل {min} کاراکتر باشد',
+    'validation.username_format': 'نام کاربری فقط می‌تواند شامل حروف، اعداد و زیرخط باشد',
+    'validation.name_min': 'نام باید حداقل {min} کاراکتر باشد',
+    'validation.positive_number': 'عدد باید مثبت باشد',
+    'validation.invalid_format': 'فرمت نامعتبر',
+    'validation.select_option': 'لطفاً یک گزینه انتخاب کنید',
+    'validation.file_size': 'حجم فایل نباید بیشتر از {size} باشد',
+    'validation.file_type': 'نوع فایل مجاز نیست',
+
+    // Form Labels and Placeholders
+    'forms.enter_name': 'نام خود را وارد کنید',
+    'forms.enter_email': 'ایمیل خود را وارد کنید',
+    'forms.enter_description': 'توضیحات را وارد کنید',
+    'forms.enter_title': 'عنوان را وارد کنید',
+    'forms.select_type': 'نوع را انتخاب کنید',
+    'forms.select_category': 'دسته‌بندی را انتخاب کنید',
+    'forms.select_option': 'گزینه را انتخاب کنید',
+    'forms.search_placeholder': 'جستجو...',
+    'forms.required_field': 'این فیلد الزامی است',
+    'forms.optional_field': 'اختیاری',
+
+    // Error Messages
+    'error.generic': 'خطایی رخ داده است',
+    'error.network': 'خطا در اتصال به شبکه',
+    'error.server': 'خطای سرور',
+    'error.unauthorized': 'دسترسی غیرمجاز',
+    'error.forbidden': 'دسترسی ممنوع',
+    'error.not_found': 'یافت نشد',
+    'error.timeout': 'زمان انتظار تمام شد',
+    'error.invalid_credentials': 'نام کاربری یا رمز عبور اشتباه است',
+    'error.session_expired': 'جلسه کاری منقضی شده است',
+    'error.permission_denied': 'عدم دسترسی',
+    'error.validation_failed': 'اعتبارسنجی ناموفق',
+    'error.save_failed': 'ذخیره ناموفق بود',
+    'error.delete_failed': 'حذف ناموفق بود',
+    'error.load_failed': 'بارگیری ناموفق بود',
+    'error.upload_failed': 'آپلود ناموفق بود',
+    'error.connection_lost': 'اتصال قطع شد',
+    'error.try_again': 'لطفاً دوباره تلاش کنید',
+
+    // Success Messages
+    'success.saved': 'با موفقیت ذخیره شد',
+    'success.deleted': 'با موفقیت حذف شد',
+    'success.updated': 'با موفقیت به‌روزرسانی شد',
+    'success.created': 'با موفقیت ایجاد شد',
+    'success.uploaded': 'با موفقیت آپلود شد',
+    'success.sent': 'با موفقیت ارسال شد',
+    'success.login': 'با موفقیت وارد شدید',
+    'success.logout': 'با موفقیت خارج شدید',
+    'success.registered': 'ثبت‌نام با موفقیت انجام شد',
+    'success.password_changed': 'رمز عبور با موفقیت تغییر کرد',
+
+    // System Messages
+    'system.loading': 'در حال بارگیری...',
+    'system.saving': 'در حال ذخیره...',
+    'system.deleting': 'در حال حذف...',
+    'system.updating': 'در حال به‌روزرسانی...',
+    'system.uploading': 'در حال آپلود...',
+    'system.processing': 'در حال پردازش...',
+    'system.connecting': 'در حال اتصال...',
+    'system.please_wait': 'لطفاً صبر کنید...',
+    'system.operation_completed': 'عملیات تکمیل شد',
+    'system.operation_failed': 'عملیات ناموفق بود',
+
+    // Dashboard - Core Application
     'dashboard.title': 'داشبورد',
+    'dashboard.welcome_message': 'به سیستم مدیریت طلافروشی خود خوش آمدید',
     'dashboard.total_sales_today': 'کل فروش امروز',
     'dashboard.week': 'هفته',
     'dashboard.month': 'ماه',
     'dashboard.vs_last_week': 'نسبت به هفته گذشته',
     'dashboard.inventory_value': 'ارزش موجودی',
-    'dashboard.stock_levels_healthy': 'سطح موجودی سالم',
+    'dashboard.stock_levels_healthy': 'سطح موجودی سالم است',
     'dashboard.customer_debt': 'بدهی مشتریان',
-    'dashboard.all_invoices_current': 'همه فاکتورها جاری',
+    'dashboard.all_invoices_current': 'همه فاکتورها جاری هستند',
     'dashboard.gold_price_per_gram': 'قیمت طلا (هر گرم)',
     'dashboard.market_rate': 'نرخ بازار',
     'dashboard.from_last_week': 'از هفته گذشته',
@@ -1224,29 +1386,31 @@ export const translations = {
     'dashboard.alerts_notifications': 'هشدارها و اعلان‌ها',
     'dashboard.alerts_count': '{count} هشدار • {unread} خوانده نشده',
     'dashboard.show_dismissed': 'نمایش رد شده‌ها',
-    'dashboard.all_clear': 'همه چیز روبراه!',
-    'dashboard.no_alerts': 'هیچ هشداری برای نمایش وجود ندارد.',
+    'dashboard.hide_dismissed': 'مخفی کردن رد شده‌ها',
+    'dashboard.all_clear': 'همه چیز روبراه است!',
+    'dashboard.no_alerts': 'هشداری برای نمایش وجود ندارد.',
     'dashboard.tab_all': 'همه ({count})',
     'dashboard.tab_critical': 'حیاتی ({count})',
     'dashboard.tab_unread': 'خوانده نشده ({count})',
-    'dashboard.refresh_chart': 'تازه‌سازی نمودار',
-    'dashboard.export_chart': 'خروجی نمودار به تصویر',
-    'dashboard.fullscreen': 'نمایش تمام‌صفحه',
-    'dashboard.exit_fullscreen': 'خروج از حالت تمام‌صفحه',
-    'dashboard.error_loading': 'بارگیری اطلاعات داشبورد ناموفق بود',
-    'dashboard.no_data_available': 'هیچ اطلاعاتی برای داشبورد در دسترس نیست',
-    'dashboard.items_low_stock': 'کالا موجودی کم',
+    'dashboard.refresh_chart': 'تازه‌سازی داده‌های نمودار',
+    'dashboard.export_chart': 'خروجی نمودار به عنوان تصویر',
+    'dashboard.fullscreen': 'تمام صفحه',
+    'dashboard.exit_fullscreen': 'خروج از تمام صفحه',
+    'dashboard.error_loading': 'بارگیری داده‌های داشبورد ناموفق بود',
+    'dashboard.no_data_available': 'داده‌ای برای داشبورد موجود نیست',
+    'dashboard.items_low_stock': 'کالاهای کم موجودی',
     'dashboard.low_stock': 'موجودی کم',
-    'dashboard.unpaid_invoices': 'فاکتور پرداخت نشده',
+    'dashboard.unpaid_invoices': 'فاکتورهای پرداخت نشده',
     'dashboard.overdue': 'سررسید گذشته',
-    'dashboard.critical': 'حیاتی',
-    'dashboard.hide_dismissed': 'مخفی کردن رد شده‌ها',
-    'dashboard.alerts': 'هشدار',
+    'dashboard.alerts': 'هشدارها',
     'dashboard.unread': 'خوانده نشده',
     'dashboard.low_stock_alert': 'موجودی کم: {product}',
     'dashboard.current_stock': 'موجودی فعلی: {current}، حداقل: {min}',
     'dashboard.overdue_payment': 'پرداخت سررسید گذشته: {invoice}',
     'dashboard.days_overdue': 'روز سررسید گذشته',
+
+
+
 
     // Customers
     'customers.title': 'مدیریت مشتریان',
@@ -1351,94 +1515,9 @@ export const translations = {
     'settings.roles': 'نقش‌ها و مجوزها',
     'settings.users': 'مدیریت کاربران',
 
-    // Critical Page Content
-    'dashboard.welcome_message': 'خوش آمدید! در اینجا نمای کلی کسب و کار شما است',
-    'sms.title': 'مدیریت پیامک',
-    'sms.description': 'ارسال پیام‌های تبلیغاتی و یادآوری بدهی به مشتریان با سهولت',
-    'settings.title': 'تنظیمات سیستم',
-    'settings.description': 'پیکربندی تنظیمات و ترجیحات سیستم مدیریت طلافروشی شما',
-    'settings.access_denied': 'دسترسی مجاز نیست',
-    'settings.access_denied_message': 'شما مجوز مشاهده تنظیمات سیستم را ندارید.',
-    'reports.stock_optimization': 'بهینه‌سازی موجودی',
-    'reports.stock_optimization_description': 'بهینه‌سازی موجودی با هوش مصنوعی و توصیه‌های سفارش مجدد',
-    'reports.forecasting_analytics': 'تحلیل پیش‌بینی',
-    'reports.forecasting_analytics_description': 'پیش‌بینی پیشرفته تقاضا و تحلیل پیش‌بینانه',
-    'reports.cache_management': 'مدیریت کش',
-    'reports.cache_management_description': 'نظارت و بهینه‌سازی عملکرد کش Redis',
 
-    // SMS Module
-    'sms.total_campaigns': 'کل کمپین‌ها',
-    'sms.messages_sent': 'پیام‌های ارسالی',
-    'sms.success_rate': 'نرخ موفقیت',
-    'sms.delivery_rate': 'نرخ تحویل',
-    'sms.tab_overview': 'نمای کلی',
-    'sms.tab_overview_desc': 'تحلیل و آمار',
-    'sms.tab_templates': 'قالب‌ها',
-    'sms.tab_templates_desc': 'کتابخانه پیام',
-    'sms.tab_campaigns': 'کمپین‌ها',
-    'sms.tab_campaigns_desc': 'پیام‌رسانی گروهی',
-    'sms.tab_history': 'تاریخچه',
-    'sms.tab_history_desc': 'گزارش پیام‌ها',
-    'sms.status_ready': 'پیامک آماده',
-    'sms.quick_send': 'ارسال سریع',
-    'sms.analytics_title': 'تحلیل پیامک',
-    'sms.analytics_description': 'نظارت بر عملکرد کمپین پیامک و معیارهای تحویل',
-    'sms.recent_campaigns': 'کمپین‌های اخیر',
-    'sms.recent_campaigns_desc': 'آخرین کمپین‌های پیامک و وضعیت آن‌ها',
-    'sms.message_history': 'تاریخچه پیام',
-    'sms.message_history_desc': 'مشاهده پیام‌های ارسالی و وضعیت تحویل',
-    'sms.recipients': 'گیرنده',
-    'sms.pending': 'در انتظار',
-    'sms.completed': 'تکمیل شده',
-    'sms.failed': 'ناموفق',
-    'sms.sending': 'در حال ارسال',
-    'sms.sent': 'ارسال شده',
-    'sms.delivered': 'تحویل داده شده',
-    'sms.no_recent_campaigns': 'کمپین اخیری وجود ندارد',
-    'sms.no_recent_messages': 'پیام اخیری وجود ندارد',
-    'sms.templates_title': 'قالب‌های پیام',
-    'sms.templates_description': 'ایجاد و مدیریت قالب‌های قابل استفاده مجدد پیامک',
-    'sms.campaigns_title': 'کمپین‌های پیامک',
-    'sms.campaigns_description': 'راه‌اندازی و مدیریت کمپین‌های بازاریابی پیامکی',
 
-    // Settings Module
-    'settings.all_systems_online': 'همه سیستم‌ها آنلاین',
-    'settings.refresh_status': 'تازه‌سازی وضعیت',
-    'settings.save_all_changes': 'ذخیره همه تغییرات',
-    'settings.tab_company': 'شرکت',
-    'settings.tab_gold_price': 'قیمت طلا',
-    'settings.tab_templates': 'قالب‌ها',
-    'settings.tab_roles': 'نقش‌ها',
-    'settings.tab_users': 'کاربران',
-    'settings.tab_disaster_recovery': 'بازیابی فاجعه',
-    'settings.company_title': 'تنظیمات شرکت',
-    'settings.company_description': 'پیکربندی اطلاعات کسب و کار و ترجیحات شما',
-    'settings.gold_price_title': 'پیکربندی قیمت طلا',
-    'settings.gold_price_description': 'مدیریت قیمت‌گذاری طلا و به‌روزرسانی خودکار',
-    'settings.invoice_template_title': 'طراح قالب فاکتور',
-    'settings.invoice_template_description': 'سفارشی‌سازی طرح‌بندی فاکتور و برندسازی',
-    'settings.roles_title': 'مدیریت نقش و مجوز',
-    'settings.roles_description': 'پیکربندی نقش‌های کاربری و مجوزهای دسترسی',
-    'settings.users_title': 'مدیریت کاربران',
-    'settings.users_description': 'مدیریت کاربران سیستم و سطوح دسترسی آن‌ها',
-    'settings.disaster_recovery_title': 'بازیابی فاجعه',
-    'settings.disaster_recovery_description': 'پیکربندی پشتیبان‌گیری و بازیابی',
-    'settings.check_status': 'بررسی وضعیت',
-    'settings.system_information': 'اطلاعات سیستم',
-    'settings.system_information_desc': 'جزئیات پیکربندی و وضعیت فعلی سیستم',
-    'settings.environment': 'محیط',
-    'settings.production': 'تولید',
 
-    // Settings System Overview
-    'settings.system_overview': 'نمای کلی سیستم',
-    'settings.database': 'پایگاه داده',
-    'settings.api_services': 'سرویس‌های API',
-    'settings.security': 'امنیت',
-    'settings.backup': 'پشتیبان‌گیری',
-    'settings.online': 'آنلاین',
-    'settings.connection_stable': 'اتصال: پایدار',
-    'settings.all_services': 'همه سرویس‌ها',
-    'settings.response_time': 'پاسخ: ۴۵ میلی‌ثانیه',
     'settings.protected': 'محافظت شده',
     'settings.ssl_enabled': 'SSL: فعال',
     'settings.current': 'فعلی',
@@ -1597,26 +1676,6 @@ export const translations = {
     'common.online': 'آنلاین',
     'common.offline': 'آفلاین',
     'common.pending': 'در انتظار',
-    'common.completed': 'تکمیل شده',
-    'common.failed': 'ناموفق',
-    'common.sending': 'در حال ارسال',
-    'common.sent': 'ارسال شده',
-
-    // Form Elements
-    'forms.enter_name': 'نام خود را وارد کنید',
-    'forms.enter_email': 'ایمیل خود را وارد کنید',
-    'forms.enter_description': 'توضیحات را وارد کنید',
-    'forms.enter_title': 'عنوان را وارد کنید',
-    'forms.select_type': 'نوع را انتخاب کنید',
-    'forms.select_entity': 'موجودیت را انتخاب کنید',
-    'forms.select_category': 'دسته‌بندی را انتخاب کنید',
-    'forms.select_option': 'گزینه را انتخاب کنید',
-    'forms.search_placeholder': 'جستجو...',
-    'inventory.search_placeholder': 'جستجوی اقلام موجودی...',
-    'inventory.search_products': 'جستجوی محصولات...',
-    'forms.required_field': 'این فیلد الزامی است',
-    'forms.invalid_email': 'آدرس ایمیل نامعتبر',
-    'forms.password_required': 'رمز عبور الزامی است',
 
     // Chart Labels
     'charts.sales_trends': 'روند فروش',
@@ -1660,35 +1719,6 @@ export const translations = {
     'nav.roles': 'نقش‌ها',
     'nav.gold_price': 'قیمت طلا',
     'nav.disaster_recovery': 'بازیابی فاجعه',
-
-    // System Messages
-    'system.loading': 'در حال بارگیری...',
-    'system.error': 'خطا',
-    'system.success': 'موفقیت',
-    'system.warning': 'هشدار',
-    'system.info': 'اطلاعات',
-    'system.no_data': 'داده‌ای در دسترس نیست',
-    'system.empty_state': 'موردی یافت نشد',
-    'system.try_again': 'تلاش مجدد',
-    'system.refresh': 'تازه‌سازی',
-    'system.save': 'ذخیره',
-    'system.cancel': 'لغو',
-    'system.delete': 'حذف',
-    'system.edit': 'ویرایش',
-    'system.add': 'افزودن',
-    'system.create': 'ایجاد',
-    'system.update': 'به‌روزرسانی',
-    'system.confirm': 'تأیید',
-    'system.close': 'بستن',
-
-    // Authentication
-    'auth.welcome_message': 'به سیستم مدیریت طلافروشی خود خوش آمدید',
-    'auth.login_title': 'ورود',
-    'auth.username': 'نام کاربری',
-    'auth.password': 'رمز عبور',
-    'auth.remember_me': 'مرا به خاطر بسپار',
-    'auth.forgot_password': 'رمز عبور را فراموش کرده‌اید؟',
-    'auth.login_button': 'ورود',
 
     // Reports Module
     'reports.title': 'گزارشات و تحلیل‌ها',
@@ -2240,6 +2270,48 @@ export const translations = {
     'common.enabled': 'فعال',
     'common.disabled': 'غیرفعال',
     'common.days': 'روز',
+
+    // Additional Core Application Translations
+    // Invoice Management
+    'invoices.title': 'مدیریت فاکتور',
+    'invoices.description': 'ایجاد و مدیریت فاکتورهای فروش',
+    'invoices.create_invoice': 'ایجاد فاکتور',
+    'invoices.invoice_number': 'شماره فاکتور',
+    'invoices.customer': 'مشتری',
+    'invoices.date': 'تاریخ',
+    'invoices.due_date': 'تاریخ سررسید',
+    'invoices.total_amount': 'مبلغ کل',
+    'invoices.paid_amount': 'مبلغ پرداخت شده',
+    'invoices.remaining_amount': 'مبلغ باقیمانده',
+    'invoices.status': 'وضعیت',
+    'invoices.paid': 'پرداخت شده',
+    'invoices.unpaid': 'پرداخت نشده',
+    'invoices.partial': 'پرداخت جزئی',
+    'invoices.overdue': 'سررسید گذشته',
+    'invoices.draft': 'پیش‌نویس',
+    'invoices.cancelled': 'لغو شده',
+    'invoices.items': 'اقلام',
+    'invoices.add_item': 'افزودن قلم',
+    'invoices.product': 'محصول',
+    'invoices.quantity': 'تعداد',
+    'invoices.unit_price': 'قیمت واحد',
+    'invoices.total_price': 'قیمت کل',
+    'invoices.subtotal': 'جمع جزء',
+    'invoices.tax': 'مالیات',
+    'invoices.discount': 'تخفیف',
+    'invoices.total': 'مجموع',
+    'invoices.payment_method': 'روش پرداخت',
+    'invoices.cash': 'نقد',
+    'invoices.card': 'کارت',
+    'invoices.bank_transfer': 'انتقال بانکی',
+    'invoices.installment': 'قسطی',
+    'invoices.notes': 'یادداشت‌ها',
+    'invoices.print': 'چاپ',
+    'invoices.email': 'ایمیل',
+    'invoices.duplicate': 'کپی',
+    'invoices.void': 'ابطال',
+    'invoices.save_draft': 'ذخیره پیش‌نویس',
+    'invoices.finalize': 'نهایی کردن',
   },
   ar: {
     // App and Navigation
@@ -2751,9 +2823,9 @@ export const translations = {
   },
 };
 
-export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+export const LanguageContext = createContext<EnhancedLanguageContextType | undefined>(undefined);
 
-export const useLanguage = (): LanguageContextType => {
+export const useLanguage = (): EnhancedLanguageContextType => {
   const context = useContext(LanguageContext);
   if (!context) {
     throw new Error('useLanguage must be used within a LanguageProvider');
@@ -2764,24 +2836,34 @@ export const useLanguage = (): LanguageContextType => {
 export const useLanguageProvider = () => {
   const [language, setLanguageState] = useState<Language>('fa'); // Default to Persian
   const [direction, setDirection] = useState<Direction>('rtl');
+  const [directionAdapter, setDirectionAdapter] = useState<DirectionAdapter>(
+    createDirectionAdapter('fa', 'rtl')
+  );
 
   useEffect(() => {
     // Load language from localStorage or browser preference
     const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage && ['en', 'fa', 'ar'].includes(savedLanguage)) {
+      const newDirection = directionUtils.getDirection(savedLanguage);
       setLanguageState(savedLanguage);
-      setDirection(savedLanguage === 'fa' || savedLanguage === 'ar' ? 'rtl' : 'ltr');
+      setDirection(newDirection);
+      setDirectionAdapter(createDirectionAdapter(savedLanguage, newDirection));
+      
+      // Apply document direction
+      directionUtils.applyDocumentDirection(savedLanguage);
     }
   }, []);
 
-  const setLanguage = (lang: Language) => {
+  const setLanguage = async (lang: Language) => {
+    const newDirection = directionUtils.getDirection(lang);
+    
     setLanguageState(lang);
-    setDirection(lang === 'fa' || lang === 'ar' ? 'rtl' : 'ltr');
+    setDirection(newDirection);
+    setDirectionAdapter(createDirectionAdapter(lang, newDirection));
     localStorage.setItem('language', lang);
 
-    // Update document direction
-    document.documentElement.dir = lang === 'fa' || lang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = lang;
+    // Apply document direction with utility
+    directionUtils.applyDocumentDirection(lang);
   };
 
   const t = (key: string, params?: Record<string, string | number>): string => {
@@ -2908,22 +2990,197 @@ export const useLanguageProvider = () => {
     }
   };
 
+  // Enhanced translation functions using translation manager
+  const tSafe = (key: string, fallback: string, params?: Record<string, any>): string => {
+    return translationManager.translateSafe(translations[language], key, fallback, params);
+  };
+
+  const hasTranslation = (translationKey: string): boolean => {
+    return translationManager.hasTranslation(translations[language], translationKey);
+  };
+
+  const getTranslationWithFallback = (key: string, fallbackLanguage: Language = 'en'): string => {
+    return translationManager.translateWithFallback(translations, key, language, fallbackLanguage);
+  };
+
+  // Enhanced formatting functions
+  const formatNumberEnhanced = (num: number): string => {
+    return translationManager.formatNumber(num, language);
+  };
+
+  const formatCurrencyEnhanced = (amount: number, currency?: string): string => {
+    return translationManager.formatCurrency(amount, language, currency);
+  };
+
+  const formatDateEnhanced = (date: Date, format?: string): string => {
+    return translationManager.formatDate(date, language, format);
+  };
+
+  const formatTime = (date: Date): string => {
+    return translationManager.formatTime(date, language);
+  };
+
+  const formatDateTime = (date: Date): string => {
+    const dateStr = translationManager.formatDate(date, language);
+    const timeStr = translationManager.formatTime(date, language);
+    return `${dateStr} ${timeStr}`;
+  };
+
+  const getCalendarType = (): 'gregorian' | 'jalali' => {
+    return language === 'fa' ? 'jalali' : 'gregorian';
+  };
+
+  // Enhanced layout functions
+  const getLayoutClassesEnhanced = (): string => {
+    return translationManager.getLayoutClasses(language);
+  };
+
+  const getTextAlignClassEnhanced = (align: 'start' | 'end' | 'center' = 'start'): string => {
+    return translationManager.getTextAlignClass(language, align);
+  };
+
+  const getFlexDirectionClassEnhanced = (flexDirection: 'row' | 'column' = 'row'): string => {
+    return translationManager.getFlexDirectionClass(language, flexDirection);
+  };
+
+  const getMarginClassEnhanced = (margin: string): string => {
+    return translationManager.getMarginClass(language, margin);
+  };
+
+  const getPaddingClassEnhanced = (padding: string): string => {
+    return translationManager.getPaddingClass(language, padding);
+  };
+
+  const getBorderClassEnhanced = (border: string): string => {
+    return translationManager.getBorderClass(language, border);
+  };
+
+  const getFloatClass = (float: 'start' | 'end'): string => {
+    return translationManager.getFloatClass(language, float);
+  };
+
+  // API translation support
+  const translateApiResponse = (response: any): any => {
+    return translationManager.translateApiResponse(response, language);
+  };
+
+  const getApiLanguageHeaders = (): Record<string, string> => {
+    return translationManager.getApiLanguageHeaders(language);
+  };
+
+  // Translation management functions
+  const validateTranslations = async (): Promise<TranslationValidationResult> => {
+    return translationManager.validateTranslations();
+  };
+
+  const auditTranslations = async (): Promise<TranslationAuditResult> => {
+    return translationManager.auditTranslations();
+  };
+
+  const exportTranslations = async (exportLanguage: Language): Promise<string> => {
+    return translationManager.exportTranslations(exportLanguage);
+  };
+
+  const importTranslations = async (importLanguage: Language, data: string): Promise<boolean> => {
+    return translationManager.importTranslations(importLanguage, data);
+  };
+
+  const getTranslationRegistry = (): TranslationRegistry => {
+    return translationManager.getTranslationRegistry();
+  };
+
+  const updateTranslationRegistry = (updates: Partial<TranslationRegistry>): void => {
+    translationManager.updateTranslationRegistry(updates);
+  };
+
+  const getMissingTranslations = (): string[] => {
+    return translationManager.getMissingTranslations();
+  };
+
+  const reportMissingTranslation = (key: string): void => {
+    translationManager.reportMissingTranslation(key);
+  };
+
+  const clearMissingTranslations = (): void => {
+    translationManager.clearMissingTranslations();
+  };
+
+  const getSupportedLanguagesEnhanced = (): Language[] => {
+    return getSupportedLanguages();
+  };
+
+  const getLanguageInfoEnhanced = (lang: Language): LanguageInfo => {
+    return getLanguageInfo(lang);
+  };
+
   return {
+    // Current language state
     language,
     direction,
-    setLanguage,
-    t,
-    // New additions for complete language separation
     isRTL,
     isLTR,
-    getLayoutClasses,
-    getTextAlignClass,
-    getFlexDirectionClass,
-    getMarginClass,
-    getPaddingClass,
-    getBorderClass,
-    formatNumber,
-    formatDate,
-    formatCurrency,
+    
+    // Translation functions
+    t,
+    tSafe,
+    hasTranslation,
+    getTranslationWithFallback,
+    
+    // Language management
+    setLanguage,
+    getSupportedLanguages: getSupportedLanguagesEnhanced,
+    getLanguageInfo: getLanguageInfoEnhanced,
+    
+    // Formatting functions
+    formatNumber: formatNumberEnhanced,
+    formatCurrency: formatCurrencyEnhanced,
+    formatDate: formatDateEnhanced,
+    formatTime,
+    formatDateTime,
+    getCalendarType,
+    
+    // Layout and styling helpers (legacy)
+    getLayoutClasses: getLayoutClassesEnhanced,
+    getTextAlignClass: getTextAlignClassEnhanced,
+    getFlexDirectionClass: getFlexDirectionClassEnhanced,
+    getMarginClass: getMarginClassEnhanced,
+    getPaddingClass: getPaddingClassEnhanced,
+    getBorderClass: getBorderClassEnhanced,
+    getFloatClass,
+    
+    // Enhanced direction adapter methods
+    directionAdapter,
+    getLayoutClassesEnhanced: (baseClasses: string) => directionAdapter.getLayoutClasses(baseClasses),
+    getFlexDirectionEnhanced: (flexDirection: 'row' | 'column') => directionAdapter.getFlexDirection(flexDirection),
+    getTextAlignEnhanced: (align: 'left' | 'right' | 'center') => directionAdapter.getTextAlign(align),
+    getMarginPaddingEnhanced: (property: string, value: string) => directionAdapter.getMarginPadding(property, value),
+    adaptChartConfig: (config: any) => directionAdapter.adaptChartConfig(config),
+    getDirectionalClasses: (componentType: string) => directionAdapter.getDirectionalClasses(componentType),
+    getIconClasses: (iconPosition?: 'start' | 'end') => directionAdapter.getIconClasses(iconPosition),
+    
+    // Direction utilities
+    getDirectionClass: () => directionUtils.getDirectionClass(language),
+    getDocumentDirection: () => directionUtils.getDocumentDirection(language),
+    getTextAlignment: () => directionUtils.getTextAlignment(language),
+    applyDocumentDirection: () => directionUtils.applyDocumentDirection(language),
+    
+    // API translation support
+    translateApiResponse,
+    getApiLanguageHeaders,
+    
+    // Translation management (development/admin features)
+    validateTranslations,
+    auditTranslations,
+    exportTranslations,
+    importTranslations,
+    
+    // Translation registry access
+    getTranslationRegistry,
+    updateTranslationRegistry,
+    
+    // Missing translation tracking
+    getMissingTranslations,
+    reportMissingTranslation,
+    clearMissingTranslations,
   };
 };

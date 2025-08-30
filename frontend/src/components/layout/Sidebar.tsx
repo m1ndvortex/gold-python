@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useAuth } from '../../hooks/useAuth';
+import { useDirectionAdapter } from '../../utils/directionAdapter';
 import { Button } from '../ui/button';
 import {
   LayoutDashboard,
@@ -286,10 +287,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggle,
   className,
 }) => {
-  const { t, direction } = useLanguage();
+  const { t, direction, language } = useLanguage();
   const { hasPermission, hasAnyRole } = useAuth();
   const location = useLocation();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const directionAdapter = useDirectionAdapter(language, direction);
 
   const isRTL = direction === 'rtl';
 
@@ -356,9 +358,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       variants={sidebarVariants}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       className={cn(
-        'flex flex-col bg-gradient-to-b from-slate-50 to-slate-100 border-r border-border/50 backdrop-blur-sm',
+        'flex flex-col bg-gradient-to-b from-slate-50 to-slate-100 backdrop-blur-sm',
         'shadow-xl shadow-primary/10',
-        isRTL && 'border-r-0 border-l',
+        // RTL-aware border positioning
+        isRTL ? 'border-s border-border/50' : 'border-e border-border/50',
+        // RTL-aware positioning
+        isRTL ? 'sidebar-rtl' : 'sidebar-ltr',
+        directionAdapter.getDirectionalClasses('sidebar'),
         className
       )}
     >
@@ -374,7 +380,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.2 }}
-              className="flex items-center space-x-3 rtl:space-x-reverse"
+              className={cn(
+                'flex items-center',
+                isRTL ? 'space-x-reverse' : '',
+                'space-x-3'
+              )}
             >
               <div className="relative">
                 <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-green/25">
@@ -442,7 +452,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         'focus:outline-none focus:ring-2 focus:ring-green/20 focus:ring-offset-2',
                         'group relative overflow-hidden',
                         isActive && 'bg-gradient-to-r from-green-100 to-teal-50 text-green-700 shadow-md border border-green/30 border-r-0',
-                        'justify-start space-x-3 rtl:space-x-reverse'
+                        directionAdapter.getLayoutClasses('justify-start space-x-3')
                       )}
                       title={isCollapsed ? t(item.key) : undefined}
                     >
@@ -450,7 +460,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       {isActive && (
                         <motion.div
                           layoutId="activeIndicator"
-                          className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-green-500 to-teal-600 rounded-r-full"
+                          className={cn(
+                            'absolute top-0 bottom-0 w-1 bg-gradient-to-b from-green-500 to-teal-600',
+                            isRTL ? 'end-0 rounded-s-full' : 'start-0 rounded-e-full'
+                          )}
                           transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                         />
                       )}
@@ -501,7 +514,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       'focus:outline-none focus:ring-2 focus:ring-green/20 focus:ring-offset-2',
                       'group relative overflow-hidden',
                       isActive && 'bg-gradient-to-r from-green-100 to-teal-50 text-green-700 shadow-md border border-green/30',
-                      isCollapsed ? 'justify-center' : 'justify-start space-x-3 rtl:space-x-reverse'
+                      isCollapsed ? 'justify-center' : directionAdapter.getLayoutClasses('justify-start space-x-3')
                     )}
                     title={isCollapsed ? t(item.key) : undefined}
                   >
@@ -509,7 +522,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     {isActive && (
                       <motion.div
                         layoutId="activeIndicator"
-                        className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-green-500 to-teal-600 rounded-r-full"
+                        className={cn(
+                          'absolute top-0 bottom-0 w-1 bg-gradient-to-b from-green-500 to-teal-600',
+                          isRTL ? 'end-0 rounded-s-full' : 'start-0 rounded-e-full'
+                        )}
                         transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                       />
                     )}
@@ -549,7 +565,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     animate="visible"
                     exit="hidden"
                     transition={{ duration: 0.2 }}
-                    className="ml-4 mt-1 space-y-1 border-l border-green/20 pl-4"
+                    className={cn(
+                      'mt-1 space-y-1',
+                      isRTL ? 'me-4 border-e border-green/20 pe-4' : 'ms-4 border-s border-green/20 ps-4'
+                    )}
                   >
                     {item.children?.filter(child => {
                       if (child.permission && !hasPermission(child.permission)) return false;
@@ -567,7 +586,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             'flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
                             'hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 hover:text-green-600',
                             'focus:outline-none focus:ring-2 focus:ring-green/20 focus:ring-offset-2',
-                            'space-x-3 rtl:space-x-reverse relative',
+                            directionAdapter.getLayoutClasses('space-x-3 relative'),
                             isChildActive && 'bg-gradient-to-r from-green-100 to-teal-50 text-green-700 font-semibold shadow-sm'
                           )}
                         >

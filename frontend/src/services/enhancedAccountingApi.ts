@@ -156,7 +156,7 @@ export const enhancedAccountingApi = {
     if (asOfDate) params.append('as_of_date', asOfDate);
     
     const response = await api.get(`/accounting/account-balance/${accountId}?${params.toString()}`);
-    return response.data;
+    return response.data as { debit_balance: number; credit_balance: number; net_balance: number };
   },
 
   // Check Management System (مدیریت چک‌ها)

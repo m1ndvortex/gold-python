@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTL Framework Test</title>
+    <style>
+        /* Import the RTL framework styles */
+        @import './styles/rtl-framework.css';
+        
+        /* Basic styling for demo */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        
+        .demo-card {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .demo-button {
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 4px;
+        }
+        
+        .demo-input {
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 4px;
+            width: 200px;
+        }
+        
+        .demo-flex {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .demo-box {
+            width: 40px;
+            height: 40px;
+            background: #10b981;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-card">
+        <h1>RTL Framework Test</h1>
+        <button class="demo-button" onclick="toggleDirection()">Toggle RTL/LTR</button>
+        <p>Current Direction: <span id="direction-indicator">LTR</span></p>
+    </div>
+
+    <!-- Text Alignment Demo -->
+    <div class="demo-card">
+        <h2>Text Alignment</h2>
+        <p class="text-start">This text uses text-start class</p>
+        <p class="text-end">This text uses text-end class</p>
+        <p style="text-align: var(--text-align-start);">This text uses CSS custom property --text-align-start</p>
+        <p style="text-align: var(--text-align-end);">This text uses CSS custom property --text-align-end</p>
+    </div>
+
+    <!-- Spacing Demo -->
+    <div class="demo-card">
+        <h2>Directional Spacing</h2>
+        <div class="ms-4 ps-6" style="background: #e5e7eb; padding: 10px; margin: 10px 0;">
+            Using ms-4 (margin-inline-start) and ps-6 (padding-inline-start)
+        </div>
+        <div class="me-4 pe-6" style="background: #e5e7eb; padding: 10px; margin: 10px 0;">
+            Using me-4 (margin-inline-end) and pe-6 (padding-inline-end)
+        </div>
+    </div>
+
+    <!-- Flex Direction Demo -->
+    <div class="demo-card">
+        <h2>Flex Direction</h2>
+        <div class="demo-flex flex-row-dir">
+            <div class="demo-box">1</div>
+            <div class="demo-box">2</div>
+            <div class="demo-box">3</div>
+            <span>Using flex-row-dir class</span>
+        </div>
+    </div>
+
+    <!-- Form Demo -->
+    <div class="demo-card">
+        <h2>Form Elements</h2>
+        <div class="form-rtl">
+            <label style="display: block; margin-bottom: 5px;">Name:</label>
+            <input type="text" class="demo-input" placeholder="Enter your name">
+        </div>
+        <div style="margin-top: 10px;">
+            <input type="checkbox" class="checkbox-rtl">
+            <label>Checkbox with RTL spacing</label>
+        </div>
+    </div>
+
+    <!-- Positioning Demo -->
+    <div class="demo-card" style="position: relative; height: 100px;">
+        <h2>Positioning</h2>
+        <div style="position: absolute; top: 40px;" class="start-4">
+            <div class="demo-box">S</div>
+            <small>start-4 positioning</small>
+        </div>
+        <div style="position: absolute; top: 40px;" class="end-4">
+            <div class="demo-box">E</div>
+            <small>end-4 positioning</small>
+        </div>
+    </div>
+
+    <!-- Icon Flip Demo -->
+    <div class="demo-card">
+        <h2>Icon Flipping</h2>
+        <div style="font-size: 24px;">
+            <span class="flip-rtl">→</span> This arrow flips in RTL mode
+        </div>
+        <div style="font-size: 24px; margin-top: 10px;">
+            <span class="rotate-chevron">⌄</span> This chevron rotates in RTL mode
+        </div>
+    </div>
+
+    <script>
+        let isRTL = false;
+        
+        function toggleDirection() {
+            isRTL = !isRTL;
+            const direction = isRTL ? 'rtl' : 'ltr';
+            
+            // Update document direction
+            document.documentElement.setAttribute('dir', direction);
+            document.documentElement.setAttribute('lang', isRTL ? 'fa' : 'en');
+            
+            // Update body class
+            document.body.className = isRTL ? 'rtl' : 'ltr';
+            
+            // Update indicator
+            document.getElementById('direction-indicator').textContent = direction.toUpperCase();
+            
+            console.log('Direction changed to:', direction);
+        }
+        
+        // Initialize
+        document.body.className = 'ltr';
+    </script>
+</body>
+</html>

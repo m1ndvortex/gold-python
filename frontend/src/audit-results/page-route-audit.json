@@ -1,0 +1,233 @@
+{
+  "totalPages": 29,
+  "totalRoutes": 17,
+  "totalTranslationKeys": 3,
+  "totalHardcodedStrings": 31,
+  "routes": [
+    {
+      "path": "/login",
+      "component": "Login",
+      "file": "/app/src/pages/Login.tsx",
+      "subRoutes": [],
+      "translationKeys": [
+        "app.title",
+        "auth.login"
+      ],
+      "hardcodedStrings": [
+        "{showPassword ? (",
+        "{isLoggingIn ? (",
+        "text-red-600",
+        "border-red-500 focus:border-red-500 focus:ring-red-500",
+        "Username must be at least 3 characters",
+        "Username can only contain letters, numbers, and underscores",
+        "Password must be at least 6 characters"
+      ],
+      "priority": "high",
+      "category": "auth"
+    },
+    {
+      "path": "/register",
+      "component": "Register",
+      "file": "/app/src/pages/Register.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [
+        "{showPassword ? (",
+        "{showConfirmPassword ? (",
+        "{isRegistering ? (",
+        "text-red-600",
+        "border-red-500 focus:border-red-500 focus:ring-red-500",
+        "First name must be at least 2 characters",
+        "Last name must be at least 2 characters",
+        "Invalid email address",
+        "Username must be at least 3 characters",
+        "Username can only contain letters, numbers, and underscores",
+        "Password must be at least 8 characters",
+        "Password must contain uppercase, lowercase, and number"
+      ],
+      "priority": "high",
+      "category": "auth"
+    },
+    {
+      "path": "/forgot-password",
+      "component": "ForgotPassword",
+      "file": "/app/src/pages/ForgotPassword.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [
+        "{isSubmitting ? (",
+        "text-red-600",
+        "border-red-500 focus:border-red-500 focus:ring-red-500",
+        "Invalid email address"
+      ],
+      "priority": "low",
+      "category": "auth"
+    },
+    {
+      "path": "/reset-password",
+      "component": "ResetPassword",
+      "file": "/app/src/pages/ResetPassword.tsx",
+      "subRoutes": [],
+      "translationKeys": [
+        "token"
+      ],
+      "hardcodedStrings": [
+        "{showPassword ? (",
+        "{showConfirmPassword ? (",
+        "{isSubmitting ? (",
+        "h-10 w-10 text-white",
+        "text-red-600",
+        "border-red-500 focus:border-red-500 focus:ring-red-500",
+        "Password must be at least 8 characters",
+        "Password must contain uppercase, lowercase, and number"
+      ],
+      "priority": "low",
+      "category": "auth"
+    },
+    {
+      "path": "/",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "high",
+      "category": "other"
+    },
+    {
+      "path": "/dashboard",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "high",
+      "category": "main"
+    },
+    {
+      "path": "/inventory/*",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "medium",
+      "category": "main"
+    },
+    {
+      "path": "/universal-inventory",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "low",
+      "category": "other"
+    },
+    {
+      "path": "/customers",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "medium",
+      "category": "main"
+    },
+    {
+      "path": "/invoices",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "medium",
+      "category": "main"
+    },
+    {
+      "path": "/accounting/*",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "low",
+      "category": "other"
+    },
+    {
+      "path": "/reports/*",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "medium",
+      "category": "reports"
+    },
+    {
+      "path": "/settings/*",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "low",
+      "category": "settings"
+    },
+    {
+      "path": "/sms/*",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "low",
+      "category": "other"
+    },
+    {
+      "path": "/business-adaptability",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "low",
+      "category": "other"
+    },
+    {
+      "path": "/system-administration",
+      "component": "/AuthGuard",
+      "file": "/app/src/components/auth/AuthGuard.tsx",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "low",
+      "category": "other"
+    },
+    {
+      "path": "*",
+      "component": "Navigate",
+      "file": "Not found",
+      "subRoutes": [],
+      "translationKeys": [],
+      "hardcodedStrings": [],
+      "priority": "low",
+      "category": "other"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "auth": 4,
+      "other": 7,
+      "main": 4,
+      "reports": 1,
+      "settings": 1
+    },
+    "byPriority": {
+      "high": 4,
+      "low": 9,
+      "medium": 4
+    },
+    "translationCoverage": 8.823529411764707
+  }
+}

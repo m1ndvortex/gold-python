@@ -35,7 +35,7 @@ import {
   DownloadIcon
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { JournalEntry, JournalEntryCreate, JournalEntryLine, JournalEntryFilters } from '../../types/accounting';
+import { JournalEntry, JournalEntryCreate, JournalEntryLine, JournalEntryLineCreate, JournalEntryFilters } from '../../types/accounting';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 
@@ -75,6 +75,15 @@ export const JournalEntryManager: React.FC<JournalEntryManagerProps> = ({ classN
   const postEntryMutation = usePostJournalEntry();
   const reverseEntryMutation = useReverseJournalEntry();
   const deleteEntryMutation = useDeleteJournalEntry();
+
+  const handleFormSubmit = (data: JournalEntryCreate | Partial<JournalEntryCreate>) => {
+    // Ensure required fields are present
+    if (!data.entry_date || !data.description || !data.journal_lines?.length) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+    handleCreateEntry(data as JournalEntryCreate);
+  };
 
   const handleCreateEntry = async (entryData: JournalEntryCreate) => {
     try {
@@ -240,7 +249,7 @@ export const JournalEntryManager: React.FC<JournalEntryManagerProps> = ({ classN
                     <DialogTitle>Create New Journal Entry</DialogTitle>
                   </DialogHeader>
                   <JournalEntryForm
-                    onSubmit={handleCreateEntry}
+                    onSubmit={handleFormSubmit}
                     onCancel={() => setIsCreateDialogOpen(false)}
                     accounts={accounts}
                     subsidiaryAccounts={subsidiaryAccounts}
@@ -545,23 +554,23 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
   isLoading,
   isEdit = false
 }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<JournalEntryCreate>({
     entry_date: entry?.entry_date || new Date().toISOString().split('T')[0],
     description: entry?.description || '',
     description_persian: entry?.description_persian || '',
     reference_number: entry?.reference_number || '',
     source_type: entry?.source_type || 'manual',
-    journal_lines: entry?.journal_lines || [
+    journal_lines: (entry?.journal_lines || [
       { line_number: 1, account_id: '', debit_amount: 0, credit_amount: 0, description: '' },
       { line_number: 2, account_id: '', debit_amount: 0, credit_amount: 0, description: '' }
-    ]
+    ]) as JournalEntryLineCreate[]
   });
 
   const addLine = () => {
     setFormData({
       ...formData,
       journal_lines: [
-        ...formData.journal_lines,
+        ...(formData.journal_lines as JournalEntryLineCreate[]),
         {
           line_number: formData.journal_lines.length + 1,
           account_id: '',
@@ -569,28 +578,29 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({
           credit_amount: 0,
           description: ''
         }
-      ]
+      ] as JournalEntryLineCreate[]
     });
   };
 
   const removeLine = (index: number) => {
     if (formData.journal_lines.length <= 2) return;
     
-    const newLines = formData.journal_lines.filter((_, i) => i !== index);
+    const currentLines = formData.journal_lines as JournalEntryLineCreate[];
+    const newLines = currentLines.filter((_, i: number) => i !== index);
     setFormData({
       ...formData,
-      journal_lines: newLines.map((line, i) => ({ ...line, line_number: i + 1 }))
+      journal_lines: newLines.map((line: JournalEntryLineCreate, i: number) => ({ ...line, line_number: i + 1 }))
     });
   };
 
   const updateLine = (index: number, field: string, value: any) => {
-    const newLines = [...formData.journal_lines];
+    const newLines = [...(formData.journal_lines as JournalEntryLineCreate[])];
     newLines[index] = { ...newLines[index], [field]: value };
-    setFormData({ ...formData, journal_lines: newLines });
+    setFormData({ ...formData, journal_lines: newLines as JournalEntryLineCreate[] });
   };
 
-  const totalDebits = formData.journal_lines.reduce((sum, line) => sum + (line.debit_amount || 0), 0);
-  const totalCredits = formData.journal_lines.reduce((sum, line) => sum + (line.credit_amount || 0), 0);
+  const totalDebits = (formData.journal_lines as JournalEntryLineCreate[]).reduce((sum: number, line: JournalEntryLineCreate) => sum + (line.debit_amount || 0), 0);
+  const totalCredits = (formData.journal_lines as JournalEntryLineCreate[]).reduce((sum: number, line: JournalEntryLineCreate) => sum + (line.credit_amount || 0), 0);
   const isBalanced = Math.abs(totalDebits - totalCredits) < 0.01;
 
   const handleSubmit = (e: React.FormEvent) => {

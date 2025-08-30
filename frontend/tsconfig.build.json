@@ -9,6 +9,7 @@
     "src/**/__tests__/**/*",
     "src/**/*.stories.ts",
     "src/**/*.stories.tsx",
+    "src/scripts/**/*",
     "node_modules",
     "build",
     "dist"

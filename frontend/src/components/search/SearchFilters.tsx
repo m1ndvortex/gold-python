@@ -72,7 +72,14 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
   // Price range filter
   const PriceRangeFilter = ({ entityType }: { entityType: SearchEntityType }) => {
     const entityFilters = filters[entityType] || {};
-    const priceRange = entityFilters.price_range || entityFilters.amount_range || {};
+    
+    // Get the appropriate price/amount range based on entity type
+    let priceRange: { min?: number; max?: number } = {};
+    if (entityType === 'inventory' && 'price_range' in entityFilters) {
+      priceRange = entityFilters.price_range || {};
+    } else if ((entityType === 'invoices' || entityType === 'accounting') && 'amount_range' in entityFilters) {
+      priceRange = entityFilters.amount_range || {};
+    }
 
     return (
       <div className="space-y-4">
@@ -161,24 +168,28 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
     switch (entityType) {
       case 'inventory':
         statusOptions = ['active', 'inactive', 'low_stock', 'out_of_stock'];
-        selectedStatuses = entityFilters.is_active !== undefined 
-          ? [entityFilters.is_active ? 'active' : 'inactive']
+        const inventoryFilters = entityFilters as UniversalSearchFilters['inventory'];
+        selectedStatuses = inventoryFilters?.is_active !== undefined 
+          ? [inventoryFilters.is_active ? 'active' : 'inactive']
           : [];
         break;
       case 'invoices':
-        statusOptions = entityFilters.statuses || [];
-        selectedStatuses = entityFilters.statuses || [];
+        const invoiceFilters = entityFilters as UniversalSearchFilters['invoices'];
+        statusOptions = invoiceFilters?.statuses || [];
+        selectedStatuses = invoiceFilters?.statuses || [];
         break;
       case 'customers':
         statusOptions = ['active', 'inactive', 'blacklisted'];
+        const customerFilters = entityFilters as UniversalSearchFilters['customers'];
         selectedStatuses = [];
-        if (entityFilters.is_active === true) selectedStatuses.push('active');
-        if (entityFilters.is_active === false) selectedStatuses.push('inactive');
-        if (entityFilters.blacklisted === true) selectedStatuses.push('blacklisted');
+        if (customerFilters?.is_active === true) selectedStatuses.push('active');
+        if (customerFilters?.is_active === false) selectedStatuses.push('inactive');
+        if (customerFilters?.blacklisted === true) selectedStatuses.push('blacklisted');
         break;
       case 'accounting':
-        statusOptions = entityFilters.entry_types || [];
-        selectedStatuses = entityFilters.entry_types || [];
+        const accountingFilters = entityFilters as UniversalSearchFilters['accounting'];
+        statusOptions = accountingFilters?.entry_types || [];
+        selectedStatuses = accountingFilters?.entry_types || [];
         break;
     }
 

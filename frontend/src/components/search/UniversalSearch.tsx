@@ -18,6 +18,7 @@ import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { useLanguage } from '../../hooks/useLanguage';
+import type { SearchResults as SearchResultsType } from '../../types/search';
 import {
   UniversalSearchFilters,
   SearchEntityType,
@@ -207,6 +208,10 @@ export const UniversalSearch: React.FC<UniversalSearchProps> = ({
                       }}
                       onPresetSave={handlePresetSave}
                       onPresetDelete={deletePreset}
+                      onPresetUpdate={(presetId, updates) => {
+                        // TODO: Implement preset update functionality
+                        console.log('Update preset:', presetId, updates);
+                      }}
                     />
                   </DialogContent>
                 </Dialog>
@@ -339,7 +344,26 @@ export const UniversalSearch: React.FC<UniversalSearchProps> = ({
         {/* Search Results */}
         <div className={showFilters ? "lg:col-span-3" : "lg:col-span-4"}>
           <SearchResults
-            results={searchResults}
+            results={searchResults || ({
+              items: [], 
+              total: 0, 
+              page: 1, 
+              per_page: 20,
+              total_pages: 1,
+              has_next: false,
+              has_prev: false,
+              facets: {
+                entity_types: { name: 'entity_types', label: 'Entity Types', type: 'checkbox' },
+                categories: { name: 'categories', label: 'Categories', type: 'checkbox' },
+                tags: { name: 'tags', label: 'Tags', type: 'checkbox' },
+                price_range: { name: 'price_range', label: 'Price Range', type: 'range' },
+                date_range: { name: 'date_range', label: 'Date Range', type: 'date_range' },
+                status: { name: 'status', label: 'Status', type: 'select' },
+                custom_attributes: []
+              },
+              suggestions: [],
+              search_time_ms: 0
+            } as SearchResultsType)}
             loading={isSearching}
             onResultClick={handleResultClick}
             onPageChange={goToPage}

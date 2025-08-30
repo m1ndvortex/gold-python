@@ -209,16 +209,18 @@ export const UniversalAdvancedSearch: React.FC<UniversalAdvancedSearchProps> = (
         handleFilterChange('tags', newTags);
     }, [selectedTags, handleFilterChange]);
 
-    const handlePriceRangeChange = useCallback((range: [number, number]) => {
-        setPriceRange(range);
-        handleFilterChange('min_price', range[0] > 0 ? range[0] : undefined);
-        handleFilterChange('max_price', range[1] < 1000 ? range[1] : undefined);
+    const handlePriceRangeChange = useCallback((range: number[]) => {
+        const tupleRange: [number, number] = [range[0] || 0, range[1] || 1000];
+        setPriceRange(tupleRange);
+        handleFilterChange('min_price', tupleRange[0] > 0 ? tupleRange[0] : undefined);
+        handleFilterChange('max_price', tupleRange[1] < 1000 ? tupleRange[1] : undefined);
     }, [handleFilterChange]);
 
-    const handleStockRangeChange = useCallback((range: [number, number]) => {
-        setStockRange(range);
-        handleFilterChange('min_stock', range[0] > 0 ? range[0] : undefined);
-        handleFilterChange('max_stock', range[1] < 100 ? range[1] : undefined);
+    const handleStockRangeChange = useCallback((range: number[]) => {
+        const tupleRange: [number, number] = [range[0] || 0, range[1] || 100];
+        setStockRange(tupleRange);
+        handleFilterChange('min_stock', tupleRange[0] > 0 ? tupleRange[0] : undefined);
+        handleFilterChange('max_stock', tupleRange[1] < 100 ? tupleRange[1] : undefined);
     }, [handleFilterChange]);
 
     const handleClearFilters = useCallback(() => {

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useAuth } from '../../hooks/useAuth';
+import { useDirectionAdapter } from '../../utils/directionAdapter';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
@@ -78,6 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [showNotifications, setShowNotifications] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
+  const directionAdapter = useDirectionAdapter(language, direction);
 
   const isRTL = direction === 'rtl';
 
@@ -282,8 +284,15 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Company Branding */}
-        <div className="hidden lg:flex items-center mr-6">
-          <div className="flex items-center space-x-3">
+        <div className={cn(
+          'hidden lg:flex items-center',
+          isRTL ? 'ml-6' : 'mr-6'
+        )}>
+          <div className={cn(
+            'flex items-center',
+            isRTL ? 'space-x-reverse' : '',
+            'space-x-3'
+          )}>
             <div className="relative">
               <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center shadow-md shadow-green/25">
                 <Gem className="h-4 w-4 text-white" />
@@ -398,7 +407,11 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right side actions */}
-        <div className="flex items-center space-x-2 rtl:space-x-reverse">
+        <div className={cn(
+          'flex items-center',
+          isRTL ? 'space-x-reverse' : '',
+          'space-x-2'
+        )}>
           {/* Notification Center */}
           <div className="relative" ref={notificationRef}>
             <Button
@@ -462,7 +475,11 @@ export const Header: React.FC<HeaderProps> = ({
                               !notification.read && 'bg-gradient-to-r from-green-50/50 to-teal-50/50'
                             )}
                           >
-                            <div className="flex items-start space-x-3">
+                            <div className={cn(
+                              'flex items-start',
+                              isRTL ? 'space-x-reverse' : '',
+                              'space-x-3'
+                            )}>
                               <div className={cn('flex-shrink-0 mt-0.5', getNotificationColor(notification.type))}>
                                 <Icon className="h-4 w-4" />
                               </div>
@@ -472,7 +489,10 @@ export const Header: React.FC<HeaderProps> = ({
                                     {notification.title}
                                   </p>
                                   {!notification.read && (
-                                    <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0 ml-2" />
+                                    <div className={cn(
+                                      'w-2 h-2 bg-green-500 rounded-full flex-shrink-0',
+                                      isRTL ? 'mr-2' : 'ml-2'
+                                    )} />
                                   )}
                                 </div>
                                 <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
@@ -480,7 +500,10 @@ export const Header: React.FC<HeaderProps> = ({
                                 </p>
                                 <div className="flex items-center justify-between mt-2">
                                   <span className="text-xs text-muted-foreground flex items-center">
-                                    <Clock className="h-3 w-3 mr-1" />
+                                    <Clock className={cn(
+                                      'h-3 w-3',
+                                      isRTL ? 'ml-1' : 'mr-1'
+                                    )} />
                                     {formatTimeAgo(notification.timestamp)}
                                   </span>
                                   {notification.actionUrl && (
@@ -536,7 +559,12 @@ export const Header: React.FC<HeaderProps> = ({
                 <Globe className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align={isRTL ? "start" : "end"} className="w-48">
+            <DropdownMenuContent 
+              align={isRTL ? "start" : "end"} 
+              className="w-48"
+              side="bottom"
+              sideOffset={4}
+            >
               <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                 {t('common.language') || 'Language'}
               </DropdownMenuLabel>
@@ -587,9 +615,18 @@ export const Header: React.FC<HeaderProps> = ({
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align={isRTL ? "start" : "end"} className="w-64">
+            <DropdownMenuContent 
+              align={isRTL ? "start" : "end"} 
+              className="w-64"
+              side="bottom"
+              sideOffset={4}
+            >
               <DropdownMenuLabel className="font-normal p-4">
-                <div className="flex items-center space-x-3">
+                <div className={cn(
+                  'flex items-center',
+                  isRTL ? 'space-x-reverse' : '',
+                  'space-x-3'
+                )}>
                   <Avatar className="h-10 w-10">
                     <AvatarImage src="" alt={user?.username} />
                     <AvatarFallback className="bg-gradient-to-br from-green-500 to-teal-600 text-white font-semibold">
@@ -611,15 +648,24 @@ export const Header: React.FC<HeaderProps> = ({
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 transition-all duration-200">
-                <User className="mr-3 h-4 w-4 rtl:mr-0 rtl:ml-3 text-muted-foreground" />
+                <User className={cn(
+                  'h-4 w-4 text-muted-foreground',
+                  isRTL ? 'ml-3' : 'mr-3'
+                )} />
                 <span>{t('common.profile') || 'Profile Settings'}</span>
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 transition-all duration-200">
-                <Settings className="mr-3 h-4 w-4 rtl:mr-0 rtl:ml-3 text-muted-foreground" />
+                <Settings className={cn(
+                  'h-4 w-4 text-muted-foreground',
+                  isRTL ? 'ml-3' : 'mr-3'
+                )} />
                 <span>Account Settings</span>
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer hover:bg-gradient-to-r hover:from-green-50 hover:to-teal-50 transition-all duration-200">
-                <HelpCircle className="mr-3 h-4 w-4 rtl:mr-0 rtl:ml-3 text-muted-foreground" />
+                <HelpCircle className={cn(
+                  'h-4 w-4 text-muted-foreground',
+                  isRTL ? 'ml-3' : 'mr-3'
+                )} />
                 <span>Help & Support</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -627,7 +673,10 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={handleLogout}
                 className="cursor-pointer hover:bg-red-50 hover:text-red-600 transition-colors"
               >
-                <LogOut className="mr-3 h-4 w-4 rtl:mr-0 rtl:ml-3" />
+                <LogOut className={cn(
+                  'h-4 w-4',
+                  isRTL ? 'ml-3' : 'mr-3'
+                )} />
                 <span>{t('auth.logout') || 'Sign Out'}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -1,0 +1,6464 @@
+[
+  {
+    "name": "ThemeProvider",
+    "path": "components/theme/ThemeProvider.tsx",
+    "category": "other",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "useTheme must be used within a ThemeProvider",
+      "Toggle theme"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "SMSTemplateManager",
+    "path": "components/sms/SMSTemplateManager.tsx",
+    "category": "other",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Template Name",
+      "Template Type",
+      "Message Template",
+      "Available Variables",
+      "Active Template",
+      "Original Template",
+      "Select Customer for Preview",
+      "Preview Message",
+      "Filter by Type:",
+      "Active Only",
+      "Message Preview",
+      "setIsCreateDialogOpen(true)}>",
+      "space-y-6",
+      "Enter template name"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 14 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "SMSHistoryTracker",
+    "path": "components/sms/SMSHistoryTracker.tsx",
+    "category": "other",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Message ID",
+      "Campaign ID",
+      "Phone Number",
+      "Customer ID",
+      "Message Content",
+      "Delivery Status",
+      "Retry Count",
+      "Gateway Message ID",
+      "Created At",
+      "Sent At",
+      "Delivered At",
+      "Error Message",
+      "Messages to Retry",
+      "Per Page",
+      "Select All",
+      "Deselect All",
+      "text-sm font-medium",
+      "flex justify-end",
+      "text-red-600 text-xs",
+      "flex justify-end space-x-2",
+      "All campaigns",
+      "All customers",
+      "All statuses"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 23 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "SMSCampaignManager",
+    "path": "components/sms/SMSCampaignManager.tsx",
+    "category": "other",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Campaign Name",
+      "Use SMS Template",
+      "Select Template",
+      "Message Content",
+      "Filter by Status:",
+      "Message Content",
+      "Campaign Statistics",
+      "Select All",
+      "Deselect All",
+      "setIsCreateDialogOpen(true)}>",
+      "space-y-6",
+      "Are you sure you want to retry failed messages in this campaign?",
+      "Enter campaign name"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 13 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "SystemHealthOverview",
+    "path": "components/system-admin/SystemHealthOverview.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "system.health.error",
+      "system.health.overall",
+      "system.status.${systemHealth.overall.status}",
+      "system.health.score",
+      "system.resources.cpu",
+      "system.resources.memory",
+      "system.resources.disk",
+      "system.alerts.active",
+      "system.health.lastUpdated"
+    ],
+    "hardcodedStrings": [
+      "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6",
+      "border-destructive/50 bg-destructive/5"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "ServiceStatusGrid",
+    "path": "components/system-admin/ServiceStatusGrid.tsx",
+    "category": "other",
+    "type": "modal",
+    "translationKeys": [
+      "system.services.error",
+      "system.status.${service.status}",
+      "system.metrics.cpu",
+      "system.metrics.memory",
+      "system.metrics.uptime",
+      "system.metrics.lastRestart",
+      "system.actions.restart",
+      "system.logs.empty"
+    ],
+    "hardcodedStrings": [
+      "border-destructive/50 bg-destructive/5"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "SecurityMonitoring",
+    "path": "components/system-admin/SecurityMonitoring.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "security.ssl.title",
+      "security.ssl.renew",
+      "security.ssl.domain",
+      "security.ssl.issuer",
+      "security.ssl.validFrom",
+      "security.ssl.validTo",
+      "security.ssl.daysLeft",
+      "common.days",
+      "security.ssl.autoRenewal",
+      "common.enabled",
+      "common.disabled",
+      "security.ssl.notAvailable",
+      "security.headers.title",
+      "security.headers.score",
+      "security.headers.notAvailable",
+      "security.rateLimit.title",
+      "security.rateLimit.status",
+      "security.rateLimit.requestsPerMinute",
+      "security.rateLimit.blockedRequests",
+      "security.rateLimit.topBlockedIPs",
+      "security.rateLimit.notAvailable",
+      "security.scan.title",
+      "security.scan.run",
+      "security.scan.lastScan",
+      "security.scan.vulnerabilities",
+      "security.scan.found",
+      "security.scan.noVulnerabilities",
+      "security.scan.notAvailable"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "RedisManagement",
+    "path": "components/system-admin/RedisManagement.tsx",
+    "category": "other",
+    "type": "modal",
+    "translationKeys": [
+      "redis.error",
+      "redis.title",
+      "redis.clearCache",
+      "redis.clearWarning",
+      "redis.clearWarningText",
+      "redis.pattern",
+      "redis.patternPlaceholder",
+      "redis.patternHelp",
+      "common.cancel",
+      "redis.confirmClear",
+      "redis.memory.title",
+      "redis.status.${memoryStatus}",
+      "redis.memory.peak",
+      "redis.memory.fragmentation",
+      "redis.performance.title",
+      "redis.performance.hitRate",
+      "redis.performance.missRate",
+      "redis.performance.opsPerSec",
+      "redis.connections.title",
+      "redis.connections.connected",
+      "redis.connections.blocked",
+      "redis.connections.rejected",
+      "redis.keyspace.title",
+      "redis.keyspace.totalKeys",
+      "redis.keyspace.expired",
+      "redis.keyspace.evicted",
+      "redis.keyBrowser.title",
+      "redis.keyBrowser.placeholder",
+      "common.search",
+      "redis.keyBrowser.noKeys"
+    ],
+    "hardcodedStrings": [
+      "space-y-6",
+      "border-destructive/50 bg-destructive/5"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "PerformanceMetrics",
+    "path": "components/system-admin/PerformanceMetrics.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "performance.error",
+      "performance.title",
+      "performance.timeRange.${range.value}",
+      "performance.metrics.${metric.name}",
+      "performance.threshold",
+      "performance.summary.title",
+      "performance.summary.healthy",
+      "performance.summary.healthyDesc",
+      "performance.summary.warning",
+      "performance.summary.warningDesc",
+      "performance.summary.critical",
+      "performance.summary.criticalDesc"
+    ],
+    "hardcodedStrings": [
+      "border-destructive/50 bg-destructive/5"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "LogViewer",
+    "path": "components/system-admin/LogViewer.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "logs.title",
+      "logs.autoRefresh",
+      "csv",
+      "logs.export",
+      "logs.searchPlaceholder",
+      "common.search",
+      "logs.services",
+      "logs.levels",
+      "logs.limit",
+      "logs.entries",
+      "logs.entriesCount",
+      "logs.error",
+      "logs.empty"
+    ],
+    "hardcodedStrings": [
+      "text-center py-8 text-destructive"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "DatabaseAdministration",
+    "path": "components/system-admin/DatabaseAdministration.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "database.error",
+      "database.title",
+      "database.healthCheck",
+      "database.optimize",
+      "database.connectionPool.title",
+      "database.status.${poolStatus}",
+      "database.connectionPool.active",
+      "database.connectionPool.idle",
+      "database.queryPerformance.title",
+      "database.queryPerformance.avgResponse",
+      "database.queryPerformance.slowQueries",
+      "database.queryPerformance.totalQueries",
+      "database.storage.title",
+      "database.storage.size",
+      "database.storage.freeSpace",
+      "database.storage.tables",
+      "database.replication.title",
+      "database.replication.status",
+      "database.replication.${dbStatus.replication.status}",
+      "database.replication.lagWarning",
+      "database.replication.lagDescription",
+      "database.replication.lag",
+      "database.actions.title",
+      "database.actions.healthCheck",
+      "database.actions.healthCheckDesc",
+      "database.actions.optimize",
+      "database.actions.optimizeDesc",
+      "database.actions.analyze",
+      "database.actions.analyzeDesc"
+    ],
+    "hardcodedStrings": [
+      "border-destructive/50 bg-destructive/5"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "BackupManagement",
+    "path": "components/system-admin/BackupManagement.tsx",
+    "category": "other",
+    "type": "modal",
+    "translationKeys": [
+      "backup.restore.confirmRequired",
+      "backup.delete.confirm",
+      "backup.error",
+      "backup.status.title",
+      "backup.create.title",
+      "backup.create.type",
+      "backup.type.full",
+      "backup.type.incremental",
+      "backup.create.includeImages",
+      "backup.create.includeConfigs",
+      "backup.create.description",
+      "backup.create.descriptionPlaceholder",
+      "common.cancel",
+      "backup.create.confirm",
+      "backup.status.lastBackup",
+      "backup.status.size",
+      "backup.status.type",
+      "backup.type.${latestBackup.type}",
+      "backup.status.noBackups",
+      "backup.files.title",
+      "backup.type.${backup.type}",
+      "backup.verified",
+      "backup.restore.title",
+      "backup.restore.warning",
+      "backup.restore.warningText",
+      "backup.restore.type",
+      "backup.restore.full",
+      "backup.restore.selective",
+      "backup.restore.confirmDataLoss",
+      "backup.restore.confirm",
+      "backup.files.empty"
+    ],
+    "hardcodedStrings": [
+      "/api/admin/backups/${filename}/download",
+      "border-destructive/50 bg-destructive/5"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "use-toast",
+    "path": "components/ui/use-toast.ts",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "tooltip",
+    "path": "components/ui/tooltip.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "toaster",
+    "path": "components/ui/toaster.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "toast",
+    "path": "components/ui/toast.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "useToast must be used within a ToastProvider",
+      "from-red-500 to-pink-600"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "textarea",
+    "path": "components/ui/textarea.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "border-error-500 focus-visible:ring-error-500 text-error-700 hover:border-error-600",
+      "h-4 w-4 text-error-500",
+      "text-error-600",
+      "text-success-600"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "tabs",
+    "path": "components/ui/tabs.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "table",
+    "path": "components/ui/table.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "switch",
+    "path": "components/ui/switch.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "slider",
+    "path": "components/ui/slider.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "skeleton",
+    "path": "components/ui/skeleton.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "sheet",
+    "path": "components/ui/sheet.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "separator",
+    "path": "components/ui/separator.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "select",
+    "path": "components/ui/select.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "searchable-select",
+    "path": "components/ui/searchable-select.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "border-error-500 focus:ring-error-500",
+      "No options found",
+      "h-4 w-4 text-error-500",
+      "space-y-2",
+      "text-error-600",
+      "text-success-600"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 6 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "scroll-area",
+    "path": "components/ui/scroll-area.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "radio-group",
+    "path": "components/ui/radio-group.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "progress",
+    "path": "components/ui/progress.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "popover",
+    "path": "components/ui/popover.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "pagination",
+    "path": "components/ui/pagination.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Go to previous page",
+      "Go to next page"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "loading-states",
+    "path": "components/ui/loading-states.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "loading-spinner",
+    "path": "components/ui/loading-spinner.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "list",
+    "path": "components/ui/list.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "label",
+    "path": "components/ui/label.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "jalali-calendar",
+    "path": "components/ui/jalali-calendar.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [
+      "T"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "input",
+    "path": "components/ui/input.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "border-error-500 focus-visible:ring-error-500 text-error-700 hover:border-error-600",
+      "peer-focus:text-error-600",
+      "h-4 w-4 text-error-500",
+      "mt-1 text-xs",
+      "text-error-600",
+      "text-success-600",
+      "h-4 w-4 text-error-500",
+      "text-error-600",
+      "text-success-600"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 9 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "form-loading",
+    "path": "components/ui/form-loading.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "form-field",
+    "path": "components/ui/form-field.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "text-red-700",
+      "text-red-600 bg-red-50/50 border border-red-200 rounded-md px-2 py-1",
+      "text-red-600",
+      "h-3 w-3 flex-shrink-0",
+      "ml-2 inline-block"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 5 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "file-upload",
+    "path": "components/ui/file-upload.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [
+      "."
+    ],
+    "hardcodedStrings": [
+      "border-error-300 bg-error-50/50",
+      "image/",
+      "border-error-300 bg-error-50/50",
+      "text-xs text-error-600 mt-1",
+      "flex-shrink-0 ml-3",
+      "h-4 w-4 text-error-500",
+      "space-y-2",
+      "text-error-600",
+      "text-success-600"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 9 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "dropdown-menu",
+    "path": "components/ui/dropdown-menu.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "dialog",
+    "path": "components/ui/dialog.tsx",
+    "category": "ui-component",
+    "type": "modal",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "date-picker",
+    "path": "components/ui/date-picker.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "data-table",
+    "path": "components/ui/data-table.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [
+      "."
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "command",
+    "path": "components/ui/command.tsx",
+    "category": "ui-component",
+    "type": "modal",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "collapsible",
+    "path": "components/ui/collapsible.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "checkbox",
+    "path": "components/ui/checkbox.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "card",
+    "path": "components/ui/card.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "calendar",
+    "path": "components/ui/calendar.tsx",
+    "category": "ui-component",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "button",
+    "path": "components/ui/button.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "bg-red-500 text-white hover:bg-red-600"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "breadcrumb",
+    "path": "components/ui/breadcrumb.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "badge",
+    "path": "components/ui/badge.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "border-transparent bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-sm"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "avatar",
+    "path": "components/ui/avatar.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "alert",
+    "path": "components/ui/alert.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "alert-system",
+    "path": "components/ui/alert-system.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "from-red-500 to-pink-600",
+      "from-red-500 to-pink-600",
+      "from-red-500 to-pink-600"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "alert-dialog",
+    "path": "components/ui/alert-dialog.tsx",
+    "category": "ui-component",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "UserManagement",
+    "path": "components/settings/UserManagement.tsx",
+    "category": "settings",
+    "type": "form",
+    "translationKeys": [
+      "settings.user_management",
+      "settings.user_management_desc",
+      "settings.add_new_user",
+      "settings.user",
+      "settings.role",
+      "common.status",
+      "settings.created",
+      "common.actions",
+      "settings.no_role",
+      "common.active",
+      "common.inactive",
+      "settings.you",
+      "settings.previous",
+      "settings.next",
+      "settings.create_new_user",
+      "settings.add_user_desc",
+      "settings.username",
+      "settings.username_required",
+      "settings.enter_username",
+      "settings.email",
+      "settings.email_required",
+      "settings.invalid_email",
+      "settings.enter_email",
+      "settings.password",
+      "settings.password_required",
+      "settings.password_min_length",
+      "settings.enter_password",
+      "settings.select_role",
+      "common.cancel",
+      "settings.creating",
+      "settings.create_user"
+    ],
+    "hardcodedStrings": [
+      "Active Status",
+      "Current Password",
+      "New Password",
+      "Confirm New Password",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "text-sm text-destructive",
+      "Enter username",
+      "Enter email",
+      "Select a role",
+      "Enter current password",
+      "Enter new password",
+      "Confirm new password"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 26 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "RolePermissionManager",
+    "path": "components/settings/RolePermissionManager.tsx",
+    "category": "settings",
+    "type": "form",
+    "translationKeys": [
+      "settings.role_permission_management",
+      "settings.role_permission_desc",
+      "settings.create_role",
+      "settings.permissions",
+      "settings.assigned_users",
+      "settings.create_new_role",
+      "settings.create_role_desc",
+      "settings.role_name",
+      "settings.role_name_required",
+      "settings.role_name_placeholder",
+      "settings.description",
+      "settings.role_description_placeholder",
+      "common.cancel",
+      "settings.creating_role"
+    ],
+    "hardcodedStrings": [
+      "Role Name",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "Brief description of the role"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 6 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "InvoiceTemplateDesigner",
+    "path": "components/settings/InvoiceTemplateDesigner.tsx",
+    "category": "settings",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Template Name",
+      "Page Layout",
+      "Page Size",
+      "Font Family",
+      "Top (px)",
+      "Right (px)",
+      "Bottom (px)",
+      "Left (px)",
+      "Primary Color",
+      "Secondary Color",
+      "Default Template",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "Enter template name",
+      "Select layout",
+      "Select page size",
+      "Select font"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 24 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "GoldPriceConfig",
+    "path": "components/settings/GoldPriceConfig.tsx",
+    "category": "settings",
+    "type": "form",
+    "translationKeys": [
+      "settings.gold_price_config",
+      "settings.gold_price_manage_desc",
+      "settings.current_gold_price",
+      "settings.per_gram",
+      "settings.auto_update_on",
+      "settings.manual_update",
+      "settings.last_updated",
+      "settings.update_gold_price",
+      "settings.price_required",
+      "settings.price_greater_zero",
+      "settings.updating",
+      "settings.update_price",
+      "settings.automatic_price_updates",
+      "settings.enable_auto_updates",
+      "settings.auto_update_config",
+      "settings.update_frequency",
+      "settings.every_24_hours",
+      "settings.api_source",
+      "settings.gold_api_service",
+      "settings.next_update",
+      "common.status",
+      "common.active",
+      "settings.auto_update_note",
+      "settings.recent_price_changes",
+      "settings.today",
+      "settings.yesterday",
+      "settings.days_ago_2"
+    ],
+    "hardcodedStrings": [
+      "Auto-update toggled:",
+      "text-sm text-destructive mt-1"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "DisasterRecoveryDashboard",
+    "path": "components/settings/DisasterRecoveryDashboard.tsx",
+    "category": "settings",
+    "type": "card",
+    "translationKeys": [
+      "Retention policy applied: ${result.backups_deleted} backups deleted, ${result.backups_archived} archived",
+      "Off-site sync completed: ${result.uploaded_count} backups uploaded"
+    ],
+    "hardcodedStrings": [
+      "Failed to fetch system status",
+      "Unknown error",
+      "Failed to fetch backups",
+      "Unknown error",
+      "Failed to fetch procedures",
+      "Unknown error",
+      "Failed to fetch off-site storage status",
+      "Unknown error",
+      "Failed to execute recovery procedure",
+      "Unknown error",
+      "Failed to apply retention policy",
+      "Unknown error",
+      "Failed to sync to off-site storage",
+      "Unknown error",
+      "border-red-200 bg-red-50",
+      "Error loading disaster recovery data: {error}"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 16 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "CompanySettingsForm",
+    "path": "components/settings/CompanySettingsForm.tsx",
+    "category": "settings",
+    "type": "form",
+    "translationKeys": [
+      "settings.company_information",
+      "settings.company_details_desc",
+      "settings.company_logo",
+      "settings.upload_logo_desc",
+      "settings.company_name",
+      "settings.company_name_required",
+      "settings.enter_company_name",
+      "settings.company_address",
+      "settings.enter_company_address",
+      "settings.default_pricing_settings",
+      "settings.gold_price_per_gram",
+      "settings.gold_price_required",
+      "settings.price_positive",
+      "settings.labor_cost_percent",
+      "settings.labor_required",
+      "settings.percentage_positive",
+      "settings.percentage_max",
+      "settings.profit_margin_percent",
+      "settings.profit_required",
+      "settings.vat_rate_percent",
+      "settings.vat_required",
+      "settings.saving",
+      "settings.save_changes"
+    ],
+    "hardcodedStrings": [
+      "text-sm text-destructive",
+      "space-y-2 md:col-span-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "space-y-2",
+      "text-sm text-destructive",
+      "flex justify-end"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 10 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "SalesReports",
+    "path": "components/reports/SalesReports.tsx",
+    "category": "reports",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "text-center py-8"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "SalesChart",
+    "path": "components/reports/SalesChart.tsx",
+    "category": "reports",
+    "type": "component",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "ReportFilters",
+    "path": "components/reports/ReportFilters.tsx",
+    "category": "reports",
+    "type": "interactive",
+    "translationKeys": [
+      "T"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "ReportCanvas",
+    "path": "components/reports/ReportCanvas.tsx",
+    "category": "reports",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Visualization title"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "ReportBuilder",
+    "path": "components/reports/ReportBuilder.tsx",
+    "category": "reports",
+    "type": "interactive",
+    "translationKeys": [
+      "Please enter a report name",
+      "Please select at least one data source"
+    ],
+    "hardcodedStrings": [
+      "Report Name",
+      "Report Description (optional)"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      }
+    ]
+  },
+  {
+    "name": "LayoutDesigner",
+    "path": "components/reports/LayoutDesigner.tsx",
+    "category": "reports",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Page Size",
+      "Width (px)",
+      "Height (px)",
+      "Primary Color",
+      "Background Color",
+      "Font Family",
+      "Font Size",
+      "Horizontal Alignment",
+      "Vertical Alignment",
+      "Show Grid",
+      "Snap to Grid",
+      "Grid Size",
+      "Auto-save Layout",
+      "Responsive Layout",
+      "Select size"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 15 hardcoded strings with translation keys"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "InventoryReports",
+    "path": "components/reports/InventoryReports.tsx",
+    "category": "reports",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "text-center py-8"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "InventoryChart",
+    "path": "components/reports/InventoryChart.tsx",
+    "category": "reports",
+    "type": "component",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "FilterBuilder",
+    "path": "components/reports/FilterBuilder.tsx",
+    "category": "reports",
+    "type": "card",
+    "translationKeys": [
+      "T",
+      "\\n"
+    ],
+    "hardcodedStrings": [
+      "Enter values (one per line)"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      }
+    ]
+  },
+  {
+    "name": "FieldPalette",
+    "path": "components/reports/FieldPalette.tsx",
+    "category": "reports",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "DataSourceSelector",
+    "path": "components/reports/DataSourceSelector.tsx",
+    "category": "reports",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Add Relationship"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CustomerReports",
+    "path": "components/reports/CustomerReports.tsx",
+    "category": "reports",
+    "type": "table",
+    "translationKeys": [
+      "pdf",
+      "csv"
+    ],
+    "hardcodedStrings": [
+      "text-center py-8"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "CustomerChart",
+    "path": "components/reports/CustomerChart.tsx",
+    "category": "reports",
+    "type": "component",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "ChartConfigPanel",
+    "path": "components/reports/ChartConfigPanel.tsx",
+    "category": "reports",
+    "type": "chart",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Data Fields",
+      "Dimensions (Categories)",
+      "Measures (Values)",
+      "Visualization Type",
+      "Chart Type",
+      "Chart Title",
+      "X-Axis Label",
+      "Y-Axis Label",
+      "Color Palette",
+      "Custom Colors",
+      "Display Options",
+      "Show Legend",
+      "Show Grid",
+      "Show Data Labels",
+      "Smooth Lines",
+      "Animation Duration (ms)",
+      "Add Color",
+      "Enter chart title",
+      "X-axis label",
+      "Y-axis label"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 20 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "index",
+    "path": "components/qr-cards/index.ts",
+    "category": "other",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "QRCardManager",
+    "path": "components/qr-cards/QRCardManager.tsx",
+    "category": "other",
+    "type": "modal",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Invoice Type",
+      "border-0 shadow-lg",
+      "All types",
+      "All themes",
+      "All statuses"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 5 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "QRCardIntegration",
+    "path": "components/qr-cards/QRCardIntegration.tsx",
+    "category": "other",
+    "type": "modal",
+    "translationKeys": [
+      "a"
+    ],
+    "hardcodedStrings": [
+      "Failed to download QR code:",
+      "border-0 shadow-lg ${className}",
+      "border-0 shadow-lg ${className}",
+      "Failed to load QR card"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "QRCardDisplay",
+    "path": "components/qr-cards/QRCardDisplay.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "a"
+    ],
+    "hardcodedStrings": [
+      "Copy Failed",
+      "Copy Failed"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "QRCardCustomizer",
+    "path": "components/qr-cards/QRCardCustomizer.tsx",
+    "category": "other",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Card Theme",
+      "Color Customization",
+      "Background Color",
+      "Text Color",
+      "Accent Color",
+      "Access Control",
+      "Public Access",
+      "Password Protection",
+      "Access Password",
+      "Expiration Date (Optional)",
+      "text-sm text-red-500",
+      "space-y-4",
+      "text-sm text-red-500 mt-1",
+      "text-sm text-red-500 mt-1",
+      "text-sm text-red-500 mt-1",
+      "space-y-4",
+      "text-sm text-red-500 mt-1",
+      "Enter password"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 18 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "QRCardAnalytics",
+    "path": "components/qr-cards/QRCardAnalytics.tsx",
+    "category": "other",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "border-0 shadow-lg ${className}",
+      "text-gray-500"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "PublicQRCardViewer",
+    "path": "components/qr-cards/PublicQRCardViewer.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Password required",
+      "Invalid password",
+      "mb-4 p-3 bg-red-50 border border-red-200 rounded-lg",
+      "space-y-4",
+      "max-w-md mx-auto ${className}",
+      "Enter password"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 6 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "UniversalSearch",
+    "path": "components/search/UniversalSearch.tsx",
+    "category": "other",
+    "type": "form",
+    "translationKeys": [
+      "search.entityTypes.inventory",
+      "search.entityTypes.invoices",
+      "search.entityTypes.customers",
+      "search.entityTypes.accounting",
+      "search.title",
+      "search.analytics",
+      "search.presets",
+      "search.filters",
+      "search.placeholder",
+      "search.activeFilters",
+      "search.clearFilters"
+    ],
+    "hardcodedStrings": [
+      "Failed to save preset:"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "TagFilter",
+    "path": "components/search/TagFilter.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "search.filters.addTag",
+      "search.filters.suggestions",
+      "search.filters.createTag",
+      "search.filters.popularTags",
+      "search.filters.predefinedTagsOnly",
+      "search.filters.clearAllTags"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "SearchSuggestions",
+    "path": "components/search/SearchSuggestions.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "search.suggestions.queries",
+      "search.entityTypes.${suggestion.entity_type}",
+      "search.suggestions.categories",
+      "search.suggestions.tags",
+      "search.suggestions.recent"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "SearchResults",
+    "path": "components/search/SearchResults.tsx",
+    "category": "other",
+    "type": "table",
+    "translationKeys": [
+      "search.results.sku",
+      "search.results.stock",
+      "search.results.price",
+      "search.results.invoiceNumber",
+      "search.results.amount",
+      "search.results.status",
+      "search.results.phone",
+      "search.results.email",
+      "search.results.debt",
+      "search.results.accountCode",
+      "search.results.entryType",
+      "search.entityTypes.${item.entity_type}",
+      "search.results.updated",
+      "search.results.view",
+      "search.results.edit",
+      "search.results.share",
+      "search.results.item",
+      "search.results.type",
+      "search.results.details",
+      "search.results.relevance",
+      "search.results.actions",
+      "search.results.noResults",
+      "search.results.noResultsDescription",
+      "search.sort.relevance",
+      "search.sort.date",
+      "search.sort.name",
+      "search.sort.updated",
+      "search.pagination.previous",
+      "search.pagination.next"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "SearchPresets",
+    "path": "components/search/SearchPresets.tsx",
+    "category": "other",
+    "type": "modal",
+    "translationKeys": [
+      "search.presets.entityTypes",
+      "search.presets.categories",
+      "search.presets.tags",
+      "search.presets.priceRange",
+      "search.presets.dateRange",
+      "search.presets.noFilters",
+      "search.presets.title",
+      "search.presets.description",
+      "search.presets.create",
+      "search.presets.createTitle",
+      "search.presets.name",
+      "search.presets.namePlaceholder",
+      "search.presets.descriptionPlaceholder",
+      "search.presets.makePublic",
+      "search.presets.makeDefault",
+      "common.cancel",
+      "common.save",
+      "search.presets.currentFilters",
+      "search.presets.saveCurrentFilters",
+      "search.presets.noPresets",
+      "search.presets.default",
+      "search.presets.public",
+      "search.presets.private",
+      "search.presets.created",
+      "search.presets.used",
+      "search.presets.times",
+      "search.presets.lastUsed",
+      "search.presets.apply",
+      "search.presets.deleteTitle",
+      "common.delete",
+      "search.presets.editTitle"
+    ],
+    "hardcodedStrings": [
+      "Failed to create preset:",
+      "Failed to update preset:"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "SearchFilters",
+    "path": "components/search/SearchFilters.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "search.filters.minPrice",
+      "search.filters.maxPrice",
+      "search.filters.fromDate",
+      "search.filters.selectDate",
+      "search.filters.toDate",
+      "search.filters.status.${status}",
+      "search.filters.title",
+      "search.filters.categories",
+      "search.filters.tags",
+      "search.filters.priceRange",
+      "search.entityTypes.${entityType}",
+      "search.filters.dateRange",
+      "search.filters.status.title",
+      "search.filters.customAttributes",
+      "search.filters.invoiceSpecific",
+      "search.filters.invoiceType",
+      "search.filters.invoiceType.${type}",
+      "search.filters.paymentStatus",
+      "search.filters.paymentStatus.${status}",
+      "search.filters.customerSpecific",
+      "search.filters.hasDebt",
+      "search.filters.debtRange",
+      "search.filters.minDebt",
+      "search.filters.maxDebt"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "SearchAnalytics",
+    "path": "components/search/SearchAnalytics.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "T",
+      "search.analytics.errorLoading",
+      "search.analytics.title",
+      "search.analytics.description",
+      "search.analytics.periods.1d",
+      "search.analytics.periods.7d",
+      "search.analytics.periods.30d",
+      "search.analytics.periods.90d",
+      "search.analytics.periods.custom",
+      "search.analytics.export",
+      "search.analytics.startDate",
+      "search.analytics.selectStartDate",
+      "search.analytics.endDate",
+      "search.analytics.selectEndDate",
+      "search.analytics.totalSearches",
+      "search.analytics.uniqueUsers",
+      "search.analytics.avgResults",
+      "search.analytics.avgResponseTime",
+      "search.analytics.mostSearchedTerms",
+      "search.analytics.searches",
+      "search.analytics.mostUsedFilters",
+      "search.analytics.uses",
+      "search.analytics.entityDistribution",
+      "search.entityTypes.${entityType}",
+      "search.analytics.searchPerformance",
+      "search.analytics.averageResponseTime",
+      "search.analytics.slowQueries",
+      "search.analytics.conversionRates",
+      "search.analytics.searchToView",
+      "search.analytics.searchToAction"
+    ],
+    "hardcodedStrings": [
+      "space-y-4",
+      "p-6 text-center"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "CategoryTreeFilter",
+    "path": "components/search/CategoryTreeFilter.tsx",
+    "category": "other",
+    "type": "interactive",
+    "translationKeys": [
+      "search.filters.selectAll",
+      "search.filters.searchCategories",
+      "search.filters.clearAll",
+      "search.filters.noCategoriesFound",
+      "search.filters.noCategories",
+      "search.filters.selectTopLevel"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "AttributeFilter",
+    "path": "components/search/AttributeFilter.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "search.filters.operators.equals",
+      "search.filters.operators.notEquals",
+      "search.filters.operators.contains",
+      "search.filters.operators.notContains",
+      "search.filters.operators.startsWith",
+      "search.filters.operators.endsWith",
+      "search.filters.operators.greaterThan",
+      "search.filters.operators.lessThan",
+      "search.filters.operators.greaterEqual",
+      "search.filters.operators.lessEqual",
+      "search.filters.operators.between",
+      "search.filters.operators.after",
+      "search.filters.operators.before",
+      "search.filters.operators.in",
+      "search.filters.operators.notIn",
+      "search.filters.enterValue",
+      "search.filters.min",
+      "search.filters.max",
+      "search.filters.enterNumber",
+      "search.filters.fromDate",
+      "search.filters.toDate",
+      "search.filters.selectDate",
+      "search.filters.selectOption",
+      "search.filters.true",
+      "search.filters.false",
+      "search.filters.attributeTypes.${attribute.type}",
+      "search.filters.operator",
+      "search.filters.value",
+      "search.filters.addAttributeFilter",
+      "search.filters.selectAttribute",
+      "common.cancel",
+      "search.filters.clearAllFilters",
+      "search.filters.noAttributesAvailable"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "Sidebar",
+    "path": "components/layout/Sidebar.tsx",
+    "category": "layout",
+    "type": "interactive",
+    "translationKeys": [
+      "app.title",
+      "common.gold_shop_management",
+      "common.professional_edition",
+      "common.version",
+      "common.system_online"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "MobileSidebar",
+    "path": "components/layout/MobileSidebar.tsx",
+    "category": "layout",
+    "type": "interactive",
+    "translationKeys": [
+      "common.gold_shop_management"
+    ],
+    "hardcodedStrings": [
+      "Open navigation menu",
+      "Close navigation menu"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      }
+    ]
+  },
+  {
+    "name": "MainLayout",
+    "path": "components/layout/MainLayout.tsx",
+    "category": "layout",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "Header",
+    "path": "components/layout/Header.tsx",
+    "category": "layout",
+    "type": "interactive",
+    "translationKeys": [
+      " ",
+      "common.gold_shop_management",
+      "common.professional_edition",
+      "common.search",
+      "common.language",
+      "common.profile",
+      "auth.logout"
+    ],
+    "hardcodedStrings": [
+      "View all notifications",
+      "Change language",
+      "User menu"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      }
+    ]
+  },
+  {
+    "name": "BreadcrumbNav",
+    "path": "components/layout/BreadcrumbNav.tsx",
+    "category": "layout",
+    "type": "interactive",
+    "translationKeys": [
+      "/",
+      "common.quick_access"
+    ],
+    "hardcodedStrings": [
+      "Go back",
+      "Go forward",
+      "Navigation history"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      }
+    ]
+  },
+  {
+    "name": "QRCardAnalytics",
+    "path": "components/invoices/QRCardAnalytics.tsx",
+    "category": "invoices",
+    "type": "modal",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "PriceOverrideDialog",
+    "path": "components/invoices/PriceOverrideDialog.tsx",
+    "category": "invoices",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "New Unit Price *",
+      "Reason for Override *",
+      "text-sm text-red-500 mt-1",
+      "text-sm text-red-500 mt-1"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "PaymentForm",
+    "path": "components/invoices/PaymentForm.tsx",
+    "category": "invoices",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Payment Amount *",
+      "Payment Method *",
+      "Description (Optional)",
+      "text-sm text-red-500 mt-1",
+      "text-xs text-gray-500 mt-1",
+      "text-sm text-red-500 mt-1",
+      "Select payment method"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 7 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "PDFGenerator",
+    "path": "components/invoices/PDFGenerator.tsx",
+    "category": "invoices",
+    "type": "utility",
+    "translationKeys": [
+      "blob"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "InvoicePreview",
+    "path": "components/invoices/InvoicePreview.tsx",
+    "category": "invoices",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "InvoiceList",
+    "path": "components/invoices/InvoiceList.tsx",
+    "category": "invoices",
+    "type": "table",
+    "translationKeys": [
+      "Cannot delete invoice with payments. Please cancel instead."
+    ],
+    "hardcodedStrings": [
+      "Unknown error",
+      "All Types",
+      "All Statuses",
+      "All Customers",
+      "All Workflows",
+      "All Dates"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 6 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "InvoiceForm",
+    "path": "components/invoices/InvoiceForm.tsx",
+    "category": "invoices",
+    "type": "form",
+    "translationKeys": [
+      "piece"
+    ],
+    "hardcodedStrings": [
+      "Choose Invoice Type *",
+      "Gold Invoice",
+      "General Invoice",
+      "Customer *",
+      "Gold Price (per gram) *",
+      "Select from Inventory (Optional)",
+      "Item Name *",
+      "Quantity *",
+      "Unit Price *",
+      "Weight (grams) *",
+      "Total Price",
+      "Require approval before affecting inventory stock",
+      "Notes (Optional)",
+      "Please select invoice type",
+      "text-sm text-red-500 mt-1",
+      "border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-100/50",
+      "text-sm text-red-500 mt-1",
+      "p-3 bg-green-100/50 rounded-lg border border-green-200",
+      "text-sm text-red-500 mt-1",
+      "text-sm text-red-500 mt-1",
+      "text-sm text-red-500 mt-1",
+      "text-sm text-red-500 mt-1",
+      "border-0 shadow-lg bg-gradient-to-br from-purple-50 to-violet-100/50",
+      "text-sm text-red-500 mt-1",
+      "col-span-6 md:col-span-2",
+      "text-sm text-red-500 mt-1",
+      "text-sm text-red-500",
+      "border-0 shadow-lg bg-gradient-to-br from-indigo-50 to-blue-100/50",
+      "Select a customer",
+      "Enter item name"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 30 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "UniversalInventoryItemForm",
+    "path": "components/inventory/UniversalInventoryItemForm.tsx",
+    "category": "inventory",
+    "type": "form",
+    "translationKeys": [
+      "inventory.select_option",
+      ",",
+      "inventory.edit_item",
+      "inventory.add_item",
+      "inventory.basic_info",
+      "inventory.attributes",
+      "inventory.images",
+      "inventory.advanced",
+      "inventory.item_name",
+      "inventory.name_required",
+      "inventory.enter_item_name",
+      "inventory.persian_name",
+      "inventory.enter_persian_name",
+      "inventory.category",
+      "inventory.category_required",
+      "inventory.select_category",
+      "inventory.sku",
+      "inventory.sku_required",
+      "inventory.auto_generated",
+      "inventory.unit_of_measure",
+      "inventory.piece",
+      "inventory.kilogram",
+      "inventory.gram",
+      "inventory.liter",
+      "inventory.meter",
+      "inventory.box",
+      "inventory.cost_price",
+      "inventory.cost_price_required",
+      "inventory.price_positive",
+      "inventory.sale_price",
+      "inventory.sale_price_required",
+      "inventory.suggested",
+      "inventory.currency",
+      "inventory.current_stock",
+      "inventory.stock_required",
+      "inventory.stock_positive",
+      "inventory.low_stock_threshold",
+      "inventory.threshold_positive",
+      "inventory.reorder_point",
+      "inventory.reorder_positive",
+      "inventory.description",
+      "inventory.enter_description",
+      "inventory.category_attributes",
+      "inventory.custom_attributes",
+      "inventory.add_attribute",
+      "inventory.attribute_name",
+      "inventory.enter_name",
+      "inventory.attribute_value",
+      "inventory.enter_value",
+      "inventory.tags",
+      "inventory.enter_tags_comma_separated",
+      "inventory.tags_help",
+      "inventory.product_images",
+      "inventory.upload_images",
+      "inventory.choose_files",
+      "inventory.identifiers",
+      "inventory.barcode",
+      "inventory.enter_barcode",
+      "inventory.generate",
+      "inventory.qr_code",
+      "inventory.enter_qr_code",
+      "inventory.gold_specific",
+      "inventory.weight_grams",
+      "inventory.advanced_stock",
+      "inventory.max_stock_level",
+      "inventory.optional",
+      "inventory.max_stock_help",
+      "common.cancel",
+      "common.saving",
+      "common.update",
+      "common.create"
+    ],
+    "hardcodedStrings": [
+      "{isSubmitting || isLoading ? (",
+      "text-sm text-red-600",
+      "Failed to save item:",
+      "max-w-4xl max-h-[90vh] overflow-hidden",
+      "text-sm text-red-600",
+      "space-y-2",
+      "text-sm text-red-600",
+      "space-y-2",
+      "text-sm text-red-600",
+      "space-y-2",
+      "text-sm text-red-600",
+      "space-y-2",
+      "text-sm text-red-600",
+      "text-xs text-muted-foreground",
+      "text-sm text-red-600",
+      "space-y-2",
+      "flex items-center justify-between"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 17 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "UniversalCategoryTreeView",
+    "path": "components/inventory/UniversalCategoryTreeView.tsx",
+    "category": "inventory",
+    "type": "interactive",
+    "translationKeys": [
+      "inventory.items",
+      "inventory.add_subcategory",
+      "inventory.edit_category",
+      "inventory.manage_images",
+      "inventory.delete_category",
+      "inventory.no_categories",
+      "inventory.create_first_category",
+      "inventory.add_category"
+    ],
+    "hardcodedStrings": [
+      "handleAdd()} variant=\"outline\">"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      }
+    ]
+  },
+  {
+    "name": "UniversalAdvancedSearch",
+    "path": "components/inventory/UniversalAdvancedSearch.tsx",
+    "category": "inventory",
+    "type": "card",
+    "translationKeys": [
+      "inventory.advanced_search",
+      "inventory.quick_filters",
+      "inventory.search",
+      "inventory.search_items",
+      "inventory.suggestions",
+      "inventory.sku",
+      "inventory.search_by_sku",
+      "inventory.barcode",
+      "inventory.search_by_barcode",
+      "inventory.categories",
+      "inventory.no_categories",
+      "inventory.tags",
+      "inventory.add_tag",
+      "inventory.available_tags",
+      "inventory.price_range",
+      "inventory.min_price",
+      "inventory.max_price",
+      "inventory.stock_filters",
+      "inventory.low_stock_only",
+      "inventory.out_of_stock_only",
+      "inventory.general_filters",
+      "inventory.has_images",
+      "inventory.show_inactive",
+      "inventory.sort_by",
+      "inventory.name",
+      "inventory.price",
+      "inventory.stock",
+      "inventory.created",
+      "inventory.updated",
+      "inventory.ascending",
+      "inventory.descending",
+      "inventory.preset_name",
+      "inventory.save_filters"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "ProductVariantManager",
+    "path": "components/inventory/ProductVariantManager.tsx",
+    "category": "inventory",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Variant Name *",
+      "SKU *",
+      "Purchase Price ($) *",
+      "Sell Price ($) *",
+      "Markup Percentage",
+      "Stock Quantity *",
+      "Min Stock Level",
+      "Weight (grams) *",
+      "Variant is active and available for sale",
+      "SELL PRICE",
+      "Attribute name"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 11 hardcoded strings with translation keys"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "ProductManagement",
+    "path": "components/inventory/ProductManagement.tsx",
+    "category": "inventory",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Product Name *",
+      "SKU *",
+      "Purchase Price ($) *",
+      "Sell Price ($) *",
+      "Markup (%)",
+      "Weight (grams) *",
+      "Current Stock *",
+      "Minimum Stock Level",
+      "Selected Categories",
+      "Variant Name",
+      "Variant SKU",
+      "Purchase Price ($)",
+      "Sell Price ($)",
+      "Stock Quantity",
+      "Meta Title",
+      "Meta Description",
+      "Product is active and visible",
+      "Failed to upload images:",
+      "Failed to save product:",
+      "max-w-6xl max-h-[90vh] overflow-hidden",
+      "text-sm text-red-600",
+      "space-y-2",
+      "text-sm text-red-600",
+      "space-y-2",
+      "SEO-friendly title for search engines",
+      "Brief description for search engine results"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 26 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "MultiCategorySelector",
+    "path": "components/inventory/MultiCategorySelector.tsx",
+    "category": "inventory",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Selected Categories:"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "InventoryList",
+    "path": "components/inventory/InventoryList.tsx",
+    "category": "inventory",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "setShowForm(true)} className=\"flex items-center gap-2\">",
+      "Are you sure you want to delete",
+      "Failed to delete item:",
+      "All Categories"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "InventoryItemForm",
+    "path": "components/inventory/InventoryItemForm.tsx",
+    "category": "inventory",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Product Image",
+      "Item Name *",
+      "Category *",
+      "Weight (grams) *",
+      "Purchase Price ($) *",
+      "Sell Price ($) *",
+      "Current Stock *",
+      "Minimum Stock Level",
+      "Failed to save item:",
+      "text-sm text-red-600",
+      "space-y-2",
+      "text-sm text-red-600",
+      "grid grid-cols-1 md:grid-cols-3 gap-4",
+      "text-sm text-red-600",
+      "space-y-2",
+      "text-sm text-red-600",
+      "space-y-2",
+      "text-sm text-red-600",
+      "text-xs text-muted-foreground",
+      "text-sm text-red-600",
+      "space-y-2",
+      "text-sm text-red-600",
+      "space-y-2",
+      "Select category"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 24 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "InventoryIntelligenceDashboard",
+    "path": "components/inventory/InventoryIntelligenceDashboard.tsx",
+    "category": "inventory",
+    "type": "card",
+    "translationKeys": [
+      "T"
+    ],
+    "hardcodedStrings": [
+      "Last 7 Days",
+      "text-sm text-muted-foreground",
+      "An unknown error occurred",
+      "Performance Overview",
+      "Turnover Analysis Summary",
+      "Detailed Turnover Analysis",
+      "Stock Optimization Recommendations",
+      "Demand Forecasting",
+      "Seasonal Analysis",
+      "Export Inventory Intelligence"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 10 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "ImageGalleryManager",
+    "path": "components/inventory/ImageGalleryManager.tsx",
+    "category": "inventory",
+    "type": "modal",
+    "translationKeys": [
+      "Maximum ${maxImages} images allowed",
+      "a",
+      "/"
+    ],
+    "hardcodedStrings": [
+      "Alt Text",
+      "Set as primary image",
+      "Save Changes",
+      "Failed to upload images:",
+      "Failed to upload images",
+      "Failed to download image:",
+      "space-y-4"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 7 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "CategoryTreeView",
+    "path": "components/inventory/CategoryTreeView.tsx",
+    "category": "inventory",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "onCategoryAdd()}>",
+      "Add subcategory",
+      "Edit category",
+      "Delete category"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CategoryTemplateManager",
+    "path": "components/inventory/CategoryTemplateManager.tsx",
+    "category": "inventory",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Template Name *",
+      "Default Icon",
+      "Default Color",
+      "setPreviewTemplate(null)}>Close",
+      "Failed to duplicate template:",
+      "Failed to delete template:",
+      "Failed to save template:",
+      "flex items-center justify-between",
+      "text-sm text-red-600",
+      "space-y-2",
+      "Preview template",
+      "Edit template",
+      "Duplicate template",
+      "Delete template"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 14 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CategoryManager",
+    "path": "components/inventory/CategoryManager.tsx",
+    "category": "inventory",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "handleCreateCategory()} variant=\"gradient-teal\" className=\"flex items-center gap-2\">",
+      "Failed to delete category:",
+      "Failed to save category:",
+      "Failed to bulk update categories:",
+      "Failed to bulk move categories:",
+      "Failed to create template:",
+      "Failed to duplicate template:",
+      "text/plain",
+      "Failed to drop category:"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 9 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CategoryForm",
+    "path": "components/inventory/CategoryForm.tsx",
+    "category": "inventory",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Category Name *",
+      "Parent Category",
+      "Category Icon",
+      "Category Color",
+      "Sort Order",
+      "Attribute Name",
+      "Failed to save category:",
+      "max-w-4xl max-h-[90vh] overflow-y-auto",
+      "text-sm text-red-600",
+      "space-y-2",
+      "Choose a template (optional)",
+      "Select parent category (optional)",
+      "Enter emoji or leave empty"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 13 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CategoryBulkOperations",
+    "path": "components/inventory/CategoryBulkOperations.tsx",
+    "category": "inventory",
+    "type": "modal",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Parent Category",
+      "New Parent Category",
+      "Force delete (products will be moved to uncategorized)",
+      "Bulk update failed:",
+      "Bulk move failed:",
+      "Bulk delete failed:",
+      "flex items-center justify-between",
+      "Leave empty for no change",
+      "Leave empty for no change",
+      "Select new parent"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 10 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "BulkOperations",
+    "path": "components/inventory/BulkOperations.tsx",
+    "category": "inventory",
+    "type": "modal",
+    "translationKeys": [
+      "Please select at least one field to update"
+    ],
+    "hardcodedStrings": [
+      "Change Category",
+      "Minimum Stock Level",
+      "Item Status",
+      "Failed to delete items:",
+      "Please select at least one field to update",
+      "Failed to update items:",
+      "border-blue-200 bg-blue-50",
+      "Select new category (optional)",
+      "Leave empty for no change",
+      "Select status (optional)"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 10 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "BulkInventoryOperations",
+    "path": "components/inventory/BulkInventoryOperations.tsx",
+    "category": "inventory",
+    "type": "modal",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "New Category",
+      "Price Adjustment Type",
+      "Apply To",
+      "Stock Adjustment Type",
+      "More Operations",
+      "Export Selected",
+      "Selected Items",
+      "Unknown error",
+      "Export failed:",
+      "text-sm text-red-600",
+      "Select category"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 11 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "AdvancedFilterPanel",
+    "path": "components/inventory/AdvancedFilterPanel.tsx",
+    "category": "inventory",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Quick Filters",
+      "Weight Range (grams)",
+      "Min (g)",
+      "Max (g)",
+      "Status & General",
+      "Product Status",
+      "Stock Status",
+      "In Stock",
+      "Out of Stock",
+      "Sort By"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 10 hardcoded strings with translation keys"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "index",
+    "path": "components/image-management/index.ts",
+    "category": "other",
+    "type": "utility",
+    "translationKeys": [
+      "./ImageGallery",
+      "./ImageViewer",
+      "./ImageUpload",
+      "./CategoryImageManager"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "ImageViewer",
+    "path": "components/image-management/ImageViewer.tsx",
+    "category": "other",
+    "type": "modal",
+    "translationKeys": [
+      "a"
+    ],
+    "hardcodedStrings": [
+      "Failed to download image:",
+      "0 Bytes",
+      "text-center text-muted-foreground",
+      "w-80 bg-gradient-to-b from-gray-900 to-gray-800 border-l border-gray-600 flex flex-col shadow-xl",
+      "absolute inset-0 flex items-center justify-center bg-black/50"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 5 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "ImageUpload",
+    "path": "components/image-management/ImageUpload.tsx",
+    "category": "other",
+    "type": "modal",
+    "translationKeys": [
+      "/"
+    ],
+    "hardcodedStrings": [
+      "Advanced Options",
+      "Alt Text",
+      "Set as primary image",
+      "{isUploading ? (",
+      "Only one file allowed",
+      "Maximum ${maxFiles} files allowed",
+      "Upload failed",
+      "Upload failed"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 8 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "ImageGallery",
+    "path": "components/image-management/ImageGallery.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "a"
+    ],
+    "hardcodedStrings": [
+      "Failed to load images",
+      "Failed to delete image",
+      "Failed to update image",
+      "Failed to update sort order:",
+      "Failed to download image:",
+      "text-center p-8",
+      "bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 7 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "CategoryImageManager",
+    "path": "components/image-management/CategoryImageManager.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Failed to load images",
+      "Failed to upload icon",
+      "bg-gradient-to-r from-red-50 to-rose-50 border-0 rounded-lg p-4 shadow-lg"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "PaymentForm",
+    "path": "components/customers/PaymentForm.tsx",
+    "category": "customers",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Payment Amount *",
+      "Payment Method *",
+      "Description (Optional)",
+      "Please enter a valid payment amount",
+      "Please select a payment method",
+      "Failed to record payment",
+      "text-sm text-destructive",
+      "text-xs text-muted-foreground",
+      "text-sm text-destructive",
+      "space-y-2",
+      "p-4 bg-green-50 rounded-lg",
+      "Select payment method",
+      "Payment notes or reference"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 13 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CustomerProfile",
+    "path": "components/customers/CustomerProfile.tsx",
+    "category": "customers",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "CustomerList",
+    "path": "components/customers/CustomerList.tsx",
+    "category": "customers",
+    "type": "table",
+    "translationKeys": [
+      "customers.customer",
+      "customers.contact_information",
+      "customers.no_contact_info",
+      "customers.total_purchases",
+      "customers.current_debt",
+      "customers.last_purchase",
+      "customers.never",
+      "customers.status",
+      "customers.with_debt",
+      "customers.clear",
+      "customers.view_profile",
+      "customers.edit",
+      "customers.title",
+      "customers.description",
+      "customers.add_customer",
+      "customers.total_customers",
+      "customers.clear_status",
+      "customers.directory",
+      "customers.no_customers_found_search",
+      "customers.no_customers_found",
+      "common.search_placeholder"
+    ],
+    "hardcodedStrings": [
+      "Export Selected"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      }
+    ]
+  },
+  {
+    "name": "CustomerForm",
+    "path": "components/customers/CustomerForm.tsx",
+    "category": "customers",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "{isLoading ? (",
+      "Customer name is required",
+      "Please enter a valid email address",
+      "Please enter a valid phone number",
+      "Failed to save customer",
+      "Enter customer name",
+      "Enter phone number",
+      "Enter email address",
+      "Enter full address"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 9 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "ComprehensiveCustomerForm",
+    "path": "components/customers/ComprehensiveCustomerForm.tsx",
+    "category": "customers",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Customer Name *",
+      "Phone Number",
+      "Email Address",
+      "Customer Type",
+      "Street Address",
+      "State/Province",
+      "Postal Code",
+      "National ID / SSN",
+      "Date of Birth",
+      "Contact Name",
+      "Contact Phone",
+      "Credit Limit ($)",
+      "Payment Terms (Days)",
+      "Default Discount (%)",
+      "Tax ID",
+      "Tax Exempt",
+      "Preferred Contact Method",
+      "Preferred Metal",
+      "Jewelry Style Preference",
+      "Anniversary Date",
+      "Receive Marketing Emails",
+      "Subscribe to Newsletter",
+      "{isLoading ? (",
+      "Customer name is required",
+      "Please enter a valid email address",
+      "Please enter a valid phone number",
+      "National ID must be at least 5 characters",
+      "Date of birth cannot be in the future",
+      "Credit limit cannot be negative",
+      "Payment terms must be between 0 and 365 days",
+      "Discount percentage must be between 0 and 100",
+      "Failed to save customer",
+      "border-red-500",
+      "text-sm text-red-500 mt-1",
+      "border-red-500",
+      "text-sm text-red-500 mt-1",
+      "border-red-500",
+      "text-sm text-red-500 mt-1",
+      "border-red-500",
+      "text-sm text-red-500 mt-1",
+      "border-red-500",
+      "text-sm text-red-500 mt-1",
+      "border-red-500",
+      "text-sm text-red-500 mt-1",
+      "border-red-500",
+      "text-sm text-red-500 mt-1",
+      "border-red-500",
+      "text-sm text-red-500 mt-1",
+      "Enter customer name",
+      "Select customer type",
+      "1234 Main Street, Apt 5B",
+      "New York",
+      "New York",
+      "United States",
+      "Select gender",
+      "Software Engineer",
+      "Jane Doe Smith",
+      "Select relationship",
+      "Select contact method"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 59 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "TokenManagementInterface",
+    "path": "components/auth/TokenManagementInterface.tsx",
+    "category": "auth",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "RoleBasedAccess",
+    "path": "components/auth/RoleBasedAccess.tsx",
+    "category": "auth",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "AuthGuard",
+    "path": "components/auth/AuthGuard.tsx",
+    "category": "auth",
+    "type": "interactive",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "min-h-screen flex items-center justify-center bg-gray-50",
+      "min-h-screen flex items-center justify-center bg-gray-50 p-4",
+      "min-h-screen flex items-center justify-center bg-gray-50 p-4"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "index",
+    "path": "components/analytics/index.ts",
+    "category": "analytics",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "TrendIndicator",
+    "path": "components/analytics/TrendIndicator.tsx",
+    "category": "analytics",
+    "type": "utility",
+    "translationKeys": [
+      "en-US"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "TimeRangeSelector",
+    "path": "components/analytics/TimeRangeSelector.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Start Date",
+      "End Date",
+      "Apply Changes",
+      "Enter target value"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "StockOptimizationDashboard",
+    "path": "components/analytics/StockOptimizationDashboard.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "refetch()} variant=\"outline\" size=\"sm\" className=\"gap-2\">",
+      "Select priority",
+      "Select status"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "SparklineChart",
+    "path": "components/analytics/SparklineChart.tsx",
+    "category": "analytics",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "SeasonalAnalysis",
+    "path": "components/analytics/SeasonalAnalysis.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Failed to fetch seasonal patterns",
+      "An error occurred",
+      "border-0 shadow-lg bg-gradient-to-br from-red-50 to-pink-100/50",
+      "mt-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl",
+      "Analysis period"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 5 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "MetricCard",
+    "path": "components/analytics/MetricCard.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "KPIWidget",
+    "path": "components/analytics/KPIWidget.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "KPIDashboard",
+    "path": "components/analytics/KPIDashboard.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [
+      "T"
+    ],
+    "hardcodedStrings": [
+      "Error parsing WebSocket message:",
+      "KPI WebSocket disconnected",
+      "KPI WebSocket error:",
+      "An unexpected error occurred"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "ForecastingDashboard",
+    "path": "components/analytics/ForecastingDashboard.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "refetch()} variant=\"outline\" size=\"sm\" className=\"gap-2\">",
+      "Select period",
+      "Select category",
+      "Select model"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "ExportDialog",
+    "path": "components/analytics/ExportDialog.tsx",
+    "category": "analytics",
+    "type": "form",
+    "translationKeys": [
+      "T"
+    ],
+    "hardcodedStrings": [
+      "Export Format",
+      "Include in Export",
+      "Charts and visualizations",
+      "Raw data tables",
+      "Date range information",
+      "File Name",
+      "Enter filename"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 7 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      }
+    ]
+  },
+  {
+    "name": "DateRangePicker",
+    "path": "components/analytics/DateRangePicker.tsx",
+    "category": "analytics",
+    "type": "interactive",
+    "translationKeys": [
+      "T"
+    ],
+    "hardcodedStrings": [
+      "Select range",
+      "Start date",
+      "End date"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      }
+    ]
+  },
+  {
+    "name": "CrossSellingAnalyzer",
+    "path": "components/analytics/CrossSellingAnalyzer.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Failed to fetch cross-selling opportunities",
+      "An error occurred",
+      "border-0 shadow-lg bg-gradient-to-br from-red-50 to-pink-100/50",
+      "mt-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CostAnalysisDashboard",
+    "path": "components/analytics/CostAnalysisDashboard.tsx",
+    "category": "analytics",
+    "type": "chart",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "View Details",
+      "Failed to fetch cost analysis data",
+      "An error occurred",
+      "space-y-6",
+      "Select category"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 5 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CategoryPerformanceAnalyzer",
+    "path": "components/analytics/CategoryPerformanceAnalyzer.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Failed to fetch category performance data",
+      "An error occurred",
+      "border-0 shadow-lg bg-gradient-to-br from-red-50 to-pink-100/50",
+      "mt-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl",
+      "Filter by tier",
+      "Sort by"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 6 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CacheManagementDashboard",
+    "path": "components/analytics/CacheManagementDashboard.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Failed to fetch cache stats",
+      "Failed to fetch cache stats",
+      "Failed to fetch cache health",
+      "Failed to fetch cache health",
+      "Failed to fetch performance history",
+      "Failed to fetch performance history",
+      "Failed to fetch cache keys",
+      "Failed to fetch cache keys",
+      "Failed to fetch cache configuration",
+      "Failed to fetch cache configuration",
+      "Failed to invalidate cache",
+      "Failed to invalidate cache",
+      "Failed to warm cache",
+      "Failed to warm cache",
+      "Failed to cleanup cache",
+      "Failed to cleanup cache",
+      "Failed to run performance test",
+      "Failed to run performance test",
+      "Failed to run stress test",
+      "Failed to run stress test",
+      "Failed to delete key",
+      "Failed to delete key",
+      "border-0 shadow-lg bg-gradient-to-r from-slate-50 to-slate-100/80"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 23 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "AnalyticsFilters",
+    "path": "components/analytics/AnalyticsFilters.tsx",
+    "category": "analytics",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Clear All ({activeFilterCount})"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "AnalyticsCard",
+    "path": "components/analytics/AnalyticsCard.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "AlertsPanel",
+    "path": "components/analytics/AlertsPanel.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [
+      "en-US"
+    ],
+    "hardcodedStrings": [
+      "Acknowledge alert",
+      "View details",
+      "Dismiss alert"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      }
+    ]
+  },
+  {
+    "name": "AlertNotificationPanel",
+    "path": "components/analytics/AlertNotificationPanel.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [
+      "ws://localhost:8000/alerts/ws"
+    ],
+    "hardcodedStrings": [
+      "Check Now",
+      "ws://localhost:8000/alerts/ws",
+      "Alert WebSocket error:",
+      "Failed to connect to alert WebSocket:",
+      "Failed to fetch alert data",
+      "Error fetching alert data:",
+      "Failed to acknowledge alert",
+      "Error acknowledging alert:",
+      "Failed to evaluate alerts",
+      "Error evaluating alerts:",
+      "mb-4 border-0 shadow-lg bg-gradient-to-r from-red-50 to-red-100/50",
+      "grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 12 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "AdvancedDashboard",
+    "path": "components/analytics/AdvancedDashboard.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [
+      "T"
+    ],
+    "hardcodedStrings": [
+      "Last 24 Hours",
+      "flex items-center justify-center h-96",
+      "text-sm text-muted-foreground",
+      "space-y-6",
+      "Time-Based Analytics",
+      "Sales Analytics",
+      "Inventory Analytics",
+      "Customer Analytics",
+      "Export Analytics"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 9 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "DesignSystemDemo",
+    "path": "components/design-system/DesignSystemDemo.tsx",
+    "category": "other",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "space-y-2"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "WorkflowConfiguration",
+    "path": "components/business-adaptability/WorkflowConfiguration.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "UnitOfMeasureManagement",
+    "path": "components/business-adaptability/UnitOfMeasureManagement.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "TerminologyManagement",
+    "path": "components/business-adaptability/TerminologyManagement.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "a"
+    ],
+    "hardcodedStrings": [
+      "Term Key",
+      "Term Value",
+      "Default Value",
+      "Current Value",
+      "{isSaving ? (",
+      "Failed to save terminology changes:",
+      "Failed to add new term:",
+      "application/json",
+      "border-red-200 bg-red-50",
+      "border-0 shadow-lg"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 10 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "PricingModelConfiguration",
+    "path": "components/business-adaptability/PricingModelConfiguration.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "OperationalSettingsForm",
+    "path": "components/business-adaptability/OperationalSettingsForm.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "MultiLanguageSupport",
+    "path": "components/business-adaptability/MultiLanguageSupport.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "LocalizationSettingsForm",
+    "path": "components/business-adaptability/LocalizationSettingsForm.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "FeatureToggleDashboard",
+    "path": "components/business-adaptability/FeatureToggleDashboard.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Failed to toggle feature:",
+      "flex items-center justify-center p-8",
+      "border-red-200 bg-red-50",
+      "border-0 shadow-lg"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CustomFieldConfiguration",
+    "path": "components/business-adaptability/CustomFieldConfiguration.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "\\n"
+    ],
+    "hardcodedStrings": [
+      "Options (one per line)",
+      "Minimum Value",
+      "Maximum Value",
+      "Minimum Length",
+      "Maximum Length",
+      "Entity Type",
+      "Search Fields",
+      "Field Name *",
+      "Field Key",
+      "Field Type *",
+      "Field Group",
+      "Display Name *",
+      "Persian Display Name",
+      "Placeholder Text",
+      "Help Text",
+      "Display Order",
+      "Column Span",
+      "Show in List",
+      "Show in Detail",
+      "Required Field",
+      "Failed to create custom field:",
+      "border-red-200 bg-red-50",
+      "border-0 shadow-lg",
+      "Option 1&#10;Option 2&#10;Option 3",
+      "Describe what this field is used for",
+      "Name shown to users",
+      "Placeholder text for input",
+      "Additional help for users"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 28 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "BusinessTypeSelectionWizard",
+    "path": "components/business-adaptability/BusinessTypeSelectionWizard.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "BusinessTemplateGallery",
+    "path": "components/business-adaptability/BusinessTemplateGallery.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "BusinessSetupFlow",
+    "path": "components/business-adaptability/BusinessSetupFlow.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Business Name *",
+      "Business Type",
+      "Business Address",
+      "Phone Number",
+      "Email Address",
+      "Currency *",
+      "Timezone *",
+      "Default Language *",
+      "Date Format",
+      "Cancel Setup",
+      "Next Step",
+      "{isSubmitting ? (",
+      "Failed to create business configuration",
+      "border-red-200 bg-red-50",
+      "flex items-center justify-between",
+      "Enter your business name",
+      "Enter your business address",
+      "Enter phone number",
+      "Enter email address",
+      "Select currency",
+      "Select timezone",
+      "Select language",
+      "Select date format"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 23 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "BusinessMigrationWizard",
+    "path": "components/business-adaptability/BusinessMigrationWizard.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "BusinessInformationForm",
+    "path": "components/business-adaptability/BusinessInformationForm.tsx",
+    "category": "other",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Business Name *",
+      "Email Address",
+      "Business Address",
+      "Phone Number",
+      "Tax ID",
+      "Registration Number",
+      "{isSaving ? ("
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 7 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "BusinessConfigurationDashboard",
+    "path": "components/business-adaptability/BusinessConfigurationDashboard.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "a"
+    ],
+    "hardcodedStrings": [
+      "border-red-200 bg-red-50",
+      "border-0 shadow-lg",
+      "Validation failed:",
+      "application/json",
+      "Export failed:",
+      "space-y-6",
+      "space-y-6"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 7 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "BusinessAnalyticsDashboard",
+    "path": "components/business-adaptability/BusinessAnalyticsDashboard.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "ProfitLossAnalysis",
+    "path": "components/accounting/ProfitLossAnalysis.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "This Month",
+      "en-US",
+      "Unknown error"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "JournalEntryManager",
+    "path": "components/accounting/JournalEntryManager.tsx",
+    "category": "other",
+    "type": "form",
+    "translationKeys": [
+      "Enter reversal reason:",
+      "T"
+    ],
+    "hardcodedStrings": [
+      "Source Type",
+      "Date Range",
+      "Entry Date *",
+      "Source Type *",
+      "Description *",
+      "Description (Persian)",
+      "Reference Number",
+      "Journal Lines",
+      "Entry Number",
+      "Reference Number",
+      "Journal Lines",
+      "Journal entry created successfully",
+      "Failed to create journal entry",
+      "Failed to update journal entry",
+      "Failed to post journal entry",
+      "Please provide a reversal reason",
+      "Failed to reverse journal entry",
+      "Failed to delete journal entry",
+      "border-0 shadow-lg border-red-200 bg-red-50",
+      "text-red-600",
+      "Journal entry must be balanced (debits must equal credits)",
+      "Journal entry description",
+      "Reference number",
+      "Select account",
+      "Line description"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 25 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "InstallmentAccountsInterface",
+    "path": "components/accounting/InstallmentAccountsInterface.tsx",
+    "category": "other",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "IncomeLedger",
+    "path": "components/accounting/IncomeLedger.tsx",
+    "category": "other",
+    "type": "table",
+    "translationKeys": [
+      "T",
+      "accounting.paid",
+      "accounting.partial",
+      "accounting.unpaid",
+      "accounting.total_revenue",
+      "accounting.outstanding_amount",
+      "accounting.total_invoices",
+      "accounting.income_ledger",
+      "accounting.filters",
+      "accounting.refresh",
+      "accounting.loading_income",
+      "accounting.invoice_number",
+      "accounting.customer",
+      "accounting.total_amount",
+      "accounting.paid_amount",
+      "accounting.remaining",
+      "accounting.status",
+      "accounting.date",
+      "accounting.no_income_entries"
+    ],
+    "hardcodedStrings": [
+      "Clear Filters",
+      "Unknown error",
+      "All statuses"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "GoldWeightLedger",
+    "path": "components/accounting/GoldWeightLedger.tsx",
+    "category": "other",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Clear Filters",
+      "Unknown error",
+      "All types"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "ExpenseLedger",
+    "path": "components/accounting/ExpenseLedger.tsx",
+    "category": "other",
+    "type": "table",
+    "translationKeys": [
+      "accounting.total_expenses",
+      "accounting.total_entries",
+      "accounting.categories",
+      "accounting.expense_ledger",
+      "accounting.add_expense",
+      "accounting.filters",
+      "accounting.refresh",
+      "accounting.category",
+      "accounting.amount",
+      "accounting.description",
+      "accounting.date",
+      "accounting.reference"
+    ],
+    "hardcodedStrings": [
+      "Transaction Date",
+      "Clear Filters",
+      "Unknown error",
+      "Select category",
+      "All categories"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 5 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "DebtTracking",
+    "path": "components/accounting/DebtTracking.tsx",
+    "category": "other",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Clear Filters",
+      "Unknown error",
+      "No limit"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CheckManager",
+    "path": "components/accounting/CheckManager.tsx",
+    "category": "other",
+    "type": "form",
+    "translationKeys": [
+      "T"
+    ],
+    "hardcodedStrings": [
+      "Amount Range",
+      "Check Number *",
+      "Check Type *",
+      "Bank Name *",
+      "Bank Name (Persian)",
+      "Branch Name",
+      "Check Amount *",
+      "Check Date *",
+      "Due Date *",
+      "Drawer Name",
+      "Payee Name",
+      "Subsidiary Account",
+      "Notes (Persian)",
+      "Post-dated Check",
+      "Check Number",
+      "Bank Name",
+      "Check Date",
+      "Due Date",
+      "Deposit Date",
+      "Clear Date",
+      "Drawer (Check Writer)",
+      "Payee (Recipient)",
+      "Notes (Persian)",
+      "Post-dated",
+      "Bounce Fee",
+      "New Status *",
+      "text-yellow-600",
+      "Invalid check data for creation",
+      "Failed to create check",
+      "Failed to update check",
+      "Failed to update check status",
+      "Failed to delete check",
+      "border-0 shadow-lg border-red-200 bg-red-50",
+      "text-red-600",
+      "Check number",
+      "Bank name",
+      "Branch name",
+      "Check writer",
+      "Check recipient",
+      "Select subsidiary account"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 40 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "CheckManagementSystem",
+    "path": "components/accounting/CheckManagementSystem.tsx",
+    "category": "other",
+    "type": "table",
+    "translationKeys": [
+      "T",
+      "check_created_successfully",
+      "error_creating_check",
+      "check_status_updated",
+      "error_updating_check_status",
+      "confirm_delete_check",
+      "check_deleted_successfully",
+      "error_deleting_check",
+      "pending",
+      "deposited",
+      "cleared",
+      "bounced",
+      "cancelled",
+      "received",
+      "issued",
+      "check_management",
+      "manage_received_issued_checks",
+      "add_check",
+      "refresh",
+      "filters",
+      "check_type",
+      "select_type",
+      "status",
+      "select_status",
+      "bank_name",
+      "enter_bank_name",
+      "search",
+      "search_checks",
+      "checks_list",
+      "export",
+      "loading_checks",
+      "check_number",
+      "amount",
+      "check_date",
+      "due_date",
+      "type",
+      "actions",
+      "currency",
+      "add_new_check",
+      "enter_check_number",
+      "check_amount",
+      "enter_amount",
+      "notes",
+      "enter_notes",
+      "cancel",
+      "create_check",
+      "update_check_status",
+      "bank",
+      "new_status",
+      "select_new_status"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "ChartOfAccountsManager",
+    "path": "components/accounting/ChartOfAccountsManager.tsx",
+    "category": "other",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Include Inactive",
+      "Account Code *",
+      "Account Type *",
+      "Account Name *",
+      "Account Name (Persian)",
+      "Parent Account",
+      "Account Category *",
+      "Description (Persian)",
+      "Allow Manual Entries",
+      "Requires Subsidiary Account",
+      "text-green-600",
+      "Invalid account data for creation",
+      "Failed to create account",
+      "Failed to update account",
+      "Failed to delete account",
+      "border-0 shadow-lg border-red-200 bg-red-50",
+      "text-red-600",
+      "Filter by type",
+      "Select parent account"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 19 hardcoded strings with translation keys"
+      },
+      {
+        "type": "form",
+        "priority": "high",
+        "message": "Form labels should use translation keys for better accessibility"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "CashBankLedger",
+    "path": "components/accounting/CashBankLedger.tsx",
+    "category": "other",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Clear Filters",
+      "Unknown error",
+      "All types",
+      "All methods"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "AccountingDashboard",
+    "path": "components/accounting/AccountingDashboard.tsx",
+    "category": "other",
+    "type": "card",
+    "translationKeys": [
+      "accounting.enhanced_dashboard"
+    ],
+    "hardcodedStrings": [
+      "en-US",
+      "container mx-auto p-6",
+      "text-red-600"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "TurnoverAnalysisChart",
+    "path": "components/inventory/charts/TurnoverAnalysisChart.tsx",
+    "category": "inventory",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "StockOptimizationChart",
+    "path": "components/inventory/charts/StockOptimizationChart.tsx",
+    "category": "inventory",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Take Action"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "SeasonalAnalysisChart",
+    "path": "components/inventory/charts/SeasonalAnalysisChart.tsx",
+    "category": "inventory",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "PerformanceMetricsChart",
+    "path": "components/inventory/charts/PerformanceMetricsChart.tsx",
+    "category": "inventory",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "DemandForecastChart",
+    "path": "components/inventory/charts/DemandForecastChart.tsx",
+    "category": "inventory",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "SummaryCards",
+    "path": "components/dashboard/SummaryCards.tsx",
+    "category": "dashboard",
+    "type": "utility",
+    "translationKeys": [
+      "dashboard.no_data_available",
+      "dashboard.total_sales_today",
+      "dashboard.vs_last_week",
+      "dashboard.week",
+      "dashboard.month",
+      "dashboard.inventory_value",
+      "dashboard.items_low_stock",
+      "dashboard.stock_levels_healthy",
+      "dashboard.low_stock",
+      "dashboard.customer_debt",
+      "dashboard.unpaid_invoices",
+      "dashboard.all_invoices_current",
+      "dashboard.overdue",
+      "dashboard.gold_price_per_gram",
+      "dashboard.from_last_week",
+      "dashboard.market_rate"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "ModernChart",
+    "path": "components/dashboard/ModernChart.tsx",
+    "category": "dashboard",
+    "type": "chart",
+    "translationKeys": [
+      "a",
+      "dashboard.refresh_chart",
+      "dashboard.export_chart",
+      "dashboard.exit_fullscreen",
+      "dashboard.fullscreen",
+      "charts.no_data",
+      "charts.loading"
+    ],
+    "hardcodedStrings": [
+      "{isFullscreen ? ("
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      }
+    ]
+  },
+  {
+    "name": "MetricCard",
+    "path": "components/dashboard/MetricCard.tsx",
+    "category": "dashboard",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "DashboardCharts",
+    "path": "components/dashboard/DashboardCharts.tsx",
+    "category": "dashboard",
+    "type": "utility",
+    "translationKeys": [
+      "common.loading",
+      "dashboard.sales_trends",
+      "dashboard.sales_trends_desc",
+      "dashboard.sales_by_category",
+      "dashboard.sales_by_category_desc",
+      "dashboard.top_products",
+      "dashboard.top_products_desc"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "AlertsPanel",
+    "path": "components/dashboard/AlertsPanel.tsx",
+    "category": "dashboard",
+    "type": "card",
+    "translationKeys": [
+      "dashboard.days_overdue",
+      "dashboard.alerts_notifications",
+      "dashboard.alerts",
+      "dashboard.unread",
+      "dashboard.critical",
+      "dashboard.hide_dismissed",
+      "dashboard.show_dismissed",
+      "dashboard.tab_all",
+      "dashboard.tab_critical",
+      "dashboard.tab_unread",
+      "common.action_required",
+      "common.${alert.priority}",
+      "common.dismiss_alert",
+      "dashboard.all_clear",
+      "dashboard.no_alerts"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "index",
+    "path": "components/analytics/charts/index.ts",
+    "category": "analytics",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "TrendChart",
+    "path": "components/analytics/charts/TrendChart.tsx",
+    "category": "analytics",
+    "type": "chart",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "TimeBasedChart",
+    "path": "components/analytics/charts/TimeBasedChart.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "SalesAnalyticsChart",
+    "path": "components/analytics/charts/SalesAnalyticsChart.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "InventoryAnalyticsChart",
+    "path": "components/analytics/charts/InventoryAnalyticsChart.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "InteractiveChart",
+    "path": "components/analytics/charts/InteractiveChart.tsx",
+    "category": "analytics",
+    "type": "chart",
+    "translationKeys": [
+      "."
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "HeatmapChart",
+    "path": "components/analytics/charts/HeatmapChart.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "CustomerAnalyticsChart",
+    "path": "components/analytics/charts/CustomerAnalyticsChart.tsx",
+    "category": "analytics",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "ChartExportMenu",
+    "path": "components/analytics/charts/ChartExportMenu.tsx",
+    "category": "analytics",
+    "type": "modal",
+    "translationKeys": [
+      "png",
+      "svg",
+      "pdf",
+      "csv"
+    ],
+    "hardcodedStrings": [
+      "Public Access",
+      "Allow Comments",
+      "Share URL",
+      "Width (px)",
+      "Height (px)",
+      "Show Controls",
+      "Embed Code",
+      "Chart element not found",
+      "No data available for CSV export",
+      "Export failed",
+      "Export failed:",
+      "Unknown error",
+      "Chart configuration not available",
+      "Failed to generate share link",
+      "Failed to copy to clipboard",
+      "Enter chart title",
+      "Enter chart description",
+      "Add tag"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 18 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "ChartAnnotations",
+    "path": "components/analytics/charts/ChartAnnotations.tsx",
+    "category": "analytics",
+    "type": "modal",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Add Reply",
+      "Create Annotation",
+      "Failed to create annotation",
+      "Failed to update annotation",
+      "Failed to delete annotation",
+      "Failed to delete annotation"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 6 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "UniversalInventory",
+    "path": "pages/UniversalInventory.tsx",
+    "category": "page",
+    "type": "table",
+    "translationKeys": [
+      "inventory.out_of_stock",
+      "inventory.low_stock",
+      "inventory.in_stock",
+      "inventory.item",
+      "inventory.category",
+      "inventory.uncategorized",
+      "inventory.pricing",
+      "inventory.cost",
+      "inventory.stock",
+      "inventory.actions",
+      "inventory.sale",
+      "inventory.loading",
+      "inventory.failed_to_load",
+      "inventory.universal_management",
+      "inventory.universal_description",
+      "common.refresh",
+      "inventory.filters",
+      "inventory.active",
+      "inventory.add_item",
+      "inventory.total_items",
+      "inventory.total_value",
+      "inventory.categories",
+      "inventory.items",
+      "inventory.alerts",
+      "inventory.search_placeholder",
+      "inventory.no_items_found",
+      "inventory.add_first_message",
+      "inventory.add_first_item",
+      "inventory.category_management",
+      "inventory.low_stock_alerts",
+      "inventory.current_stock",
+      "inventory.threshold",
+      "inventory.no_alerts",
+      "inventory.all_items_stocked"
+    ],
+    "hardcodedStrings": [
+      "Failed to delete item:",
+      "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
+      "container mx-auto p-6"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "SystemAdministration",
+    "path": "pages/SystemAdministration.tsx",
+    "category": "page",
+    "type": "card",
+    "translationKeys": [
+      "system.admin.accessDenied",
+      "system.admin.tabs.overview",
+      "system.admin.tabs.services",
+      "system.admin.tabs.security",
+      "system.admin.tabs.performance",
+      "system.admin.tabs.database",
+      "system.admin.tabs.redis",
+      "system.admin.tabs.backups",
+      "system.admin.tabs.logs",
+      "system.admin.title",
+      "system.admin.description",
+      "system.admin.online"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "StockOptimization",
+    "path": "pages/StockOptimization.tsx",
+    "category": "page",
+    "type": "component",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "Settings",
+    "path": "pages/Settings.tsx",
+    "category": "page",
+    "type": "card",
+    "translationKeys": [
+      "settings.access_denied",
+      "settings.access_denied_message",
+      "settings.title",
+      "settings.description",
+      "settings.all_systems_online",
+      "settings.refresh_status",
+      "settings.save_all_changes",
+      "settings.tab_company",
+      "settings.tab_gold_price",
+      "settings.tab_templates",
+      "settings.tab_roles",
+      "settings.tab_users",
+      "settings.tab_disaster_recovery",
+      "settings.company_title",
+      "settings.company_description",
+      "common.active",
+      "settings.gold_price_title",
+      "settings.gold_price_description",
+      "common.auto_update",
+      "settings.invoice_template_title",
+      "settings.invoice_template_description",
+      "common.customizable",
+      "settings.roles_title",
+      "settings.roles_description",
+      "common.secure",
+      "settings.users_title",
+      "settings.users_description",
+      "common.multi_user",
+      "settings.disaster_recovery_title",
+      "settings.disaster_recovery_description",
+      "settings.protected",
+      "settings.system_overview",
+      "settings.check_status",
+      "settings.database",
+      "settings.online",
+      "settings.connection_stable",
+      "settings.api_services",
+      "settings.all_services",
+      "settings.response_time",
+      "settings.security",
+      "settings.ssl_enabled",
+      "settings.backup",
+      "settings.current",
+      "settings.hours_ago",
+      "settings.next_scheduled",
+      "settings.system_information",
+      "settings.system_information_desc",
+      "settings.application",
+      "settings.version",
+      "settings.environment",
+      "settings.production",
+      "settings.resources",
+      "settings.cpu_usage",
+      "settings.memory",
+      "settings.activity",
+      "settings.active_users",
+      "settings.last_activity",
+      "settings.just_now"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "SMS",
+    "path": "pages/SMS.tsx",
+    "category": "page",
+    "type": "card",
+    "translationKeys": [
+      "sms.total_campaigns",
+      "sms.pending",
+      "sms.messages_sent",
+      "sms.delivered",
+      "sms.success_rate",
+      "sms.delivery_rate",
+      "sms.recent_campaigns",
+      "sms.recent_campaigns_desc",
+      "sms.recipients",
+      "sms.${campaign.status}",
+      "sms.no_recent_campaigns",
+      "sms.recent_messages",
+      "sms.message_history_desc",
+      "sms.${message.status}",
+      "sms.no_recent_messages",
+      "sms.title",
+      "sms.description",
+      "sms.status_ready",
+      "sms.quick_send",
+      "sms.tab_overview",
+      "sms.tab_overview_desc",
+      "sms.tab_templates",
+      "sms.tab_templates_desc",
+      "sms.tab_campaigns",
+      "sms.tab_campaigns_desc",
+      "sms.tab_history",
+      "sms.tab_history_desc",
+      "sms.analytics_title",
+      "sms.analytics_description",
+      "common.real_time",
+      "sms.templates_title",
+      "sms.templates_description",
+      "common.optimized",
+      "sms.campaigns_title",
+      "sms.campaigns_description",
+      "common.automated",
+      "sms.message_history",
+      "common.tracked",
+      "sms.templates",
+      "sms.campaigns",
+      "sms.history"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "ResetPassword",
+    "path": "pages/ResetPassword.tsx",
+    "category": "page",
+    "type": "form",
+    "translationKeys": [
+      "token"
+    ],
+    "hardcodedStrings": [
+      "{showPassword ? (",
+      "{showConfirmPassword ? (",
+      "{isSubmitting ? (",
+      "text-red-600",
+      "border-red-500 focus:border-red-500 focus:ring-red-500",
+      "text-sm text-red-600 flex items-center gap-1",
+      "space-y-2",
+      "text-red-600",
+      "border-red-500 focus:border-red-500 focus:ring-red-500",
+      "text-sm text-red-600 flex items-center gap-1",
+      "bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 11 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "Reports",
+    "path": "pages/Reports.tsx",
+    "category": "page",
+    "type": "card",
+    "translationKeys": [
+      "reports.title",
+      "reports.comprehensive_insights",
+      "reports.live_data",
+      "reports.refresh_current",
+      "reports.refresh_all",
+      "reports.export",
+      "reports.global_filters",
+      "reports.global_filters_desc",
+      "reports.smart_filtering",
+      "reports.sales",
+      "reports.sales_analytics_desc",
+      "reports.inventory",
+      "reports.inventory_analytics_desc",
+      "reports.customers",
+      "reports.customer_analytics_desc",
+      "reports.sales_analytics",
+      "reports.export_sales_data",
+      "reports.inventory_analytics",
+      "reports.efficiency",
+      "reports.export_inventory",
+      "reports.customer_analytics",
+      "reports.satisfaction",
+      "reports.export_customer_data",
+      "reports.advanced_analytics_suite",
+      "reports.powerful_analytics_tools",
+      "reports.report_builder",
+      "reports.drag_drop_report_creation",
+      "reports.drag_drop",
+      "reports.visual_builder",
+      "reports.report_builder_desc",
+      "reports.advanced_charts",
+      "reports.interactive_data_visualizations",
+      "reports.interactive",
+      "reports.heatmaps",
+      "reports.advanced_charts_desc",
+      "reports.forecasting_analytics",
+      "reports.ai_powered_demand_prediction",
+      "reports.ai_optimized",
+      "reports.predictions_trends",
+      "reports.forecasting_analytics_description",
+      "reports.stock_optimization",
+      "reports.intelligent_inventory_management",
+      "reports.optimization_filters",
+      "reports.recommendations",
+      "reports.stock_optimization_description",
+      "reports.cache_management",
+      "reports.monitor_manage_analytics_caching",
+      "reports.performance",
+      "reports.overview",
+      "reports.cache_management_description",
+      "reports.kpi_dashboard",
+      "reports.kpi_dashboard_desc",
+      "reports.real_time",
+      "reports.sales_reports",
+      "reports.sales_reports_description",
+      "reports.inventory_reports",
+      "reports.inventory_reports_description",
+      "reports.report_filters",
+      "reports.inventory_filters_description",
+      "reports.customer_reports",
+      "reports.customer_reports_description",
+      "reports.customer_filters_description"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "ReportBuilder",
+    "path": "pages/ReportBuilder.tsx",
+    "category": "page",
+    "type": "card",
+    "translationKeys": [
+      "reports.report_builder",
+      "reports.drag_drop_report_creation",
+      "reports.visual_builder",
+      "reports.preview",
+      "reports.save_report",
+      "reports.generate",
+      "reports.drag_drop",
+      "reports.drag_drop_desc",
+      "reports.visual_design",
+      "reports.visual_design_desc",
+      "reports.export_share",
+      "reports.export_share_desc"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "Register",
+    "path": "pages/Register.tsx",
+    "category": "page",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "{showPassword ? (",
+      "{showConfirmPassword ? (",
+      "{isRegistering ? (",
+      "text-red-600",
+      "border-red-500 focus:border-red-500 focus:ring-red-500",
+      "text-sm text-red-600 flex items-center gap-1",
+      "space-y-2",
+      "text-red-600",
+      "border-red-500 focus:border-red-500 focus:ring-red-500",
+      "text-sm text-red-600 flex items-center gap-1",
+      "space-y-2",
+      "text-red-600",
+      "border-red-500 focus:border-red-500 focus:ring-red-500",
+      "text-sm text-red-600 flex items-center gap-1",
+      "space-y-2",
+      "text-red-600",
+      "border-red-500 focus:border-red-500 focus:ring-red-500",
+      "text-sm text-red-600 flex items-center gap-1",
+      "grid grid-cols-1 md:grid-cols-2 gap-4",
+      "text-red-600",
+      "border-red-500 focus:border-red-500 focus:ring-red-500",
+      "text-sm text-red-600 flex items-center gap-1",
+      "space-y-2",
+      "text-red-600",
+      "border-red-500 focus:border-red-500 focus:ring-red-500",
+      "text-sm text-red-600 flex items-center gap-1",
+      "flex items-start space-x-3",
+      "text-sm text-red-600 flex items-center gap-1"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 28 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "ModalPopupDemo",
+    "path": "pages/ModalPopupDemo.tsx",
+    "category": "page",
+    "type": "modal",
+    "translationKeys": [
+      "default",
+      "success",
+      "warning",
+      "destructive",
+      "info"
+    ],
+    "hardcodedStrings": [
+      "Full Name",
+      "Email Address",
+      "Save Changes",
+      "Create Item",
+      "Right Sheet",
+      "Save Changes",
+      "Left Sheet",
+      "Top Sheet",
+      "Bottom Sheet",
+      ", description:",
+      "border-0 shadow-xl bg-gradient-to-br from-white via-yellow-50/30 to-orange-50/30",
+      "Enter your name",
+      "Enter your email",
+      "Enter title",
+      "Enter description",
+      "Enter name",
+      "Enter your name",
+      "Enter your email",
+      "Enter your full name",
+      "Enter your email",
+      "Tell us about yourself"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 21 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "Login",
+    "path": "pages/Login.tsx",
+    "category": "page",
+    "type": "form",
+    "translationKeys": [
+      "app.title",
+      "auth.login"
+    ],
+    "hardcodedStrings": [
+      "{showPassword ? (",
+      "{isLoggingIn ? (",
+      "text-red-600",
+      "border-red-500 focus:border-red-500 focus:ring-red-500",
+      "text-sm text-red-600 flex items-center gap-1",
+      "space-y-2",
+      "text-red-600",
+      "border-red-500 focus:border-red-500 focus:ring-red-500",
+      "text-sm text-red-600 flex items-center gap-1",
+      "flex items-center space-x-2"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 10 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "LoadingFeedbackDemo",
+    "path": "pages/LoadingFeedbackDemo.tsx",
+    "category": "page",
+    "type": "card",
+    "translationKeys": [
+      "success",
+      "error",
+      "warning",
+      "info"
+    ],
+    "hardcodedStrings": [
+      "message=",
+      "variant=",
+      "label=",
+      "message=",
+      ")} variant=",
+      ")} className=",
+      "Enter your email",
+      "Enter your password",
+      "Success!",
+      "File Upload Progress"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 10 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "Invoices",
+    "path": "pages/Invoices.tsx",
+    "category": "page",
+    "type": "modal",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Request Feature"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "InventoryModern",
+    "path": "pages/InventoryModern.tsx",
+    "category": "page",
+    "type": "table",
+    "translationKeys": [
+      "inventory.out_of_stock_label",
+      "inventory.low_stock_label",
+      "inventory.in_stock_label",
+      "inventory.item",
+      "inventory.category",
+      "inventory.uncategorized",
+      "inventory.weight",
+      "inventory.purchase_price",
+      "inventory.sell_price",
+      "inventory.stock",
+      "inventory.status",
+      "inventory.view",
+      "inventory.edit",
+      "inventory.delete",
+      "inventory.purchase",
+      "inventory.sell",
+      "inventory.stock_label",
+      "inventory.failed_to_load",
+      "inventory.management_title",
+      "inventory.management_description",
+      "inventory.filters",
+      "inventory.active",
+      "inventory.add_item",
+      "inventory.inventory_items",
+      "inventory.categories",
+      "inventory.search_placeholder",
+      "inventory.loading",
+      "inventory.no_items_found",
+      "inventory.add_first_message",
+      "inventory.add_first_item"
+    ],
+    "hardcodedStrings": [
+      "setShowForm(true)} className=\"flex items-center gap-2\">",
+      "setShowForm(true)} className=\"mt-4\">",
+      "Failed to delete item:",
+      "Selected item:",
+      "Failed to delete item:",
+      "container mx-auto p-6"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 6 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "Inventory",
+    "path": "pages/Inventory.tsx",
+    "category": "page",
+    "type": "table",
+    "translationKeys": [
+      "inventory.out_of_stock_label",
+      "inventory.low_stock_label",
+      "inventory.in_stock_label",
+      "inventory.item",
+      "inventory.category",
+      "inventory.uncategorized",
+      "inventory.weight",
+      "inventory.purchase_price",
+      "inventory.sell_price",
+      "inventory.stock",
+      "inventory.status",
+      "inventory.view",
+      "inventory.edit",
+      "inventory.delete",
+      "inventory.purchase",
+      "inventory.sell",
+      "inventory.stock_label",
+      "inventory.failed_to_load",
+      "inventory.management_title",
+      "inventory.management_description",
+      "inventory.filters",
+      "inventory.active",
+      "inventory.add_item",
+      "inventory.inventory_items",
+      "inventory.categories",
+      "inventory.search_placeholder",
+      "inventory.loading",
+      "inventory.no_items_found",
+      "inventory.add_first_message",
+      "inventory.add_first_item",
+      "inventory.product_management",
+      "inventory.manage_products",
+      "inventory.category_management",
+      "inventory.organize_categories",
+      "inventory.bulk_operations",
+      "inventory.perform_bulk",
+      "inventory.image_management",
+      "inventory.manage_images"
+    ],
+    "hardcodedStrings": [
+      "setShowForm(true)} className=\"flex items-center gap-2\">",
+      "setShowForm(true)} className=\"mt-4\">",
+      "Failed to delete item:",
+      "Selected item:",
+      "Failed to delete item:",
+      "container mx-auto p-6"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 6 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "ImageManagement",
+    "path": "pages/ImageManagement.tsx",
+    "category": "page",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Upload error:",
+      "Select type",
+      "Select entity"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 3 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "GradientComponentsDemo",
+    "path": "pages/GradientComponentsDemo.tsx",
+    "category": "page",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Green Gradient",
+      "Teal Gradient",
+      "Blue Gradient",
+      "Purple Gradient",
+      "Pink Gradient",
+      "Orange Gradient",
+      "Green Outline",
+      "Blue Outline",
+      "Purple Outline",
+      "Send Message",
+      "Green focus input",
+      "Teal focus input",
+      "Blue focus input",
+      "Purple focus input",
+      "Your name",
+      "Email address"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 16 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "FormComponentsDemo",
+    "path": "pages/FormComponentsDemo.tsx",
+    "category": "page",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "Submit Form",
+      "space-y-8",
+      "label=",
+      "error=",
+      "This field is required",
+      "Password with toggle",
+      "Floating input",
+      "Small input",
+      "Default input",
+      "Large input",
+      "Textarea with character count",
+      "Auto-resizing textarea",
+      "Valid input",
+      "Invalid input",
+      "Warning input",
+      "Select an option",
+      "Enter description",
+      "Enter your full name",
+      "Enter your email",
+      "Select a category",
+      "Enter your message"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 21 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "ForgotPassword",
+    "path": "pages/ForgotPassword.tsx",
+    "category": "page",
+    "type": "form",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "{isSubmitting ? (",
+      "text-red-600",
+      "border-red-500 focus:border-red-500 focus:ring-red-500",
+      "text-sm text-red-600 flex items-center gap-1",
+      "text-xs text-slate-500"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 5 hardcoded strings with translation keys"
+      },
+      {
+        "type": "button",
+        "priority": "medium",
+        "message": "Button text should be translatable for international users"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "ForecastingAnalytics",
+    "path": "pages/ForecastingAnalytics.tsx",
+    "category": "page",
+    "type": "component",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "DataDisplayDemo",
+    "path": "pages/DataDisplayDemo.tsx",
+    "category": "page",
+    "type": "table",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "Dashboard",
+    "path": "pages/Dashboard.tsx",
+    "category": "page",
+    "type": "utility",
+    "translationKeys": [
+      "dashboard.error_loading",
+      "common.try_again",
+      "nav.dashboard",
+      "dashboard.welcome_message",
+      "common.refresh"
+    ],
+    "hardcodedStrings": [
+      "flex flex-col items-center justify-center min-h-[500px] space-y-6 p-8 bg-gradient-to-br from-green-50/30 via-white to-teal-50/20 rounded-2xl"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 1 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      }
+    ]
+  },
+  {
+    "name": "Customers",
+    "path": "pages/Customers.tsx",
+    "category": "page",
+    "type": "utility",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "CacheManagement",
+    "path": "pages/CacheManagement.tsx",
+    "category": "page",
+    "type": "component",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "BusinessAdaptability",
+    "path": "pages/BusinessAdaptability.tsx",
+    "category": "page",
+    "type": "card",
+    "translationKeys": [],
+    "hardcodedStrings": [
+      "container mx-auto px-4 py-8",
+      "container mx-auto px-4 py-8"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 2 hardcoded strings with translation keys"
+      },
+      {
+        "type": "error",
+        "priority": "high",
+        "message": "Error messages must be translated for user understanding"
+      },
+      {
+        "type": "coverage",
+        "priority": "high",
+        "message": "Component has no translation keys but contains user-facing text"
+      }
+    ]
+  },
+  {
+    "name": "AdvancedSearch",
+    "path": "pages/AdvancedSearch.tsx",
+    "category": "page",
+    "type": "modal",
+    "translationKeys": [
+      "q",
+      "date_from",
+      "date_to",
+      "min_price",
+      "max_price",
+      "has_debt",
+      "T",
+      "search.shareTitle",
+      "search.pageTitle",
+      "search.pageDescription",
+      "search.history",
+      "search.noHistory",
+      "search.results",
+      "search.useQuery",
+      "search.clearHistory",
+      "search.export",
+      "search.share",
+      "search.settings",
+      "search.settingsDescription"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "AdvancedCharts",
+    "path": "pages/AdvancedCharts.tsx",
+    "category": "page",
+    "type": "chart",
+    "translationKeys": [
+      "reports.advanced_charts",
+      "reports.interactive_data_visualizations",
+      "reports.real_time",
+      "reports.configure",
+      "reports.export_all",
+      "reports.share",
+      "reports.interactive",
+      "reports.interactive_desc",
+      "reports.trend_analysis_title",
+      "reports.trend_analysis_chart_desc",
+      "reports.heatmaps",
+      "reports.heatmaps_desc",
+      "reports.export_share_charts",
+      "reports.export_share_charts_desc"
+    ],
+    "hardcodedStrings": [
+      "Monthly Sales",
+      "Monthly Profit",
+      "Sales Trend with Forecast",
+      "Sales Activity by Time"
+    ],
+    "recommendations": [
+      {
+        "type": "translation",
+        "priority": "high",
+        "message": "Replace 4 hardcoded strings with translation keys"
+      }
+    ]
+  },
+  {
+    "name": "Accounting",
+    "path": "pages/Accounting.tsx",
+    "category": "page",
+    "type": "card",
+    "translationKeys": [
+      "accounting.income",
+      "accounting.income_desc",
+      "accounting.expense",
+      "accounting.cash_bank",
+      "accounting.gold_weight",
+      "accounting.profit_loss",
+      "accounting.debt_tracking",
+      "accounting.title",
+      "accounting.description",
+      "accounting.total_income",
+      "accounting.total_expenses",
+      "accounting.cash_flow",
+      "accounting.customer_debt",
+      "accounting.net_profit",
+      "accounting.income_title",
+      "accounting.expense_ledger",
+      "accounting.expense_desc"
+    ],
+    "hardcodedStrings": [],
+    "recommendations": []
+  },
+  {
+    "name": "InventoryProducts",
+    "path": "pages/inventory/InventoryProducts.tsx",
+    "category": "page",
+    "type": "component",
+    "translationKeys": [],
+    "hardcodedStrings": [],
+    "recommendations": []
+  }
+]

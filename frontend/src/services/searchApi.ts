@@ -337,7 +337,7 @@ export const searchApi = {
       entity_types: SearchEntityType[];
     }>
   ): Promise<SearchResults[]> => {
-    return apiPost<SearchResults[], typeof queries>('/search/batch', { queries });
+    return apiPost<SearchResults[], typeof queries>('/search/batch', queries);
   },
 
   // Search optimization

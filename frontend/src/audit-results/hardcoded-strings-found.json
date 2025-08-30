@@ -1,0 +1,18 @@
+[
+  "{showPassword ? (",
+  "{isLoggingIn ? (",
+  "text-red-600",
+  "border-red-500 focus:border-red-500 focus:ring-red-500",
+  "Username must be at least 3 characters",
+  "Username can only contain letters, numbers, and underscores",
+  "Password must be at least 6 characters",
+  "{showConfirmPassword ? (",
+  "{isRegistering ? (",
+  "First name must be at least 2 characters",
+  "Last name must be at least 2 characters",
+  "Invalid email address",
+  "Password must be at least 8 characters",
+  "Password must contain uppercase, lowercase, and number",
+  "{isSubmitting ? (",
+  "h-10 w-10 text-white"
+]

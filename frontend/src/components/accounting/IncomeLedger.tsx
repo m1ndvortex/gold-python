@@ -229,8 +229,8 @@ export const IncomeLedger: React.FC = () => {
                   {language === 'fa' ? 'تاریخ شروع' : 'Start Date'}
                 </label>
                 <DatePicker
-                  value={startDate}
-                  onChange={handleStartDateChange}
+                  selected={startDate || undefined}
+                  onSelect={(date) => handleStartDateChange(date || null)}
                   placeholder={language === 'fa' ? 'انتخاب تاریخ شروع' : 'Select start date'}
                 />
               </div>
@@ -239,10 +239,9 @@ export const IncomeLedger: React.FC = () => {
                   {language === 'fa' ? 'تاریخ پایان' : 'End Date'}
                 </label>
                 <DatePicker
-                  value={endDate}
-                  onChange={handleEndDateChange}
+                  selected={endDate || undefined}
+                  onSelect={(date) => handleEndDateChange(date || null)}
                   placeholder={language === 'fa' ? 'انتخاب تاریخ پایان' : 'Select end date'}
-                  minDate={startDate || undefined}
                 />
               </div>
               <div>

@@ -328,8 +328,8 @@ export const useSearchAnalytics = (startDate?: string, endDate?: string) => {
 };
 
 // Entity-specific search hooks
-export const useInventorySearch = (initialFilters = {}) => {
-  const [filters, setFilters] = useState(initialFilters);
+export const useInventorySearch = (initialFilters: Partial<UniversalSearchFilters> = {}) => {
+  const [filters, setFilters] = useState<Partial<UniversalSearchFilters>>(initialFilters);
   const [page, setPage] = useState(1);
 
   const {
@@ -372,8 +372,8 @@ export const useInventorySearch = (initialFilters = {}) => {
   };
 };
 
-export const useInvoiceSearch = (initialFilters = {}) => {
-  const [filters, setFilters] = useState(initialFilters);
+export const useInvoiceSearch = (initialFilters: Partial<UniversalSearchFilters> = {}) => {
+  const [filters, setFilters] = useState<Partial<UniversalSearchFilters>>(initialFilters);
   const [page, setPage] = useState(1);
 
   const {
@@ -416,8 +416,8 @@ export const useInvoiceSearch = (initialFilters = {}) => {
   };
 };
 
-export const useCustomerSearch = (initialFilters = {}) => {
-  const [filters, setFilters] = useState(initialFilters);
+export const useCustomerSearch = (initialFilters: Partial<UniversalSearchFilters> = {}) => {
+  const [filters, setFilters] = useState<Partial<UniversalSearchFilters>>(initialFilters);
   const [page, setPage] = useState(1);
 
   const {
@@ -460,8 +460,8 @@ export const useCustomerSearch = (initialFilters = {}) => {
   };
 };
 
-export const useAccountingSearch = (initialFilters = {}) => {
-  const [filters, setFilters] = useState(initialFilters);
+export const useAccountingSearch = (initialFilters: Partial<UniversalSearchFilters> = {}) => {
+  const [filters, setFilters] = useState<Partial<UniversalSearchFilters>>(initialFilters);
   const [page, setPage] = useState(1);
 
   const {

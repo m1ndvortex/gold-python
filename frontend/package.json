@@ -41,7 +41,6 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.12",
-    "glob": "^10.4.5",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
@@ -71,7 +70,8 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "cross-env NODE_ENV=production craco build",
+    "build": "npm run validate:translations && cross-env NODE_ENV=production craco build",
+    "build:no-validation": "cross-env NODE_ENV=production craco build",
     "test": "react-scripts test --watchAll=false",
     "test:watch": "react-scripts test",
     "test:docker": "cross-env REACT_APP_API_URL=http://localhost:8000 react-scripts test --watchAll=false --testTimeout=120000",
@@ -84,6 +84,11 @@
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx --ignore-pattern 'src/tests/**' --ignore-pattern '**/*.test.*' --ignore-pattern '**/*.spec.*'",
     "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix --ignore-pattern 'src/tests/**' --ignore-pattern '**/*.test.*' --ignore-pattern '**/*.spec.*'",
     "type-check": "tsc --project tsconfig.build.json --noEmit",
+    "validate:translations": "node scripts/build-validate-translations.js",
+    "validate:translations:report": "cross-env GENERATE_TRANSLATION_REPORT=true node scripts/build-validate-translations.js",
+    "validate:translations:strict": "cross-env FAIL_ON_TRANSLATION_ERRORS=true node scripts/build-validate-translations.js",
+    "translation:report": "ts-node src/scripts/generateTranslationReport.ts",
+    "translation:audit": "ts-node src/scripts/validateTranslations.ts",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -118,6 +123,7 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
+    "@types/glob": "^8.1.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.11",
     "@types/node-fetch": "^2.6.13",
@@ -127,6 +133,7 @@
     "autoprefixer": "^10.4.16",
     "craco": "^0.0.3",
     "cross-env": "^10.0.0",
+    "glob": "^10.4.5",
     "ignore-loader": "^0.1.2",
     "node-fetch": "^3.3.2",
     "postcss": "^8.4.31",

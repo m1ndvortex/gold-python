@@ -173,7 +173,7 @@ export const FeatureToggleDashboard: React.FC = () => {
       <Alert className="border-red-200 bg-red-50">
         <AlertCircle className="h-4 w-4 text-red-600" />
         <AlertDescription className="text-red-800">
-          Error loading features: {error.message}
+          Error loading features: {(error as Error)?.message || 'Unknown error'}
         </AlertDescription>
       </Alert>
     );

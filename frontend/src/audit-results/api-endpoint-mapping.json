@@ -1,0 +1,4716 @@
+[
+  {
+    "path": "],\r\n    queryFn: systemAdminApi.getSSLCertificateStatus,\r\n    refetchInterval: 3600000, // Refresh every hour\r\n    staleTime: 1800000, // 30 minutes\r\n  });\r\n};\r\n\r\nexport const useSSLCertificateRenewal = () => {\r\n  const queryClient = useQueryClient();\r\n\r\n  return useMutation({\r\n    mutationFn: systemAdminApi.renewSSLCertificate,\r\n    onSuccess: (data) => {\r\n      toast.success(",
+    "method": "GET",
+    "file": "hooks/useSystemAdmin.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": true,
+    "recommendations": []
+  },
+  {
+    "path": "],\r\n    queryFn: systemAdminApi.getSecurityStatus,\r\n    refetchInterval: 300000, // Refresh every 5 minutes\r\n    staleTime: 120000, // 2 minutes\r\n  });\r\n};\r\n\r\nexport const useSecurityScan = () => {\r\n  const queryClient = useQueryClient();\r\n\r\n  return useMutation({\r\n    mutationFn: systemAdminApi.runSecurityScan,\r\n    onSuccess: (data) => {\r\n      toast.success(",
+    "method": "GET",
+    "file": "hooks/useSystemAdmin.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": true,
+    "recommendations": []
+  },
+  {
+    "path": "],\r\n    queryFn: settingsApi.getCompanySettings,\r\n  });\r\n};\r\n\r\nexport const useUpdateCompanySettings = () => {\r\n  const queryClient = useQueryClient();\r\n  const { toast } = useToast();\r\n\r\n  return useMutation({\r\n    mutationFn: (settings: CompanySettingsUpdate) => settingsApi.updateCompanySettings(settings),\r\n    onSuccess: (data) => {\r\n      queryClient.invalidateQueries({ queryKey: [",
+    "method": "GET",
+    "file": "hooks/useSettings.ts",
+    "category": "customer",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "],\r\n    queryFn: settingsApi.getGoldPriceConfig,\r\n  });\r\n};\r\n\r\nexport const useUpdateGoldPrice = () => {\r\n  const queryClient = useQueryClient();\r\n  const { toast } = useToast();\r\n\r\n  return useMutation({\r\n    mutationFn: (priceUpdate: GoldPriceUpdate) => settingsApi.updateGoldPrice(priceUpdate),\r\n    onSuccess: (data) => {\r\n      queryClient.invalidateQueries({ queryKey: [",
+    "method": "GET",
+    "file": "hooks/useSettings.ts",
+    "category": "customer",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "],\r\n    queryFn: settingsApi.getInvoiceTemplate,\r\n  });\r\n};\r\n\r\nexport const useUpdateInvoiceTemplate = () => {\r\n  const queryClient = useQueryClient();\r\n  const { toast } = useToast();\r\n\r\n  return useMutation({\r\n    mutationFn: (templateUpdate: InvoiceTemplateUpdate) => settingsApi.updateInvoiceTemplate(templateUpdate),\r\n    onSuccess: (data) => {\r\n      queryClient.invalidateQueries({ queryKey: [",
+    "method": "GET",
+    "file": "hooks/useSettings.ts",
+    "category": "customer",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "],\r\n    queryFn: settingsApi.getAllRoles,\r\n  });\r\n};\r\n\r\nexport const useCreateRole = () => {\r\n  const queryClient = useQueryClient();\r\n  const { toast } = useToast();\r\n\r\n  return useMutation({\r\n    mutationFn: (roleData: RoleCreate) => settingsApi.createRole(roleData),\r\n    onSuccess: () => {\r\n      queryClient.invalidateQueries({ queryKey: [",
+    "method": "GET",
+    "file": "hooks/useSettings.ts",
+    "category": "customer",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "],\r\n    queryFn: settingsApi.getPermissionStructure,\r\n  });\r\n};\r\n\r\n// User Management Hooks\r\nexport const useUsers = (page: number = 1, perPage: number = 50) => {\r\n  return useQuery({\r\n    queryKey: [",
+    "method": "GET",
+    "file": "hooks/useSettings.ts",
+    "category": "user",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "system-settings",
+    "method": "GET",
+    "file": "hooks/useSettings.ts",
+    "category": "settings",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": ", params],\r\n    queryFn: () => smsApi.templates.getTemplates(params),\r\n    staleTime: 5 * 60 * 1000, // 5 minutes\r\n  });\r\n};\r\n\r\nexport const useSMSTemplate = (id: string) => {\r\n  return useQuery({\r\n    queryKey: [",
+    "method": "GET",
+    "file": "hooks/useSMS.ts",
+    "category": "communication",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": ", params],\r\n    () => smsApi.campaigns.getCampaigns(params),\r\n    {\r\n      staleTime: 3 * 60 * 1000, // 3 minutes - increased cache time\r\n      cacheTime: 5 * 60 * 1000, // 5 minutes garbage collection\r\n      refetchOnWindowFocus: false,\r\n    }\r\n  );\r\n};\r\n\r\nexport const useSMSCampaign = (id: string) => {\r\n  return useQuery({\r\n    queryKey: [",
+    "method": "GET",
+    "file": "hooks/useSMS.ts",
+    "category": "communication",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": ", id],\r\n    queryFn: () => smsApi.campaigns.getCampaignStats(id),\r\n    enabled: !!id,\r\n    refetchInterval: 30000, // Refetch every 30 seconds for real-time updates\r\n  });\r\n};\r\n\r\n// SMS Batch Operations Hooks\r\nexport const useSendBatchSMS = () => {\r\n  const queryClient = useQueryClient();\r\n  const { toast } = useToast();\r\n\r\n  return useMutation({\r\n    mutationFn: (batch: SMSBatchRequest) => smsApi.batch.sendBatch(batch),\r\n    onSuccess: () => {\r\n      queryClient.invalidateQueries({ queryKey: [",
+    "method": "GET",
+    "file": "hooks/useSMS.ts",
+    "category": "customer",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": ", filters],\r\n    () => smsApi.history.getHistory(filters),\r\n    {\r\n      staleTime: 2 * 60 * 1000, // 2 minutes - increased cache time\r\n      cacheTime: 5 * 60 * 1000, // 5 minutes garbage collection\r\n      refetchOnWindowFocus: false,\r\n    }\r\n  );\r\n};\r\n\r\nexport const useSMSOverallStats = () => {\r\n  return useQuery(\r\n    [",
+    "method": "GET",
+    "file": "hooks/useSMS.ts",
+    "category": "communication",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": ", params],\r\n    queryFn: () => smsApi.history.getMessages(params),\r\n    staleTime: 1 * 60 * 1000, // 1 minute\r\n  });\r\n};\r\n\r\nexport const useSMSMessage = (id: string) => {\r\n  return useQuery({\r\n    queryKey: [",
+    "method": "GET",
+    "file": "hooks/useSMS.ts",
+    "category": "communication",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": ", includeInactive],\r\n      queryFn: () => enhancedAccountingApi.getChartOfAccounts(includeInactive),\r\n      staleTime: 10 * 60 * 1000, // 10 minutes\r\n    });\r\n  };\r\n\r\n  const useChartOfAccount = (accountId: string) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useEnhancedAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", filters],\r\n      queryFn: () => enhancedAccountingApi.getSubsidiaryAccounts(filters),\r\n      staleTime: 10 * 60 * 1000,\r\n    });\r\n  };\r\n\r\n  const useSubsidiaryAccount = (subsidiaryId: string) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useEnhancedAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", filters],\r\n      queryFn: () => enhancedAccountingApi.getJournalEntries(filters),\r\n      staleTime: 5 * 60 * 1000, // 5 minutes\r\n    });\r\n  };\r\n\r\n  const useJournalEntry = (entryId: string) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useEnhancedAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", accountId, filters],\r\n      queryFn: () => enhancedAccountingApi.getGeneralLedger(accountId, filters),\r\n      enabled: !!accountId,\r\n      staleTime: 5 * 60 * 1000,\r\n    });\r\n  };\r\n\r\n  const useAccountBalance = (accountId: string, asOfDate?: string) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useEnhancedAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", filters],\r\n      queryFn: () => enhancedAccountingApi.getChecks(filters),\r\n      staleTime: 5 * 60 * 1000,\r\n    });\r\n  };\r\n\r\n  const useCheck = (checkId: string) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useEnhancedAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", filters],\r\n      queryFn: () => enhancedAccountingApi.getInstallmentAccounts(filters),\r\n      staleTime: 5 * 60 * 1000,\r\n    });\r\n  };\r\n\r\n  const useInstallmentAccount = (installmentId: string) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useEnhancedAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", installmentId],\r\n      queryFn: () => enhancedAccountingApi.getInstallmentPayments(installmentId),\r\n      enabled: !!installmentId,\r\n      staleTime: 5 * 60 * 1000,\r\n    });\r\n  };\r\n\r\n  // Bank Reconciliation\r\n  const useBankReconciliations = (bankAccountId?: string) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useEnhancedAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", asOfDate],\r\n      queryFn: () => enhancedAccountingApi.getTrialBalance(asOfDate),\r\n      enabled: !!asOfDate,\r\n      staleTime: 10 * 60 * 1000,\r\n    });\r\n  };\r\n\r\n  const useBalanceSheet = (asOfDate: string) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useEnhancedAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", periodStart, periodEnd],\r\n      queryFn: () => enhancedAccountingApi.getProfitLossStatement(periodStart, periodEnd),\r\n      enabled: !!periodStart && !!periodEnd,\r\n      staleTime: 10 * 60 * 1000,\r\n    });\r\n  };\r\n\r\n  // Period Management\r\n  const useAccountingPeriods = () => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useEnhancedAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "],\r\n      queryFn: () => enhancedAccountingApi.getAccountingDashboard(),\r\n      staleTime: 2 * 60 * 1000, // 2 minutes\r\n    });\r\n  };\r\n\r\n  // Audit Trail\r\n  const useAuditTrail = (filters?: AccountingFilters) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useEnhancedAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${process.env.REACT_APP_API_URL || ",
+    "method": "GET",
+    "file": "hooks/useCategoryManagement.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "${process.env.REACT_APP_API_URL || ",
+    "method": "GET",
+    "file": "hooks/useCategoryManagement.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "${process.env.REACT_APP_API_URL || ",
+    "method": "GET",
+    "file": "hooks/useCategoryManagement.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "${process.env.REACT_APP_API_URL || ",
+    "method": "GET",
+    "file": "hooks/useCategoryManagement.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "${process.env.REACT_APP_API_URL || ",
+    "method": "GET",
+    "file": "hooks/useCategoryManagement.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "${process.env.REACT_APP_API_URL || ",
+    "method": "GET",
+    "file": "hooks/useCategoryManagement.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useCategoryManagement.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "],\r\n    enhancedCategoriesApi.getCategoryTemplates,\r\n    {\r\n      staleTime: 15 * 60 * 1000, // 15 minutes - increased cache time\r\n      cacheTime: 20 * 60 * 1000, // 20 minutes garbage collection\r\n      refetchOnWindowFocus: false,\r\n      refetchOnMount: false,\r\n    }\r\n  );\r\n};\r\n\r\nexport const useCreateCategoryTemplate = () => {\r\n  const queryClient = useQueryClient();\r\n  \r\n  return useMutation({\r\n    mutationFn: enhancedCategoriesApi.createCategoryTemplate,\r\n    onSuccess: () => {\r\n      queryClient.invalidateQueries({ queryKey: [",
+    "method": "GET",
+    "file": "hooks/useCategoryManagement.ts",
+    "category": "customer",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  },
+  {
+    "path": "],\r\n    queryFn: () => businessAdaptabilityApi.getBusinessTypes(true)\r\n  });\r\n\r\n  // Business Configurations\r\n  const {\r\n    data: businessConfigurations = [],\r\n    isLoading: configurationsLoading,\r\n    error: configurationsError,\r\n    refetch: refetchConfigurations\r\n  } = useQuery({\r\n    queryKey: [",
+    "method": "GET",
+    "file": "hooks/useBusinessAdaptability.ts",
+    "category": "settings",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", currentConfiguration?.id],\r\n    queryFn: () => currentConfiguration ? businessAdaptabilityApi.getBusinessConfiguration(currentConfiguration.id) : null,\r\n    enabled: !!currentConfiguration?.id\r\n  });\r\n\r\n  // Business Adaptability Status\r\n  const {\r\n    data: adaptabilityStatus,\r\n    isLoading: statusLoading,\r\n    error: statusError,\r\n    refetch: refetchStatus\r\n  } = useQuery({\r\n    queryKey: [",
+    "method": "GET",
+    "file": "hooks/useBusinessAdaptability.ts",
+    "category": "user",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", currentConfiguration?.id],\r\n    queryFn: () => currentConfiguration ? businessAdaptabilityApi.getWorkflowRules(currentConfiguration.id) : [],\r\n    enabled: !!currentConfiguration?.id\r\n  });\r\n\r\n  // Custom Fields\r\n  const {\r\n    data: customFields = [],\r\n    isLoading: customFieldsLoading,\r\n    error: customFieldsError,\r\n    refetch: refetchCustomFields\r\n  } = useQuery({\r\n    queryKey: [",
+    "method": "GET",
+    "file": "hooks/useBusinessAdaptability.ts",
+    "category": "settings",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", currentConfiguration?.id],\r\n    queryFn: () => businessAdaptabilityApi.getUnitsOfMeasure(currentConfiguration?.id),\r\n    enabled: !!currentConfiguration?.id\r\n  });\r\n\r\n  // Pricing Rules\r\n  const {\r\n    data: pricingRules = [],\r\n    isLoading: pricingRulesLoading,\r\n    error: pricingRulesError,\r\n    refetch: refetchPricingRules\r\n  } = useQuery({\r\n    queryKey: [",
+    "method": "GET",
+    "file": "hooks/useBusinessAdaptability.ts",
+    "category": "settings",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", currentConfiguration?.id],\r\n    queryFn: () => businessAdaptabilityApi.getFeatureConfigurations(currentConfiguration?.id),\r\n    enabled: !!currentConfiguration?.id\r\n  });\r\n\r\n  // Terminology Mapping\r\n  const {\r\n    data: terminologyMapping = {},\r\n    isLoading: terminologyLoading,\r\n    error: terminologyError,\r\n    refetch: refetchTerminology\r\n  } = useQuery({\r\n    queryKey: [",
+    "method": "GET",
+    "file": "hooks/useBusinessAdaptability.ts",
+    "category": "settings",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/auth/me",
+    "method": "GET",
+    "file": "hooks/useAuth.ts",
+    "category": "auth",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": true,
+    "recommendations": []
+  },
+  {
+    "path": "/auth/login",
+    "method": "POST",
+    "file": "hooks/useAuth.ts",
+    "category": "auth",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": true,
+    "recommendations": []
+  },
+  {
+    "path": "/auth/logout",
+    "method": "POST",
+    "file": "hooks/useAuth.ts",
+    "category": "auth",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": true,
+    "recommendations": []
+  },
+  {
+    "path": ", credentials);\r\n      return response.data as AuthResponse;\r\n    },\r\n    onSuccess: (data) => {\r\n      const expiryTime = Date.now() + (data.expires_in * 1000);\r\n      localStorage.setItem(",
+    "method": "GET",
+    "file": "hooks/useAuth.ts",
+    "category": "auth",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": true,
+    "recommendations": []
+  },
+  {
+    "path": ", entityTypes),\r\n    queryFn: () => searchApi.getSuggestions(filters.search || ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", ",
+    "method": "GET",
+    "file": "hooks/useAdvancedSearch.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", filters],\r\n      queryFn: () => accountingApi.getIncomeLedger(filters),\r\n      staleTime: 5 * 60 * 1000, // 5 minutes\r\n    });\r\n  };\r\n\r\n  // Expense Ledger\r\n  const useExpenseLedger = (filters?: LedgerFilters) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", filters],\r\n      queryFn: () => accountingApi.getCashBankLedger(filters),\r\n      staleTime: 5 * 60 * 1000,\r\n    });\r\n  };\r\n\r\n  // Gold Weight Ledger\r\n  const useGoldWeightLedger = (filters?: LedgerFilters) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": ", startDate, endDate],\r\n      queryFn: () => accountingApi.getProfitLossAnalysis(startDate, endDate),\r\n      enabled: !!startDate && !!endDate,\r\n      staleTime: 10 * 60 * 1000, // 10 minutes\r\n    });\r\n  };\r\n\r\n  // Debt Tracking\r\n  const useDebtTracking = (filters?: LedgerFilters) => {\r\n    return useQuery({\r\n      queryKey: [",
+    "method": "GET",
+    "file": "hooks/useAccounting.ts",
+    "category": "accounting",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "ledger-summary",
+    "method": "GET",
+    "file": "hooks/useAccounting.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/system/health",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/services/status",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/services/manage",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/services/${serviceName}/logs",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/logs/search",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/logs/export",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/performance/metrics",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/database/status",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/database/health-check",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/database/optimize",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/redis/status",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/redis/clear",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/redis/keys",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/backups/status",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/backups/create",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/backups/restore",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/backups/${filename}",
+    "method": "DELETE",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/backups/${filename}/download",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/config",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/config/env",
+    "method": "PUT",
+    "file": "services/systemAdminApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/config/feature-flags",
+    "method": "PUT",
+    "file": "services/systemAdminApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/config/settings",
+    "method": "PUT",
+    "file": "services/systemAdminApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/sessions",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/sessions/${sessionId}",
+    "method": "DELETE",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/sessions/user/${userId}",
+    "method": "DELETE",
+    "file": "services/systemAdminApi.ts",
+    "category": "user",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/alerts",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/alerts/${alertId}/acknowledge",
+    "method": "PUT",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/alerts/${alertId}/resolve",
+    "method": "PUT",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/alerts",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/ssl/status",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/ssl/renew",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/security/status",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/security/scan",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/system/restart",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/system/update",
+    "method": "POST",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/admin/system/info",
+    "method": "GET",
+    "file": "services/systemAdminApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/templates",
+    "method": "POST",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/templates",
+    "method": "GET",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/templates/${id}",
+    "method": "GET",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/templates/${id}",
+    "method": "PUT",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/templates/${id}",
+    "method": "DELETE",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/templates/${templateId}/preview",
+    "method": "POST",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/campaigns",
+    "method": "POST",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/campaigns",
+    "method": "GET",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/campaigns/${id}",
+    "method": "GET",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/campaigns/${id}/send",
+    "method": "POST",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/campaigns/${id}/retry",
+    "method": "POST",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/campaigns/${id}/statistics",
+    "method": "GET",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/send-batch",
+    "method": "POST",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/retry",
+    "method": "POST",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/history",
+    "method": "GET",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/statistics",
+    "method": "GET",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/messages/${id}",
+    "method": "GET",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/messages",
+    "method": "GET",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/schedule",
+    "method": "POST",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/scheduled",
+    "method": "GET",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/sms/scheduled/${id}",
+    "method": "DELETE",
+    "file": "services/smsApi.ts",
+    "category": "communication",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/company",
+    "method": "GET",
+    "file": "services/settingsApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/company",
+    "method": "PUT",
+    "file": "services/settingsApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/gold-price",
+    "method": "GET",
+    "file": "services/settingsApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/gold-price",
+    "method": "PUT",
+    "file": "services/settingsApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/invoice-template",
+    "method": "GET",
+    "file": "services/settingsApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/invoice-template",
+    "method": "PUT",
+    "file": "services/settingsApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/roles",
+    "method": "GET",
+    "file": "services/settingsApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/roles",
+    "method": "POST",
+    "file": "services/settingsApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/roles/${roleId}",
+    "method": "PUT",
+    "file": "services/settingsApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/roles/${roleId}",
+    "method": "DELETE",
+    "file": "services/settingsApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/permissions",
+    "method": "GET",
+    "file": "services/settingsApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/users?page=${page}&per_page=${perPage}",
+    "method": "GET",
+    "file": "services/settingsApi.ts",
+    "category": "user",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/users",
+    "method": "POST",
+    "file": "services/settingsApi.ts",
+    "category": "user",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/users/${userId}",
+    "method": "PUT",
+    "file": "services/settingsApi.ts",
+    "category": "user",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/users/${userId}/password",
+    "method": "PUT",
+    "file": "services/settingsApi.ts",
+    "category": "user",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/users/${userId}",
+    "method": "DELETE",
+    "file": "services/settingsApi.ts",
+    "category": "user",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/users/${userId}/assign-role",
+    "method": "POST",
+    "file": "services/settingsApi.ts",
+    "category": "user",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/settings/system",
+    "method": "GET",
+    "file": "services/settingsApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/sales/trends",
+    "method": "GET",
+    "file": "services/reportsApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/sales/top-products",
+    "method": "GET",
+    "file": "services/reportsApi.ts",
+    "category": "inventory",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/inventory/valuation",
+    "method": "GET",
+    "file": "services/reportsApi.ts",
+    "category": "inventory",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/inventory/low-stock",
+    "method": "GET",
+    "file": "services/reportsApi.ts",
+    "category": "inventory",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/customers/analysis",
+    "method": "GET",
+    "file": "services/reportsApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/customers/debt-report",
+    "method": "GET",
+    "file": "services/reportsApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/charts/sales-overview",
+    "method": "GET",
+    "file": "services/reportsApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/export/${reportType}",
+    "method": "POST",
+    "file": "services/reportsApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/export/${reportType}/csv",
+    "method": "POST",
+    "file": "services/reportsApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/${invoiceId}/qr-card",
+    "method": "GET",
+    "file": "services/qrCardApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/qr-cards/?invoice_id=${invoiceId}",
+    "method": "POST",
+    "file": "services/qrCardApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/qr-cards/${cardId}",
+    "method": "GET",
+    "file": "services/qrCardApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/qr-cards/${cardId}",
+    "method": "PUT",
+    "file": "services/qrCardApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/qr-cards/${cardId}",
+    "method": "DELETE",
+    "file": "services/qrCardApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/qr-cards/${cardId}/regenerate",
+    "method": "POST",
+    "file": "services/qrCardApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/qr-cards/${cardId}/qr-image?size=${size}",
+    "method": "GET",
+    "file": "services/qrCardApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/qr-cards/${cardId}/analytics",
+    "method": "GET",
+    "file": "services/qrCardApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/qr-cards/?${params}",
+    "method": "GET",
+    "file": "services/qrCardApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/qr-cards/themes",
+    "method": "GET",
+    "file": "services/qrCardApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/public/invoice-card/${cardId}${params}",
+    "method": "GET",
+    "file": "services/qrCardApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/public/card/${shortUrl}${params}",
+    "method": "GET",
+    "file": "services/qrCardApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/calculate",
+    "method": "POST",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/",
+    "method": "POST",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/invoices/calculate",
+    "method": "POST",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/invoices/",
+    "method": "POST",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/${invoiceId}",
+    "method": "GET",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/?${params}",
+    "method": "GET",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/${invoiceId}",
+    "method": "PUT",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/${invoiceId}/approve",
+    "method": "PUT",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/${invoiceId}/payments",
+    "method": "POST",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/${invoiceId}/status",
+    "method": "PUT",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/${invoiceId}",
+    "method": "DELETE",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/${invoiceId}/items/${itemId}/price-override",
+    "method": "PUT",
+    "file": "services/invoiceApi.ts",
+    "category": "inventory",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/${invoiceId}/pdf",
+    "method": "GET",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/universal-invoices/analytics/summary?${params}",
+    "method": "GET",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/invoices/${invoiceId}",
+    "method": "GET",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/invoices/?${params}",
+    "method": "GET",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/invoices/${invoiceId}/payments",
+    "method": "POST",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/invoices/${invoiceId}/status",
+    "method": "PUT",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/invoices/${invoiceId}",
+    "method": "DELETE",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/invoices/reports/summary?${params}",
+    "method": "GET",
+    "file": "services/invoiceApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${process.env.REACT_APP_API_URL || ",
+    "method": "GET",
+    "file": "services/inventoryApi.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${process.env.REACT_APP_API_URL || ",
+    "method": "GET",
+    "file": "services/inventoryApi.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${process.env.REACT_APP_API_URL || ",
+    "method": "GET",
+    "file": "services/inventoryApi.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      },
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/chart-of-accounts?${params.toString()}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/chart-of-accounts",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/chart-of-accounts/${accountId}",
+    "method": "PUT",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/chart-of-accounts/${accountId}",
+    "method": "DELETE",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/chart-of-accounts/${accountId}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/subsidiary-accounts?${params.toString()}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/subsidiary-accounts",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/subsidiary-accounts/${subsidiaryId}",
+    "method": "PUT",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/subsidiary-accounts/${subsidiaryId}",
+    "method": "DELETE",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/subsidiary-accounts/${subsidiaryId}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/journal-entries?${params.toString()}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/journal-entries",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/journal-entries/${entryId}",
+    "method": "PUT",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/journal-entries/${entryId}",
+    "method": "DELETE",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/journal-entries/${entryId}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/journal-entries/${entryId}/post",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/journal-entries/${entryId}/reverse",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/general-ledger/${accountId}?${params.toString()}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/account-balance/${accountId}?${params.toString()}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/checks?${params.toString()}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/checks",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/checks/${checkId}",
+    "method": "PUT",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/checks/${checkId}/status",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/checks/${checkId}",
+    "method": "DELETE",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/checks/${checkId}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/installment-accounts?${params.toString()}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/installment-accounts",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/installment-accounts/${installmentId}",
+    "method": "PUT",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/installment-accounts/${installmentId}",
+    "method": "DELETE",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/installment-accounts/${installmentId}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/installment-accounts/${installmentId}/payment",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/installment-accounts/${installmentId}/payments",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/bank-reconciliations?${params.toString()}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/bank-reconciliations",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/bank-reconciliations/${reconciliationId}",
+    "method": "PUT",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/bank-reconciliations/${reconciliationId}/complete",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/reports/trial-balance?as_of_date=${asOfDate}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/reports/balance-sheet?as_of_date=${asOfDate}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/reports/profit-loss?period_start=${periodStart}&period_end=${periodEnd}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/periods",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/periods",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/periods/${periodId}/lock",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/periods/${periodId}/unlock",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/periods/${periodId}/close",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/dashboard",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/audit-trail?${params.toString()}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/gold-invoice-journal-entry/${invoiceId}",
+    "method": "POST",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/reports/trial-balance/export?as_of_date=${asOfDate}&format=${format}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/reports/balance-sheet/export?as_of_date=${asOfDate}&format=${format}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/reports/profit-loss/export?period_start=${periodStart}&period_end=${periodEnd}&format=${format}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/journal-entries/export?${params.toString()}",
+    "method": "GET",
+    "file": "services/enhancedAccountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/dashboard/summary",
+    "method": "GET",
+    "file": "services/dashboardApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/charts/sales-overview?days=${days}",
+    "method": "GET",
+    "file": "services/dashboardApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/charts/category-sales?days=${days}",
+    "method": "GET",
+    "file": "services/dashboardApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/sales/top-products?limit=${limit}",
+    "method": "GET",
+    "file": "services/dashboardApi.ts",
+    "category": "inventory",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/inventory/low-stock",
+    "method": "GET",
+    "file": "services/dashboardApi.ts",
+    "category": "inventory",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/invoices/?status=pending&limit=${limit}",
+    "method": "GET",
+    "file": "services/dashboardApi.ts",
+    "category": "invoice",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/inventory/valuation",
+    "method": "GET",
+    "file": "services/dashboardApi.ts",
+    "category": "inventory",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/customers/debt-report",
+    "method": "GET",
+    "file": "services/dashboardApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/reports/summary/daily${queryParam}",
+    "method": "GET",
+    "file": "services/dashboardApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/customers",
+    "method": "GET",
+    "file": "services/customerApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/customers/search",
+    "method": "GET",
+    "file": "services/customerApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/customers/${id}",
+    "method": "GET",
+    "file": "services/customerApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/customers",
+    "method": "POST",
+    "file": "services/customerApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/customers/${id}",
+    "method": "PUT",
+    "file": "services/customerApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/customers/${id}",
+    "method": "DELETE",
+    "file": "services/customerApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/customers/debt-summary",
+    "method": "GET",
+    "file": "services/customerApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/customers/${id}/debt-history",
+    "method": "GET",
+    "file": "services/customerApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/customers/${customerId}/payments",
+    "method": "POST",
+    "file": "services/customerApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/customers/${customerId}/payments",
+    "method": "GET",
+    "file": "services/customerApi.ts",
+    "category": "customer",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/business-types",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/business-types/${typeId}",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/business-types/code/${typeCode}",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/business-types",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/business-types/${typeId}",
+    "method": "PUT",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}",
+    "method": "PUT",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/workflow-rules",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/workflow-rules",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/workflow-rules/${ruleId}",
+    "method": "PUT",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/workflow-rules/execute",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/custom-fields",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/custom-fields",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/custom-fields/${fieldId}",
+    "method": "PUT",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/custom-fields/validate",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/units-of-measure",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/units-of-measure",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/units-of-measure/${unitId}",
+    "method": "PUT",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/units-of-measure/convert",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/pricing-rules",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/pricing-rules",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/pricing-rules/${ruleId}",
+    "method": "PUT",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/pricing-rules/calculate",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/migrate",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/migration-history",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/migrations/${migrationId}/rollback",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/terminology",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/terminology",
+    "method": "PUT",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/terminology/translate",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/features",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/features/${featureId}",
+    "method": "PUT",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/features/${featureId}/toggle",
+    "method": "PATCH",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/status",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/business-types/${sourceTypeId}/compatibility/${targetTypeId}",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/bulk-operations/initialize-defaults",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/bulk-operations/export-configuration",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/bulk-operations/import-configuration",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/business-types",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "other",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/apply-template/${templateId}",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/analytics",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "reports",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/kpis",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/metrics",
+    "method": "GET",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/validate",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/test-workflows",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${this.baseUrl}/configurations/${configId}/test-pricing",
+    "method": "POST",
+    "file": "services/businessAdaptabilityApi.ts",
+    "category": "settings",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/income-ledger?${params.toString()}",
+    "method": "GET",
+    "file": "services/accountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/expense-ledger?${params.toString()}",
+    "method": "GET",
+    "file": "services/accountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/expense-ledger",
+    "method": "POST",
+    "file": "services/accountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/cash-bank-ledger?${params.toString()}",
+    "method": "GET",
+    "file": "services/accountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/gold-weight-ledger?${params.toString()}",
+    "method": "GET",
+    "file": "services/accountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/profit-loss-analysis?${params.toString()}",
+    "method": "GET",
+    "file": "services/accountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/debt-tracking?${params.toString()}",
+    "method": "GET",
+    "file": "services/accountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "/accounting/ledger-summary?${params.toString()}",
+    "method": "GET",
+    "file": "services/accountingApi.ts",
+    "category": "accounting",
+    "hasTranslationSupport": true,
+    "hasErrorHandling": false,
+    "recommendations": [
+      {
+        "type": "error-handling",
+        "priority": "medium",
+        "message": "Implement proper error handling with translation support"
+      }
+    ]
+  },
+  {
+    "path": "${process.env.REACT_APP_API_URL || ",
+    "method": "POST",
+    "file": "utils/axios.ts",
+    "category": "other",
+    "hasTranslationSupport": false,
+    "hasErrorHandling": true,
+    "recommendations": [
+      {
+        "type": "translation-support",
+        "priority": "high",
+        "message": "Add language header support to API calls"
+      }
+    ]
+  }
+]

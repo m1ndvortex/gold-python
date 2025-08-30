@@ -61,7 +61,7 @@ export const TerminologyManagement: React.FC = () => {
     }
 
     const defaultTerms = currentConfiguration.business_type.default_terminology;
-    const customTerms = terminologyMapping;
+    const customTerms = terminologyMapping as Record<string, string>;
 
     return Object.entries(defaultTerms).map(([key, defaultValue]) => ({
       key,
@@ -168,7 +168,7 @@ export const TerminologyManagement: React.FC = () => {
       <Alert className="border-red-200 bg-red-50">
         <AlertCircle className="h-4 w-4 text-red-600" />
         <AlertDescription className="text-red-800">
-          Error loading terminology: {error.message}
+          Error loading terminology: {(error as Error)?.message || 'Unknown error'}
         </AlertDescription>
       </Alert>
     );

@@ -279,7 +279,7 @@ export const AttributeFilter: React.FC<AttributeFilterProps> = ({
         if (filter.operator === 'in' || filter.operator === 'not_in') {
           return (
             <div className="space-y-2">
-              {attribute.options.map((option) => (
+              {attribute.options.map((option: string) => (
                 <div key={option} className="flex items-center space-x-2">
                   <Checkbox
                     id={`${filter.id}-${option}`}
@@ -311,7 +311,7 @@ export const AttributeFilter: React.FC<AttributeFilterProps> = ({
               <SelectValue placeholder={t('search.filters.selectOption')} />
             </SelectTrigger>
             <SelectContent>
-              {attribute.options.map((option) => (
+              {attribute.options.map((option: string) => (
                 <SelectItem key={option} value={option}>
                   {option}
                 </SelectItem>
