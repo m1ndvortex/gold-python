@@ -4,7 +4,7 @@
  * terminology mapping, custom field schemas, feature configuration, and more.
  */
 
-import { api } from './api';
+import { apiGet, apiPost, apiPut, apiDelete } from './api';
 import {
   BusinessType,
   BusinessConfiguration,

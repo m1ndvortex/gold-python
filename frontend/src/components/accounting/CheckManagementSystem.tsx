@@ -7,10 +7,10 @@ import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Badge } from '../ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
-import { Switch } from '../ui/switch';
+
 import { 
   PlusIcon, 
   EditIcon, 
@@ -23,7 +23,7 @@ import {
   AlertTriangleIcon,
   ClockIcon,
   BanknoteIcon,
-  CalendarIcon,
+
   TrendingUpIcon,
   TrendingDownIcon,
   FilterIcon,
@@ -35,7 +35,7 @@ import { format } from 'date-fns';
 import { DatePicker } from '../ui/date-picker';
 
 export const CheckManagementSystem: React.FC = () => {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { 
     useChecks, 
     useCreateCheck, 
@@ -47,7 +47,7 @@ export const CheckManagementSystem: React.FC = () => {
 
   const [filters, setFilters] = useState<CheckFilters>({});
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
   const [selectedCheck, setSelectedCheck] = useState<CheckManagement | null>(null);
   const [newCheck, setNewCheck] = useState<CheckManagementCreate>({
@@ -61,9 +61,7 @@ export const CheckManagementSystem: React.FC = () => {
 
   // Fetch data
   const { data: checks, isLoading, refetch } = useChecks(filters);
-  const { data: subsidiaryAccounts } = useSubsidiaryAccounts();
   const createCheckMutation = useCreateCheck();
-  const updateCheckMutation = useUpdateCheck();
   const updateStatusMutation = useUpdateCheckStatus();
   const deleteCheckMutation = useDeleteCheck();
 
@@ -452,3 +450,4 @@ export const CheckManagementSystem: React.FC = () => {
       </Dialog>
     </div>
   );
+};

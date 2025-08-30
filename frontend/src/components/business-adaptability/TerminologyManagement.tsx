@@ -22,7 +22,6 @@ import {
   AlertCircle,
   Globe,
   BookOpen,
-  Translate,
   Download,
   Upload
 } from 'lucide-react';
@@ -373,7 +372,7 @@ export const TerminologyManagement: React.FC = () => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center">
-              <Translate className="h-5 w-5 mr-2" />
+              <Languages className="h-5 w-5 mr-2" />
               Business Terms
               <span className="text-sm font-normal text-gray-500 ml-2">
                 ({filteredEntries.length} terms)

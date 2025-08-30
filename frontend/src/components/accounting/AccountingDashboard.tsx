@@ -34,7 +34,7 @@ import {
   DollarSignIcon,
   CalendarIcon,
   UsersIcon,
-  BanknotesIcon
+  BanknoteIcon
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { format } from 'date-fns';
@@ -276,7 +276,7 @@ export const AccountingDashboard: React.FC = () => {
               </div>
               <div className="flex items-center justify-between text-xs text-cyan-600">
                 <span>Available Cash</span>
-                <BanknotesIcon className="h-3 w-3" />
+                <BanknoteIcon className="h-3 w-3" />
               </div>
             </CardContent>
           </Card>

@@ -10,7 +10,7 @@ import { Badge } from '../ui/badge';
 import { FilterIcon, RefreshCwIcon, TrendingUpIcon, AlertTriangleIcon, BarChart3Icon, Activity } from 'lucide-react';
 import { format } from 'date-fns';
 import { LedgerFilters } from '../../types';
-import DatePicker from '../ui/date-picker';
+import { DatePicker } from '../ui/date-picker';
 import { JalaliUtils } from '../../utils/jalali';
 
 export const IncomeLedger: React.FC = () => {

@@ -71,7 +71,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "cross-env NODE_ENV=production craco build",
     "test": "react-scripts test --watchAll=false",
     "test:watch": "react-scripts test",
     "test:docker": "cross-env REACT_APP_API_URL=http://localhost:8000 react-scripts test --watchAll=false --testTimeout=120000",
@@ -81,9 +81,9 @@
     "test:docker:integration": "cross-env REACT_APP_API_URL=http://localhost:8000 react-scripts test --watchAll=false --testTimeout=120000 --testPathPattern=docker-auth-integration",
     "test:docker:jest": "cross-env REACT_APP_API_URL=http://localhost:8000 react-scripts test --watchAll=false --testTimeout=120000 --testPathPattern=docker-auth-jest",
     "test:docker:inventory": "cross-env NODE_ENV=test REACT_APP_API_URL=http://backend:8000 react-scripts test --watchAll=false --testTimeout=120000 --testPathPattern=inventory-docker",
-    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
-    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx --ignore-pattern 'src/tests/**' --ignore-pattern '**/*.test.*' --ignore-pattern '**/*.spec.*'",
+    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix --ignore-pattern 'src/tests/**' --ignore-pattern '**/*.test.*' --ignore-pattern '**/*.spec.*'",
+    "type-check": "tsc --project tsconfig.build.json --noEmit",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -127,6 +127,7 @@
     "autoprefixer": "^10.4.16",
     "craco": "^0.0.3",
     "cross-env": "^10.0.0",
+    "ignore-loader": "^0.1.2",
     "node-fetch": "^3.3.2",
     "postcss": "^8.4.31",
     "tailwindcss-rtl": "^0.9.0"

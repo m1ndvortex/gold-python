@@ -120,11 +120,16 @@ export const ChartOfAccountsManager: React.FC<ChartOfAccountsManagerProps> = ({ 
     setExpandedNodes(newExpanded);
   };
 
-  const handleCreateAccount = async (accountData: ChartOfAccountCreate) => {
+  const handleCreateAccount = async (accountData: ChartOfAccountCreate | ChartOfAccountUpdate) => {
     try {
-      await createAccountMutation.mutateAsync(accountData);
-      toast.success('Account created successfully');
-      setIsCreateDialogOpen(false);
+      // Type guard to ensure we have the required fields for creation
+      if ('account_code' in accountData && 'account_type' in accountData) {
+        await createAccountMutation.mutateAsync(accountData as ChartOfAccountCreate);
+        toast.success('Account created successfully');
+        setIsCreateDialogOpen(false);
+      } else {
+        throw new Error('Invalid account data for creation');
+      }
     } catch (error) {
       toast.error('Failed to create account');
     }
@@ -147,7 +152,7 @@ export const ChartOfAccountsManager: React.FC<ChartOfAccountsManagerProps> = ({ 
   };
 
   const handleDeleteAccount = async (accountId: string) => {
-    if (!confirm('Are you sure you want to delete this account? This action cannot be undone.')) {
+    if (!window.confirm('Are you sure you want to delete this account? This action cannot be undone.')) {
       return;
     }
 
@@ -265,7 +270,7 @@ export const ChartOfAccountsManager: React.FC<ChartOfAccountsManagerProps> = ({ 
             </div>
           </TableCell>
         </TableRow>
-        {hasChildren && isExpanded && account.children.map(child => renderAccountRow(child, level + 1))}
+        {hasChildren && isExpanded && account.children.map(child => renderAccountRow({ ...child, children: (child as any).children || [] }, level + 1))}
       </React.Fragment>
     );
   };
@@ -505,7 +510,7 @@ const AccountForm: React.FC<AccountFormProps> = ({
           <Label htmlFor="account_type">Account Type *</Label>
           <Select
             value={formData.account_type}
-            onValueChange={(value) => setFormData({ ...formData, account_type: value, parent_account_id: '' })}
+            onValueChange={(value) => setFormData({ ...formData, account_type: value as 'asset' | 'liability' | 'equity' | 'revenue' | 'expense', parent_account_id: '' })}
           >
             <SelectTrigger>
               <SelectValue />

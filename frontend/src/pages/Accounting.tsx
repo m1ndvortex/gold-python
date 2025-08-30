@@ -25,7 +25,7 @@ import {
   FileTextIcon,
   UsersIcon,
   CalendarIcon,
-  BanknotesIcon,
+  BanknoteIcon,
   ClipboardListIcon
 } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -111,7 +111,7 @@ export const Accounting: React.FC = () => {
     {
       id: 'cash-bank',
       label: t('accounting.cash_bank'),
-      icon: BanknotesIcon,
+      icon: BanknoteIcon,
       component: CashBankLedger,
       description: 'Monitor cash flow and bank transactions'
     },

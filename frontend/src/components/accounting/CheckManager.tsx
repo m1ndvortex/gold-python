@@ -28,7 +28,7 @@ import {
   AlertTriangleIcon,
   DollarSignIcon,
   CalendarIcon,
-  BanknotesIcon,
+  BanknoteIcon,
   UserIcon,
   BuildingIcon,
   FileTextIcon,
@@ -91,7 +91,7 @@ export const CheckManager: React.FC<CheckManagerProps> = ({ className }) => {
       labelPersian: 'در انتظار'
     },
     deposited: { 
-      icon: BanknotesIcon, 
+      icon: BanknoteIcon, 
       color: 'text-blue-600', 
       bgColor: 'bg-blue-100', 
       label: 'Deposited',
@@ -120,11 +120,16 @@ export const CheckManager: React.FC<CheckManagerProps> = ({ className }) => {
     }
   };
 
-  const handleCreateCheck = async (checkData: CheckManagementCreate) => {
+  const handleCreateCheck = async (checkData: CheckManagementCreate | Partial<CheckManagementCreate>) => {
     try {
-      await createCheckMutation.mutateAsync(checkData);
-      toast.success('Check created successfully');
-      setIsCreateDialogOpen(false);
+      // Type guard to ensure we have the required fields for creation
+      if (checkData.check_number && checkData.bank_name && checkData.check_amount !== undefined && checkData.check_date && checkData.due_date && checkData.check_type) {
+        await createCheckMutation.mutateAsync(checkData as CheckManagementCreate);
+        toast.success('Check created successfully');
+        setIsCreateDialogOpen(false);
+      } else {
+        throw new Error('Invalid check data for creation');
+      }
     } catch (error) {
       toast.error('Failed to create check');
     }
@@ -157,7 +162,7 @@ export const CheckManager: React.FC<CheckManagerProps> = ({ className }) => {
   };
 
   const handleDeleteCheck = async (checkId: string) => {
-    if (!confirm('Are you sure you want to delete this check? This action cannot be undone.')) {
+    if (!window.confirm('Are you sure you want to delete this check? This action cannot be undone.')) {
       return;
     }
 
@@ -899,7 +904,7 @@ const CheckView: React.FC<CheckViewProps> = ({ check, onClose }) => {
 
   const statusConfig = {
     pending: { icon: ClockIcon, color: 'text-yellow-600', bgColor: 'bg-yellow-100', label: 'Pending' },
-    deposited: { icon: BanknotesIcon, color: 'text-blue-600', bgColor: 'bg-blue-100', label: 'Deposited' },
+    deposited: { icon: BanknoteIcon, color: 'text-blue-600', bgColor: 'bg-blue-100', label: 'Deposited' },
     cleared: { icon: CheckCircleIcon, color: 'text-green-600', bgColor: 'bg-green-100', label: 'Cleared' },
     bounced: { icon: XCircleIcon, color: 'text-red-600', bgColor: 'bg-red-100', label: 'Bounced' },
     cancelled: { icon: AlertTriangleIcon, color: 'text-gray-600', bgColor: 'bg-gray-100', label: 'Cancelled' }

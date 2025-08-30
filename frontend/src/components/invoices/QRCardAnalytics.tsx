@@ -41,4 +41,22 @@ interface AnalyticsData {
   device_breakdown: Record<string, number>;
   browser_breakdown: Record<string, number>;
   os_breakdown: Record<string, number>;
-  hourly_views?: Record<string,
+  hourly_views?: Record<string, number>;
+}
+
+// Placeholder component - this file appears to be incomplete
+export const QRCardAnalytics: React.FC<QRCardAnalyticsProps> = ({ qrCard, isOpen, onClose, onRefresh }) => {
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>QR Card Analytics</DialogTitle>
+        </DialogHeader>
+        <div className="p-4">
+          <p>Analytics for QR Card: {qrCard?.id}</p>
+          {/* TODO: Implement analytics dashboard */}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};

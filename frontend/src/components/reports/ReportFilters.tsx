@@ -4,7 +4,7 @@ import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Calendar, Filter, X } from 'lucide-react';
 import { useCategories } from '../../hooks/useInventory';
-import DatePicker from '../ui/date-picker';
+import { DatePicker } from '../ui/date-picker';
 import { JalaliUtils } from '../../utils/jalali';
 import { useLanguage } from '../../hooks/useLanguage';
 

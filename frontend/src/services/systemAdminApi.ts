@@ -1,4 +1,4 @@
-import { api } from './api';
+import { apiGet, apiPost, apiPut, apiDelete } from './api';
 import {
   SystemHealth,
   ServiceHealth,
