@@ -29,7 +29,8 @@ import {
   Activity,
   Image,
   ImageIcon,
-  Upload
+  Upload,
+  Monitor
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -270,6 +271,13 @@ const navigationItems: NavigationItem[] = [
         roles: ['Owner', 'Manager'],
       },
     ],
+  },
+  {
+    key: 'nav.systemAdmin',
+    icon: Monitor,
+    href: '/system-administration',
+    permission: 'edit_settings',
+    roles: ['Owner', 'Manager', 'Admin'],
   },
 ];
 

@@ -1,29 +1,107 @@
-import * as React from "react"
-import * as PopoverPrimitive from "@radix-ui/react-popover"
+/**
+ * Popover Component
+ * Floating content component
+ */
 
-import { cn } from "../../lib/utils"
+import React from 'react';
+import { cn } from '../../lib/utils';
 
-const Popover = PopoverPrimitive.Root
+interface PopoverProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  children: React.ReactNode;
+}
 
-const PopoverTrigger = PopoverPrimitive.Trigger
+interface PopoverTriggerProps {
+  asChild?: boolean;
+  children: React.ReactNode;
+}
 
-const PopoverContent = React.forwardRef<
-  React.ElementRef<typeof PopoverPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
->(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
-  <PopoverPrimitive.Portal>
-    <PopoverPrimitive.Content
-      ref={ref}
-      align={align}
-      sideOffset={sideOffset}
+interface PopoverContentProps {
+  className?: string;
+  align?: 'start' | 'center' | 'end';
+  children: React.ReactNode;
+}
+
+const PopoverContext = React.createContext<{
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}>({
+  open: false,
+  onOpenChange: () => {}
+});
+
+export const Popover: React.FC<PopoverProps> = ({ open, onOpenChange, children }) => {
+  return (
+    <PopoverContext.Provider value={{ open, onOpenChange }}>
+      <div className="relative">
+        {children}
+      </div>
+    </PopoverContext.Provider>
+  );
+};
+
+export const PopoverTrigger: React.FC<PopoverTriggerProps> = ({ asChild, children }) => {
+  const { open, onOpenChange } = React.useContext(PopoverContext);
+
+  const handleClick = () => {
+    onOpenChange(!open);
+  };
+
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      onClick: handleClick,
+      'aria-expanded': open,
+      'aria-haspopup': 'dialog'
+    });
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      aria-expanded={open}
+      aria-haspopup="dialog"
+    >
+      {children}
+    </button>
+  );
+};
+
+export const PopoverContent: React.FC<PopoverContentProps> = ({ 
+  className, 
+  align = 'center', 
+  children 
+}) => {
+  const { open, onOpenChange } = React.useContext(PopoverContext);
+  const contentRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (contentRef.current && !contentRef.current.contains(event.target as Node)) {
+        onOpenChange(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [open, onOpenChange]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      ref={contentRef}
       className={cn(
-        "z-50 w-72 rounded-xl border-0 bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/30 p-4 text-popover-foreground shadow-xl outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 backdrop-blur-sm transition-all duration-200",
+        'absolute z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg',
+        align === 'start' && 'left-0',
+        align === 'center' && 'left-1/2 transform -translate-x-1/2',
+        align === 'end' && 'right-0',
         className
       )}
-      {...props}
-    />
-  </PopoverPrimitive.Portal>
-))
-PopoverContent.displayName = PopoverPrimitive.Content.displayName
-
-export { Popover, PopoverTrigger, PopoverContent }
+    >
+      {children}
+    </div>
+  );
+};

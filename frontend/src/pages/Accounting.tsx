@@ -20,11 +20,17 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Wallet,
-  PiggyBank
+  PiggyBank,
+  BookOpenIcon,
+  FileTextIcon,
+  UsersIcon,
+  CalendarIcon,
+  BanknotesIcon,
+  ClipboardListIcon
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
-// Import accounting components
+// Import existing accounting components
 import { IncomeLedger } from '../components/accounting/IncomeLedger';
 import { ExpenseLedger } from '../components/accounting/ExpenseLedger';
 import { CashBankLedger } from '../components/accounting/CashBankLedger';
@@ -33,10 +39,16 @@ import { ProfitLossAnalysis } from '../components/accounting/ProfitLossAnalysis'
 import { DebtTracking } from '../components/accounting/DebtTracking';
 import { useAccounting } from '../hooks/useAccounting';
 
+// Import enhanced accounting components
+import { AccountingDashboard } from '../components/accounting/AccountingDashboard';
+import { ChartOfAccountsManager } from '../components/accounting/ChartOfAccountsManager';
+import { JournalEntryManager } from '../components/accounting/JournalEntryManager';
+import { CheckManager } from '../components/accounting/CheckManager';
+
 export const Accounting: React.FC = () => {
   const { t } = useLanguage();
   const { useLedgerSummary } = useAccounting();
-  const [activeTab, setActiveTab] = useState('income');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   // Get ledger summary for overview
   const { data: ledgerSummary, isLoading: summaryLoading } = useLedgerSummary();
@@ -55,6 +67,34 @@ export const Accounting: React.FC = () => {
 
   const tabs = [
     {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: CalculatorIcon,
+      component: AccountingDashboard,
+      description: 'Enhanced double-entry accounting dashboard'
+    },
+    {
+      id: 'chart-of-accounts',
+      label: 'Chart of Accounts',
+      icon: BookOpenIcon,
+      component: ChartOfAccountsManager,
+      description: 'Manage hierarchical account structure'
+    },
+    {
+      id: 'journal-entries',
+      label: 'Journal Entries',
+      icon: FileTextIcon,
+      component: JournalEntryManager,
+      description: 'Double-entry bookkeeping system'
+    },
+    {
+      id: 'checks',
+      label: 'Check Management',
+      icon: CreditCardIcon,
+      component: CheckManager,
+      description: 'مدیریت چک‌ها - Complete check lifecycle'
+    },
+    {
       id: 'income',
       label: t('accounting.income'),
       icon: TrendingUpIcon,
@@ -71,7 +111,7 @@ export const Accounting: React.FC = () => {
     {
       id: 'cash-bank',
       label: t('accounting.cash_bank'),
-      icon: CreditCardIcon,
+      icon: BanknotesIcon,
       component: CashBankLedger,
       description: 'Monitor cash flow and bank transactions'
     },
@@ -341,7 +381,7 @@ export const Accounting: React.FC = () => {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             {/* Modern Gradient Tab Navigation */}
             <div className="bg-gradient-to-r from-green-50 via-teal-50 to-blue-50 border-b-2 border-green-200">
-              <TabsList variant="gradient-green" className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+              <TabsList variant="gradient-green" className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-10">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;

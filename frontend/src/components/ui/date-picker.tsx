@@ -1,86 +1,60 @@
+/**
+ * Date Picker Component
+ * Reusable date picker component
+ */
+
 import React from 'react';
-import { useLanguage } from '../../hooks/useLanguage';
-import JalaliCalendar from './jalali-calendar';
+import { Calendar, CalendarDays } from 'lucide-react';
+import { Button } from './button';
+import { Input } from './input';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Calendar as CalendarComponent } from './calendar';
 import { cn } from '../../lib/utils';
 
-export interface DatePickerProps {
-  value?: Date | null;
-  onChange?: (date: Date | null) => void;
-  className?: string;
-  inputClassName?: string;
+interface DatePickerProps {
+  selected?: Date;
+  onSelect: (date: Date | undefined) => void;
   placeholder?: string;
   disabled?: boolean;
-  minDate?: Date;
-  maxDate?: Date;
-  name?: string;
-  id?: string;
-  required?: boolean;
+  className?: string;
 }
 
-/**
- * Universal date picker that automatically switches between Jalali and Gregorian
- * based on the current language setting
- */
-const DatePicker: React.FC<DatePickerProps> = ({
-  value,
-  onChange,
-  className,
-  inputClassName,
-  placeholder,
+export const DatePicker: React.FC<DatePickerProps> = ({
+  selected,
+  onSelect,
+  placeholder = 'Pick a date',
   disabled = false,
-  minDate,
-  maxDate,
-  name,
-  id,
-  required = false
+  className
 }) => {
-  const { language } = useLanguage();
+  const [open, setOpen] = React.useState(false);
 
-  // For Persian language, use Jalali calendar
-  if (language === 'fa') {
-    return (
-      <JalaliCalendar
-        value={value}
-        onChange={onChange}
-        className={className}
-        inputClassName={inputClassName}
-        placeholder={placeholder || 'انتخاب تاریخ'}
-        disabled={disabled}
-        minDate={minDate}
-        maxDate={maxDate}
-        showInput={true}
-      />
-    );
-  }
-
-  // For English language, use standard HTML date input
   return (
-    <input
-      type="date"
-      id={id}
-      name={name}
-      value={value ? value.toISOString().split('T')[0] : ''}
-      onChange={(e) => {
-        const newDate = e.target.value ? new Date(e.target.value) : null;
-        onChange?.(newDate);
-      }}
-      className={cn(
-        "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background",
-        "placeholder:text-muted-foreground",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        "disabled:cursor-not-allowed disabled:opacity-50",
-        "hover:border-primary/50 transition-colors",
-        inputClassName
-      )}
-      disabled={disabled}
-      placeholder={placeholder || 'Select date'}
-      min={minDate ? minDate.toISOString().split('T')[0] : undefined}
-      max={maxDate ? maxDate.toISOString().split('T')[0] : undefined}
-      required={required}
-    />
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          className={cn(
+            'w-full justify-start text-left font-normal',
+            !selected && 'text-muted-foreground',
+            className
+          )}
+          disabled={disabled}
+        >
+          <CalendarDays className="mr-2 h-4 w-4" />
+          {selected ? selected.toLocaleDateString() : placeholder}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <CalendarComponent
+          mode="single"
+          selected={selected}
+          onSelect={(date) => {
+            onSelect(date);
+            setOpen(false);
+          }}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
   );
 };
-
-export default DatePicker;
-
-

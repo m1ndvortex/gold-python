@@ -200,6 +200,13 @@ def seed_database():
         db.rollback()
     finally:
         db.close()
+    
+    # Seed business adaptability data
+    try:
+        from seed_business_adaptability import seed_business_adaptability_data
+        seed_business_adaptability_data()
+    except Exception as e:
+        print(f"Warning: Could not seed business adaptability data: {e}")
 
 if __name__ == "__main__":
     seed_database()

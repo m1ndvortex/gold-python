@@ -672,4 +672,359 @@ Testing Framework
 - Conduct user acceptance testing
 - Deploy production system with monitoring
 
+## System Administration Dashboard Design
+
+### Overview
+
+The System Administration Dashboard provides a comprehensive web-based interface for system administrators to monitor, manage, and maintain the Docker infrastructure and system health. The dashboard follows the same design principles as the rest of the application with gradient backgrounds, modern card layouts, and intuitive navigation.
+
+### Architecture
+
+```
+System Administration Dashboard
+├── Navigation Integration
+│   ├── Main Menu Item: "System Administration"
+│   ├── Role-Based Access Control
+│   └── Breadcrumb Navigation
+├── Dashboard Overview
+│   ├── System Health Summary Cards
+│   ├── Service Status Grid
+│   └── Quick Action Buttons
+├── Infrastructure Monitoring
+│   ├── Docker Services Panel
+│   ├── Resource Usage Metrics
+│   └── Real-time Status Updates
+├── Security Management
+│   ├── SSL Certificate Monitor
+│   ├── Security Headers Validation
+│   └── Rate Limiting Statistics
+├── Backup & Recovery
+│   ├── Backup Status Overview
+│   ├── Manual Backup Triggers
+│   └── Restore Management
+├── Log Management
+│   ├── Multi-Service Log Viewer
+│   ├── Log Search & Filtering
+│   └── Error Analysis Panel
+├── Performance Analytics
+│   ├── Response Time Charts
+│   ├── Throughput Metrics
+│   └── System Performance Trends
+└── Configuration Management
+    ├── Environment Variables
+    ├── Feature Flags
+    └── System Settings
+```
+
+### Components and Interfaces
+
+#### 1. Navigation Integration
+
+**Main Menu Integration:**
+- Add "System Administration" menu item in main navigation
+- Position after "Settings" but before "Help"
+- Icon: Server or Settings gear icon
+- Role-based visibility (Admin users only)
+
+**Access Control:**
+```typescript
+interface AdminAccess {
+  requiredRole: 'admin' | 'super_admin';
+  permissions: string[];
+  fallbackRedirect: string;
+}
+```
+
+#### 2. Dashboard Overview Page
+
+**Layout Structure:**
+```
+┌─────────────────────────────────────────────────────────┐
+│ System Administration Dashboard                          │
+├─────────────────────────────────────────────────────────┤
+│ [System Health] [Services] [Security] [Performance]     │
+├─────────────────────────────────────────────────────────┤
+│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐        │
+│ │   Docker    │ │   Database  │ │    Redis    │        │
+│ │  Services   │ │   Health    │ │    Cache    │        │
+│ │     ✅      │ │     ✅      │ │     ✅      │        │
+│ └─────────────┘ └─────────────┘ └─────────────┘        │
+├─────────────────────────────────────────────────────────┤
+│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐        │
+│ │    SSL      │ │   Backups   │ │    Logs     │        │
+│ │Certificate  │ │   Status    │ │   Health    │        │
+│ │     ✅      │ │     ✅      │ │     ⚠️      │        │
+│ └─────────────┘ └─────────────┘ └─────────────┘        │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Status Cards Design:**
+- Gradient backgrounds matching application theme
+- Color-coded status indicators (Green/Yellow/Red)
+- Real-time updates via WebSocket or polling
+- Click-through navigation to detailed views
+
+#### 3. Infrastructure Monitoring Panel
+
+**Docker Services Grid:**
+```typescript
+interface ServiceStatus {
+  name: string;
+  status: 'healthy' | 'unhealthy' | 'starting' | 'stopped';
+  uptime: string;
+  cpu: number;
+  memory: number;
+  lastRestart: Date;
+  actions: ServiceAction[];
+}
+
+interface ServiceAction {
+  label: string;
+  action: 'restart' | 'stop' | 'logs' | 'config';
+  dangerous: boolean;
+}
+```
+
+**Resource Usage Visualization:**
+- Real-time CPU, Memory, Disk usage charts
+- Historical trend graphs
+- Alert thresholds with visual indicators
+- Responsive design for mobile monitoring
+
+#### 4. Security Monitoring Interface
+
+**SSL Certificate Management:**
+```typescript
+interface SSLCertificate {
+  domain: string;
+  issuer: string;
+  validFrom: Date;
+  validTo: Date;
+  daysUntilExpiry: number;
+  status: 'valid' | 'expiring' | 'expired' | 'invalid';
+  autoRenewal: boolean;
+}
+```
+
+**Security Headers Validation:**
+- Real-time validation of security headers
+- HSTS, CSP, X-Frame-Options status
+- Security score calculation
+- Recommendations for improvements
+
+#### 5. Backup Management Interface
+
+**Backup Status Overview:**
+```typescript
+interface BackupStatus {
+  lastBackup: Date;
+  nextScheduledBackup: Date;
+  backupSize: number;
+  backupLocation: string;
+  status: 'success' | 'failed' | 'in_progress';
+  retentionDays: number;
+  availableBackups: BackupFile[];
+}
+
+interface BackupFile {
+  filename: string;
+  date: Date;
+  size: number;
+  type: 'full' | 'incremental';
+  verified: boolean;
+}
+```
+
+**Manual Operations:**
+- One-click backup triggers
+- Backup verification tools
+- Restore point selection
+- Progress indicators for operations
+
+#### 6. Log Management System
+
+**Multi-Service Log Viewer:**
+```typescript
+interface LogEntry {
+  timestamp: Date;
+  service: string;
+  level: 'debug' | 'info' | 'warning' | 'error' | 'critical';
+  message: string;
+  metadata: Record<string, any>;
+  traceId?: string;
+}
+
+interface LogFilter {
+  services: string[];
+  levels: string[];
+  dateRange: [Date, Date];
+  searchQuery: string;
+  limit: number;
+}
+```
+
+**Log Analysis Features:**
+- Real-time log streaming
+- Advanced search and filtering
+- Error pattern detection
+- Export capabilities (CSV, JSON)
+
+#### 7. Performance Analytics Dashboard
+
+**Metrics Visualization:**
+- Response time trends (line charts)
+- Request throughput (bar charts)
+- Error rate monitoring (gauge charts)
+- Database query performance
+- Cache hit/miss ratios
+
+**Interactive Charts:**
+```typescript
+interface PerformanceMetric {
+  name: string;
+  value: number;
+  unit: string;
+  trend: 'up' | 'down' | 'stable';
+  threshold: number;
+  chartData: ChartDataPoint[];
+}
+
+interface ChartDataPoint {
+  timestamp: Date;
+  value: number;
+  label?: string;
+}
+```
+
+#### 8. Configuration Management Panel
+
+**Environment Variables Management:**
+- Secure display of environment variables
+- Edit capabilities for non-sensitive variables
+- Validation and testing tools
+- Change history tracking
+
+**Feature Flags Interface:**
+```typescript
+interface FeatureFlag {
+  name: string;
+  description: string;
+  enabled: boolean;
+  rolloutPercentage: number;
+  conditions: FeatureFlagCondition[];
+  lastModified: Date;
+  modifiedBy: string;
+}
+```
+
+### Data Models
+
+#### System Health Model
+```typescript
+interface SystemHealth {
+  overall: HealthStatus;
+  services: ServiceHealth[];
+  resources: ResourceUsage;
+  security: SecurityStatus;
+  backups: BackupHealth;
+  alerts: SystemAlert[];
+  lastUpdated: Date;
+}
+
+interface HealthStatus {
+  status: 'healthy' | 'warning' | 'critical';
+  score: number; // 0-100
+  message: string;
+}
+```
+
+#### Alert Management Model
+```typescript
+interface SystemAlert {
+  id: string;
+  type: 'info' | 'warning' | 'error' | 'critical';
+  title: string;
+  description: string;
+  source: string;
+  timestamp: Date;
+  acknowledged: boolean;
+  resolvedAt?: Date;
+  actions: AlertAction[];
+}
+```
+
+### Error Handling
+
+#### Connection Failures
+- Graceful degradation when backend services are unavailable
+- Cached data display with staleness indicators
+- Retry mechanisms with exponential backoff
+- User-friendly error messages
+
+#### Permission Errors
+- Clear access denied messages
+- Redirect to appropriate login/permission request
+- Role-based feature hiding
+- Audit logging for access attempts
+
+#### Data Validation
+- Real-time validation for configuration changes
+- Preview mode for dangerous operations
+- Confirmation dialogs for destructive actions
+- Rollback capabilities for configuration changes
+
+### Testing Strategy
+
+#### Component Testing
+1. **Status Card Components:** Test all status states and transitions
+2. **Chart Components:** Validate data visualization and interactivity
+3. **Log Viewer:** Test filtering, searching, and real-time updates
+4. **Configuration Forms:** Validate form handling and validation
+
+#### Integration Testing
+1. **API Integration:** Test all backend API connections
+2. **Real-time Updates:** Validate WebSocket connections and data flow
+3. **Authentication:** Test role-based access control
+4. **Navigation:** Ensure proper routing and breadcrumbs
+
+#### End-to-End Testing
+1. **Admin Workflows:** Complete administrative task flows
+2. **Emergency Scenarios:** Test system during service failures
+3. **Performance:** Validate dashboard performance under load
+4. **Mobile Responsiveness:** Test on various device sizes
+
+#### Security Testing
+1. **Access Control:** Verify role-based restrictions
+2. **Data Exposure:** Ensure sensitive data is properly masked
+3. **CSRF Protection:** Test form submissions and API calls
+4. **Session Management:** Validate admin session handling
+
+### Implementation Phases
+
+#### Phase 1: Core Infrastructure (Week 1)
+- Set up navigation integration and routing
+- Create basic dashboard layout and components
+- Implement authentication and role-based access
+- Build service status monitoring foundation
+
+#### Phase 2: Monitoring Features (Week 2)
+- Implement Docker service monitoring
+- Add system resource usage tracking
+- Create real-time status updates
+- Build basic alerting system
+
+#### Phase 3: Management Features (Week 3)
+- Add backup management interface
+- Implement log viewer and analysis
+- Create configuration management panel
+- Build security monitoring features
+
+#### Phase 4: Analytics and Polish (Week 4)
+- Implement performance analytics dashboard
+- Add advanced charting and visualization
+- Create mobile-responsive design
+- Conduct comprehensive testing
+
+This comprehensive design provides system administrators with a powerful, intuitive interface for managing the Docker infrastructure while maintaining consistency with the overall application design and user experience.
+
 This comprehensive design provides a solid foundation for transforming the gold shop system into a universal inventory and invoice management platform while maintaining all existing functionality and ensuring enterprise-grade performance, security, and scalability.

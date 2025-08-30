@@ -1,0 +1,327 @@
+# Production Docker Compose Configuration
+# Optimized for production deployment with security, performance, and monitoring
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database - Production Configuration
+  db:
+    image: timescale/timescaledb:latest-pg15
+    container_name: goldshop_db_prod
+    environment:
+      POSTGRES_DB: goldshop
+      POSTGRES_USER: goldshop_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      TIMESCALEDB_TELEMETRY: off
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./backend/analytics_init.sql:/docker-entrypoint-initdb.d/02-analytics_init.sql
+      - ./backend/database_schema_extension.sql:/docker-entrypoint-initdb.d/03-schema_extension.sql
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+    networks:
+      - goldshop_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U goldshop_user -d goldshop"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    secrets:
+      - db_password
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+
+  # Redis Cache - Production Configuration
+  redis:
+    image: redis:7-alpine
+    container_name: goldshop_redis_prod
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/etc/redis/redis.conf
+    networks:
+      - goldshop_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    command: redis-server /etc/redis/redis.conf
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  # FastAPI Backend - Production Configuration
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.prod
+      target: production
+    container_name: goldshop_backend_prod
+    environment:
+      DATABASE_URL: postgresql://goldshop_user:${DB_PASSWORD}@db:5432/goldshop
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+      SMS_API_KEY_FILE: /run/secrets/sms_api_key
+      ENVIRONMENT: production
+      LOG_LEVEL: WARNING
+      CORS_ORIGINS: "https://yourdomain.com"
+      WORKERS: 4
+    volumes:
+      - uploads_data:/app/uploads
+      - ./logs/backend:/app/logs
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - goldshop_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    secrets:
+      - jwt_secret
+      - sms_api_key
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+
+  # React Frontend - Production Build
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      target: production
+    container_name: goldshop_frontend_prod
+    volumes:
+      - frontend_build:/app/build
+    networks:
+      - goldshop_network
+    restart: "no"  # Only runs to build, then exits
+
+  # Nginx Reverse Proxy - Production Configuration
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.prod
+    container_name: goldshop_nginx_prod
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+      - uploads_data:/var/www/html/uploads:ro
+      - frontend_build:/var/www/html:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - goldshop_network
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+        reservations:
+          memory: 128M
+          cpus: '0.25'
+
+  # Automated Backup Service
+  backup:
+    image: postgres:15-alpine
+    container_name: goldshop_backup_prod
+    environment:
+      PGPASSWORD_FILE: /run/secrets/db_password
+    volumes:
+      - ./backups:/backups
+      - ./scripts/backup.sh:/usr/local/bin/backup.sh:ro
+      - ./scripts/backup-cron:/etc/cron.d/backup-cron:ro
+    depends_on:
+      - db
+    networks:
+      - goldshop_network
+    command: ["crond", "-f"]
+    restart: unless-stopped
+    secrets:
+      - db_password
+
+  # Log Aggregation with Fluentd
+  fluentd:
+    image: fluent/fluentd:v1.16-debian-1
+    container_name: goldshop_fluentd
+    volumes:
+      - ./logging/fluentd.conf:/fluentd/etc/fluent.conf
+      - ./logs:/var/log/goldshop
+    ports:
+      - "24224:24224"
+    networks:
+      - goldshop_network
+    restart: unless-stopped
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: goldshop_prometheus_prod
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - goldshop_network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  # Grafana Dashboards
+  grafana:
+    image: grafana/grafana:latest
+    container_name: goldshop_grafana_prod
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD_FILE: /run/secrets/grafana_password
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: "https://yourdomain.com/grafana/"
+      GF_SECURITY_COOKIE_SECURE: "true"
+      GF_SECURITY_STRICT_TRANSPORT_SECURITY: "true"
+    networks:
+      - goldshop_network
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    secrets:
+      - grafana_password
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+
+  # PostgreSQL Exporter for Metrics
+  postgres_exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: goldshop_postgres_exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://goldshop_user:${DB_PASSWORD}@db:5432/goldshop?sslmode=disable"
+    networks:
+      - goldshop_network
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # Redis Exporter for Metrics
+  redis_exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: goldshop_redis_exporter
+    environment:
+      REDIS_ADDR: "redis://redis:6379"
+    networks:
+      - goldshop_network
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  # Node Exporter for System Metrics
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: goldshop_node_exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - goldshop_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  uploads_data:
+    driver: local
+  frontend_build:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  goldshop_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt
+  sms_api_key:
+    file: ./secrets/sms_api_key.txt
+  grafana_password:
+    file: ./secrets/grafana_password.txt

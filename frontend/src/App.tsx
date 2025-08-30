@@ -15,6 +15,8 @@ import { AccountingWithRouting as Accounting } from './pages/Accounting';
 import { ReportsWithRouting as Reports } from './pages/Reports';
 import { SettingsWithRouting as Settings } from './pages/Settings';
 import { SMSWithRouting as SMS } from './pages/SMS';
+import BusinessAdaptability from './pages/BusinessAdaptability';
+import SystemAdministration from './pages/SystemAdministration';
 import { AuthGuard } from './components/auth/AuthGuard';
 import { MainLayout } from './components/layout/MainLayout';
 import './App.css';
@@ -143,6 +145,26 @@ const AppContent: React.FC = () => {
               <AuthGuard>
                 <MainLayout>
                   <SMS />
+                </MainLayout>
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/business-adaptability"
+            element={
+              <AuthGuard>
+                <MainLayout>
+                  <BusinessAdaptability />
+                </MainLayout>
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/system-administration"
+            element={
+              <AuthGuard>
+                <MainLayout>
+                  <SystemAdministration />
                 </MainLayout>
               </AuthGuard>
             }

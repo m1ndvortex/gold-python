@@ -1,0 +1,22 @@
+{
+  "migration_timestamp": "2025-08-30T08:56:33.659981",
+  "migration_stats": {
+    "categories_migrated": 5,
+    "categories_created": 31,
+    "items_deleted": 0,
+    "items_created": 13,
+    "invoices_deleted": 0,
+    "invoices_created": 5,
+    "images_created": 10,
+    "accounting_entries_created": 10
+  },
+  "system_info": {
+    "universal_tables_created": true,
+    "ltree_extension_enabled": true,
+    "business_configuration_created": true,
+    "dual_invoice_system_enabled": true,
+    "qr_card_system_enabled": true,
+    "image_management_enabled": true,
+    "double_entry_accounting_enabled": true
+  }
+}

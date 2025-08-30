@@ -1,105 +1,171 @@
 version: '3.8'
 
 services:
-  # Test Backend - uses main database
-  test-backend:
+  # PostgreSQL Database with TimescaleDB and Enhanced Schema
+  db:
+    image: timescale/timescaledb:latest-pg15
+    container_name: goldshop_test_db
+    environment:
+      POSTGRES_DB: goldshop
+      POSTGRES_USER: goldshop_user
+      POSTGRES_PASSWORD: goldshop_password
+      TIMESCALEDB_TELEMETRY: off
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+      - ./backend/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./backend/analytics_init.sql:/docker-entrypoint-initdb.d/02-analytics_init.sql
+      - ./backend/database_schema_extension.sql:/docker-entrypoint-initdb.d/03-schema_extension.sql
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+    networks:
+      - goldshop_test_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U goldshop_user -d goldshop"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis Cache for Testing
+  redis:
+    image: redis:7-alpine
+    container_name: goldshop_test_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_test_data:/data
+      - ./redis/redis.conf:/etc/redis/redis.conf
+    networks:
+      - goldshop_test_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server /etc/redis/redis.conf
+    restart: unless-stopped
+
+  # FastAPI Backend for Testing
+  backend:
     build: 
       context: ./backend
       dockerfile: Dockerfile
     container_name: goldshop_test_backend
     environment:
       DATABASE_URL: postgresql://goldshop_user:goldshop_password@db:5432/goldshop
-      JWT_SECRET: test-jwt-secret
-      SMS_API_KEY: test-sms-key
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: test-jwt-secret-for-comprehensive-testing
+      SMS_API_KEY: test-sms-api-key
       ENVIRONMENT: test
+      LOG_LEVEL: INFO
+      CORS_ORIGINS: "http://localhost:3000,http://frontend:3000"
+    ports:
+      - "8000:8000"
     volumes:
       - ./backend:/app:rw
-      - uploads_data:/app/uploads:rw
-      - backend_cache:/app/__pycache__:rw
+      - uploads_test_data:/app/uploads:rw
+      - backend_test_cache:/app/__pycache__:rw
       - backend_pytest_cache:/app/.pytest_cache:rw
+      - ./tests:/app/tests:rw
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
-      - goldshop_network
-    command: pytest -v
+      - goldshop_test_network
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
 
-  # Test Frontend - uses main backend
-  test-frontend:
+  # React Frontend for Testing
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: goldshop_test_frontend
     environment:
-      REACT_APP_API_URL: http://backend:8000
+      REACT_APP_API_URL: http://localhost:8000
       REACT_APP_ENVIRONMENT: test
+      GENERATE_SOURCEMAP: "false"
       CI: true
+    ports:
+      - "3000:3000"
     volumes:
-      - ./frontend:/app
-      - frontend_node_modules:/app/node_modules
+      - ./frontend:/app:rw
+      - frontend_test_node_modules:/app/node_modules:rw
     depends_on:
       - backend
     networks:
-      - goldshop_network
-    command: npm test
-
-  # Use main database service
-  db:
-    image: postgres:15
-    container_name: goldshop_db
-    environment:
-      POSTGRES_DB: goldshop
-      POSTGRES_USER: goldshop_user
-      POSTGRES_PASSWORD: goldshop_password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - goldshop_network
+      - goldshop_test_network
+    command: npm start
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U goldshop_user -d goldshop"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
 
-  # Use main backend service
-  backend:
-    build: 
+  # Comprehensive Test Runner
+  test-runner:
+    build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: goldshop_backend
+    container_name: goldshop_comprehensive_tests
     environment:
       DATABASE_URL: postgresql://goldshop_user:goldshop_password@db:5432/goldshop
-      JWT_SECRET: your-super-secret-jwt-key-change-in-production
-      SMS_API_KEY: your-sms-api-key
-      ENVIRONMENT: development
-    ports:
-      - "8000:8000"
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: test-jwt-secret-for-comprehensive-testing
+      SMS_API_KEY: test-sms-api-key
+      ENVIRONMENT: test
+      PYTHONPATH: /app:/app/tests
     volumes:
       - ./backend:/app:rw
-      - uploads_data:/app/uploads:rw
-      - backend_cache:/app/__pycache__:rw
+      - ./tests:/app/tests:rw
+      - uploads_test_data:/app/uploads:rw
+      - backend_test_cache:/app/__pycache__:rw
+      - backend_pytest_cache:/app/.pytest_cache:rw
+      - test_results:/app/test_results:rw
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
     networks:
-      - goldshop_network
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      - goldshop_test_network
+    command: python tests/run_comprehensive_tests.py
+    profiles:
+      - testing
 
 volumes:
-  postgres_data:
+  postgres_test_data:
     driver: local
-  uploads_data:
+  redis_test_data:
     driver: local
-  frontend_node_modules:
+  uploads_test_data:
     driver: local
-  backend_cache:
+  frontend_test_node_modules:
+    driver: local
+  backend_test_cache:
     driver: local
   backend_pytest_cache:
     driver: local
+  test_results:
+    driver: local
 
 networks:
-  goldshop_network:
+  goldshop_test_network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
